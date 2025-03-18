@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "DACS_QuanLyPhongTri/1.0.0": {
+        "runtime": {
+          "DACS_QuanLyPhongTri.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DACS_QuanLyPhongTri/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\DACS_QuanLyPhongTri.props" />
+</Project>

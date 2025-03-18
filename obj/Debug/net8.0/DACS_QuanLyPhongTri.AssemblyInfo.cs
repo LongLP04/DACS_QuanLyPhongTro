@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DACS_QuanLyPhongTri")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+246defaeb806fb5796be18e1ab1c354e913f6ac1")]
 [assembly: System.Reflection.AssemblyProductAttribute("DACS_QuanLyPhongTri")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DACS_QuanLyPhongTri")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
