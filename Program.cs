@@ -1,9 +1,12 @@
+﻿using Microsoft.Extensions.FileProviders;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+app.UseStaticFiles(); // Dùng mặc định
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -14,7 +17,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+
 
 app.UseRouting();
 
