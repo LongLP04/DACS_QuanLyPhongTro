@@ -1,9 +1,15 @@
-﻿using Microsoft.Extensions.FileProviders;
+﻿using DACS_QuanLyPhongTro.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Thêm dịch vụ kết nối SQL Server
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 app.UseStaticFiles(); // Dùng mặc định
