@@ -1,28 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using DACS_QuanLyPhongTro.Models;
 
-namespace DACS_QuanLyPhongTro.Models
+[Table("PhongTro")]
+public class PhongTro
 {
-    public class PhongTro
-    {
-        [Key]
-        public int MaPhong { get; set; }
-        public string SoPhong { get; set; } = string.Empty;
-        public int Tang { get; set; }
-        public decimal DienTich { get; set; }
-        public decimal GiaThue { get; set; }
-        public string TrangThai { get; set; } = string.Empty;
-        public string HinhAnh { get; set; } = string.Empty;
-        public string? MoTa { get; set; }
+    [Key]
+    public int MaPhong { get; set; }
 
-        // Khóa ngoại liên kết với Tòa nhà
-        public int MaToaNha { get; set; }
-        public ToaNha ToaNha { get; set; } = null!;
+    [Required]
+    public string SoPhong { get; set; }
+    public int Tang { get; set; }
+    public decimal DienTich { get; set; }
+    public decimal GiaThue { get; set; }
+    public string TrangThai { get; set; }
+    public string MoTa { get; set; }
 
-        // Liên kết với danh sách khách thuê
-        public List<KhachThue> KhachThues { get; set; } = new();
+    [Required]
+    public int MaToaNha { get; set; }
+    [ForeignKey("MaToaNha")]
+    public ToaNha ToaNha { get; set; }
 
-        // Liên kết với chỉ số điện nước
-        public List<ChiSoDienNuoc> ChiSoDienNuocs { get; set; } = new();
-    }
-
+    public ICollection<KhachThue> KhachThues { get; set; } = new List<KhachThue>();
+    public ICollection<ChiSoDienNuoc> ChiSoDienNuocs { get; set; } = new List<ChiSoDienNuoc>();
 }

@@ -1,4 +1,4 @@
-/*  ---------------------------------------------------
+﻿/*  ---------------------------------------------------
     Template Name: Ogani
     Description:  Ogani eCommerce  HTML Template
     Author: Colorlib
@@ -65,7 +65,7 @@
     ------------------------*/
     $(".categories__slider").owlCarousel({
         loop: true,
-        margin: 0,
+        margin: 10,
         items: 4,
         dots: false,
         nav: true,
@@ -120,12 +120,14 @@
     -------------------------------*/
     $(".product__discount__slider").owlCarousel({
         loop: true,
-        margin: 0,
+        margin: 10,
         items: 3,
         dots: true,
-        smartSpeed: 1200,
+        smartSpeed: 600,
         autoHeight: false,
         autoplay: true,
+        autoplayTimeout: 1500, // Giảm từ mặc định (5000ms) xuống 1500ms (1.5 giây mỗi slide)
+        autoplaySpeed: 400, // Giảm thời gian chuyển slide (chuyển trong 0.4 giây)
         responsive: {
 
             320: {

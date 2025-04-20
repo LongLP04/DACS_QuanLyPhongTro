@@ -3,41 +3,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DACS_QuanLyPhongTro.Models
 {
+
+    [Table("ChiSoDienNuoc")]
+
     public class ChiSoDienNuoc
     {
         [Key]
         public int MaChiSo { get; set; }
 
         [Required]
-        public DateTime Thang { get; set; }
+        [Range(1, 12)]
+        public int Thang { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
         [Required]
         public decimal ChiSoDienCu { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
         [Required]
         public decimal ChiSoDienMoi { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
         [Required]
         public decimal ChiSoNuocCu { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
         [Required]
         public decimal ChiSoNuocMoi { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal SoDienTieuThu => ChiSoDienMoi - ChiSoDienCu; // Tính toán tự động
+        [NotMapped]
+        public decimal SoDienTieuThu { get { return ChiSoDienMoi - ChiSoDienCu; } set { } } // Thêm setter rỗng
+        [NotMapped]
+        public decimal SoNuocTieuThu { get { return ChiSoNuocMoi - ChiSoNuocCu; } set { } } // Thêm setter rỗng
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal SoNuocTieuThu => ChiSoNuocMoi - ChiSoNuocCu; // Tính toán tự động
-
-        [Column(TypeName = "decimal(18,2)")]
         [Required]
         public decimal DonGiaDien { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
         [Required]
         public decimal DonGiaNuoc { get; set; }
 
@@ -50,5 +47,6 @@ namespace DACS_QuanLyPhongTro.Models
         public int MaPhong { get; set; }
 
         public PhongTro PhongTro { get; set; } = null!;
+        public ICollection<HoaDon> HoaDons { get; set; } = new List<HoaDon>();
     }
 }

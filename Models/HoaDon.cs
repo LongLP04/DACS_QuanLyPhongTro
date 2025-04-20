@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DACS_QuanLyPhongTro.Models
 {
@@ -16,18 +17,19 @@ namespace DACS_QuanLyPhongTro.Models
         public string TrangThai { get; set; } = string.Empty;
 
         // Khóa ngoại liên kết với Chỉ Số Điện Nước
+        [Required]
         public int MaChiSo { get; set; }
-        public ChiSoDienNuoc ChiSoDienNuoc { get; set; } = null!;
+        [ForeignKey("MaChiSo")]
+        public ChiSoDienNuoc ChiSoDienNuoc { get; set; }
 
-        // Khóa ngoại liên kết với Khách Thuê
+        [Required]
         public int MaKhachThue { get; set; }
-        public KhachThue KhachThue { get; set; } = null!;
+        [ForeignKey("MaKhachThue")]
+        public KhachThue KhachThue { get; set; }
 
-        // Danh sách các phiếu thanh toán liên quan đến hóa đơn này
-        public ICollection<PhieuThanhToan> PhieuThanhToans { get; set; } = new List<PhieuThanhToan>();
-
-        // Danh sách chi tiết hóa đơn dịch vụ
         public ICollection<ChiTietHoaDonDichVu> ChiTietHoaDonDichVus { get; set; } = new List<ChiTietHoaDonDichVu>();
+        public ICollection<PhieuThanhToan> PhieuThanhToans { get; set; } = new List<PhieuThanhToan>();
     }
-
 }
+
+

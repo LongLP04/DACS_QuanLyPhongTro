@@ -1,5 +1,8 @@
-﻿namespace DACS_QuanLyPhongTro.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DACS_QuanLyPhongTro.Models
 {
+    [Table("ChiTietHoaDonDichVu")]
     public class ChiTietHoaDonDichVu
     {
         public int MaChiTiet { get; set; }
@@ -12,8 +15,7 @@
         public int MaDichVu { get; set; }
         public DichVu DichVu { get; set; } = null!;
 
-        public int SoLuong { get; set; }
-        public decimal DonGia { get; set; }
-        public decimal ThanhTien { get; set; }
+        public int SoLuongPhieuDangKy { get; set; }
+        
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DACS_QuanLyPhongTro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250320112721_khoitao")]
-    partial class khoitao
+    [Migration("20250420052757_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,22 +34,22 @@ namespace DACS_QuanLyPhongTro.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaChiSo"));
 
                     b.Property<decimal>("ChiSoDienCu")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("ChiSoDienMoi")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("ChiSoNuocCu")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("ChiSoNuocMoi")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("DonGiaDien")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(15,2)");
 
                     b.Property<decimal>("DonGiaNuoc")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(15,2)");
 
                     b.Property<int>("MaPhong")
                         .HasColumnType("int");
@@ -57,14 +57,20 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.Property<DateTime>("NgayGhi")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Thang")
-                        .HasColumnType("datetime2");
+                    b.Property<decimal>("SoDienTieuThu")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("SoNuocTieuThu")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("Thang")
+                        .HasColumnType("int");
 
                     b.HasKey("MaChiSo");
 
                     b.HasIndex("MaPhong");
 
-                    b.ToTable("ChiSoDienNuocs");
+                    b.ToTable("ChiSoDienNuoc");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChiTietHoaDonDichVu", b =>
@@ -78,20 +84,14 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.Property<int>("DichVuMaDichVu")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("DonGia")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("HoaDonMaHoaDon")
                         .HasColumnType("int");
 
                     b.Property<int>("MaChiTiet")
                         .HasColumnType("int");
 
-                    b.Property<int>("SoLuong")
+                    b.Property<int>("SoLuongPhieuDangKy")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("ThanhTien")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("MaHoaDon", "MaDichVu");
 
@@ -99,7 +99,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("HoaDonMaHoaDon");
 
-                    b.ToTable("ChiTietHoaDonDichVus");
+                    b.ToTable("ChiTietHoaDonDichVu");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChiTietPhieuDangKyDichVu", b =>
@@ -113,20 +113,14 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.Property<int>("DichVuMaDichVu")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("DonGia")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("MaChiTiet")
                         .HasColumnType("int");
 
                     b.Property<int>("PhieuDangKyDichVuMaDangKyDichVu")
                         .HasColumnType("int");
 
-                    b.Property<int>("SoLuong")
+                    b.Property<int>("SoLuongDichVu")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("ThanhTien")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("MaDangKyDichVu", "MaDichVu");
 
@@ -134,7 +128,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("PhieuDangKyDichVuMaDangKyDichVu");
 
-                    b.ToTable("ChiTietPhieuDangKyDichVus");
+                    b.ToTable("ChiTietPhieuDangKyDichVu");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChuTro", b =>
@@ -147,9 +141,11 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.Property<string>("CCCD")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HoTen")
@@ -162,7 +158,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaChuTro");
 
-                    b.ToTable("ChuTros");
+                    b.ToTable("ChuTro");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.DichVu", b =>
@@ -174,7 +170,7 @@ namespace DACS_QuanLyPhongTro.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaDichVu"));
 
                     b.Property<decimal>("GiaDichVu")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(15,2)");
 
                     b.Property<string>("MoTa")
                         .HasColumnType("nvarchar(max)");
@@ -185,7 +181,33 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaDichVu");
 
-                    b.ToTable("DichVus");
+                    b.ToTable("DichVu");
+                });
+
+            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HienTrangVatDung", b =>
+                {
+                    b.Property<int>("MaVatDung")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaVatDung"));
+
+                    b.Property<int>("MaPhieuHienTrang")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TenVatDung")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TinhTrang")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MaVatDung");
+
+                    b.HasIndex("MaPhieuHienTrang");
+
+                    b.ToTable("HienTrangVatDung");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HoaDon", b =>
@@ -195,6 +217,9 @@ namespace DACS_QuanLyPhongTro.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaHoaDon"));
+
+                    b.Property<int?>("ChiSoDienNuocMaChiSo")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("HanThanhToan")
                         .HasColumnType("datetime2");
@@ -212,25 +237,27 @@ namespace DACS_QuanLyPhongTro.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("TienDichVu")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(15,2)");
 
                     b.Property<decimal>("TienDien")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(15,2)");
 
                     b.Property<decimal>("TienNuoc")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(15,2)");
 
                     b.Property<decimal>("TienPhong")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(15,2)");
 
                     b.Property<decimal>("TongTien")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(15,2)");
 
                     b.Property<string>("TrangThai")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaHoaDon");
+
+                    b.HasIndex("ChiSoDienNuocMaChiSo");
 
                     b.HasIndex("KhachThueMaKhachThue");
 
@@ -249,7 +276,13 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaHopDong"));
 
-                    b.Property<int>("KhachThueMaKhachThue")
+                    b.Property<int?>("ChuTroMaChuTro")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("KhachThueMaKhachThue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaChuTro")
                         .HasColumnType("int");
 
                     b.Property<int>("MaKhachThue")
@@ -265,20 +298,23 @@ namespace DACS_QuanLyPhongTro.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NoiDungHopDong")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TienCoc")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("TrangThai")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("TienCoc")
+                        .HasColumnType("decimal(15,2)");
+
                     b.HasKey("MaHopDong");
+
+                    b.HasIndex("ChuTroMaChuTro");
 
                     b.HasIndex("KhachThueMaKhachThue");
 
-                    b.ToTable("HopDongs");
+                    b.HasIndex("MaChuTro");
+
+                    b.HasIndex("MaKhachThue");
+
+                    b.ToTable("HopDong");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.KhachThue", b =>
@@ -291,31 +327,29 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.Property<string>("CCCD")
                         .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HoTen")
+                    b.Property<string>("HoTenKhachThue")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaPhong")
                         .HasColumnType("int");
 
-                    b.Property<int>("PhongTroMaPhong")
-                        .HasColumnType("int");
-
                     b.Property<string>("SoDienThoai")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrangThai")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaKhachThue");
 
-                    b.HasIndex("PhongTroMaPhong");
+                    b.HasIndex("MaPhong");
 
-                    b.ToTable("KhachThues");
+                    b.ToTable("KhachThue");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuDangKyDichVu", b =>
@@ -325,9 +359,6 @@ namespace DACS_QuanLyPhongTro.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaDangKyDichVu"));
-
-                    b.Property<int>("KhachThueMaKhachThue")
-                        .HasColumnType("int");
 
                     b.Property<int>("MaKhachThue")
                         .HasColumnType("int");
@@ -344,44 +375,67 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaDangKyDichVu");
 
-                    b.HasIndex("KhachThueMaKhachThue");
+                    b.HasIndex("MaKhachThue");
 
-                    b.ToTable("PhieuDangKyDichVus");
+                    b.ToTable("PhieuDangKyDichVu");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuGhiNhanSuCo", b =>
                 {
-                    b.Property<int>("MaSuCo")
+                    b.Property<int>("MaPhieuSuCo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaSuCo"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaPhieuSuCo"));
 
-                    b.Property<int>("KhachThueMaKhachThue")
-                        .HasColumnType("int");
+                    b.Property<string>("GhiChu")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HienTrang")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaKhachThue")
                         .HasColumnType("int");
 
-                    b.Property<string>("MoTa")
+                    b.Property<string>("MoTaSuCo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("NgayBaoCao")
+                    b.Property<DateTime>("NgayGhiNhan")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("NgayGiaiQuyet")
-                        .HasColumnType("datetime2");
+                    b.HasKey("MaPhieuSuCo");
 
-                    b.Property<string>("TrangThai")
+                    b.HasIndex("MaKhachThue");
+
+                    b.ToTable("PhieuGhiNhanSuCo");
+                });
+
+            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuHienTrangNhanPhong", b =>
+                {
+                    b.Property<int>("MaPhieuHienTrang")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaPhieuHienTrang"));
+
+                    b.Property<string>("GhiChu")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("MaSuCo");
+                    b.Property<int>("MaKhachThue")
+                        .HasColumnType("int");
 
-                    b.HasIndex("KhachThueMaKhachThue");
+                    b.Property<DateTime>("NgayNhanPhong")
+                        .HasColumnType("datetime2");
 
-                    b.ToTable("PhieuGhiNhanSuCos");
+                    b.HasKey("MaPhieuHienTrang");
+
+                    b.HasIndex("MaKhachThue");
+
+                    b.ToTable("PhieuHienTrangNhanPhong");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuThanhToan", b =>
@@ -392,7 +446,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaPhieuThanhToan"));
 
-                    b.Property<int>("HoaDonMaHoaDon")
+                    b.Property<int?>("KhachThueMaKhachThue")
                         .HasColumnType("int");
 
                     b.Property<int>("MaHoaDon")
@@ -404,64 +458,18 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.Property<DateTime>("NgayThanhToan")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PhuongThucThanhToanMaPhuongThuc")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("SoTienThanhToan")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("MaPhieuThanhToan");
 
-                    b.HasIndex("HoaDonMaHoaDon");
+                    b.HasIndex("KhachThueMaKhachThue");
 
-                    b.HasIndex("PhuongThucThanhToanMaPhuongThuc");
+                    b.HasIndex("MaHoaDon");
 
-                    b.ToTable("PhieuThanhToans");
-                });
+                    b.HasIndex("MaPhuongThuc");
 
-            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhongTro", b =>
-                {
-                    b.Property<int>("MaPhong")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaPhong"));
-
-                    b.Property<decimal>("DienTich")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("GiaThue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("HinhAnh")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MaToaNha")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MoTa")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SoPhong")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Tang")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ToaNhaMaToaNha")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TrangThai")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MaPhong");
-
-                    b.HasIndex("ToaNhaMaToaNha");
-
-                    b.ToTable("PhongTros");
+                    b.ToTable("PhieuThanhToan");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhuongThucThanhToan", b =>
@@ -473,6 +481,7 @@ namespace DACS_QuanLyPhongTro.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaPhuongThuc"));
 
                     b.Property<string>("MoTa")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenPhuongThuc")
@@ -481,7 +490,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaPhuongThuc");
 
-                    b.ToTable("PhuongThucThanhToans");
+                    b.ToTable("PhuongThucThanhToan");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ToaNha", b =>
@@ -492,9 +501,6 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaToaNha"));
 
-                    b.Property<int>("ChuTroMaChuTro")
-                        .HasColumnType("int");
-
                     b.Property<string>("DiaChi")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -503,6 +509,7 @@ namespace DACS_QuanLyPhongTro.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("MoTa")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenToaNha")
@@ -514,14 +521,53 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaToaNha");
 
-                    b.HasIndex("ChuTroMaChuTro");
+                    b.HasIndex("MaChuTro");
 
-                    b.ToTable("ToaNhas");
+                    b.ToTable("ToaNha");
+                });
+
+            modelBuilder.Entity("PhongTro", b =>
+                {
+                    b.Property<int>("MaPhong")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaPhong"));
+
+                    b.Property<decimal>("DienTich")
+                        .HasColumnType("decimal(15,2)");
+
+                    b.Property<decimal>("GiaThue")
+                        .HasColumnType("decimal(15,2)");
+
+                    b.Property<int>("MaToaNha")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MoTa")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SoPhong")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Tang")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TrangThai")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MaPhong");
+
+                    b.HasIndex("MaToaNha");
+
+                    b.ToTable("PhongTro");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChiSoDienNuoc", b =>
                 {
-                    b.HasOne("DACS_QuanLyPhongTro.Models.PhongTro", "PhongTro")
+                    b.HasOne("PhongTro", "PhongTro")
                         .WithMany("ChiSoDienNuocs")
                         .HasForeignKey("MaPhong")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -568,8 +614,23 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.Navigation("PhieuDangKyDichVu");
                 });
 
+            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HienTrangVatDung", b =>
+                {
+                    b.HasOne("DACS_QuanLyPhongTro.Models.PhieuHienTrangNhanPhong", "PhieuHienTrangNhanPhong")
+                        .WithMany()
+                        .HasForeignKey("MaPhieuHienTrang")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PhieuHienTrangNhanPhong");
+                });
+
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HoaDon", b =>
                 {
+                    b.HasOne("DACS_QuanLyPhongTro.Models.ChiSoDienNuoc", null)
+                        .WithMany("HoaDons")
+                        .HasForeignKey("ChiSoDienNuocMaChiSo");
+
                     b.HasOne("DACS_QuanLyPhongTro.Models.KhachThue", null)
                         .WithMany("HoaDons")
                         .HasForeignKey("KhachThueMaKhachThue");
@@ -593,20 +654,36 @@ namespace DACS_QuanLyPhongTro.Migrations
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HopDong", b =>
                 {
-                    b.HasOne("DACS_QuanLyPhongTro.Models.KhachThue", "KhachThue")
+                    b.HasOne("DACS_QuanLyPhongTro.Models.ChuTro", null)
                         .WithMany("HopDongs")
-                        .HasForeignKey("KhachThueMaKhachThue")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("ChuTroMaChuTro");
+
+                    b.HasOne("DACS_QuanLyPhongTro.Models.KhachThue", null)
+                        .WithMany("HopDongs")
+                        .HasForeignKey("KhachThueMaKhachThue");
+
+                    b.HasOne("DACS_QuanLyPhongTro.Models.ChuTro", "ChuTro")
+                        .WithMany()
+                        .HasForeignKey("MaChuTro")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("DACS_QuanLyPhongTro.Models.KhachThue", "KhachThue")
+                        .WithMany()
+                        .HasForeignKey("MaKhachThue")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ChuTro");
 
                     b.Navigation("KhachThue");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.KhachThue", b =>
                 {
-                    b.HasOne("DACS_QuanLyPhongTro.Models.PhongTro", "PhongTro")
+                    b.HasOne("PhongTro", "PhongTro")
                         .WithMany("KhachThues")
-                        .HasForeignKey("PhongTroMaPhong")
+                        .HasForeignKey("MaPhong")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -617,7 +694,7 @@ namespace DACS_QuanLyPhongTro.Migrations
                 {
                     b.HasOne("DACS_QuanLyPhongTro.Models.KhachThue", "KhachThue")
                         .WithMany("PhieuDangKyDichVus")
-                        .HasForeignKey("KhachThueMaKhachThue")
+                        .HasForeignKey("MaKhachThue")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -628,7 +705,18 @@ namespace DACS_QuanLyPhongTro.Migrations
                 {
                     b.HasOne("DACS_QuanLyPhongTro.Models.KhachThue", "KhachThue")
                         .WithMany("PhieuGhiNhanSuCos")
-                        .HasForeignKey("KhachThueMaKhachThue")
+                        .HasForeignKey("MaKhachThue")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("KhachThue");
+                });
+
+            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuHienTrangNhanPhong", b =>
+                {
+                    b.HasOne("DACS_QuanLyPhongTro.Models.KhachThue", "KhachThue")
+                        .WithMany("PhieuHienTrangNhanPhongs")
+                        .HasForeignKey("MaKhachThue")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -637,15 +725,19 @@ namespace DACS_QuanLyPhongTro.Migrations
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuThanhToan", b =>
                 {
+                    b.HasOne("DACS_QuanLyPhongTro.Models.KhachThue", null)
+                        .WithMany("PhieuThanhToans")
+                        .HasForeignKey("KhachThueMaKhachThue");
+
                     b.HasOne("DACS_QuanLyPhongTro.Models.HoaDon", "HoaDon")
                         .WithMany("PhieuThanhToans")
-                        .HasForeignKey("HoaDonMaHoaDon")
+                        .HasForeignKey("MaHoaDon")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DACS_QuanLyPhongTro.Models.PhuongThucThanhToan", "PhuongThucThanhToan")
                         .WithMany("PhieuThanhToans")
-                        .HasForeignKey("PhuongThucThanhToanMaPhuongThuc")
+                        .HasForeignKey("MaPhuongThuc")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -654,30 +746,37 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.Navigation("PhuongThucThanhToan");
                 });
 
-            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhongTro", b =>
-                {
-                    b.HasOne("DACS_QuanLyPhongTro.Models.ToaNha", "ToaNha")
-                        .WithMany("PhongTros")
-                        .HasForeignKey("ToaNhaMaToaNha")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ToaNha");
-                });
-
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ToaNha", b =>
                 {
                     b.HasOne("DACS_QuanLyPhongTro.Models.ChuTro", "ChuTro")
                         .WithMany("ToaNhas")
-                        .HasForeignKey("ChuTroMaChuTro")
+                        .HasForeignKey("MaChuTro")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ChuTro");
                 });
 
+            modelBuilder.Entity("PhongTro", b =>
+                {
+                    b.HasOne("DACS_QuanLyPhongTro.Models.ToaNha", "ToaNha")
+                        .WithMany("PhongTros")
+                        .HasForeignKey("MaToaNha")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ToaNha");
+                });
+
+            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChiSoDienNuoc", b =>
+                {
+                    b.Navigation("HoaDons");
+                });
+
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChuTro", b =>
                 {
+                    b.Navigation("HopDongs");
+
                     b.Navigation("ToaNhas");
                 });
 
@@ -702,18 +801,15 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.Navigation("PhieuDangKyDichVus");
 
                     b.Navigation("PhieuGhiNhanSuCos");
+
+                    b.Navigation("PhieuHienTrangNhanPhongs");
+
+                    b.Navigation("PhieuThanhToans");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuDangKyDichVu", b =>
                 {
                     b.Navigation("ChiTietPhieuDangKyDichVus");
-                });
-
-            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhongTro", b =>
-                {
-                    b.Navigation("ChiSoDienNuocs");
-
-                    b.Navigation("KhachThues");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhuongThucThanhToan", b =>
@@ -724,6 +820,13 @@ namespace DACS_QuanLyPhongTro.Migrations
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ToaNha", b =>
                 {
                     b.Navigation("PhongTros");
+                });
+
+            modelBuilder.Entity("PhongTro", b =>
+                {
+                    b.Navigation("ChiSoDienNuocs");
+
+                    b.Navigation("KhachThues");
                 });
 #pragma warning restore 612, 618
         }

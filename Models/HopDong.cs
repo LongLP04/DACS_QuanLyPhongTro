@@ -1,21 +1,30 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DACS_QuanLyPhongTro.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace DACS_QuanLyPhongTro.Models
 {
+    [Table("HopDong")]
     public class HopDong
     {
         [Key]
         public int MaHopDong { get; set; }
+
+        [Required]
         public DateTime NgayLap { get; set; }
         public DateTime NgayBatDau { get; set; }
         public DateTime NgayKetThuc { get; set; }
         public decimal TienCoc { get; set; }
-        public string? NoiDungHopDong { get; set; }
-        public string TrangThai { get; set; } = string.Empty;
+        public string NoiDungHopDong { get; set; }
 
-        // Khóa ngoại liên kết với Khách Thuê
+        [Required]
         public int MaKhachThue { get; set; }
-        public KhachThue KhachThue { get; set; } = null!;
-    }
+        [ForeignKey("MaKhachThue")]
+        public KhachThue KhachThue { get; set; }
 
+        [Required]
+        public int MaChuTro { get; set; }
+        [ForeignKey("MaChuTro")]
+        public ChuTro ChuTro { get; set; }
+    }
 }
