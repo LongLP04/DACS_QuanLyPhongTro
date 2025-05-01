@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DACS_QuanLyPhongTro.Models
 {
+    [Table("HoaDon")]
     public class HoaDon
     {
         [Key]   
@@ -13,7 +14,6 @@ namespace DACS_QuanLyPhongTro.Models
         public decimal TienPhong { get; set; }
         public decimal TienDichVu { get; set; }
         public decimal TongTien { get; set; }
-        public DateTime HanThanhToan { get; set; }
         public string TrangThai { get; set; } = string.Empty;
 
         // Khóa ngoại liên kết với Chỉ Số Điện Nước
@@ -27,7 +27,6 @@ namespace DACS_QuanLyPhongTro.Models
         [ForeignKey("MaKhachThue")]
         public KhachThue KhachThue { get; set; }
 
-        public ICollection<ChiTietHoaDonDichVu> ChiTietHoaDonDichVus { get; set; } = new List<ChiTietHoaDonDichVu>();
         public ICollection<PhieuThanhToan> PhieuThanhToans { get; set; } = new List<PhieuThanhToan>();
     }
 }

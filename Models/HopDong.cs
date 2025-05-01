@@ -22,9 +22,6 @@ namespace DACS_QuanLyPhongTro.Models
         [ForeignKey("MaKhachThue")]
         public KhachThue KhachThue { get; set; }
 
-        [Required]
-        public int MaChuTro { get; set; }
-        [ForeignKey("MaChuTro")]
-        public ChuTro ChuTro { get; set; }
+        
     }
 }

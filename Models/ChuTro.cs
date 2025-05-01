@@ -13,6 +13,8 @@ namespace DACS_QuanLyPhongTro.Models
 
         [Required]
         public string HoTen { get; set; }
+        [Required]
+        public string Gioitinh { get; set; } 
 
         [Required, StringLength(12)]
         public string CCCD { get; set; }
@@ -24,6 +26,5 @@ namespace DACS_QuanLyPhongTro.Models
         public string SoDienThoai { get; set; }
 
         public ICollection<ToaNha> ToaNhas { get; set; } = new List<ToaNha>();
-        public ICollection<HopDong> HopDongs { get; set; } = new List<HopDong>();
     }
 }

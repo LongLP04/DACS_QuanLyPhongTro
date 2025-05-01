@@ -9,7 +9,7 @@ namespace DACS_QuanLyPhongTro.Models
         [Key]
         public int MaPhuongThuc { get; set; }
         public string TenPhuongThuc { get; set; }
-        public string MoTa { get; set; }
+        
 
         public ICollection<PhieuThanhToan> PhieuThanhToans { get; set; } = new List<PhieuThanhToan>();
     }

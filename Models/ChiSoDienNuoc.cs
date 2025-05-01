@@ -11,9 +11,7 @@ namespace DACS_QuanLyPhongTro.Models
         [Key]
         public int MaChiSo { get; set; }
 
-        [Required]
-        [Range(1, 12)]
-        public int Thang { get; set; }
+        
 
         [Required]
         public decimal ChiSoDienCu { get; set; }

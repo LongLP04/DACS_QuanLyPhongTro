@@ -21,6 +21,10 @@ public class PhongTro
     [ForeignKey("MaToaNha")]
     public ToaNha ToaNha { get; set; }
 
-    public ICollection<KhachThue> KhachThues { get; set; } = new List<KhachThue>();
+    public int MaKhachThue { get; set; }  // Mỗi phòng trọ sẽ có một khách thuê cụ thể
+
+    [ForeignKey("MaKhachThue")]
+    public KhachThue KhachThue { get; set; }
+
     public ICollection<ChiSoDienNuoc> ChiSoDienNuocs { get; set; } = new List<ChiSoDienNuoc>();
 }

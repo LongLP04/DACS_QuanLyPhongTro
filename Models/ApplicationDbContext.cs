@@ -20,7 +20,6 @@ namespace DACS_QuanLyPhongTro.Models
         public DbSet<PhongTro> PhongTros { get; set; } = null!;
         public DbSet<PhuongThucThanhToan> PhuongThucThanhToans { get; set; } = null!;
         public DbSet<ToaNha> ToaNhas { get; set; } = null!;
-        public DbSet<ChiTietHoaDonDichVu> ChiTietHoaDonDichVus { get; set; } = null!;
         public DbSet<ChiTietPhieuDangKyDichVu> ChiTietPhieuDangKyDichVus { get; set; } = null!;
         public DbSet<HienTrangVatDung> HienTrangVatDungs { get; set; } = null!;
         public DbSet<PhieuHienTrangNhanPhong> PhieuHienTrangNhanPhongs { get; set; } = null!;
@@ -28,8 +27,11 @@ namespace DACS_QuanLyPhongTro.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ChiTietHoaDonDichVu>()
-                .HasKey(c => new { c.MaHoaDon, c.MaDichVu });  // Khóa chính kép
+            modelBuilder.Entity<PhongTro>()
+        .HasOne(p => p.KhachThue)
+        .WithMany(k => k.PhongTros)
+        .HasForeignKey(p => p.MaKhachThue)
+        .OnDelete(DeleteBehavior.Restrict); // tránh xóa dây chuyền
 
             modelBuilder.Entity<ChiTietPhieuDangKyDichVu>()
                 .HasKey(c => new { c.MaDangKyDichVu, c.MaDichVu });
@@ -46,7 +48,7 @@ namespace DACS_QuanLyPhongTro.Models
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<DichVu>()
-            .Property(d => d.GiaDichVu)
+            .Property(d => d.DonGiaDichVu)
             .HasColumnType("decimal(15,2)"); // Ví dụ: 18 chữ số, 4 chữ số thập phân
 
             modelBuilder.Entity<HoaDon>()
@@ -103,11 +105,6 @@ namespace DACS_QuanLyPhongTro.Models
             modelBuilder.Entity<ChiSoDienNuoc>()
                 .Property(c => c.DonGiaNuoc)
                 .HasColumnType("decimal(15,2)");
-            modelBuilder.Entity<HopDong>()
-    .HasOne(h => h.ChuTro)
-    .WithMany()
-    .HasForeignKey(h => h.MaChuTro)
-    .OnDelete(DeleteBehavior.NoAction);  // Thay vì CASCADE
 
             modelBuilder.Entity<HopDong>()
                 .HasOne(h => h.KhachThue)
