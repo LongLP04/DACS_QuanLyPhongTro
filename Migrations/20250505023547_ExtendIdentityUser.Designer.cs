@@ -4,6 +4,7 @@ using DACS_QuanLyPhongTro.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DACS_QuanLyPhongTro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250505023547_ExtendIdentityUser")]
+    partial class ExtendIdentityUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,7 +149,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaPhong");
 
-                    b.ToTable("ChiSoDienNuoc", (string)null);
+                    b.ToTable("ChiSoDienNuoc");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChiTietPhieuDangKyDichVu", b =>
@@ -169,7 +172,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaDichVu");
 
-                    b.ToTable("ChiTietPhieuDangKyDichVu", (string)null);
+                    b.ToTable("ChiTietPhieuDangKyDichVu");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChuTro", b =>
@@ -203,7 +206,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaChuTro");
 
-                    b.ToTable("ChuTro", (string)null);
+                    b.ToTable("ChuTro");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.DichVu", b =>
@@ -226,7 +229,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaDichVu");
 
-                    b.ToTable("DichVu", (string)null);
+                    b.ToTable("DichVu");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HienTrangVatDung", b =>
@@ -252,7 +255,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaPhieuHienTrang");
 
-                    b.ToTable("HienTrangVatDung", (string)null);
+                    b.ToTable("HienTrangVatDung");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HoaDon", b =>
@@ -307,7 +310,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaKhachThue");
 
-                    b.ToTable("HoaDon", (string)null);
+                    b.ToTable("HoaDon");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HopDong", b =>
@@ -346,7 +349,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaKhachThue");
 
-                    b.ToTable("HopDong", (string)null);
+                    b.ToTable("HopDong");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.KhachThue", b =>
@@ -380,7 +383,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaKhachThue");
 
-                    b.ToTable("KhachThue", (string)null);
+                    b.ToTable("KhachThue");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuDangKyDichVu", b =>
@@ -408,7 +411,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaKhachThue");
 
-                    b.ToTable("PhieuDangKyDichVu", (string)null);
+                    b.ToTable("PhieuDangKyDichVu");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuGhiNhanSuCo", b =>
@@ -441,7 +444,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaKhachThue");
 
-                    b.ToTable("PhieuGhiNhanSuCo", (string)null);
+                    b.ToTable("PhieuGhiNhanSuCo");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuHienTrangNhanPhong", b =>
@@ -466,7 +469,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaKhachThue");
 
-                    b.ToTable("PhieuHienTrangNhanPhong", (string)null);
+                    b.ToTable("PhieuHienTrangNhanPhong");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuThanhToan", b =>
@@ -495,7 +498,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaPhuongThuc");
 
-                    b.ToTable("PhieuThanhToan", (string)null);
+                    b.ToTable("PhieuThanhToan");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhongTro", b =>
@@ -543,7 +546,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaToaNha");
 
-                    b.ToTable("PhongTro", (string)null);
+                    b.ToTable("PhongTro");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhuongThucThanhToan", b =>
@@ -560,7 +563,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaPhuongThuc");
 
-                    b.ToTable("PhuongThucThanhToan", (string)null);
+                    b.ToTable("PhuongThucThanhToan");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ToaNha", b =>
@@ -593,7 +596,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaChuTro");
 
-                    b.ToTable("ToaNha", (string)null);
+                    b.ToTable("ToaNha");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -4,6 +4,7 @@ using DACS_QuanLyPhongTro.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DACS_QuanLyPhongTro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250505021618_AddIdentity")]
+    partial class AddIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,88 +24,6 @@ namespace DACS_QuanLyPhongTro.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CCCD")
-                        .IsRequired()
-                        .HasMaxLength(12)
-                        .HasColumnType("nvarchar(12)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("GioiTinh")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HoTen")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SoDienThoai")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChiSoDienNuoc", b =>
                 {
@@ -146,7 +67,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaPhong");
 
-                    b.ToTable("ChiSoDienNuoc", (string)null);
+                    b.ToTable("ChiSoDienNuoc");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChiTietPhieuDangKyDichVu", b =>
@@ -169,7 +90,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaDichVu");
 
-                    b.ToTable("ChiTietPhieuDangKyDichVu", (string)null);
+                    b.ToTable("ChiTietPhieuDangKyDichVu");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ChuTro", b =>
@@ -203,7 +124,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaChuTro");
 
-                    b.ToTable("ChuTro", (string)null);
+                    b.ToTable("ChuTro");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.DichVu", b =>
@@ -226,7 +147,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaDichVu");
 
-                    b.ToTable("DichVu", (string)null);
+                    b.ToTable("DichVu");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HienTrangVatDung", b =>
@@ -252,7 +173,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaPhieuHienTrang");
 
-                    b.ToTable("HienTrangVatDung", (string)null);
+                    b.ToTable("HienTrangVatDung");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HoaDon", b =>
@@ -307,7 +228,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaKhachThue");
 
-                    b.ToTable("HoaDon", (string)null);
+                    b.ToTable("HoaDon");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HopDong", b =>
@@ -346,7 +267,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaKhachThue");
 
-                    b.ToTable("HopDong", (string)null);
+                    b.ToTable("HopDong");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.KhachThue", b =>
@@ -380,7 +301,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaKhachThue");
 
-                    b.ToTable("KhachThue", (string)null);
+                    b.ToTable("KhachThue");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuDangKyDichVu", b =>
@@ -408,7 +329,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaKhachThue");
 
-                    b.ToTable("PhieuDangKyDichVu", (string)null);
+                    b.ToTable("PhieuDangKyDichVu");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuGhiNhanSuCo", b =>
@@ -441,7 +362,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaKhachThue");
 
-                    b.ToTable("PhieuGhiNhanSuCo", (string)null);
+                    b.ToTable("PhieuGhiNhanSuCo");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuHienTrangNhanPhong", b =>
@@ -466,7 +387,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaKhachThue");
 
-                    b.ToTable("PhieuHienTrangNhanPhong", (string)null);
+                    b.ToTable("PhieuHienTrangNhanPhong");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuThanhToan", b =>
@@ -495,7 +416,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaPhuongThuc");
 
-                    b.ToTable("PhieuThanhToan", (string)null);
+                    b.ToTable("PhieuThanhToan");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhongTro", b =>
@@ -543,7 +464,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaToaNha");
 
-                    b.ToTable("PhongTro", (string)null);
+                    b.ToTable("PhongTro");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhuongThucThanhToan", b =>
@@ -560,7 +481,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasKey("MaPhuongThuc");
 
-                    b.ToTable("PhuongThucThanhToan", (string)null);
+                    b.ToTable("PhuongThucThanhToan");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.ToaNha", b =>
@@ -593,7 +514,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     b.HasIndex("MaChuTro");
 
-                    b.ToTable("ToaNha", (string)null);
+                    b.ToTable("ToaNha");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -646,6 +567,71 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -904,7 +890,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("DACS_QuanLyPhongTro.Models.ApplicationUser", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -913,7 +899,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("DACS_QuanLyPhongTro.Models.ApplicationUser", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -928,7 +914,7 @@ namespace DACS_QuanLyPhongTro.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DACS_QuanLyPhongTro.Models.ApplicationUser", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -937,7 +923,7 @@ namespace DACS_QuanLyPhongTro.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("DACS_QuanLyPhongTro.Models.ApplicationUser", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

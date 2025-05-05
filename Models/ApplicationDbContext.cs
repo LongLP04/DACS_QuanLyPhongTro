@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace DACS_QuanLyPhongTro.Models
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) { }
@@ -31,7 +32,8 @@ namespace DACS_QuanLyPhongTro.Models
         .HasOne(p => p.KhachThue)
         .WithMany(k => k.PhongTros)
         .HasForeignKey(p => p.MaKhachThue)
-        .OnDelete(DeleteBehavior.Restrict); // tránh xóa dây chuyền
+        .OnDelete(DeleteBehavior.ClientSetNull);
+            // tránh xóa dây chuyền
 
             modelBuilder.Entity<ChiTietPhieuDangKyDichVu>()
                 .HasKey(c => new { c.MaDangKyDichVu, c.MaDichVu });

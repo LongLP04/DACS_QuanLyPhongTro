@@ -3,9 +3,9 @@
 @using Microsoft.AspNetCore.Identity
 @using DACS_QuanLyPhongTro.Models
 
-@* @inject IHttpContextAccessor HttpContextAccessor *@
-@* @inject SignInManager<IdentityUser> SignInManager *@
-@* @inject UserManager<IdentityUser> UserManager *@
+@* @inject IHttpContextAccessor HttpContextAccessor  *@
+@* @inject SignInManager<IdentityUser> SignInManager  *@
+@* @inject UserManager<ApplicationUser> UserManager *@
 @inject ApplicationDbContext _context
 <!DOCTYPE html>
 
@@ -57,48 +57,7 @@
                 <div class="col-lg-6 text-center text-lg-right">
                     <div class="d-inline-flex align-items-center">
                         <div class="btn-group">
-                            @* @if (SignInManager.IsSignedIn(User)) *@
-                            @* { *@
-                            @*     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown"> *@
-                            @*         <i class="fas fa-user"></i> @User.Identity.Name *@
-                            @*     </button> *@
-                            @* } *@
-                            @* else *@
-                            @* { *@
-                            @*     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Tài khoản</button> *@
-                            @* } *@
-                            @* <div class="dropdown-menu dropdown-menu-right"> *@
-                            @*     @if (SignInManager.IsSignedIn(User)) *@
-                            @*     { *@
-                            @*         <h6 class="dropdown-header">Xin chào, @User.Identity.Name!</h6> *@
-                            @*         <div class="dropdown-divider"></div> *@
-                            @*         <a class="dropdown-item" href="#"> *@
-                            @*             <i class="fas fa-user-circle mr-2"></i>Thông tin tài khoản *@
-                            @*         </a> *@
-                            @*         <a class="dropdown-item" href="#"> *@
-                            @*             <i class="fas fa-shopping-bag mr-2"></i>Đơn hàng của tôi *@
-                            @*         </a> *@
-                            @*         <div class="dropdown-divider"></div> *@
-                            @*         <form asp-controller="Account" asp-action="Logout" method="post"> *@
-                            @*             <button type="submit" class="dropdown-item text-danger"> *@
-                            @*                 <i class="fas fa-sign-out-alt mr-2"></i>Đăng xuất *@
-                            @*             </button> *@
-                            @*         </form> *@
-                            @*     } *@
-                            @*     else *@
-                            @*     { *@
-                            @*         <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login"> *@
-                            @*             <i class="fas fa-sign-in-alt mr-2"></i>Đăng nhập *@
-                            @*         </a> *@
-                            @*         <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register"> *@
-                            @*             <i class="fas fa-user-plus mr-2"></i>Đăng ký *@
-                            @*         </a> *@
-                            @*         <div class="dropdown-divider"></div> *@
-                            @*         <a href="/Account/LoginByGoogle" class="dropdown-item"> *@
-                            @*             <i class="fab fa-google mr-2"></i>Đăng nhập bằng Google *@
-                            @*         </a> *@
-                            @*     } *@
-                            @* </div> *@
+							<partial name="_LoginPartial" />
                         </div>
                         <div class="btn-group mx-2">
                             <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">USD</button>
