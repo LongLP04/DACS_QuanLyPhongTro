@@ -1,4 +1,5 @@
 ﻿using DACS_QuanLyPhongTro.Models;
+using DACS_QuanLyPhongTro.Models.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
@@ -10,6 +11,7 @@ builder.Services.AddControllersWithViews();
 // Thêm dịch vụ kết nối SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IPhongTroRepository, EFPhongTroRepository>();
 
 var app = builder.Build();
 app.UseStaticFiles(); // Dùng mặc định

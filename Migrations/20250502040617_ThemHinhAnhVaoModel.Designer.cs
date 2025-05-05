@@ -4,6 +4,7 @@ using DACS_QuanLyPhongTro.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DACS_QuanLyPhongTro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250502040617_ThemHinhAnhVaoModel")]
+    partial class ThemHinhAnhVaoModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -484,7 +487,7 @@ namespace DACS_QuanLyPhongTro.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MaKhachThue")
+                    b.Property<int>("MaKhachThue")
                         .HasColumnType("int");
 
                     b.Property<int>("MaToaNha")
@@ -665,7 +668,8 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.HasOne("DACS_QuanLyPhongTro.Models.KhachThue", "KhachThue")
                         .WithMany("PhongTros")
                         .HasForeignKey("MaKhachThue")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("DACS_QuanLyPhongTro.Models.ToaNha", "ToaNha")
                         .WithMany("PhongTros")
