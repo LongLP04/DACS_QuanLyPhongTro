@@ -1,0 +1,38 @@
+﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.ToaNha>
+@{
+    ViewData["Title"] = "Danh sách Tòa Nhà";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Thêm mới Tòa Nhà</a>
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên Tòa Nhà</th>
+            <th>Địa Chỉ</th>
+            <th>Tổng Số Tầng</th>
+            <th>Mô Tả</th>
+            <th>Thao Tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.TenToaNha</td>
+                <td>@item.DiaChi</td>
+                <td>@item.TongSoTang</td>
+                <td>@item.MoTa</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MaToaNha" class="btn btn-warning btn-sm">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.MaToaNha" class="btn btn-danger btn-sm">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

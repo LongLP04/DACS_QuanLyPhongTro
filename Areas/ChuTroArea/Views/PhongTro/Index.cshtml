@@ -1,0 +1,70 @@
+﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.PhongTro>
+
+@{
+    ViewData["Title"] = "Danh Sách Phòng Trọ";
+	Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>Danh Sách Phòng Trọ</h2>
+
+<hr />
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Thêm Phòng Trọ</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Số Phòng</th>
+            <th>Tòa Nhà</th>
+            <th>Tầng</th>
+            <th>Diện Tích (m²)</th>
+            <th>Giá Thuê (VND)</th>
+            <th>Trạng Thái</th>
+            <th>Khách Thuê</th>
+            <th>Hình Ảnh</th>
+            <th>Hành Động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.SoPhong)</td>
+                <td>@Html.DisplayFor(modelItem => item.ToaNha.TenToaNha)</td>
+                <td>@Html.DisplayFor(modelItem => item.Tang)</td>
+                <td>@Html.DisplayFor(modelItem => item.DienTich)</td>
+                <td>@Html.DisplayFor(modelItem => item.GiaThue)</td>
+                <td>@Html.DisplayFor(modelItem => item.TrangThai)</td>
+                <td>@(item.KhachThue != null ? item.KhachThue.HoTen : "Không")</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Hinhanh))
+                    {
+                        <img src="@item.Hinhanh" alt="Hình ảnh phòng trọ" style="max-width: 100px; max-height: 100px;" />
+                    }
+                    else
+                    {
+                        <span>Không có</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MaPhong" class="btn btn-sm btn-warning">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.MaPhong" class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

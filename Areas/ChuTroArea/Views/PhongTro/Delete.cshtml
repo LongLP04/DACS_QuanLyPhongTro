@@ -1,0 +1,95 @@
+﻿@model DACS_QuanLyPhongTro.Models.PhongTro
+
+@{
+    ViewData["Title"] = "Xóa Phòng Trọ";
+    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>Xóa Phòng Trọ</h2>
+
+<hr />
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<h3>Bạn có chắc muốn xóa phòng trọ này?</h3>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SoPhong)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SoPhong)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ToaNha.TenToaNha)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ToaNha.TenToaNha)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Tang)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Tang)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DienTich)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DienTich)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GiaThue)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GiaThue)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TrangThai)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TrangThai)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MoTa)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MoTa)
+        </dd>
+        <dt class="col-sm-2">
+            Khách Thuê
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.KhachThue != null ? Model.KhachThue.HoTen : "Không")
+        </dd>
+        <dt class="col-sm-2">
+            Hình Ảnh
+        </dt>
+        <dd class="col-sm-10">
+            @if (!string.IsNullOrEmpty(Model.Hinhanh))
+            {
+                <img src="@Model.Hinhanh" alt="Hình ảnh phòng trọ" style="max-width: 200px; max-height: 200px;" />
+            }
+            else
+            {
+                <span>Không có</span>
+            }
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="MaPhong" />
+        <input type="submit" value="Xóa" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại</a>
+    </form>
+</div>

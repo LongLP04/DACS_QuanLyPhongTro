@@ -36,9 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\ChuTroArea\Controllers\" />
     <Folder Include="Areas\ChuTroArea\Data\" />
-    <Folder Include="Areas\ChuTroArea\Views\" />
     <Folder Include="wwwroot\images\phongtro\" />
   </ItemGroup>
 

@@ -1,0 +1,45 @@
+﻿@model DACS_QuanLyPhongTro.Models.ToaNha
+
+@{
+    ViewData["Title"] = "Thêm Tòa Nhà";
+	Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>Thêm Tòa Nhà</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label asp-for="TenToaNha" class="control-label"></label>
+                <input asp-for="TenToaNha" class="form-control" />
+                <span asp-validation-for="TenToaNha" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="DiaChi" class="control-label"></label>
+                <input asp-for="DiaChi" class="form-control" />
+                <span asp-validation-for="DiaChi" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="TongSoTang" class="control-label"></label>
+                <input asp-for="TongSoTang" class="form-control" type="number" min="1" />
+                <span asp-validation-for="TongSoTang" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="MoTa" class="control-label"></label>
+                <textarea asp-for="MoTa" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Thêm" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

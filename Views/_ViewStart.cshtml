@@ -1,3 +1,11 @@
-﻿@{
-    Layout = "_Layout";
+﻿﻿@{
+	if (User.Identity.IsAuthenticated && User.IsInRole("ChuTro") )
+	{
+		Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+		ViewData["Title"] = "ChuTro";		
+	}
+	else
+	{
+		Layout = "_Layout"; 
+	}
 }
