@@ -24,6 +24,8 @@ namespace DACS_QuanLyPhongTro.Models
         public DbSet<ChiTietPhieuDangKyDichVu> ChiTietPhieuDangKyDichVus { get; set; } = null!;
         public DbSet<HienTrangVatDung> HienTrangVatDungs { get; set; } = null!;
         public DbSet<PhieuHienTrangNhanPhong> PhieuHienTrangNhanPhongs { get; set; } = null!;
+        public DbSet<LichHen> LichHen { get; set; } 
+        public DbSet<Notification> Notifications { get; set; } 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

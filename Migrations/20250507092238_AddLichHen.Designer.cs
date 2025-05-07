@@ -4,6 +4,7 @@ using DACS_QuanLyPhongTro.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DACS_QuanLyPhongTro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250507092238_AddLichHen")]
+    partial class AddLichHen
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -421,34 +424,6 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.HasIndex("MaPhong");
 
                     b.ToTable("LichHen");
-                });
-
-            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MaKhachThue")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MaKhachThue");
-
-                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuDangKyDichVu", b =>
@@ -897,17 +872,6 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.Navigation("KhachThue");
 
                     b.Navigation("PhongTro");
-                });
-
-            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.Notification", b =>
-                {
-                    b.HasOne("DACS_QuanLyPhongTro.Models.KhachThue", "KhachThue")
-                        .WithMany()
-                        .HasForeignKey("MaKhachThue")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("KhachThue");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuDangKyDichVu", b =>

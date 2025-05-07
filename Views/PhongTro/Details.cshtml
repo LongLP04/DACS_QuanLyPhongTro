@@ -52,11 +52,14 @@
                 <p><strong>Chủ trọ:</strong> @Model.ToaNha.ChuTro.HoTen</p>
                 <p><strong>Số điện thoại:</strong> @Model.ToaNha.ChuTro.SoDienThoai</p>
             }
-            <!-- Nút Back to List -->
-            <div class="mb-4">
+            <!-- Nút Back to List và Đặt lịch hẹn -->
+            <div class="mb-4 d-flex gap-3">
                 <a asp-controller="PhongTro" asp-action="Index" class="back-to-list">
                     <i class="fas fa-arrow-left mr-2"></i>Quay lại danh sách
                 </a>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#appointmentModal">
+                    <i class="fas fa-calendar-alt mr-2"></i>Đặt lịch hẹn
+                </button>
             </div>
         </div>
         
@@ -64,8 +67,83 @@
     
 </div>
 
+<!-- Modal Đặt lịch hẹn -->
+<div class="modal fade" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="appointmentModalLabel">Đặt lịch hẹn xem phòng @Model.SoPhong</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="appointmentForm">
+                    <div class="form-group">
+                        <label for="appointmentDate">Ngày hẹn</label>
+                        <input type="date" class="form-control" id="appointmentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentTime">Giờ hẹn</label>
+                        <input type="time" class="form-control" id="appointmentTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="note">Ghi chú (tùy chọn)</label>
+                        <textarea class="form-control" id="note" rows="4"></textarea>
+                    </div>
+                    <input type="hidden" id="phongTroId" value="@Model.MaPhong">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="submitAppointment()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
+    // Hàm gửi yêu cầu đặt lịch hẹn
+    function submitAppointment() {
+        var date = document.getElementById("appointmentDate").value;
+        var time = document.getElementById("appointmentTime").value;
+        var note = document.getElementById("note").value;
+        var phongTroId = document.getElementById("phongTroId").value;
+
+        if (!date || !time) {
+            alert("Vui lòng chọn ngày và giờ hẹn!");
+            return;
+        }
+
+        fetch('/PhongTro/BookAppointment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                MaPhong: phongTroId,
+                NgayHen: date,
+                GioHen: time,
+                GhiChu: note
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Yêu cầu đặt lịch hẹn đã được gửi! Bạn sẽ nhận được thông báo khi được chấp nhận.");
+                $('#appointmentModal').modal('hide');
+            } else {
+                alert("Lỗi: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi:', error);
+            alert("Đã xảy ra lỗi khi gửi yêu cầu đặt lịch hẹn!");
+        });
+    }
+
+    // Đảm bảo ngày tối thiểu là ngày hiện tại
+    document.getElementById("appointmentDate").min = new Date().toISOString().split("T")[0];
 
 
 

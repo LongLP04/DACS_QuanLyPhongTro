@@ -1,8 +1,10 @@
 ﻿using DACS_QuanLyPhongTro.Models;
 using DACS_QuanLyPhongTro.Models.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DACS_QuanLyPhongTro.Controllers
@@ -82,5 +84,59 @@ namespace DACS_QuanLyPhongTro.Controllers
             }
             return View(phongTro);
         }
+        [Authorize(Roles = "KhachThue")]
+        [HttpPost]
+        public async Task<IActionResult> BookAppointment([FromBody] AppointmentRequest request)
+        {
+            try
+            {
+                // Kiểm tra phòng trọ tồn tại
+                var phongTro = await _context.PhongTros.FindAsync(request.MaPhong);
+                if (phongTro == null)
+                    return Json(new { success = false, message = "Phòng trọ không tồn tại" });
+
+                // Lấy thông tin khách thuê dựa trên email người dùng
+                var khachThue = await _context.KhachThues
+                    .FirstOrDefaultAsync(k => k.Email == User.FindFirstValue(ClaimTypes.Email));
+                if (khachThue == null)
+                    return Json(new { success = false, message = "Thông tin khách thuê không hợp lệ" });
+
+                // Kiểm tra lịch hẹn trùng
+                var existingAppointment = await _context.LichHen.AnyAsync(a =>
+                    a.MaPhong == request.MaPhong &&
+                    a.NgayHen == DateTime.Parse(request.NgayHen) &&
+                    a.GioHen == TimeSpan.Parse(request.GioHen) &&
+                    a.TrangThai != "Rejected");
+                if (existingAppointment)
+                    return Json(new { success = false, message = "Lịch hẹn này đã được đặt!" });
+
+                // Tạo lịch hẹn mới
+                var appointment = new LichHen
+                {
+                    MaPhong = request.MaPhong,
+                    MaKhachThue = khachThue.MaKhachThue,
+                    NgayHen = DateTime.Parse(request.NgayHen),
+                    GioHen = TimeSpan.Parse(request.GioHen),
+                    GhiChu = request.GhiChu,
+                    TrangThai = "Pending"
+                };
+
+                _context.LichHen.Add(appointment);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+    }
+    public class AppointmentRequest
+    {
+        public int MaPhong { get; set; }
+        public string NgayHen { get; set; }
+        public string GioHen { get; set; }
+        public string GhiChu { get; set; }
     }
 }

@@ -1,0 +1,111 @@
+﻿@model List<DACS_QuanLyPhongTro.Models.LichHen>
+@{
+    ViewData["Title"] = "Quản lý lịch hẹn";
+    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Danh sách lịch hẹn</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Phòng</th>
+                <th>Ngày hẹn</th>
+                <th>Giờ hẹn</th>
+                <th>Khách thuê</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appointment in Model)
+            {
+                <tr>
+                    <td>@appointment.PhongTro?.SoPhong</td>
+                    <td>@appointment.NgayHen.ToString("dd/MM/yyyy")</td>
+                    <td>@appointment.GioHen.ToString(@"hh\:mm")</td>
+                    <td>@appointment.KhachThue?.HoTen</td>
+                    <td>@appointment.TrangThai</td>
+                    <td>
+                        @if (appointment.TrangThai == "Pending")
+                        {
+                            <button class="btn btn-success btn-sm" data-id="@appointment.MaLichHen">Chấp nhận</button>
+                            <button class="btn btn-danger btn-sm" data-id="@appointment.MaLichHen">Từ chối</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('btn-success')) {
+                var appointmentId = event.target.getAttribute('data-id');
+                console.log("Appointment ID: " + appointmentId); // Kiểm tra ID tại đây
+                acceptAppointment(appointmentId);
+            }
+
+            if (event.target.classList.contains('btn-danger')) {
+                var appointmentId = event.target.getAttribute('data-id');
+                console.log("Appointment ID: " + appointmentId); // Kiểm tra ID tại đây
+                rejectAppointment(appointmentId);
+            }
+        });
+    });
+
+
+            function acceptAppointment(appointmentId) {
+        console.log("Appointment ID in JS:", appointmentId);
+        if (confirm("Xác nhận chấp nhận lịch hẹn này?")) {
+            fetch('@Url.Action("AcceptAppointment", "LichHen", new { area = "ChuTroArea" })', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: appointmentId }) // Đảm bảo gửi đúng dữ liệu
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const row = document.querySelector(`[data-id="${appointmentId}"]`).closest('tr');
+                    row.querySelector('td:nth-child(5)').textContent = 'Đã chấp nhận';
+                    row.querySelector('.btn-success').disabled = true;
+                    row.querySelector('.btn-danger').disabled = true;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra!');
+            });
+        }
+    }
+
+
+    function rejectAppointment(appointmentId) {
+        console.log("Appointment ID in JS:", appointmentId); // Kiểm tra ID tại đây
+        if (confirm("Xác nhận từ chối lịch hẹn này?")) {
+            fetch('@Url.Action("RejectAppointment", "LichHen", new { area = "ChuTroArea" })', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: appointmentId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const row = document.querySelector(`[data-id="${appointmentId}"]`).closest('tr');
+                    row.querySelector('td:nth-child(5)').textContent = 'Đã từ chối';
+                    row.querySelector('.btn-success').disabled = true;
+                    row.querySelector('.btn-danger').disabled = true;
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+    }
+
+</script>

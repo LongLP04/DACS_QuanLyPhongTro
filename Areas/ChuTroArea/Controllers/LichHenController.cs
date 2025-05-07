@@ -1,0 +1,141 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using DACS_QuanLyPhongTro.Models;
+using DACS_QuanLyPhongTro.Controllers;
+
+[Area("ChuTroArea")]
+[Authorize(Roles = "ChuTro")] // Chỉ cho phép ChuTro truy cập
+public class LichHenController : Controller
+{
+    private readonly ApplicationDbContext _context;
+
+    public LichHenController(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<IActionResult> Appointments()
+    {
+        var appointments = await _context.LichHen
+            .Include(a => a.PhongTro)
+            .Include(a => a.KhachThue)
+            .ToListAsync();
+        return View(appointments);
+    }
+    public class AppointmentRequest
+    {
+        public int Id { get; set; }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AcceptAppointment([FromBody] AppointmentRequest request)
+    {
+        try
+        {
+            if (request?.Id <= 0)
+            {
+                return Json(new { success = false, message = "ID lịch hẹn không hợp lệ." });
+            }
+
+            var appointment = await _context.LichHen
+                .Include(a => a.KhachThue)
+                .Include(a => a.PhongTro) // Đảm bảo phòng cũng được bao gồm
+                .FirstOrDefaultAsync(a => a.MaLichHen == request.Id);
+
+            if (appointment == null)
+            {
+                return Json(new { success = false, message = "Lịch hẹn không tồn tại." });
+            }
+
+            // Cập nhật trạng thái lịch hẹn
+            appointment.TrangThai = "Accepted";
+            _context.LichHen.Update(appointment);
+
+            // Tạo thông báo cho khách thuê
+            var notification = new Notification
+            {
+                MaKhachThue = appointment.KhachThue.MaKhachThue,
+                Message = $"Lịch hẹn cho phòng {appointment.PhongTro.SoPhong} đã được chấp nhận.",
+                CreatedAt = DateTime.Now,
+                IsRead = false
+            };
+
+            // Thêm thông báo vào bảng Notifications
+            _context.Notifications.Add(notification);
+
+            // Lưu các thay đổi vào cơ sở dữ liệu
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                return Json(new { success = true, message = "Lịch hẹn đã được chấp nhận và thông báo đã được lưu." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Không có thay đổi nào được lưu vào cơ sở dữ liệu." });
+            }
+        }
+        catch (Exception ex)
+        {
+            // Ghi lại lỗi chi tiết vào log hoặc console để kiểm tra
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+            return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình xử lý." });
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RejectAppointment(int id)
+    {
+        try
+        {
+            var appointment = await _context.LichHen
+                .Include(a => a.KhachThue)
+                .Include(a => a.PhongTro) // Đảm bảo rằng phòng được bao gồm
+                .FirstOrDefaultAsync(a => a.MaLichHen == id);
+
+            if (appointment == null)
+            {
+                return Json(new { success = false, message = "Lịch hẹn không tồn tại." });
+            }
+
+            // Cập nhật trạng thái lịch hẹn
+            appointment.TrangThai = "Rejected";
+            _context.LichHen.Update(appointment);
+
+            // Tạo thông báo cho khách thuê
+            var notification = new Notification
+            {
+                MaKhachThue = appointment.KhachThue.MaKhachThue,
+                Message = $"Lịch hẹn cho phòng {appointment.PhongTro.SoPhong} đã bị từ chối.",
+                CreatedAt = DateTime.Now,
+                IsRead = false // Đánh dấu thông báo là chưa đọc
+            };
+
+            // Thêm thông báo vào bảng Notifications
+            _context.Notifications.Add(notification);
+
+            // Lưu các thay đổi vào cơ sở dữ liệu
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                return Json(new { success = true, message = "Lịch hẹn đã bị từ chối và thông báo đã được lưu." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Không có thay đổi nào được lưu vào cơ sở dữ liệu." });
+            }
+        }
+        catch (Exception ex)
+        {
+            // Ghi lại lỗi chi tiết vào log hoặc console để kiểm tra
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+            return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình xử lý." });
+        }
+    }
+
+
+}
