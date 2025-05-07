@@ -102,8 +102,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 return Unauthorized();
             }
 
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     // Kiểm tra MaToaNha thuộc chủ trọ
@@ -132,7 +131,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                         {
                             await Hinhanh.CopyToAsync(stream);
                         }
-                        phongTro.Hinhanh = "/images/" + fileName;
+                        phongTro.Hinhanh = "images/" + fileName;
                     }
 
                     _context.PhongTros.Add(phongTro);
@@ -144,11 +143,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 {
                     TempData["ErrorMessage"] = "Đã xảy ra lỗi khi thêm phòng trọ. Vui lòng thử lại.";
                 }
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các trường.";
-            }
+            
 
             // Load lại danh sách tòa nhà
             var toaNhas = await _context.ToaNhas
@@ -220,8 +215,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 return Unauthorized();
             }
 
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     var existingPhongTro = await _context.PhongTros
@@ -290,11 +284,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 {
                     TempData["ErrorMessage"] = "Đã xảy ra lỗi khi cập nhật phòng trọ. Vui lòng thử lại.";
                 }
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các trường.";
-            }
+            
 
             // Load lại danh sách tòa nhà
             var toaNhas = await _context.ToaNhas

@@ -53,7 +53,7 @@
                 <td>
                     @if (!string.IsNullOrEmpty(item.Hinhanh))
                     {
-                        <img src="@item.Hinhanh" alt="Hình ảnh phòng trọ" style="max-width: 100px; max-height: 100px;" />
+                        <img src="@Url.Content("~/" + item.Hinhanh)" alt="Hình ảnh phòng trọ" style="max-width: 100px; max-height: 100px;" />
                     }
                     else
                     {
