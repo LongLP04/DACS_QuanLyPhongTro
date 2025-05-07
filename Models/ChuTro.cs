@@ -24,6 +24,8 @@ namespace DACS_QuanLyPhongTro.Models
 
         [Required]
         public string SoDienThoai { get; set; }
+        public string? ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; } // nếu dùng IdentityUser kế thừa
 
         public ICollection<ToaNha> ToaNhas { get; set; } = new List<ToaNha>();
     }

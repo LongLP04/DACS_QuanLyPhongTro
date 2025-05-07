@@ -29,6 +29,11 @@ namespace DACS_QuanLyPhongTro.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<ChuTro>()
+    .HasOne(c => c.ApplicationUser)
+    .WithMany()
+    .HasForeignKey(c => c.ApplicationUserId)
+    .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PhongTro>()
         .HasOne(p => p.KhachThue)

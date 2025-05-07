@@ -165,6 +165,7 @@ namespace DACS_QuanLyPhongTro.Areas.Identity.Pages.Account
                                 CCCD = user.CCCD,
                                 Email = user.Email,
                                 SoDienThoai = user.SoDienThoai,
+                                ApplicationUserId = user.Id
                             };
                             _context.ChuTros.Add(chuTro);
                         }

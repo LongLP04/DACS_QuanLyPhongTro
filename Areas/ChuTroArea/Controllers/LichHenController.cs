@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DACS_QuanLyPhongTro.Models;
 using DACS_QuanLyPhongTro.Controllers;
+using System.Security.Claims;
 
 [Area("ChuTroArea")]
 [Authorize(Roles = "ChuTro")] // Chỉ cho phép ChuTro truy cập
@@ -17,12 +18,20 @@ public class LichHenController : Controller
 
     public async Task<IActionResult> Appointments()
     {
+        var appUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         var appointments = await _context.LichHen
             .Include(a => a.PhongTro)
+                .ThenInclude(p => p.ToaNha)
+                    .ThenInclude(t => t.ChuTro)
+            .Where(a => a.PhongTro.ToaNha.ChuTro.ApplicationUserId == appUserId)
             .Include(a => a.KhachThue)
             .ToListAsync();
+
         return View(appointments);
     }
+
+
     public class AppointmentRequest
     {
         public int Id { get; set; }
