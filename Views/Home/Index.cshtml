@@ -5,7 +5,12 @@
 @{
     ViewData["Title"] = "Trọ quanh ta";
 }
-
+@if (TempData["ThongBao"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["ThongBao"]
+    </div>
+}
 <!-- Carousel Start -->
 <div class="container-fluid mb-3">
     <div class="row px-xl-5">

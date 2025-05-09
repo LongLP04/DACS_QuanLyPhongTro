@@ -30,5 +30,7 @@ namespace DACS_QuanLyPhongTro.Models
         public KhachThue KhachThue { get; set; }
 
         public ICollection<ChiSoDienNuoc> ChiSoDienNuocs { get; set; } = new List<ChiSoDienNuoc>();
+        public ICollection<HopDong> HopDongs { get; set; } = new List<HopDong>();
+
     }
 }

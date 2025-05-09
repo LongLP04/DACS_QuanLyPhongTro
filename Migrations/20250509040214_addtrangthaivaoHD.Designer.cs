@@ -4,6 +4,7 @@ using DACS_QuanLyPhongTro.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DACS_QuanLyPhongTro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250509040214_addtrangthaivaoHD")]
+    partial class addtrangthaivaoHD
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -371,9 +374,6 @@ namespace DACS_QuanLyPhongTro.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaKhachThue"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("CCCD")
                         .IsRequired()
                         .HasMaxLength(12)
@@ -396,8 +396,6 @@ namespace DACS_QuanLyPhongTro.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaKhachThue");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("KhachThue");
                 });
@@ -915,16 +913,6 @@ namespace DACS_QuanLyPhongTro.Migrations
                     b.Navigation("KhachThue");
 
                     b.Navigation("PhongTro");
-                });
-
-            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.KhachThue", b =>
-                {
-                    b.HasOne("DACS_QuanLyPhongTro.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.LichHen", b =>

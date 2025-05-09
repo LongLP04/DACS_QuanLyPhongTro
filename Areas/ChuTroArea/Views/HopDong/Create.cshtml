@@ -1,0 +1,62 @@
+﻿@model DACS_QuanLyPhongTro.Models.HopDong
+@{
+    ViewData["Title"] = "Tạo Hợp Đồng";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<div class="container mt-5">
+    <h2>Tạo Hợp Đồng Mới</h2>
+
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label asp-for="NgayBatDau" class="control-label">Ngày Bắt Đầu</label>
+            <input asp-for="NgayBatDau" class="form-control" type="date" />
+            <span asp-validation-for="NgayBatDau" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="NgayKetThuc" class="control-label">Ngày Kết Thúc</label>
+            <input asp-for="NgayKetThuc" class="form-control" type="date" />
+            <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="TienCoc" class="control-label">Tiền Cọc (VNĐ)</label>
+            <input asp-for="TienCoc" class="form-control" type="number" step="0.01" />
+            <span asp-validation-for="TienCoc" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="NoiDungHopDong" class="control-label">Nội Dung Hợp Đồng</label>
+            <textarea asp-for="NoiDungHopDong" class="form-control"></textarea>
+            <span asp-validation-for="NoiDungHopDong" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MaPhong" class="control-label">Phòng Trọ</label>
+            <select asp-for="MaPhong" class="form-control" asp-items="ViewBag.PhongTros">
+                <option value="">-- Chọn phòng trọ --</option>
+            </select>
+            <span asp-validation-for="MaPhong" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Email Khách Thuê</label>
+            <input name="emailKhachThue" class="form-control" />
+            <span class="text-danger">@ViewData.ModelState["Email"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Tạo Hợp Đồng" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-secondary ml-2">Quay Lại</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

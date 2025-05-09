@@ -8,10 +8,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text;
+using DACS_QuanLyPhongTro.Models;
 using System.Threading;
 using System.Threading.Tasks;
 using DACS_QuanLyPhongTro.Areas.ChuTroArea.Models;
-using DACS_QuanLyPhongTro. Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -158,7 +158,7 @@ namespace DACS_QuanLyPhongTro.Areas.Identity.Pages.Account
                         // Thêm vào bảng tương ứng
                         if (Input.Role == "ChuTro")
                         {
-                            var chuTro = new ChuTro
+                            var chuTro = new DACS_QuanLyPhongTro.Models.ChuTro
                             {
                                 HoTen = user.HoTen,
                                 Gioitinh = user.GioiTinh,
@@ -178,6 +178,7 @@ namespace DACS_QuanLyPhongTro.Areas.Identity.Pages.Account
                                 CCCD = user.CCCD,
                                 Email = user.Email,
                                 SoDienThoai = user.SoDienThoai,
+                                ApplicationUserId = user.Id
                             };
                             _context.KhachThues.Add(khachThue);
                         }

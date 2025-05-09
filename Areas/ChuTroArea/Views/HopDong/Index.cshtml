@@ -1,0 +1,61 @@
+﻿@model List<DACS_QuanLyPhongTro.Models.HopDong>
+@{
+    ViewData["Title"] = "Danh Sách Hợp Đồng";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Danh Sách Hợp Đồng</h2>
+
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["ThongBao"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Tạo Hợp Đồng Mới</a>
+    </p>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Mã Hợp Đồng</th>
+                <th>Khách Thuê</th>
+                <th>Phòng Trọ</th>
+                <th>Ngày Bắt Đầu</th>
+                <th>Ngày Kết Thúc</th>
+                <th>Tiền Cọc</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hopDong in Model)
+            {
+                <tr>
+                    <td>@hopDong.MaHopDong</td>
+                    <td>@hopDong.KhachThue?.HoTen</td>
+                    <td>@hopDong.PhongTro?.SoPhong</td>
+                    <td>@hopDong.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                    <td>@hopDong.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+                    <td>@hopDong.TienCoc.ToString("N0") VNĐ</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@hopDong.MaHopDong" class="btn btn-info btn-sm">Xem</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.alert').alert();
+        });
+    </script>
+}

@@ -1,4 +1,5 @@
 ﻿@model List<DACS_QuanLyPhongTro.Models.LichHen>
+
 @{
     ViewData["Title"] = "Quản lý lịch hẹn";
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
@@ -56,8 +57,7 @@
         });
     });
 
-
-            function acceptAppointment(appointmentId) {
+    function acceptAppointment(appointmentId) {
         console.log("Appointment ID in JS:", appointmentId);
         if (confirm("Xác nhận chấp nhận lịch hẹn này?")) {
             fetch('@Url.Action("AcceptAppointment", "LichHen", new { area = "ChuTroArea" })', {
@@ -85,7 +85,6 @@
         }
     }
 
-
     function rejectAppointment(appointmentId) {
         console.log("Appointment ID in JS:", appointmentId); // Kiểm tra ID tại đây
         if (confirm("Xác nhận từ chối lịch hẹn này?")) {
@@ -107,5 +106,4 @@
             });
         }
     }
-
 </script>

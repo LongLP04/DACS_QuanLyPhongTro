@@ -1,0 +1,27 @@
+﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.HopDong>
+@{
+    ViewData["Title"] = "Xác Nhận Hợp Đồng";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Điều chỉnh layout nếu cần
+}
+
+<h2>Hợp đồng chờ xác nhận</h2>
+
+@if (Model.Any())
+{
+    <ul>
+        @foreach (var hopDong in Model)
+        {
+            <li>
+                Hợp đồng mã: @hopDong.MaHopDong - Phòng: @hopDong.PhongTro.SoPhong - Trạng thái: @hopDong.TrangThai
+                <a asp-controller="HopDong"
+                   asp-action="XacNhan"
+                   asp-route-maHopDong="@hopDong.MaHopDong"
+                   class="btn btn-primary">Xác nhận</a>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Không có hợp đồng chờ xác nhận.</p>
+}

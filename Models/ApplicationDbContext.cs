@@ -34,7 +34,11 @@ namespace DACS_QuanLyPhongTro.Models
     .WithMany()
     .HasForeignKey(c => c.ApplicationUserId)
     .OnDelete(DeleteBehavior.Restrict);
-
+            modelBuilder.Entity<KhachThue>()
+    .HasOne(c => c.ApplicationUser)
+    .WithMany()
+    .HasForeignKey(c => c.ApplicationUserId)
+    .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<PhongTro>()
         .HasOne(p => p.KhachThue)
         .WithMany(k => k.PhongTros)
