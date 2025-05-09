@@ -1,0 +1,20 @@
+﻿@model DACS_QuanLyPhongTro.Models.HopDong
+@{
+    ViewData["Title"] = "Chi Tiết Hợp Đồng";
+	Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>Chi Tiết Hợp Đồng</h2>
+
+<div>
+    <p><strong>Mã hợp đồng:</strong> @Model.MaHopDong</p>
+    <p><strong>Phòng:</strong> @Model.PhongTro?.SoPhong</p>
+    <p><strong>Khách thuê:</strong> @Model.KhachThue?.HoTen</p>
+    <p><strong>Ngày lập:</strong> @Model.NgayLap.ToString("dd/MM/yyyy")</p>
+	<p><strong>Ngày bắt đầu:</strong> @Model.NgayBatDau.ToString("dd/MM/yyyy")</p>
+	<p><strong>Ngày kết thúc:</strong> @Model.NgayKetThuc.ToString("dd/MM/yyyy")</p>
+    <p><strong>Trạng thái:</strong> @Model.TrangThai</p>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+<a asp-action="Delete" asp-route-id="@Model.MaHopDong" class="btn btn-danger">Xóa</a>

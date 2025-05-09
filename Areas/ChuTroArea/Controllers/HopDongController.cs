@@ -124,5 +124,62 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             return RedirectToAction("Index");
         }
+        // GET: Chi tiết hợp đồng
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var hopDong = await _context.HopDongs
+                .Include(h => h.KhachThue)
+                .Include(h => h.PhongTro)
+                .FirstOrDefaultAsync(h => h.MaHopDong == id);
+
+            if (hopDong == null)
+                return NotFound();
+
+            return View(hopDong);
+        }
+
+        // GET: Xác nhận xóa hợp đồng
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var hopDong = await _context.HopDongs
+                .Include(h => h.KhachThue)
+                .Include(h => h.PhongTro)
+                .FirstOrDefaultAsync(h => h.MaHopDong == id);
+
+            if (hopDong == null)
+                return NotFound();
+
+            return View(hopDong);
+        }
+
+        // POST: Thực hiện xóa
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var hopDong = await _context.HopDongs.FindAsync(id);
+            if (hopDong != null)
+            {
+                // Cập nhật lại trạng thái phòng nếu cần
+                var phong = await _context.PhongTros.FindAsync(hopDong.MaPhong);
+                if (phong != null)
+                {
+                    phong.TrangThai = "Trống";
+                    _context.PhongTros.Update(phong);
+                }
+
+                _context.HopDongs.Remove(hopDong);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

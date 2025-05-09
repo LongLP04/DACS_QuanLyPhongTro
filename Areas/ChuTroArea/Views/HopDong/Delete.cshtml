@@ -1,0 +1,23 @@
+﻿@model DACS_QuanLyPhongTro.Models.HopDong
+@{
+    ViewData["Title"] = "Xóa Hợp Đồng";
+	Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>Xác nhận xóa hợp đồng</h2>
+
+<div>
+    <p><strong>Bạn có chắc chắn muốn xóa hợp đồng này không?</strong></p>
+    <p><strong>Phòng:</strong> @Model.PhongTro?.SoPhong</p>
+    <p><strong>Khách thuê:</strong> @Model.KhachThue?.HoTen</p>
+    <p><strong>Ngày lập:</strong> @Model.NgayLap.ToString("dd/MM/yyyy")</p>
+    <p><strong>Ngày bắt đầu:</strong> @Model.NgayBatDau.ToString("dd/MM/yyyy")</p>
+	<p><strong>Ngày kết thúc:</strong> @Model.NgayKetThuc.ToString("dd/MM/yyyy")</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="MaHopDong" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

@@ -13,10 +13,13 @@
         {
             <li>
                 Hợp đồng mã: @hopDong.MaHopDong - Phòng: @hopDong.PhongTro.SoPhong - Trạng thái: @hopDong.TrangThai
-                <a asp-controller="HopDong"
-                   asp-action="XacNhan"
-                   asp-route-maHopDong="@hopDong.MaHopDong"
-                   class="btn btn-primary">Xác nhận</a>
+                <form asp-controller="HopDong" asp-action="XacNhan" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="maHopDong" value="@hopDong.MaHopDong" />
+                    <button type="submit" name="dongY" value="true" class="btn btn-success">Xác nhận</button>
+                    <button type="submit" name="dongY" value="false" class="btn btn-danger">Từ chối</button>
+                </form>
+
             </li>
         }
     </ul>

@@ -30,6 +30,7 @@
                 <th>Ngày Bắt Đầu</th>
                 <th>Ngày Kết Thúc</th>
                 <th>Tiền Cọc</th>
+                <th>Trạng thái</th>
                 <th>Hành Động</th>
             </tr>
         </thead>
@@ -43,8 +44,10 @@
                     <td>@hopDong.NgayBatDau.ToString("dd/MM/yyyy")</td>
                     <td>@hopDong.NgayKetThuc.ToString("dd/MM/yyyy")</td>
                     <td>@hopDong.TienCoc.ToString("N0") VNĐ</td>
+                    <td>@hopDong.TrangThai</td>
                     <td>
-                        <a asp-action="Details" asp-route-id="@hopDong.MaHopDong" class="btn btn-info btn-sm">Xem</a>
+                        <a asp-action="Details" asp-route-id="@hopDong.MaHopDong" class="btn btn-info btn-sm">Xem chi tiết</a>
+						<a asp-action="Delete" asp-route-id="@hopDong.MaHopDong" class="btn btn-warning btn-sm">Xóa hợp đồng</a>
                     </td>
                 </tr>
             }

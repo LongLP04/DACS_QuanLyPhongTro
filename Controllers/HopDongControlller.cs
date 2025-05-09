@@ -89,12 +89,22 @@ namespace DACS_QuanLyPhongTro.Controllers
             }
             else
             {
-                TempData["ThongBao"] = "Bạn đã từ chối xác nhận hợp đồng.";
+                hopDong.TrangThai = "Từ chối xác nhận";
+                var phongTro = await _context.PhongTros
+                    .FirstOrDefaultAsync(p => p.MaPhong == hopDong.MaPhong);
+                if (phongTro != null)
+                {
+                    phongTro.TrangThai = "Trống";
+                    _context.Update(phongTro);
+                }    
+                    TempData["ThongBao"] = "Bạn đã từ chối xác nhận hợp đồng.";
                 HttpContext.Session.Remove("MaHopDong");
             }
-
+                
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
         }
+        // POST: Từ chối hợp đồng
+        
     }
 }
