@@ -1,0 +1,23 @@
+﻿@model DACS_QuanLyPhongTro.Models.HoaDon
+
+@{
+    ViewData["Title"] = "Tạo Hóa Đơn";
+	Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>Tạo Hóa Đơn</h2>
+
+<form asp-action="Create" method="post">
+	<h4>Chọn phòng bạn muốn tạo hóa đơn tự động </h4>
+    <div class="form-group">
+        <label for="MaPhong">Phòng</label>
+        <select asp-for="MaPhong" class="form-control" asp-items="ViewBag.PhongTros"></select>
+    </div>
+    
+    <!-- Các trường khác nếu cần -->
+    <button type="submit" class="btn btn-primary">Tạo hóa đơn</button>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

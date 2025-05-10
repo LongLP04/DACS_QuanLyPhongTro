@@ -16,6 +16,11 @@ namespace DACS_QuanLyPhongTro.Models
         public decimal TongTien { get; set; }
         public string TrangThai { get; set; } = string.Empty;
 
+        [Required]
+        public int MaPhong { get; set; }  // Mã phòng trong HoaDon
+        [ForeignKey("MaPhong")]
+        public PhongTro PhongTro { get; set; }  // Quan hệ với Phòng
+
         // Khóa ngoại liên kết với Chỉ Số Điện Nước
         [Required]
         public int MaChiSo { get; set; }
