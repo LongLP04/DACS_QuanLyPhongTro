@@ -1,0 +1,71 @@
+﻿@model List<DACS_QuanLyPhongTro.Models.HoaDon>
+
+@{
+    ViewData["Title"] = "Danh Sách Hóa Đơn";
+}
+
+<div class="container mt-5">
+    <!-- Hiển thị thông báo nếu có -->
+    @if (TempData["ThongBao"] != null)
+    {
+            <div class="alert alert-info" id="thongBao">
+            @TempData["ThongBao"]
+            </div>
+    }
+
+    <h2>Danh Sách Hóa Đơn</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Mã Hóa Đơn</th>
+                <th>Ngày Lập</th>
+                <th>Tiền Điện</th>
+                <th>Tiền Nước</th>
+                <th>Tiền Phòng</th>
+                <th>Tiền Dịch Vụ</th>
+                <th>Tổng Tiền</th>
+                <th>Trạng Thái</th>
+                <th>Khách Thuê</th>
+                <th>Phòng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hoaDon in Model)
+            {
+                    <tr>
+                        <td>@hoaDon.MaHoaDon</td>
+                        <td>@hoaDon.NgayLap.ToString("dd/MM/yyyy")</td>
+                        <td>@hoaDon.TienDien.ToString("N0") VNĐ</td>
+                        <td>@hoaDon.TienNuoc.ToString("N0") VNĐ</td>
+                        <td>@hoaDon.TienPhong.ToString("N0") VNĐ</td>
+                        <td>@hoaDon.TienDichVu.ToString("N0") VNĐ</td>
+                        <td>@hoaDon.TongTien.ToString("N0") VNĐ</td>
+                        <td>@hoaDon.TrangThai</td>
+                        <td>@hoaDon.KhachThue?.HoTen</td>
+                        <td>@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong</td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Index" asp-controller="Home" asp-area="ChuTroArea" class="btn btn-secondary">Quay Lại</a>
+</div>
+
+@section Scripts {
+        <script>
+            // Tự động ẩn thông báo sau 5 giây
+            document.addEventListener("DOMContentLoaded", function () {
+                var thongBao = document.getElementById("thongBao");
+                if (thongBao) {
+                    setTimeout(function () {
+                        thongBao.style.transition = "opacity 0.5s ease-out"; // Hiệu ứng mờ dần
+                        thongBao.style.opacity = "0"; // Làm mờ
+                        setTimeout(function () {
+                            thongBao.style.display = "none"; // Ẩn hoàn toàn
+                        }, 500); // Chờ hiệu ứng mờ hoàn tất (0.5 giây)
+                    }, 5000); // Hiển thị thông báo trong 5 giây
+                }
+            });
+        </script>
+}

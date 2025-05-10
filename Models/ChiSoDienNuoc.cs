@@ -44,7 +44,7 @@ namespace DACS_QuanLyPhongTro.Models
         [Required]
         public int MaPhong { get; set; }
 
-        public PhongTro PhongTro { get; set; } = null!;
+        public PhongTro? PhongTro { get; set; } 
         public ICollection<HoaDon> HoaDons { get; set; } = new List<HoaDon>();
     }
 }

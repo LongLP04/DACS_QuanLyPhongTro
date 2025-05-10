@@ -1,0 +1,46 @@
+﻿@model List<DACS_QuanLyPhongTro.Models.ChiSoDienNuoc>
+
+@{
+    ViewData["Title"] = "Chi Tiết Chỉ Số Điện Nước";
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+<div class="container mt-5">
+    
+
+    <h2>Chi Tiết Chỉ Số Điện Nước</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ngày Ghi</th>
+                <th>Chỉ Số Điện Cũ</th>
+                <th>Chỉ Số Điện Mới</th>
+                <th>Điện Tiêu Thụ</th>
+                <th>Chỉ Số Nước Cũ</th>
+                <th>Chỉ Số Nước Mới</th>
+                <th>Nước Tiêu Thụ</th>
+                <th>Đơn Giá Điện</th>
+                <th>Đơn Giá Nước</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var chiSo in Model)
+            {
+                <tr>
+                    <td>@chiSo.NgayGhi.ToString("dd/MM/yyyy")</td>
+                    <td>@chiSo.ChiSoDienCu</td>
+                    <td>@chiSo.ChiSoDienMoi</td>
+                    <td>@chiSo.SoDienTieuThu</td>
+                    <td>@chiSo.ChiSoNuocCu</td>
+                    <td>@chiSo.ChiSoNuocMoi</td>
+                    <td>@chiSo.SoNuocTieuThu</td>
+                    <td>@chiSo.DonGiaDien.ToString("N0") VNĐ</td>
+                    <td>@chiSo.DonGiaNuoc.ToString("N0") VNĐ</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Quay Lại</a>
+</div>

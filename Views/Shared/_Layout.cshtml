@@ -36,13 +36,13 @@
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="~/css/style.css" rel="stylesheet">
+    <link href="~/css/style.css?v=123" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
 <body>
 
-    <div>
+    <div class="main-content">
         <!-- Topbar Start -->
         <div class="container-fluid">
             <div class="row bg-secondary py-1 px-xl-5">
@@ -88,6 +88,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
                 <div class="col-lg-4">
                     <a href="" class="text-decoration-none">
@@ -109,9 +110,10 @@
                 </div>
                 <div class="col-lg-4 col-6 text-right">
                     <p class="m-0">Chăm sóc khách hàng</p>
-                    <h5 class="m-0">(+84)339542115</h5>
+                    <h5 class="m-0">(+84)862357096</h5>
                 </div>
             </div>
+
         </div>
         <!-- Topbar End -->
         <!-- Navbar Start -->
@@ -164,7 +166,7 @@
                                     Xác nhận hợp đồng
                                 </a>
                                 <a asp-controller="Phongtrocuatoi" asp-action="Index" class="nav-item nav-link">Phòng trọ của tôi</a>
-
+                                <a asp-controller="ChiSoDienNuoc" asp-action="Index" class="nav-item nav-link">Xem chỉ số điện nước</a>
 
                             </div>
                             <div class="navbar-nav ml-auto py-0 d-none d-lg-block">

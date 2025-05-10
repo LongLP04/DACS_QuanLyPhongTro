@@ -7,7 +7,7 @@
 }
 @if (TempData["ThongBao"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success" id="thongBao">
         @TempData["ThongBao"]
     </div>
 }
@@ -203,3 +203,20 @@
     </div>
 </div>
 <!-- Vendor End -->
+@section Scripts {
+    <script>
+        // Tự động ẩn thông báo sau 5 giây
+        document.addEventListener("DOMContentLoaded", function () {
+            var thongBao = document.getElementById("thongBao");
+            if (thongBao) {
+                setTimeout(function () {
+                    thongBao.style.transition = "opacity 0.5s ease-out"; // Hiệu ứng mờ dần
+                    thongBao.style.opacity = "0"; // Làm mờ
+                    setTimeout(function () {
+                        thongBao.style.display = "none"; // Ẩn hoàn toàn
+                    }, 500); // Chờ hiệu ứng mờ hoàn tất (0.5 giây)
+                }, 5000); // Hiển thị thông báo trong 5 giây
+            }
+        });
+    </script>
+}
