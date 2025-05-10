@@ -81,6 +81,7 @@ namespace DACS_QuanLyPhongTro.Controllers
                 if (phongTro != null)
                 {
                     phongTro.TrangThai = "Đã Thuê";
+                    phongTro.MaKhachThue = hopDong.MaKhachThue;
                     _context.Update(phongTro);
                 }
 

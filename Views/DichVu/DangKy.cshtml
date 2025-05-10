@@ -1,0 +1,85 @@
+﻿@model List<DACS_QuanLyPhongTro.Models.DichVu>
+@{
+    ViewData["Title"] = "Đăng ký dịch vụ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-primary mb-3">Đăng ký dịch vụ</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@foreach (var dv in Model)
+{
+    <div class="card mb-4 border-primary shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title text-primary">@dv.TenDichVu</h5>
+            <p class="card-text">@dv.MoTa</p>
+            <p class="card-text text-danger font-weight-bold">Đơn giá: @dv.DonGiaDichVu.ToString("N0") VND</p>
+
+            <form asp-action="DangKyMot" method="post" class="form-inline">
+                <input type="hidden" name="maDichVu" value="@dv.MaDichVu" />
+
+                <div class="form-group mr-2">
+                    <label class="mr-1">Số lượng:</label>
+                    <input type="number" name="soLuong" value="1" min="1" class="form-control" required />
+                </div>
+
+                <div class="form-group mr-2">
+                    <label class="mr-1">Ngày bắt đầu:</label>
+                    <input type="date" name="ngayBatDau" class="form-control ngay-bat-dau" required />
+                </div>
+
+                <div class="form-group mr-2">
+                    <label class="mr-1">Ngày kết thúc:</label>
+                    <input type="date" name="ngayKetThuc" class="form-control ngay-ket-thuc" readonly />
+                    <small class="form-text text-danger ml-1" style="font-style: italic">* Ngày kết thúc sẽ là 1 tháng sau ngày bắt đầu</small>
+                
+                </div>
+
+                <button type="submit" class="btn btn-success">Đăng ký</button>
+            </form>
+            
+        </div>
+    </div>
+
+}
+<div class="text-center mt-4">
+    <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-warning btn-lg shadow-sm">
+        <i class="fas fa-arrow-left mr-2"></i>Quay lại
+    </a>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const forms = document.querySelectorAll('form');
+
+            forms.forEach(form => {
+                const inputNgayBatDau = form.querySelector('.ngay-bat-dau');
+                const inputNgayKetThuc = form.querySelector('.ngay-ket-thuc');
+
+                inputNgayBatDau.addEventListener('change', function () {
+                    const ngayBatDau = new Date(this.value);
+                    if (!isNaN(ngayBatDau)) {
+                        const ngayKetThuc = new Date(ngayBatDau);
+                        ngayKetThuc.setMonth(ngayKetThuc.getMonth() + 1);
+
+                        const yyyy = ngayKetThuc.getFullYear();
+                        const mm = String(ngayKetThuc.getMonth() + 1).padStart(2, '0');
+                        const dd = String(ngayKetThuc.getDate()).padStart(2, '0');
+                        const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+                        inputNgayKetThuc.value = formattedDate;
+                    } else {
+                        inputNgayKetThuc.value = '';
+                    }
+                });
+            });
+        });
+    </script>
+}

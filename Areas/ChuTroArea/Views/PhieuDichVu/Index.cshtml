@@ -1,0 +1,63 @@
+﻿@model List<DACS_QuanLyPhongTro.Models.PhieuDangKyDichVu>
+
+@{
+    ViewData["Title"] = "Dịch vụ đã xác nhận";
+    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2 class="mb-4 text-primary">Dịch vụ đã xác nhận theo phòng</h2>
+<div class="mb-3">
+    <a asp-action="DanhSachDichVu" class="btn btn-warning mr-2">Quản lý dịch vụ</a>
+    <a asp-action="TaoDichVu" class="btn btn-success">Thêm dịch vụ mới</a>
+</div>
+
+@if ((bool)ViewBag.CoPhieuCho)
+{
+    <div class="alert alert-warning d-flex justify-content-between align-items-center">
+        <span>Có phiếu đăng ký dịch vụ đang chờ xác nhận!</span>
+        <a asp-action="DanhSachChoXacNhan" class="btn btn-sm btn-outline-success">Xác nhận ngay</a>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Chưa có dịch vụ nào được xác nhận.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Khách thuê</th>
+                <th>Phòng</th>
+                <th>Dịch vụ</th>
+                <th>Tổng tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var phieu in Model)
+            {
+                var phong = Context.RequestServices
+                .GetService(typeof(DACS_QuanLyPhongTro.Models.ApplicationDbContext)) as DACS_QuanLyPhongTro.Models.ApplicationDbContext;
+
+                var maPhong = phong.HopDongs.FirstOrDefault(h => h.MaKhachThue == phieu.MaKhachThue)?.MaPhong ?? 0;
+
+                <tr>
+                    <td>@phieu.KhachThue.HoTen</td>
+                    <td>Phòng @maPhong</td>
+                    <td>
+                        <ul>
+                            @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
+                            {
+                                <li>@ct.DichVu.TenDichVu - SL: @ct.SoLuong - @ct.TongTienDichVu.ToString("N0") VND</li>
+                            }
+                        </ul>
+                    </td>
+                    <td class="text-danger">
+                        @phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu).ToString("N0") VND
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -201,18 +201,10 @@
                         </a>
                     </li>
 
-                    @if(User.IsInRole("Admin")){
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Admin" asp-controller="Admin" asp-action="PhanQuyen">
-                                <span class="menu-title">Quản lý phân quyền</span>
-                                <i class="fa-solid fa-ruler menu-icon"></i>
-                            </a>
-                        </li>
-                    }
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="Admin" asp-controller="Support" asp-action="Index">
-                            <span class="menu-title">Danh sách hỗ trợ</span>
-                            <i class="fa-solid fa-box menu-icon"></i>
+                        <a class="nav-link" asp-area="ChuTroArea" asp-controller="PhieuDichVu" asp-action="Index">
+                            <span class="menu-title">Quản lý dịch vụ</span>
+                            <i class="fa-solid fa-file-invoice-dollar menu-icon"></i>
                         </a>
                     </li>
                 </ul>

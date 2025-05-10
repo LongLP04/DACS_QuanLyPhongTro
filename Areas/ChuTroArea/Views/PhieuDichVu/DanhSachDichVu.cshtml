@@ -1,0 +1,45 @@
+﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.DichVu>
+@{
+    ViewData["Title"] = "Quản lý dịch vụ";
+    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2 class="text-primary">Danh sách dịch vụ</h2>
+
+@if (TempData["ThongBao"] != null)
+{
+    <div class="alert alert-success">@TempData["ThongBao"]</div>
+}
+
+<a asp-action="TaoDichVu" class="btn btn-success mb-3">Thêm dịch vụ mới</a>
+
+<table class="table table-bordered table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th>Tên dịch vụ</th>
+            <th>Đơn giá</th>
+            <th>Mô tả</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dv in Model)
+        {
+            <tr>
+                <td>@dv.TenDichVu</td>
+                <td>@dv.DonGiaDichVu.ToString("N0") VND</td>
+                <td>@dv.MoTa</td>
+                <td>
+                    <a asp-action="SuaDichVu" asp-route-id="@dv.MaDichVu" class="btn btn-sm btn-primary">Sửa</a>
+                    <form asp-action="XoaDichVu" asp-route-id="@dv.MaDichVu" method="post" style="display:inline-block" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+<div class="text-center mt-4">
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div>

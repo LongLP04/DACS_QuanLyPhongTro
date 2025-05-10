@@ -1,0 +1,62 @@
+﻿@model List<DACS_QuanLyPhongTro.Models.PhongTro>
+
+@{
+    ViewData["Title"] = "Phòng trọ của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-primary text-center mb-4">Phòng trọ bạn đang thuê</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Bạn chưa thuê phòng trọ nào.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover border shadow-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Mã phòng</th>
+                    <th>Tên phòng</th>
+                    <th>Giá thuê</th>
+                    <th>Tòa nhà</th>
+                    <th>Địa chỉ</th>
+                    <th>Chủ trọ</th>
+                    <th>Hình ảnh</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var phong in Model)
+                {
+                    <tr>
+                        <td>@phong.MaPhong</td>
+                        <td>@phong.SoPhong</td>
+                        <td class="text-danger font-weight-bold">@phong.GiaThue.ToString("N0") VND</td>
+                        <td>@phong.ToaNha?.TenToaNha</td>
+                        <td>@phong.ToaNha?.DiaChi</td>
+                        <td>
+                            <strong>@phong.ToaNha?.ChuTro?.HoTen</strong><br />
+                            <small class="text-muted">@phong.ToaNha?.ChuTro?.SoDienThoai</small>
+                        </td>
+                        <td>
+                            <img src="@Url.Content("~/" + (string.IsNullOrEmpty(phong.Hinhanh) ? "img/default-product.jpg" : phong.Hinhanh))"
+                                 alt="Hình ảnh phòng" class="img-thumbnail" style="width: 150px;" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("DangKy", "DichVu")" class="btn btn-success btn-lg">
+            Đăng ký dịch vụ
+        </a>
+        <a asp-controller="DichVu" asp-action="DanhSachDangKy" class="btn btn-success btn-lg">
+            Xem phiếu đăng ký dịch vụ
+        </a>
+    </div>
+    
+
+}

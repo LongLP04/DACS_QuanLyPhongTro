@@ -152,17 +152,18 @@
                                 <a asp-controller="Home" asp-action="Index" class="nav-item nav-link">Trang chủ</a>
                                 <a asp-controller="PhongTro" asp-action="Index" class="nav-item nav-link">Phòng trọ</a>
 
-                                <div class="nav-item dropdown">
-                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages <i class="fa fa-angle-down mt-1"></i></a>
-                                    <div class="dropdown-menu bg-primary rounded-0 border-0 m-0">
-                                        <a asp-controller="Cart" asp-action="Index" class="dropdown-item">Giỏ hàng</a>
-                                        <a asp-controller="Checkout" asp-action="Index" class="dropdown-item">Thanh toán</a>
-                                    </div>
-                                </div>
+                                @* <div class="nav-item dropdown"> *@
+                                @*     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages <i class="fa fa-angle-down mt-1"></i></a> *@
+                                @*     <div class="dropdown-menu bg-primary rounded-0 border-0 m-0"> *@
+                                @*         <a asp-controller="Cart" asp-action="Index" class="dropdown-item">Giỏ hàng</a> *@
+                                @*         <a asp-controller="Checkout" asp-action="Index" class="dropdown-item">Thanh toán</a> *@
+                                @*     </div> *@
+                                @* </div> *@
                                 <a asp-controller="Notifications" asp-action="Index" class="nav-item nav-link">Thông báo lịch hẹn</a>
                                 <a class="nav-item nav-link" href="/HopDong/XacNhan">
                                     Xác nhận hợp đồng
                                 </a>
+                                <a asp-controller="Phongtrocuatoi" asp-action="Index" class="nav-item nav-link">Phòng trọ của tôi</a>
 
 
                             </div>
