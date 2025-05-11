@@ -1,0 +1,62 @@
+﻿@model DACS_QuanLyPhongTro.Models.HoaDon
+
+@{
+    ViewData["Title"] = "Chi tiết hóa đơn";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+    var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card p-4 shadow-sm border">
+    <h4 class="mb-3">Thông tin hóa đơn #@Model.MaHoaDon</h4>
+
+    <dl class="row">
+        <dt class="col-sm-3">Ngày lập:</dt>
+        <dd class="col-sm-9">@Model.NgayLap.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-3">Khách thuê:</dt>
+        <dd class="col-sm-9">@Model.KhachThue?.HoTen</dd>
+
+        <dt class="col-sm-3">Phòng:</dt>
+        <dd class="col-sm-9">@Model.ChiSoDienNuoc?.PhongTro?.SoPhong</dd>
+
+        <dt class="col-sm-3">Tiền điện:</dt>
+        <dd class="col-sm-9">@Model.TienDien.ToString("C0", vnd)</dd>
+
+        <dt class="col-sm-3">Tiền nước:</dt>
+        <dd class="col-sm-9">@Model.TienNuoc.ToString("C0", vnd)</dd>
+
+        <dt class="col-sm-3">Tiền phòng:</dt>
+        <dd class="col-sm-9">@Model.TienPhong.ToString("C0", vnd)</dd>
+
+        <dt class="col-sm-3">Tiền dịch vụ:</dt>
+        <dd class="col-sm-9">@Model.TienDichVu.ToString("C0", vnd)</dd>
+
+        <dt class="col-sm-3 font-weight-bold">Tổng tiền:</dt>
+        <dd class="col-sm-9 text-danger font-weight-bold">@Model.TongTien.ToString("C0", vnd)</dd>
+
+        @if (Model.PhieuThanhToans != null && Model.PhieuThanhToans.Any())
+        {
+            var phieuMoiNhat = Model.PhieuThanhToans.OrderByDescending(p => p.NgayThanhToan).First();
+            <dt class="col-sm-3 font-weight-bold">Hình thức thanh toán:</dt>
+            <dd class="col-sm-9 text-danger font-weight-bold">@phieuMoiNhat.PhuongThucThanhToan?.TenPhuongThuc</dd>
+        }
+
+        <dt class="col-sm-3">Trạng thái:</dt>
+        <dd class="col-sm-9">@Model.TrangThai</dd>
+    </dl>
+
+    <div class="mt-3">
+        <a href="@Url.Action("Index", "HoaDon")" class="btn btn-secondary">Quay lại danh sách</a>
+
+        @if (Model.TrangThai == "Chờ xác nhận")
+        {
+            <a href="@Url.Action("XacNhanThanhToan", "HoaDon", new { id = Model.MaHoaDon })"
+               class="btn btn-success"
+               onclick="return confirm('Xác nhận hóa đơn đã được thanh toán?');">
+                Xác nhận thanh toán
+            </a>
+        }
+    </div>
+</div>

@@ -6,13 +6,24 @@
 
 <div class="container mt-5">
     <h2 class="mb-4">Thông báo của bạn</h2>
-    <ul class="list-group">
-        @foreach (var notification in Model)
-        {
-            <li class="list-group-item @(notification.IsRead ? "bg-light" : "")">
-                @notification.Message
-                <small class="text-muted float-right">@notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
-            </li>
-        }
-    </ul>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Hiện không có thông báo nào.
+        </div>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var notification in Model)
+            {
+                <li class="list-group-item @(notification.IsRead ? "bg-light" : "")">
+                    @notification.Message
+                    <small class="text-muted float-right">
+                        @notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                    </small>
+                </li>
+            }
+        </ul>
+    }
 </div>

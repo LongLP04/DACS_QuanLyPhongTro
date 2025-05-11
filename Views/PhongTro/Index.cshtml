@@ -252,12 +252,11 @@
                             <div class="product-img position-relative overflow-hidden">
                                 <img class="img-fluid w-100" src="@(string.IsNullOrEmpty(product.Hinhanh) ? "/img/default-product.jpg" : product.Hinhanh)" alt="@product.SoPhong">
                                 <div class="product-action">
-                                    <a class="btn btn-outline-dark btn-square" href="javascript:void(0)" onclick="showQuickAddToCart(@product.MaPhong)">
-                                        <i class="fa fa-shopping-cart"></i>
+
+                                    <a class="btn btn-outline-dark btn-square" href="javascript:void(0)" data-toggle="modal" data-target="appointmentModal">
+                                        <i class="fa fa-calendar"></i>
                                     </a>
-                                    <a class="btn btn-outline-dark btn-square" href="javascript:void(0)" onclick="toggleFavourite(@product.MaPhong)">
-                                        <i class="far fa-heart"></i>
-                                    </a>
+
                                     <a class="btn btn-outline-dark btn-square" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })">
                                         <i class="fa fa-search"></i>
                                     </a>

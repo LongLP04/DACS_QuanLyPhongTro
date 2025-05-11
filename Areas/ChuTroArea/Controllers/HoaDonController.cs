@@ -61,6 +61,24 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             return View(hoaDons);
         }
+        // Trong HoaDonController
+        public async Task<IActionResult> Details(int id)
+        {
+            var hoaDon = await _context.HoaDons
+                .Include(h => h.PhieuThanhToans)
+                .ThenInclude(p => p.PhuongThucThanhToan)
+                .Include(h => h.KhachThue)
+                .Include(h => h.ChiSoDienNuoc)
+                .ThenInclude(c => c.PhongTro)
+                .FirstOrDefaultAsync(h => h.MaHoaDon == id);
+
+            if (hoaDon == null)
+            {
+                return NotFound();
+            }
+
+            return View(hoaDon);
+        }
 
         // Action để tạo hóa đơn
         public IActionResult Create()
@@ -145,6 +163,22 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
     return RedirectToAction("Index");
 }
 
-                
+        public async Task<IActionResult> XacNhanThanhToan(int id)
+        {
+            // Lấy thông tin hóa đơn
+            var hoaDon = await _context.HoaDons.FirstOrDefaultAsync(h => h.MaHoaDon == id);
+
+            if (hoaDon == null || hoaDon.TrangThai != "Chờ xác nhận")
+            {
+                return NotFound();
+            }
+
+            // Cập nhật trạng thái hóa đơn thành "Đã thanh toán"
+            hoaDon.TrangThai = "Đã thanh toán";
+            _context.SaveChanges();
+
+            return RedirectToAction("Index"); // Quay lại danh sách hóa đơn
+        }
+
     }
 }

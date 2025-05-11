@@ -1,0 +1,39 @@
+﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.PhieuThanhToan>
+@{
+    ViewData["Title"] = "Lịch sử thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+}
+
+<h3>@ViewData["Title"]</h3>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Bạn chưa có giao dịch nào.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Phòng</th>
+                <th>Ngày thanh toán</th>
+                <th>Phương thức</th>
+                <th>Số tiền</th>
+                <th>Ghi chú</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ptt in Model)
+            {
+                <tr>
+                    <td>@ptt.HoaDon?.PhongTro?.SoPhong</td>
+                    <td>@ptt.NgayThanhToan.ToString("dd/MM/yyyy")</td>
+                    <td>@ptt.PhuongThucThanhToan?.TenPhuongThuc</td>
+                    <td>@ptt.SoTienThanhToan.ToString("C0", vnd)</td>
+					<td>Giao dịch đã được xác nhận bởi chủ trọ của bạn</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,44 @@
+﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.HoaDon>
+@{
+    ViewData["Title"] = "Hóa đơn cần thanh toán";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@ViewData["Title"]</h3>
+<div class="mb-3 text-end">
+    <a href="@Url.Action("LichSuThanhToan", "PhieuThanhToan")" class="btn btn-warning">
+        Lịch sử thanh toán
+    </a>
+</div>
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Không có hóa đơn nào cần thanh toán.</div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Phòng</th>
+                <th>Ngày lập</th>
+                <th>Tổng tiền</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.PhongTro.SoPhong</td>
+                    <td>@item.NgayLap.ToString("dd/MM/yyyy")</td>
+                    <td>@item.TongTien.ToString("N0") VND</td>
+                    <td>
+                        <a href="@Url.Action("ThanhToan", new { id = item.MaHoaDon })" class="btn btn-success btn-sm">Thanh toán</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+
+}
