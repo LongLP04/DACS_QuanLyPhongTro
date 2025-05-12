@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
     ViewData["Title"] = "Trọ quanh ta";
@@ -12,18 +12,18 @@
     </div>
 }
 <!-- Carousel Start -->
-<div class="container-fluid mb-3">
-    <div class="row px-xl-5">
-        <div class="col-lg-8">
-            <div id="header-carousel" class="carousel slide carousel-fade mb-30 mb-lg-0" data-ride="carousel">
+<div class="container-fluid p-0 mb-0" style="padding: 0; margin: 0;">
+    <div class="row" style="margin: 0; padding: 0;">
+        <div class="col-lg-8" style="padding: 0; margin: 0;">
+            <div id="header-carousel" class="carousel slide carousel-fade mb-0" data-ride="carousel" style="height: 430px;">
                 <ol class="carousel-indicators">
                     <li data-target="#header-carousel" data-slide-to="0" class="active"></li>
                     <li data-target="#header-carousel" data-slide-to="1"></li>
                     <li data-target="#header-carousel" data-slide-to="2"></li>
                 </ol>
-                <div class="carousel-inner">
+                <div class="carousel-inner" style="height: 100%;">
                     <div class="carousel-item position-relative active" style="height: 430px;">
-                        <img class="position-absolute w-100 h-100" src="images/poster_1.jpg" style="object-fit: cover;">
+                        <img class="position-absolute w-100 h-100" src="images/poster_1.jpg" style="object-fit: cover; top: 0; left: 0; margin: 0; padding: 0;">
                         <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                             <div class="p-3" style="max-width: 700px;">
                                 <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Trẻ Trung</h1>
@@ -33,7 +33,7 @@
                         </div>
                     </div>
                     <div class="carousel-item position-relative" style="height: 430px;">
-                        <img class="position-absolute w-100 h-100" src="images/poster_2.jpg" style="object-fit: cover;">
+                        <img class="position-absolute w-100 h-100" src="images/poster_2.jpg" style="object-fit: cover; top: 0; left: 0; margin: 0; padding: 0;">
                         <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                             <div class="p-3" style="max-width: 700px;">
                                 <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Năng Động</h1>
@@ -43,11 +43,11 @@
                         </div>
                     </div>
                     <div class="carousel-item position-relative" style="height: 430px;">
-                        <img class="position-absolute w-100 h-100" src="images/poster.jpg" style="object-fit: cover;">
+                        <img class="position-absolute w-100 h-100" src="images/poster.jpg" style="object-fit: cover; top: 0; left: 0; margin: 0; padding: 0;">
                         <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                             <div class="p-3" style="max-width: 700px;">
                                 <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">Sáng Tạo</h1>
-                                <p class="mx-md-5 px-5 animate__animated animate__bounceIn"> Phá cách với sự sáng tạo và mang phong cách của riêng bạn🎨🔥</p>
+                                <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Phá cách với sự sáng tạo và mang phong cách của riêng bạn🎨🔥</p>
                                 <a asp-controller="PhongTro" asp-action="Index" class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp">Tham khảo ngay</a>
                             </div>
                         </div>
@@ -57,33 +57,29 @@
         </div>
 
         @* Giảm giá *@
-
-        <div class="col-lg-4">
-            <div class="product-offer mb-30" style="height: 200px;">
-                <img class="img-fluid" src="images/tro_5.jpg" alt="Giảm giá 1">
-                <div class="offer-text">
+        <div class="col-lg-4" style="padding: 0; margin: 0;">
+            <div class="product-offer mb-0" style="height: 215px; position: relative; overflow: hidden;">
+                <img class="img-fluid w-100 h-100" src="images/tro_5.jpg" alt="Giảm giá 1" style="object-fit: cover; position: absolute; top: 0; left: 0; margin: 0; padding: 0;">
+                <div class="offer-text" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                     <h6 class="text-white text-uppercase">Save 20%</h6>
                     <h3 class="text-white mb-3">Special Offer</h3>
                     <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary">Tham khảo ngay</a>
                 </div>
             </div>
-
-            <div class="product-offer mb-30" style="height: 200px;">
-                <img class="img-fluid" src="images/tro_7.jpg" alt="Giảm giá 2">
-                <div class="offer-text">
+            <div class="product-offer mb-0" style="height: 215px; position: relative; overflow: hidden;">
+                <img class="img-fluid w-100 h-100" src="images/tro_7.jpg" alt="Giảm giá 2" style="object-fit: cover; position: absolute; top: 0; left: 0; margin: 0; padding: 0;">
+                <div class="offer-text" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                     <h6 class="text-white text-uppercase">Save 20%</h6>
                     <h3 class="text-white mb-3">Special Offer</h3>
                     <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary">Tham khảo ngay</a>
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>
 <!-- Carousel End -->
 <!-- Tiêu chí Start -->
-<div class="container-fluid pt-5">
+<div class="container-fluid p-0 mb-0 pt-2">
     <div class="row px-xl-5 pb-3">
         <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
             <div class="d-flex align-items-center bg-light mb-4" style="padding: 30px;">
@@ -108,115 +104,194 @@
                 <i class="fas fa-headset text-primary fa-2x mr-3"></i>
                 <h5 class="font-weight-semi-bold m-0">Hỗ trợ 24/7</h5>
             </div>
+            </nới>
         </div>
-
     </div>
-</div>
-<!-- Tiêu chí  End -->
-<!-- Phân loại sản phẩm Start -->
-<div class="container-fluid pt-5">
-    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-        <span class="bg-secondary pr-3">Phân loại phòng trọ</span>
-    </h2>
-
-    
-</div>
-<!-- Phân loại sản phẩm End -->
-<!-- Sản phẩm nổi bật Start -->
-<style>
-    .product-img {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 1 / 1; /* Đảm bảo ảnh luôn vuông */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
-        .product-img img {
+    <!-- Tiêu chí End -->
+    <!-- Phân loại sản phẩm Start -->
+    <!-- Sản phẩm nổi bật Start -->
+    <style>
+        .product-img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Đảm bảo ảnh không bị méo */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: transform 0.4s ease;
         }
-</style>
 
-<div class="container-fluid pt-5 pb-3">
-    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-        <span class="bg-secondary pr-3">Phòng trọ nổi bật</span>
-    </h2>
-    
-</div>
-<!-- Sản phẩm nổi bật End -->
-<!-- giảm giá Start -->
-<div class="container-fluid pt-5 pb-3">
-    <div class="row px-xl-5">
-        <div class="col-md-6">
-            <div class="product-offer mb-30" style="height: 300px;">
-                <img class="img-fluid" src="images/tro_4.jpg.jpg" alt="">
-                <div class="offer-text">
-                    <h6 class="text-white text-uppercase">Save 20%</h6>
-                    <h3 class="text-white mb-3">Special Offer</h3>
-                    <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary">Tham khảo ngay</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="product-offer mb-30" style="height: 300px;">
-                <img class="img-fluid" src="images/tro_3.jpg" alt="">
-                <div class="offer-text">
-                    <h6 class="text-white text-uppercase">Save 20%</h6>
-                    <h3 class="text-white mb-3">Special Offer</h3>
-                    <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary">Tham khảo ngay</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- giảm giá End -->
-<!-- Sản phẩm gần đây Start -->
-<div class="container-fluid pt-5 pb-3">
-    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-        <span class="bg-secondary pr-3">Sản phẩm gần đây</span>
-    </h2>
-    
-</div>
-<!-- Sản phẩm gần đây End -->
-<!-- Vendor Start -->
-<style>
-    .vendor-carousel .bg-light {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 120px; /* Điều chỉnh chiều cao theo nhu cầu */
-    }
-
-    .vendor-carousel img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain; /* Giữ nguyên tỉ lệ ảnh, không bị méo */
-    }
-</style>
-<div class="container-fluid py-5">
-    <div class="row px-xl-5">
-        
-    </div>
-</div>
-<!-- Vendor End -->
-@section Scripts {
-    <script>
-        // Tự động ẩn thông báo sau 5 giây
-        document.addEventListener("DOMContentLoaded", function () {
-            var thongBao = document.getElementById("thongBao");
-            if (thongBao) {
-                setTimeout(function () {
-                    thongBao.style.transition = "opacity 0.5s ease-out"; // Hiệu ứng mờ dần
-                    thongBao.style.opacity = "0"; // Làm mờ
-                    setTimeout(function () {
-                        thongBao.style.display = "none"; // Ẩn hoàn toàn
-                    }, 500); // Chờ hiệu ứng mờ hoàn tất (0.5 giây)
-                }, 5000); // Hiển thị thông báo trong 5 giây
+            .product-img img {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover;
+                transition: transform 0.4s ease;
             }
-        });
-    </script>
-}
+
+        .card:hover .product-img img {
+            transform: scale(1.1) !important;
+        }
+
+
+        .card {
+            transition: box-shadow 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
+            }
+
+        .btn-primary.btn-sm {
+            transition: background-color 0.3s ease, transform 0.2s !important;
+        }
+
+            .btn-primary.btn-sm:hover {
+                background-color: #004085 !important;
+                transform: scale(1.05) !important;
+            }
+    </style>
+
+    <div class="container-fluid pt-3">
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
+            <span class="bg-secondary pr-3">Phân loại phòng trọ</span>
+        </h2>
+        <div class="row px-xl-5">
+            <!-- Phòng trọ 1 -->
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="card border-0 mb-4">
+                    <div class="product-img" style="height: 250px;">
+                        <img src="images/trotruyenthong.jpg" alt="Phòng trọ truyền thống">
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Trọ truyền thống</h5>
+                        <p class="card-text">Thiết kế truyền thống, giá cả và chất lượng sinh hoạt phù hợp với sinh viên .</p>
+                        <a href="/PhongTro/Index" class="btn btn-primary btn-sm">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phòng trọ 2 -->
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="card border-0 mb-4">
+                    <div class="product-img" style="height: 250px;">
+                        <img src="images/trocaocap.jpg" alt="Phòng trọ cao cấp">
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Trọ cao cấp</h5>
+                        <p class="card-text">Không gian linh hoạt, thuận tiện cho người đi làm với vị trí trung tâm và an ninh đảm bảo.</p>
+                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary btn-sm">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phòng trọ 3 -->
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="card border-0 mb-4">
+                    <div class="product-img" style="height: 250px;">
+                        <img src="images/canhomini.webp" alt="Căn hộ mini">
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Căn hộ Mini</h5>
+                        <p class="card-text">Thiết kế phá cách, độc đáo cho những ai yêu thích không gian cá nhân đậm chất riêng.</p>
+                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary btn-sm">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phòng trọ 4 -->
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="card border-0 mb-4">
+                    <div class="product-img" style="height: 250px;">
+                        <img src="images/trogiadinh.jpeg" alt="Phòng trọ gia đình">
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Trọ gia đ</h5>
+                        <p class="card-text">Không gian ấm cúng, thiết kế tinh tế, phù hợp cho gia đình nhỏ hoặc cặp đôi sinh sống.</p>
+                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary btn-sm">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+
+
+            
+        </div>
+    </div>
+    <!-- Sản phẩm nổi bật End -->
+    <!-- Phân loại sản phẩm End -->
+    <!-- Sản phẩm giảm giá nổi bật Start -->
+    
+    <div class="container-fluid pt-2">
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
+            <span class="bg-secondary pr-3">Phòng trọ nổi bật</span>
+        </h2>
+    </div>
+    <div class="container-fluid pt-2 pb-3" style="padding: 0; margin: 0;">
+        <div class="row" style="margin: 0; padding: 0; width: 100%; height: 300px;">
+            <div class="col-md-6" style="padding: 0; margin: 0; width: 50%; height: 100%;">
+                <div class="product-offer mb-30" style="height: 100%; width: 100%; position: relative; overflow: hidden; margin: 0; padding: 0;">
+                    <img class="img-fluid" src="images/tro_4.jpg" alt="" style="width: 100% !important; height: 100% !important; object-fit: cover; position: absolute; top: 0; left: 0; margin: 0; padding: 0;">
+                    <div class="offer-text" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 0; padding: 0;">
+                        <h6 class="text-white text-uppercase">Save 20%</h6>
+                        <h3 class="text-white mb-3">Special Offer</h3>
+                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="padding: 0; margin: 0; width: 50%; height: 100%;">
+                <div class="product-offer mb-30" style="height: 100%; width: 100%; position: relative; overflow: hidden; margin: 0; padding: 0;">
+                    <img class="img-fluid" src="images/tro_3.jpg" alt="" style="width: 100% !important; height: 100% !important; object-fit: cover; position: absolute; top: 0; left: 0; margin: 0; padding: 0;">
+                    <div class="offer-text" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 0; padding: 0;">
+                        <h6 class="text-white text-uppercase">Save 20%</h6>
+                        <h3 class="text-white mb-3">Special Offer</h3>
+                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Giảm giá nổi bật End -->
+    <!-- Sản phẩm gần đây Start -->
+    <div class="container-fluid pt-5 pb-3">
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
+            <span class="bg-secondary pr-3">Sản phẩm gần đây</span>
+        </h2>
+    </div>
+    <!-- Sản phẩm gần đây End -->
+    <!-- Vendor Start -->
+    <style>
+        .vendor-carousel .bg-light {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+        }
+
+        .vendor-carousel img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover;
+        }
+
+    </style>
+
+    <div class="container-fluid py-5">
+        <div class="row px-xl-5">
+        </div>
+    </div>
+    <!-- Vendor End -->
+    @section Scripts {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var thongBao = document.getElementById("thongBao");
+                if (thongBao) {
+                    setTimeout(function () {
+                        thongBao.style.transition = "opacity 0.5s ease-out";
+                        thongBao.style.opacity = "0";
+                        setTimeout(function () {
+                            thongBao.style.display = "none";
+                        }, 500);
+                    }, 5000);
+                }
+            });
+        </script>
+    }
