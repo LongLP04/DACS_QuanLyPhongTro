@@ -86,17 +86,17 @@
     }
 
         .carousel-button:hover, .offer-button:hover {
-            background-color: #d35400 !important; /* Cam đậm hơn khi hover */
+            background-color: #d35400 !important; /* Cam đậm hơ n khi hover */
             border-color: #d35400 !important;
             color: white !important;
         }
 
     .carousel-title, .offer-title {
-        color: #e67e22 !important; /* Cam đậm */
+        color: white !important; /* Cam đậm */
     }
 
     .carousel-text, .offer-subtitle {
-        color: #e67e22 !important; /* Xanh biển */
+        color: white !important; /* Xanh biển */
     }
 </style>
 <!-- Carousel End -->
@@ -131,17 +131,36 @@
 
     <style>
         .feature-box {
-            background-color: #f9d5a0 !important; /* Nền cam nhạt */
+            background-color: #ffe0b2 !important; /* Nền cam nhạt */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 10px;
         }
+
+            .feature-box:hover {
+                transform: translateY(-8px); /* Nâng lên một chút khi hover */
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+            }
 
         .feature-icon {
             color: #e67e22 !important; /* Icon cam đậm */
+            transition: color 0.3s ease;
+        }
+
+        .feature-box:hover .feature-icon {
+            color: #d35400 !important; /* Cam đậm hơn khi hover */
         }
 
         .feature-text {
             color: #007bff !important; /* Chữ xanh biển */
+            transition: color 0.3s ease;
+        }
+
+        .feature-box:hover .feature-text {
+            color: #0056b3 !important; /* Xanh đậm hơn khi hover */
         }
     </style>
+
     <!-- Tiêu chí End -->
     <!-- Phân loại sản phẩm Start -->
     <!-- Sản phẩm nổi bật Start -->
@@ -199,6 +218,11 @@
 
     <div class="container-fluid pt-3" >
         <style>
+            .card {
+                border-radius: 12px !important; /* Bo tròn nhẹ góc */
+                overflow: hidden; /* Đảm bảo hình ảnh không tràn ra ngoài */
+            }
+
             .section-title span {
                 background-color: transparent !important; /* Không có màu nền */
                 color: #007bff !important; /* Xanh biển đậm, như feature-text */
