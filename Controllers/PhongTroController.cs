@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace DACS_QuanLyPhongTro.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(decimal? minPrice, decimal? maxPrice, decimal? minArea, decimal? maxArea, string? trangThai)
+        public async Task<IActionResult> Index(decimal? minPrice, decimal? maxPrice, decimal? minArea, decimal? maxArea, string? trangThai, string? address)
         {
             var query = _context.PhongTros
                 .Include(p => p.ToaNha)
@@ -32,27 +33,31 @@ namespace DACS_QuanLyPhongTro.Controllers
 
             // Tạo danh sách khoảng giá (price ranges)
             var priceRanges = new List<object>
-            {
-                new { Range = new { Min = 0m, Max = 2000000m }, Count = await query.CountAsync(p => p.GiaThue >= 0m && p.GiaThue <= 2000000m) },
-                new { Range = new { Min = 2000000m, Max = 4000000m }, Count = await query.CountAsync(p => p.GiaThue > 2000000m && p.GiaThue <= 4000000m) },
-                new { Range = new { Min = 4000000m, Max = 6000000m }, Count = await query.CountAsync(p => p.GiaThue > 4000000m && p.GiaThue <= 6000000m) },
-                new { Range = new { Min = 6000000m, Max = (decimal?)null }, Count = await query.CountAsync(p => p.GiaThue > 6000000m) }
-            };
+    {
+        new { Range = new { Min = 0m, Max = 2000000m }, Count = await query.CountAsync(p => p.GiaThue >= 0m && p.GiaThue <= 2000000m) },
+        new { Range = new { Min = 2000000m, Max = 4000000m }, Count = await query.CountAsync(p => p.GiaThue > 2000000m && p.GiaThue <= 4000000m) },
+        new { Range = new { Min = 4000000m, Max = 6000000m }, Count = await query.CountAsync(p => p.GiaThue > 4000000m && p.GiaThue <= 6000000m) },
+        new { Range = new { Min = 6000000m, Max = (decimal?)null }, Count = await query.CountAsync(p => p.GiaThue > 6000000m) }
+    };
             ViewBag.PriceRanges = priceRanges;
 
             // Tạo danh sách khoảng diện tích (area ranges) với kiểu decimal
             var areaRanges = new List<object>
-            {
-                new { Range = new { Min = 0m, Max = 20m }, Count = await query.CountAsync(p => p.DienTich >= 0m && p.DienTich <= 20m) },
-                new { Range = new { Min = 20m, Max = 40m }, Count = await query.CountAsync(p => p.DienTich > 20m && p.DienTich <= 40m) },
-                new { Range = new { Min = 40m, Max = 60m }, Count = await query.CountAsync(p => p.DienTich > 40m && p.DienTich <= 60m) },
-                new { Range = new { Min = 60m, Max = (decimal?)null }, Count = await query.CountAsync(p => p.DienTich > 60m) }
-            };
+    {
+        new { Range = new { Min = 0m, Max = 20m }, Count = await query.CountAsync(p => p.DienTich >= 0m && p.DienTich <= 20m) },
+        new { Range = new { Min = 20m, Max = 40m }, Count = await query.CountAsync(p => p.DienTich > 20m && p.DienTich <= 40m) },
+        new { Range = new { Min = 40m, Max = 60m }, Count = await query.CountAsync(p => p.DienTich > 40m && p.DienTich <= 60m) },
+        new { Range = new { Min = 60m, Max = (decimal?)null }, Count = await query.CountAsync(p => p.DienTich > 60m) }
+    };
             ViewBag.AreaRanges = areaRanges;
 
             // Tạo danh sách trạng thái
             var trangThaiList = new List<string> { "Trống", "Đã thuê" };
             ViewBag.TrangThaiList = trangThaiList;
+
+            // Tạo danh sách địa chỉ
+            var addressList = await query.Select(p => p.ToaNha.DiaChi).Distinct().ToListAsync();
+            ViewBag.AddressList = addressList;
 
             // Lọc theo giá
             if (minPrice.HasValue)
@@ -68,9 +73,13 @@ namespace DACS_QuanLyPhongTro.Controllers
             if (maxArea.HasValue)
                 query = query.Where(p => p.DienTich <= maxArea.Value);
 
-            // Lọc theo trạng thái
+            // Lọc theo trạng thái (chỉ lấy 1 giá trị từ radio)
             if (!string.IsNullOrEmpty(trangThai))
                 query = query.Where(p => p.TrangThai == trangThai);
+
+            // Lọc theo địa chỉ (chỉ lấy 1 giá trị từ radio)
+            if (!string.IsNullOrEmpty(address))
+                query = query.Where(p => p.ToaNha.DiaChi.Contains(address));
 
             var result = await query.ToListAsync();
             return View(result);
