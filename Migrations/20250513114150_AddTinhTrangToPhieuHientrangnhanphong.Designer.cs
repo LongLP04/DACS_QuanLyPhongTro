@@ -4,6 +4,7 @@ using DACS_QuanLyPhongTro.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DACS_QuanLyPhongTro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513114150_AddTinhTrangToPhieuHientrangnhanphong")]
+    partial class AddTinhTrangToPhieuHientrangnhanphong
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -872,7 +875,7 @@ namespace DACS_QuanLyPhongTro.Migrations
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.HienTrangVatDung", b =>
                 {
                     b.HasOne("DACS_QuanLyPhongTro.Models.PhieuHienTrangNhanPhong", "PhieuHienTrangNhanPhong")
-                        .WithMany("HienTrangVatDungs")
+                        .WithMany()
                         .HasForeignKey("MaPhieuHienTrang")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1147,11 +1150,6 @@ namespace DACS_QuanLyPhongTro.Migrations
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuDangKyDichVu", b =>
                 {
                     b.Navigation("ChiTietPhieuDangKyDichVus");
-                });
-
-            modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhieuHienTrangNhanPhong", b =>
-                {
-                    b.Navigation("HienTrangVatDungs");
                 });
 
             modelBuilder.Entity("DACS_QuanLyPhongTro.Models.PhongTro", b =>

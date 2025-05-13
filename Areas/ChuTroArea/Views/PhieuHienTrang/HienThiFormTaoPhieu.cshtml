@@ -1,0 +1,48 @@
+﻿@model DACS_QuanLyPhongTro.ViewModels.TaoPhieuHienTrangViewModel
+@{
+    ViewData["Title"] = "Tạo phiếu hiện trạng";
+	Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>Tạo phiếu hiện trạng - @Model.TenPhong</h2>
+
+<form asp-action="TaoPhieu" method="post">
+    <input type="hidden" asp-for="MaPhong" />
+    <div class="mb-3">
+        <label asp-for="GhiChu">Ghi chú</label>
+        <textarea asp-for="GhiChu" class="form-control"></textarea>
+    </div>
+
+    <h4>Vật dụng</h4>
+    <table class="table" id="table-vatdung">
+        <thead>
+            <tr>
+                <th>Tên vật dụng</th>
+                <th>Tình trạng</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <button type="button" onclick="themVatDung()" class="btn btn-sm btn-secondary">+ Thêm vật dụng</button>
+
+    <br /><br />
+    <button type="submit" class="btn btn-primary">Tạo phiếu</button>
+</form>
+
+@section Scripts {
+    <script>
+        function themVatDung() {
+            var index = document.querySelectorAll('#table-vatdung tbody tr').length;
+            var row = `
+                <tr>
+                    <td><input name="VatDungs[${index}].TenVatDung" class="form-control" required /></td>
+                    <td><input name="VatDungs[${index}].TinhTrang" class="form-control" required /></td>
+                    <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-sm btn-danger">X</button></td>
+                </tr>`;
+            document.querySelector('#table-vatdung tbody').insertAdjacentHTML('beforeend', row);
+        }
+    </script>
+}

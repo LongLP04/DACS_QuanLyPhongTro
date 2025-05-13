@@ -1,0 +1,69 @@
+﻿@model DACS_QuanLyPhongTro.Models.PhieuGhiNhanSuCo
+
+@{
+    ViewData["Title"] = "Tạo Phiếu Ghi Nhận Sự Cố";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2>Tạo Phiếu Ghi Nhận Sự Cố</h2>
+
+    <!-- Hiển thị thông báo thành công -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success" id="thongBao">
+            @TempData["Success"]
+        </div>
+    }
+
+    <form asp-action="TaoPhieu" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="MoTaSuCo" class="control-label">Mô tả sự cố</label>
+            <textarea asp-for="MoTaSuCo" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="MoTaSuCo" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="HienTrang" class="control-label">Hiện trạng</label>
+            <input asp-for="HienTrang" class="form-control" />
+            <span asp-validation-for="HienTrang" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="GhiChu" class="control-label">Ghi chú</label>
+            <input asp-for="GhiChu" class="form-control" />
+            <span asp-validation-for="GhiChu" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Gửi" class="btn btn-primary" />
+        </div>
+    </form>
+
+    <div>
+        <a asp-action="Index" asp-controller="Home">Quay Lại</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Tự động ẩn thông báo sau 5 giây
+        document.addEventListener("DOMContentLoaded", function () {
+            var thongBao = document.getElementById("thongBao");
+            if (thongBao) {
+                setTimeout(function () {
+                    thongBao.style.transition = "opacity 0.5s ease-out";
+                    thongBao.style.opacity = "0";
+                    setTimeout(function () {
+                        thongBao.style.display = "none";
+                    }, 500);
+                }, 5000);
+            }
+        });
+    </script>
+}

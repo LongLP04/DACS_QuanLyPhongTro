@@ -12,7 +12,7 @@ namespace DACS_QuanLyPhongTro.Models
         public string MoTaSuCo { get; set; }
         public string HienTrang { get; set; }
         public string GhiChu { get; set; }
-
+        public string TinhTrang { get; set; } = "Chưa xử lý";
         [Required]
         public int MaKhachThue { get; set; }
         [ForeignKey("MaKhachThue")]

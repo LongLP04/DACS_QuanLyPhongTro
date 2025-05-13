@@ -1,0 +1,57 @@
+﻿@model DACS_QuanLyPhongTro.Models.PhieuHienTrangNhanPhong
+
+@{
+    ViewData["Title"] = "Phiếu hiện trạng nhận phòng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Phiếu Hiện Trạng Khi Nhận Phòng</h2>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <p><strong>Ngày nhận phòng:</strong> @Model.NgayNhanPhong.ToString("dd/MM/yyyy")</p>
+            <p><strong>Ghi chú:</strong> @Model.GhiChu</p>
+            <p>
+                <strong>Tình trạng:</strong>
+                <span class="badge @(Model.TinhTrang == "Đã xác nhận" ? "bg-success" : "bg-warning text-dark")">
+                    @Model.TinhTrang
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <h4>Danh Sách Vật Dụng</h4>
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Tên Vật Dụng</th>
+                <th>Tình Trạng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.HienTrangVatDungs)
+            {
+                <tr>
+                    <td>@item.TenVatDung</td>
+                    <td>@item.TinhTrang</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Model.TinhTrang == "Chưa xác nhận")
+    {
+        <form asp-action="XacNhan" method="post" class="mt-3">
+            <input type="hidden" name="maPhieu" value="@Model.MaPhieuHienTrang" />
+            <button type="submit" class="btn btn-success">✅ Tôi xác nhận hiện trạng</button>
+        </form>
+    }
+    else
+    {
+        <div class="alert alert-info mt-3">
+            ✅ Bạn đã xác nhận phiếu này.
+        </div>
+    }
+
+    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary mt-3">Quay Lại</a>
+</div>

@@ -1,0 +1,100 @@
+﻿@model List<DACS_QuanLyPhongTro.Models.PhieuGhiNhanSuCo>
+
+@{
+    ViewData["Title"] = "Danh Sách Phiếu Sự Cố";
+    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<div class="container mt-5">
+    <h2>Danh Sách Phiếu Sự Cố</h2>
+
+    <!-- Hiển thị thông báo -->
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="alert alert-success" id="thongBao">
+            @TempData["ThongBao"]
+        </div>
+    }
+
+    <!-- Cảnh báo nếu có phiếu chưa xử lý -->
+    @if (ViewBag.CoPhieuChuaXuLy == true)
+    {
+        <div class="alert alert-warning">
+            Có phiếu sự cố chưa xử lý. Vui lòng kiểm tra và xác nhận!
+        </div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            Không có phiếu sự cố nào.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Mã Phiếu</th>
+                    <th>Ngày Ghi Nhận</th>
+                    <th>Mô Tả Sự Cố</th>
+                    <th>Hiện Trạng</th>
+                    <th>Ghi Chú</th>
+                    <th>Tình Trạng</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var phieu in Model)
+                {
+                    <tr>
+                        <td>@phieu.MaPhieuSuCo</td>
+                        <td>@phieu.NgayGhiNhan.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@phieu.MoTaSuCo</td>
+                        <td>@phieu.HienTrang</td>
+                        <td>@phieu.GhiChu</td>
+                        <td>@phieu.TinhTrang</td>
+                        <td>
+                            @if (phieu.TinhTrang == "Chưa xử lý" || phieu.TinhTrang == "Đã tiếp nhận")
+                            {
+                                <form asp-action="XacNhan" method="post">
+                                    <input type="hidden" name="id" value="@phieu.MaPhieuSuCo" />
+                                    <select name="tinhTrang" class="form-control d-inline w-auto" required>
+                                        <option value="">Chọn trạng thái</option>
+                                        @if (phieu.TinhTrang == "Chưa xử lý")
+                                        {
+                                            <option value="Đã tiếp nhận">Đã tiếp nhận</option>
+                                        }
+                                        <option value="Đã xử lý">Đã xử lý</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary mt-2">Xác nhận</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-success">Đã xử lý</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var thongBao = document.getElementById("thongBao");
+            if (thongBao) {
+                setTimeout(function () {
+                    thongBao.style.transition = "opacity 0.5s ease-out";
+                    thongBao.style.opacity = "0";
+                    setTimeout(function () {
+                        thongBao.style.display = "none";
+                    }, 500);
+                }, 5000);
+            }
+        });
+    </script>
+}

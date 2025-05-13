@@ -1,0 +1,73 @@
+﻿@model List<DACS_QuanLyPhongTro.Models.PhieuGhiNhanSuCo>
+
+@{
+    ViewData["Title"] = "Danh Sách Phiếu Sự Cố";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2>Danh Sách Phiếu Sự Cố</h2>
+
+    <!-- Hiển thị thông báo thành công -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success" id="thongBao">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            Không có phiếu sự cố nào.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Mã Phiếu</th>
+                    <th>Ngày Ghi Nhận</th>
+                    <th>Mô Tả Sự Cố</th>
+                    <th>Hiện Trạng</th>
+                    <th>Ghi Chú</th>
+                    <th>Tình Trạng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var phieu in Model)
+                {
+                    <tr>
+                        <td>@phieu.MaPhieuSuCo</td>
+                        <td>@phieu.NgayGhiNhan.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@phieu.MoTaSuCo</td>
+                        <td>@phieu.HienTrang</td>
+                        <td>@phieu.GhiChu</td>
+                        <td>@phieu.TinhTrang</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <a asp-action="TaoPhieu" class="btn btn-primary">Tạo Phiếu Mới</a>
+    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Quay Lại</a>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var thongBao = document.getElementById("thongBao");
+            if (thongBao) {
+                setTimeout(function () {
+                    thongBao.style.transition = "opacity 0.5s ease-out";
+                    thongBao.style.opacity = "0";
+                    setTimeout(function () {
+                        thongBao.style.display = "none";
+                    }, 500);
+                }, 5000);
+            }
+        });
+    </script>
+}

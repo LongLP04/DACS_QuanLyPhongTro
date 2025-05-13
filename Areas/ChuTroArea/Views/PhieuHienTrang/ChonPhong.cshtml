@@ -1,0 +1,28 @@
+﻿@model List<PhongTro>
+@{
+    ViewData["Title"] = "Chọn phòng để tạo phiếu hiện trạng";
+	Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+<h2>Chọn phòng đã có khách thuê</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên phòng</th>
+            <th>Khách thuê</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var phong in Model)
+        {
+            var hopDong = phong.HopDongs.FirstOrDefault(h => h.TrangThai == "Đã xác nhận");
+            <tr>
+                <td>@phong.SoPhong</td>
+                <td>@hopDong?.KhachThue?.HoTen</td>
+                <td>
+                    <a asp-action="HienThiFormTaoPhieu" asp-route-maPhong="@phong.MaPhong">Tạo phiếu</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

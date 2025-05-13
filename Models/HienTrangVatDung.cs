@@ -10,7 +10,6 @@ namespace DACS_QuanLyPhongTro.Models
         public int MaVatDung { get; set; }
         public string TenVatDung { get; set; }
         public string TinhTrang { get; set; }
-
         [Required]
         public int MaPhieuHienTrang { get; set; }
         [ForeignKey("MaPhieuHienTrang")]
