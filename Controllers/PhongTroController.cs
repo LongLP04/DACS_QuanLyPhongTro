@@ -21,68 +21,64 @@ namespace DACS_QuanLyPhongTro.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(decimal? minPrice, decimal? maxPrice, decimal? minArea, decimal? maxArea, string? trangThai, string? address)
+        public async Task<IActionResult> Index(string? searchTerm, decimal? minPrice, decimal? maxPrice, decimal? minArea, decimal? maxArea)
         {
             var query = _context.PhongTros
                 .Include(p => p.ToaNha)
                     .ThenInclude(t => t.ChuTro)
                 .AsQueryable();
 
-            // Tổng số phòng trọ
-            ViewBag.TotalProducts = await query.CountAsync();
-
-            // Tạo danh sách khoảng giá (price ranges)
-            var priceRanges = new List<object>
-    {
-        new { Range = new { Min = 0m, Max = 2000000m }, Count = await query.CountAsync(p => p.GiaThue >= 0m && p.GiaThue <= 2000000m) },
-        new { Range = new { Min = 2000000m, Max = 4000000m }, Count = await query.CountAsync(p => p.GiaThue > 2000000m && p.GiaThue <= 4000000m) },
-        new { Range = new { Min = 4000000m, Max = 6000000m }, Count = await query.CountAsync(p => p.GiaThue > 4000000m && p.GiaThue <= 6000000m) },
-        new { Range = new { Min = 6000000m, Max = (decimal?)null }, Count = await query.CountAsync(p => p.GiaThue > 6000000m) }
-    };
-            ViewBag.PriceRanges = priceRanges;
-
-            // Tạo danh sách khoảng diện tích (area ranges) với kiểu decimal
-            var areaRanges = new List<object>
-    {
-        new { Range = new { Min = 0m, Max = 20m }, Count = await query.CountAsync(p => p.DienTich >= 0m && p.DienTich <= 20m) },
-        new { Range = new { Min = 20m, Max = 40m }, Count = await query.CountAsync(p => p.DienTich > 20m && p.DienTich <= 40m) },
-        new { Range = new { Min = 40m, Max = 60m }, Count = await query.CountAsync(p => p.DienTich > 40m && p.DienTich <= 60m) },
-        new { Range = new { Min = 60m, Max = (decimal?)null }, Count = await query.CountAsync(p => p.DienTich > 60m) }
-    };
-            ViewBag.AreaRanges = areaRanges;
-
-            // Tạo danh sách trạng thái
-            var trangThaiList = new List<string> { "Trống", "Đã thuê" };
-            ViewBag.TrangThaiList = trangThaiList;
-
-            // Tạo danh sách địa chỉ
-            var addressList = await query.Select(p => p.ToaNha.DiaChi).Distinct().ToListAsync();
-            ViewBag.AddressList = addressList;
-
-            // Lọc theo giá
+            // Áp dụng các điều kiện lọc trên database trước
             if (minPrice.HasValue)
                 query = query.Where(p => p.GiaThue >= minPrice.Value);
-
             if (maxPrice.HasValue)
                 query = query.Where(p => p.GiaThue <= maxPrice.Value);
-
-            // Lọc theo diện tích (sử dụng decimal)
             if (minArea.HasValue)
                 query = query.Where(p => p.DienTich >= minArea.Value);
-
             if (maxArea.HasValue)
                 query = query.Where(p => p.DienTich <= maxArea.Value);
 
-            // Lọc theo trạng thái (chỉ lấy 1 giá trị từ radio)
-            if (!string.IsNullOrEmpty(trangThai))
-                query = query.Where(p => p.TrangThai == trangThai);
+            // Lấy tạm danh sách (chỉ lấy các cột cần thiết hoặc toàn bộ)
+            var list = await query.ToListAsync();
 
-            // Lọc theo địa chỉ (chỉ lấy 1 giá trị từ radio)
-            if (!string.IsNullOrEmpty(address))
-                query = query.Where(p => p.ToaNha.DiaChi.Contains(address));
+            // Nếu có searchTerm, lọc tiếp trên client (bộ nhớ)
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var terms = searchTerm.Trim().ToLower().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            var result = await query.ToListAsync();
-            return View(result);
+                // Lọc theo từng từ khóa, bắt đầu với toàn bộ danh sách
+                foreach (var term in terms)
+                {
+                    list = list.Where(p =>
+                        p.ToaNha.DiaChi.ToLower()
+                        .Split(new char[] { ' ', ',', '.', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Contains(term)
+                    ).ToList();
+                }
+            }
+
+            ViewBag.TotalProducts = list.Count;
+
+            // Tạo lại danh sách khoảng giá, khoảng diện tích theo list mới (client side)
+            var priceRanges = new List<object>
+    {
+        new { Range = new { Min = 0m, Max = 2000000m }, Count = list.Count(p => p.GiaThue >= 0m && p.GiaThue <= 2000000m) },
+        new { Range = new { Min = 2000000m, Max = 4000000m }, Count = list.Count(p => p.GiaThue > 2000000m && p.GiaThue <= 4000000m) },
+        new { Range = new { Min = 4000000m, Max = 6000000m }, Count = list.Count(p => p.GiaThue > 4000000m && p.GiaThue <= 6000000m) },
+        new { Range = new { Min = 6000000m, Max = (decimal?)null }, Count = list.Count(p => p.GiaThue > 6000000m) }
+    };
+            ViewBag.PriceRanges = priceRanges;
+
+            var areaRanges = new List<object>
+    {
+        new { Range = new { Min = 0m, Max = 20m }, Count = list.Count(p => p.DienTich >= 0m && p.DienTich <= 20m) },
+        new { Range = new { Min = 20m, Max = 40m }, Count = list.Count(p => p.DienTich > 20m && p.DienTich <= 40m) },
+        new { Range = new { Min = 40m, Max = 60m }, Count = list.Count(p => p.DienTich > 40m && p.DienTich <= 60m) },
+        new { Range = new { Min = 60m, Max = (decimal?)null }, Count = list.Count(p => p.DienTich > 60m) }
+    };
+            ViewBag.AreaRanges = areaRanges;
+
+            return View(list);
         }
         public async Task<IActionResult> Details(int id)
         {

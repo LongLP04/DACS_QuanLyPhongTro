@@ -5,29 +5,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- Breadcrumb Start -->
-<div class="container-fluid">
-    <div class="row px-xl-5">
-        <div class="col-12">
-            <nav class="breadcrumb bg-light mb-30">
-                <a class="breadcrumb-item text-dark" asp-controller="Home" asp-action="Index">Trang chủ</a>
-                <a class="breadcrumb-item text-dark" asp-controller="PhongTro" asp-action="Index">Phòng trọ</a>
-            </nav>
-        </div>
-    </div>
-</div>
-<!-- Breadcrumb End -->
-<!-- Shop Start -->
 <div class="container-fluid">
     <div class="row px-xl-5">
         <!-- Shop Sidebar Start -->
         <div class="col-lg-3 col-md-4">
             <!-- Price Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3">
-                <span class="bg-secondary pr-3">
-                    <i class="fas fa-dollar-sign"></i> LỌC THEO GIÁ
-                </span>
-            </h5>
+            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">LỌC THEO GIÁ</span></h5>
             <div class="bg-light p-4 mb-30">
                 <form id="filterForm">
                     <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
@@ -53,11 +36,7 @@
             </div>
             <!-- Price End -->
             <!-- Area Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3">
-                <span class="bg-secondary pr-3">
-                    <i class="fas fa-ruler-combined"></i> LỌC THEO DIỆN TÍCH
-                </span>
-            </h5>
+            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">LỌC THEO DIỆN TÍCH</span></h5>
             <div class="bg-light p-4 mb-30">
                 <form id="filterFormArea">
                     <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
@@ -82,189 +61,196 @@
                 </form>
             </div>
             <!-- Area End -->
-            <!-- Status Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3">
-                <span class="bg-secondary pr-3">
-                    <i class="fas fa-info-circle"></i> LỌC THEO TRẠNG THÁI
-                </span>
-            </h5>
-            <div class="bg-light p-4 mb-30">
-                <form id="filterFormStatus">
-                    <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
-                        <input type="radio" class="custom-control-input status-filter" checked id="status-all" name="status" value="">
-                        <label class="custom-control-label" for="status-all">Tất cả</label>
-                        <span class="badge border font-weight-normal">@ViewBag.TotalProducts</span>
-                    </div>
-                    @foreach (var status in ViewBag.TrangThaiList)
-                    {
-                        <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
-                            <input type="radio" class="custom-control-input status-filter"
-                                   id="status-@status"
-                                   name="status"
-                                   value="@status">
-                            <label class="custom-control-label" for="status-@status">@status</label>
-                            <span class="badge border font-weight-normal">
-                                @(Model.Count(p => p.TrangThai == status))
-                            </span>
-                        </div>
-                    }
-                </form>
-            </div>
-            <!-- Status End -->
-            <!-- Address Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3">
-                <span class="bg-secondary pr-3">
-                    <i class="fas fa-map-marker-alt"></i> LỌC THEO ĐỊA CHỈ
-                </span>
-            </h5>
-            <div class="bg-light p-4 mb-30">
-                <form id="filterFormAddress">
-                    <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
-                        <input type="radio" class="custom-control-input address-filter" checked id="address-all" name="address" value="">
-                        <label class="custom-control-label" for="address-all">Tất cả</label>
-                        <span class="badge border font-weight-normal">@ViewBag.TotalProducts</span>
-                    </div>
-                    @foreach (var address in ViewBag.AddressList)
-                    {
-                        <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
-                            <input type="radio" class="custom-control-input address-filter"
-                                   id="address-@address"
-                                   name="address"
-                                   value="@address">
-                            <label class="custom-control-label" for="address-@address">@address</label>
-                            <span class="badge border font-weight-normal">
-                                @(Model.Count(p => p.ToaNha.DiaChi == address))
-                            </span>
-                        </div>
-                    }
-                </form>
-            </div>
-            <!-- Address End -->
+            <!-- Đã bỏ phần Lọc theo Địa chỉ ở đây -->
         </div>
         <!-- Shop Sidebar End -->
         <!-- Shop Product Start -->
         <div class="col-lg-9 col-md-8">
-            <div class="row pb-3">
-                <div class="col-12 pb-1">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <div class="ml-2">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Sắp xếp</button>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#">Gần nhất</a>
-                                    <a class="dropdown-item" href="#">Phổ biến</a>
-                                    <a class="dropdown-item" href="#">Bán chạy nhất</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Danh sách sản phẩm -->
+            <div class="row pb-3 product-row">
                 @foreach (var product in Model)
                 {
-                    <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
-                        <div class="product-item bg-light mb-4">
+                    <div class="col-lg-4 col-md-6 col-sm-6 pb-4 d-flex">
+                        <div class="product-item bg-light shadow-sm rounded d-flex flex-column">
                             <div class="product-img position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="@(string.IsNullOrEmpty(product.Hinhanh) ? "/img/default-product.jpg" : product.Hinhanh)" alt="@product.SoPhong">
+                                <img class="img-fluid w-100"
+                                     src="@(string.IsNullOrEmpty(product.Hinhanh) ? Url.Content("~/img/default-product.jpg") : Url.Content("~/" + product.Hinhanh))"
+                                     alt="@product.SoPhong" />
+
                                 <div class="product-action">
-                                    <a class="btn btn-outline-dark btn-square" href="javascript:void(0)" data-toggle="modal" data-target="appointmentModal" title="Đặt lịch">
-                                        <i class="fas fa-calendar-alt"></i>
+                                    <a class="btn btn-outline-dark btn-square" href="javascript:void(0)" data-toggle="modal" data-target="#appointmentModal">
+                                        <i class="fa fa-calendar"></i>
                                     </a>
-                                    <a class="btn btn-outline-dark btn-square" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })" title="Xem chi tiết">
-                                        <i class="fas fa-search"></i>
+                                    <a class="btn btn-outline-dark btn-square" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })">
+                                        <i class="fa fa-search"></i>
                                     </a>
                                 </div>
                             </div>
-                            <div class="text-center py-4">
+                            <div class="text-center py-4 product-info flex-grow-1 d-flex flex-column justify-content-center">
                                 <a class="h6 text-decoration-none text-truncate" href="@Url.Action("Detail", "Shop", new { id = product.MaPhong })">@product.SoPhong</a>
-                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                <div class="d-flex align-items-center justify-content-center mt-2 flex-column">
                                     <h5>@product.GiaThue.ToString("#,##0 VNĐ")</h5>
+                                    <span class="badge badge-pill badge-info mt-2" style="font-size: 0.9rem;">@product.TrangThai</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 }
-
             </div>
         </div>
         <!-- Shop Product End -->
     </div>
 </div>
-<!-- Shop End -->
 
 <style>
-    /* Thu nhỏ font size tiêu chí lọc, giảm padding */
-    .custom-control-label {
-        font-size: 0.9rem;
-        cursor: pointer;
+    .container-fluid > .row.px-xl-5 {
+        margin-top: 1rem; /* cách navbar */
     }
 
-    .custom-control-input {
-        cursor: pointer;
+    /* Container flex setup cho product-row */
+    .product-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -15px;
+        margin-right: -15px;
     }
 
-    /* Giảm kích thước badge */
-    .badge {
-        font-size: 0.75rem;
-        padding: 0.25em 0.5em;
-        min-width: 25px;
-        text-align: center;
-    }
+        /* Padding đồng đều cho cột sản phẩm */
+        .product-row > div[class*='col-'] {
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-bottom: 1.5rem;
+            display: flex;
+        }
 
-    /* Giảm padding vùng filter */
-    .bg-light.p-4 {
-        padding: 1rem !important;
-    }
-
-    /* Bo tròn nhẹ các thẻ phòng */
+    /* Khung sản phẩm */
     .product-item {
+        background-color: #fff;
         border-radius: 12px;
-        overflow: hidden;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
         transition: box-shadow 0.3s ease;
-        background: white;
     }
 
         .product-item:hover {
             box-shadow: 0 6px 18px rgba(0,0,0,0.15);
         }
 
-    /* Nút action trong phòng trọ */
-    .product-action a.btn {
+    /* Ảnh sản phẩm */
+    .product-img {
+        position: relative;
+        width: 100%;
+        padding-top: 75%; /* tỉ lệ 4:3 */
+        overflow: hidden;
+    }
+
+        .product-img img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .product-img:hover img {
+            transform: scale(1.05);
+        }
+
+    /* Phần thông tin sản phẩm */
+    .product-info {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+
+        .product-info a {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-info h5 {
+            color: #e67e22;
+            margin-top: 0.5rem;
+        }
+
+    /* Badge trạng thái */
+    .badge-info {
+        background-color: #17a2b8;
+        color: white;
+        padding: 0.35em 0.75em;
+        border-radius: 10rem;
+    }
+
+    /* Nút thao tác trên ảnh */
+    .product-action {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        background: rgba(255, 255, 255, 0.7);
+        transition: opacity 0.3s ease;
+    }
+
+    .product-item:hover .product-action {
+        opacity: 1;
+    }
+
+    .product-action a {
+        display: inline-block;
         width: 40px;
         height: 40px;
-        border-radius: 50%;
-        font-size: 1.1rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        margin: 0 5px;
+        padding: 7px 0;
+        text-align: center;
+        border-radius: 0;
+        color: #333;
+        font-size: 18px;
+        background: #fff;
+        border: 1px solid #ddd;
         transition: background-color 0.3s ease;
     }
 
-        .product-action a.btn:hover {
-            background-color: #007bff;
+        .product-action a:hover {
+            background-color: #e67e22;
             color: white;
+            border-color: #e67e22;
         }
 
-    /* Tiêu đề lọc thêm icon */
-    .section-title span {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+    /* Responsive */
+    @@media (max-width: 991px) {
+        .product-row > div[class*='col-'] {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .product-info a {
+            font-size: 1rem;
+        }
     }
-
-        /* Icon style cho lọc */
-        .section-title span i {
-            font-size: 1.2rem;
-            color: #6c757d;
-        }
 </style>
 
 <script>
-    // Xử lý lọc sản phẩm
+    // Script xử lý lọc sản phẩm
     document.addEventListener('DOMContentLoaded', function() {
-        $('.price-filter, .area-filter, .status-filter').change(function() {
+        $('.price-filter, .area-filter').change(function() {
             if ($(this).attr('id').endsWith('-all')) {
                 if ($(this).prop('checked')) {
                     $(`.${$(this).attr('class').split(' ')[1]}:not([id$=all])`).prop('checked', false);
@@ -275,18 +261,15 @@
 
             var selectedPrices = getSelectedValues('price-filter');
             var selectedAreas = getSelectedValues('area-filter');
-            var selectedStatus = getSelectedValues('status-filter');
 
             if (selectedPrices.length === 0) $('#price-all').prop('checked', true);
             if (selectedAreas.length === 0) $('#area-all').prop('checked', true);
-            if (selectedStatus.length === 0) $('#status-all').prop('checked', true);
 
             var url = new URL(window.location.href);
             url.searchParams.delete('minPrice');
             url.searchParams.delete('maxPrice');
             url.searchParams.delete('minArea');
             url.searchParams.delete('maxArea');
-            url.searchParams.delete('status');
 
             if (!$('#price-all').prop('checked') && selectedPrices.length > 0) {
                 var priceRange = selectedPrices[0].split('-');
@@ -302,10 +285,6 @@
                 if (areaRange[1] !== 'null') {
                     url.searchParams.set('maxArea', areaRange[1]);
                 }
-            }
-
-            if (!$('#status-all').prop('checked') && selectedStatus.length > 0) {
-                url.searchParams.set('status', selectedStatus.join(','));
             }
 
             window.location.href = url.toString();
@@ -333,13 +312,6 @@
             var min = urlParams.get('minArea');
             var max = urlParams.get('maxArea') || 'null';
             $(`input[value="${min}-${max}"]`).prop('checked', true);
-        }
-
-        if (urlParams.has('status')) {
-            $('#status-all').prop('checked', false);
-            urlParams.get('status').split(',').forEach(function(status) {
-                $('#status-' + status).prop('checked', true);
-            });
         }
     });
 </script>

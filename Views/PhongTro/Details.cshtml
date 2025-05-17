@@ -6,371 +6,159 @@
 
 @if (Model == null)
 {
-    <h2 class="text-danger">Phòng trọ không tồn tại!</h2>
+    <h2 class="text-danger text-center mt-5">Phòng trọ không tồn tại!</h2>
     return;
 }
 
-<div class="container mt-5">
+<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
     <div class="row">
-        <!-- Hình ảnh phòng -->
-        <div class="col-md-6">
-            <div id="product-carousel" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    @if (!string.IsNullOrEmpty(Model.Hinhanh))
-                    {
-                        <div class="carousel-item active">
-                            <img class="d-block w-100 product-image" src="@Url.Content("~/" + Model.Hinhanh)" alt="Hình ảnh phòng">
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="carousel-item active">
-                            <img class="d-block w-100 product-image" src="~/img/default-product.jpg" alt="Không có hình ảnh">
-                        </div>
-                    }
-                </div>              
-            </div>
+        <!-- Ảnh phòng -->
+        <div class="col-lg-9 mb-4 d-flex justify-content-center align-items-center">
+            <img src="@(!string.IsNullOrEmpty(Model.Hinhanh) ? Url.Content("~/" + Model.Hinhanh) : Url.Content("~/img/default-product.jpg"))"
+                 alt="Hình ảnh phòng @Model.SoPhong"
+                 style="width: 1011px; max-height: 512px; object-fit: cover; border-radius: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
         </div>
 
         <!-- Thông tin phòng -->
-        <div class="col-md-6">
-            <h2 class="mb-3 text-primary">Phòng @Model.SoPhong</h2>
+        <div class="col-lg-3 d-flex flex-column justify-content-between">
+            <div>
+                <h2 class="mb-4 text-primary font-weight-bold">Phòng @Model.SoPhong</h2>
 
-            <p><strong>Giá thuê:</strong> <span class="text-danger">@Model.GiaThue.ToString("#,##0 VNĐ")</span></p>
-            <p><strong>Diện tích:</strong> @Model.DienTich m²</p>
-            <p><strong>Tầng:</strong> @(Model.Tang.ToString() ?? "Không rõ")</p>
-            <p><strong>Trạng thái:</strong> @Model.TrangThai</p>
-            <p><strong>Mô tả:</strong> @Model.MoTa</p>
+                <p><strong>Giá thuê:</strong> <span class="text-danger font-weight-bold">@Model.GiaThue.ToString("#,##0 VNĐ")</span></p>
+                <p><strong>Diện tích:</strong> @Model.DienTich m²</p>
+                <p><strong>Tầng:</strong> @(Model.Tang.ToString() ?? "Không rõ")</p>
+                <p><strong>Trạng thái:</strong> <span class="badge badge-info p-2">@Model.TrangThai</span></p>
+                <p><strong>Mô tả:</strong> @Model.MoTa</p>
 
-            <hr />
+                <hr />
 
-            <p><strong>Thuộc tòa nhà:</strong> @Model.ToaNha?.TenToaNha</p>
-            <p><strong>Địa chỉ tòa nhà:</strong> @Model.ToaNha?.DiaChi</p>
+                <p><strong>Thuộc tòa nhà:</strong> @Model.ToaNha?.TenToaNha</p>
+                <p><strong>Địa chỉ tòa nhà:</strong> @Model.ToaNha?.DiaChi</p>
 
-            @if (Model.ToaNha?.ChuTro != null)
-            {
-                <p><strong>Chủ trọ:</strong> @Model.ToaNha.ChuTro.HoTen</p>
-                <p><strong>Số điện thoại:</strong> @Model.ToaNha.ChuTro.SoDienThoai</p>
-            }
-            <!-- Nút Back to List và Đặt lịch hẹn -->
-            <div class="mb-4 d-flex gap-3">
-                <a asp-controller="PhongTro" asp-action="Index" class="back-to-list">
-                    <i class="fas fa-arrow-left mr-2"></i>Quay lại danh sách
+                @if (Model.ToaNha?.ChuTro != null)
+                {
+                    <p><strong>Chủ trọ:</strong> @Model.ToaNha.ChuTro.HoTen</p>
+                    <p><strong>Số điện thoại:</strong> @Model.ToaNha.ChuTro.SoDienThoai</p>
+                }
+            </div>
+
+            <div class="mt-4 d-flex gap-2 flex-wrap align-items-center">
+                <a asp-controller="PhongTro" asp-action="Index" class="btn btn-secondary btn-md rounded-pill d-flex align-items-center px-3 py-1">
+                    <i class="fas fa-arrow-left mr-2"></i> Quay lại danh sách
                 </a>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#appointmentModal">
-                    <i class="fas fa-calendar-alt mr-2"></i>Đặt lịch hẹn
+                <button type="button" class="btn btn-primary btn-md rounded-pill d-flex align-items-center px-3 py-1" data-toggle="modal" data-target="#appointmentModal">
+                    <i class="fas fa-calendar-alt mr-2"></i> Đặt lịch hẹn
                 </button>
             </div>
+
         </div>
-        
     </div>
-    
 </div>
 
 <!-- Modal Đặt lịch hẹn -->
 <div class="modal fade" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content rounded shadow-sm">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="appointmentModalLabel">Đặt lịch hẹn xem phòng @Model.SoPhong</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="appointmentForm">
+                <form id="appointmentForm" novalidate>
                     <div class="form-group">
                         <label for="appointmentDate">Ngày hẹn</label>
-                        <input type="date" class="form-control" id="appointmentDate" required>
+                        <input type="date" class="form-control" id="appointmentDate" required />
                     </div>
                     <div class="form-group">
                         <label for="appointmentTime">Giờ hẹn</label>
-                        <input type="time" class="form-control" id="appointmentTime" required>
+                        <input type="time" class="form-control" id="appointmentTime" required />
                     </div>
                     <div class="form-group">
                         <label for="note">Ghi chú (tùy chọn)</label>
-                        <textarea class="form-control" id="note" rows="4"></textarea>
+                        <textarea class="form-control" id="note" rows="3"></textarea>
                     </div>
-                    <input type="hidden" id="phongTroId" value="@Model.MaPhong">
+                    <input type="hidden" id="phongTroId" value="@Model.MaPhong" />
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="submitAppointment()">Xác nhận</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="submitAppointment()">Xác nhận</button>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    // Hàm gửi yêu cầu đặt lịch hẹn
-    function submitAppointment() {
-        var date = document.getElementById("appointmentDate").value;
-        var time = document.getElementById("appointmentTime").value;
-        var note = document.getElementById("note").value;
-        var phongTroId = document.getElementById("phongTroId").value;
+@section Scripts {
+    <script>
+        function submitAppointment() {
+            var date = document.getElementById("appointmentDate").value;
+            var time = document.getElementById("appointmentTime").value;
+            var note = document.getElementById("note").value;
+            var phongTroId = document.getElementById("phongTroId").value;
 
-        if (!date || !time) {
-            alert("Vui lòng chọn ngày và giờ hẹn!");
-            return;
-        }
+            if (!date || !time) {
+                alert("Vui lòng chọn ngày và giờ hẹn!");
+                return;
+            }
 
-        fetch('/PhongTro/BookAppointment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                MaPhong: phongTroId,
-                NgayHen: date,
-                GioHen: time,
-                GhiChu: note
+            fetch('/PhongTro/BookAppointment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    MaPhong: phongTroId,
+                    NgayHen: date,
+                    GioHen: time,
+                    GhiChu: note
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Yêu cầu đặt lịch hẹn đã được gửi! Bạn sẽ nhận được thông báo khi được chấp nhận.");
-                $('#appointmentModal').modal('hide');
-            } else {
-                alert("Lỗi: " + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Lỗi:', error);
-            alert("Đã xảy ra lỗi khi gửi yêu cầu đặt lịch hẹn!");
-        });
-    }
-
-    // Đảm bảo ngày tối thiểu là ngày hiện tại
-    document.getElementById("appointmentDate").min = new Date().toISOString().split("T")[0];
-
-
-
-
-    // thêm giỏ hàng
-     function addToCart() {
-        var productId = document.getElementById("productId").value;
-        var selectedSize = document.querySelector('input[name="size"]:checked');
-        var size = selectedSize ? selectedSize.value : "";
-        var quantity = document.getElementById("quantityInput").value;
-
-        if (!size || size === "all") {
-            alert("Vui lòng chọn size trước khi thêm vào giỏ hàng!");
-            return;
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Yêu cầu đặt lịch hẹn đã được gửi! Bạn sẽ nhận được thông báo khi được chấp nhận.");
+                    $('#appointmentModal').modal('hide');
+                } else {
+                    alert("Lỗi: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                alert("Đã xảy ra lỗi khi gửi yêu cầu đặt lịch hẹn!");
+            });
         }
 
-        fetch('/Cart/AddToCart?productId=' + productId + '&size=' + size + '&quantity=' + quantity, {
-            method: 'GET'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Cập nhật số lượng trên icon giỏ hàng
-                document.querySelectorAll('.fa-shopping-cart').forEach(icon => {
-                    const badge = icon.nextElementSibling;
-                    if (badge) {
-                        badge.textContent = data.count;
-                    }
-                });
-                alert("Sản phẩm đã được thêm vào giỏ hàng!");
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Lỗi:', error);
-            alert("Lỗi! Không thể thêm vào giỏ hàng: " + error.message);
-        });
-    }
-
-
-
-     document.querySelectorAll('.size-radio').forEach(radio => {
-        radio.addEventListener('change', function () {
-            let stock = this.getAttribute("data-stock") || "0";
-            document.getElementById("availableStock").innerText = stock;
-            document.getElementById("quantityInput").value = 1;
-
-            let isAllSelected = this.value === "all"; // Kiểm tra nếu chọn "Tất cả"
-            let quantityInput = document.getElementById("quantityInput");
-            let minusButton = document.querySelector(".btn-black:first-child");
-            let plusButton = document.querySelector(".btn-black:last-child");
-            let addToCartButton = document.querySelector(".btn-primary");
-
-            if (isAllSelected) {
-                quantityInput.disabled = true;
-                minusButton.disabled = true;
-                plusButton.disabled = true;
-                addToCartButton.disabled = true;
-                addToCartButton.style.opacity = "0.5";
-            } else {
-                quantityInput.disabled = false;
-                minusButton.disabled = false;
-                plusButton.disabled = false;
-                addToCartButton.disabled = false;
-                addToCartButton.style.opacity = "1";
-            }
-        });
-    });
-
-
-
-    // Đảm bảo trạng thái ban đầu khi tải trang
-    document.addEventListener("DOMContentLoaded", function () {
-        let firstSize = document.querySelector('.size-radio:checked');
-        if (firstSize) {
-            let stock = firstSize.getAttribute("data-stock") || "0";
-            document.getElementById("availableStock").innerText = stock;
-
-            let isAllSelected = firstSize.value === "all";
-            let quantityInput = document.getElementById("quantityInput");
-            let minusButton = document.querySelector(".btn-black:first-child");
-            let plusButton = document.querySelector(".btn-black:last-child");
-            let addToCartButton = document.querySelector(".btn-primary");
-
-            if (isAllSelected) {
-                quantityInput.disabled = true;
-                minusButton.disabled = true;
-                plusButton.disabled = true;
-                addToCartButton.disabled = true;
-                addToCartButton.style.opacity = "0.5";
-            }
-        }
-    });
-
-
-    function changeQuantity(amount) {
-        let quantityInput = document.getElementById("quantityInput");
-        let stockQuantity = parseInt(document.getElementById("availableStock").innerText || "0");
-
-        let currentQuantity = parseInt(quantityInput.value) || 1;
-        let newQuantity = currentQuantity + amount;
-
-        if (newQuantity < 1) {
-            newQuantity = 1;
-        } else if (newQuantity > stockQuantity) {
-            newQuantity = stockQuantity;
-        }
-
-        quantityInput.value = newQuantity;
-    }
-
-    document.getElementById("quantityInput").addEventListener("input", function () {
-        let stockQuantity = parseInt(document.getElementById("availableStock").innerText || "0");
-        let inputValue = parseInt(this.value) || 1;
-
-        if (inputValue < 1) {
-            this.value = 1;
-        } else if (inputValue > stockQuantity) {
-            this.value = stockQuantity;
-        }
-    });
-</script>
+        document.getElementById("appointmentDate").min = new Date().toISOString().split("T")[0];
+    </script>
+}
 
 <style>
-    .quantity-box {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-    }
-
-    .small-input {
-        width: 50px;
-        height: 35px;
-        text-align: center;
-        font-size: 16px;
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    .btn-black {
-        background-color: black !important;
-        color: white !important;
-        border: none;
-        width: 35px;
-        height: 35px;
-        font-size: 20px;
-        text-align: center;
-        line-height: 30px;
-        border-radius: 5px;
-    }
-
-        .btn-black:hover {
-            background-color: #333 !important;
-        }
-
-    .size-options {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .size-radio {
-        display: none;
-    }
-
-    .size-label {
-        padding: 10px 15px;
-        border: 2px solid #ccc;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        background-color: #fff;
-        transition: all 0.3s ease;
-    }
-
-    .size-radio:checked + .size-label {
-        background-color: black;
+    .badge-info {
+        background-color: #17a2b8;
         color: white;
-        border-color: black;
+        padding: 0.35em 0.75em;
+        border-radius: 50rem;
+        font-size: 0.9rem;
     }
 
-    .custom-carousel-control .nav-button {
-        background-color: black;
-        padding: 12px;
-        border-radius: 50%;
-        transition: 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 45px;
-        height: 45px;
-    }
-
-        .custom-carousel-control .nav-button:hover {
-            background-color: #444;
-        }
-
-    .btn-black:disabled, .btn-primary:disabled {
-        cursor: not-allowed;
-        opacity: 0.5;
-    }
-    /* Style cho nút Back to List */
-    .back-to-list {
-        display: inline-block;
-        padding: 8px 15px; /* Giảm padding để nút nhỏ hơn */
-        font-size: 0.9rem; /* Giảm font-size */
-        font-weight: 500;
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
         color: #fff;
-        background-color: #6c757d; /* Màu xám nhạt */
-        border: none;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Bóng nhẹ hơn */
+        transition: background-color 0.3s ease;
     }
 
-        .back-to-list:hover {
-            background-color: #5a6268; /* Xám đậm hơn khi hover */
-            transform: translateY(-1px); /* Nâng nhẹ khi hover */
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15); /* Bóng tăng nhẹ */
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+            color: #fff;
         }
 
-        .back-to-list:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    .btn-primary {
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #004085;
         }
 </style>

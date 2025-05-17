@@ -221,11 +221,34 @@
         }
     </style>
 
-    <div class="container-fluid pt-3" >
+    <div class="container-fluid pt-3">
         <style>
             .card {
                 border-radius: 12px !important; /* Bo tròn nhẹ góc */
                 overflow: hidden; /* Đảm bảo hình ảnh không tràn ra ngoài */
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .product-img {
+                height: 250px;
+                overflow: hidden;
+            }
+
+                .product-img img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+
+            .card-body {
+                background-color: #f9d5a0;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 1rem 1rem 1.5rem 1rem;
             }
 
             .section-title span {
@@ -233,6 +256,38 @@
                 color: #0e168a !important; /* Xanh biển đậm, như feature-text */
                 padding-right: 12px; /* Giữ padding như bg-secondary */
             }
+
+            .card-title {
+                font-weight: 600;
+                font-size: 1.25rem;
+            }
+
+            .card-text {
+                flex-grow: 1;
+                margin-top: 0.5rem;
+                font-size: 0.95rem;
+                color: #444;
+            }
+
+            .btn-custom {
+                align-self: center;
+                margin-top: 1rem;
+                background-color: #0e168a;
+                color: white;
+                border-radius: 20px;
+                padding: 6px 20px;
+                font-size: 0.9rem;
+                border: none;
+                transition: background-color 0.3s ease;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+                .btn-custom:hover {
+                    background-color: #061044;
+                    color: #fff;
+                    text-decoration: none;
+                }
         </style>
 
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
@@ -240,62 +295,63 @@
         </h2>
         <div class="row px-xl-5">
             <!-- Phòng trọ 1 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card border-0 mb-4">
-                    <div class="product-img" style="height: 250px;">
-                        <img src="images/trotruyenthong.jpg" alt="Phòng trọ truyền thống">
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1 d-flex">
+                <div class="card border-0 mb-4 w-100">
+                    <div class="product-img">
+                        <img src="images/trotruyenthong.jpg" alt="Phòng trọ sinh viên">
                     </div>
-                    <div class="card-body text-center" style="background-color: #f9d5a0;">
+                    <div class="card-body text-center">
                         <h5 class="card-title">Trọ truyền thống</h5>
-                        <p class="card-text">Thiết kế truyền thống, giá cả và chất lượng sinh hoạt phù hợp với sinh viên.</p>
-                        <a href="/PhongTro/Index" class="btn btn-custom btn-sm">Tham khảo ngay</a>
+                        <p class="card-text">Giá cả hợp lý, chỉ từ 2 triệu đồng </p>
+                        <a asp-controller="PhongTro" asp-action="Index" asp-route-maxPrice="2000000" class="btn btn-custom btn-sm">Tham khảo ngay</a>
                     </div>
                 </div>
             </div>
 
             <!-- Phòng trọ 2 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card border-0 mb-4">
-                    <div class="product-img" style="height: 250px;">
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1 d-flex">
+                <div class="card border-0 mb-4 w-100">
+                    <div class="product-img">
                         <img src="images/trocaocap.jpg" alt="Phòng trọ cao cấp">
                     </div>
-                    <div class="card-body text-center" style="background-color: #f9d5a0;">
+                    <div class="card-body text-center">
                         <h5 class="card-title">Trọ cao cấp</h5>
-                        <p class="card-text">Không gian linh hoạt, thuận tiện cho người đi làm với vị trí trung tâm và an ninh đảm bảo.</p>
-                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-custom btn-sm">Tham khảo ngay</a>
+                        <p class="card-text">Không gian linh hoạt, thuận tiện cho người đi làm với vị trí trung tâm và an ninh đảm bảo, giá từ 4 triệu đồng.</p>
+                        <a asp-controller="PhongTro" asp-action="Index" asp-route-minPrice="4000000" class="btn btn-custom btn-sm">Tham khảo ngay</a>
                     </div>
                 </div>
             </div>
 
             <!-- Phòng trọ 3 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card border-0 mb-4">
-                    <div class="product-img" style="height: 250px;">
-                        <img src="images/canhomini.webp" alt="Căn hộ mini">
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1 d-flex">
+                <div class="card border-0 mb-4 w-100">
+                    <div class="product-img">
+                        <img src="images/canhomini.webp" alt="Trọ cao cấp Quận 1">
                     </div>
-                    <div class="card-body text-center" style="background-color: #f9d5a0;">
+                    <div class="card-body text-center">
                         <h5 class="card-title">Căn hộ Mini</h5>
-                        <p class="card-text">Thiết kế phá cách, độc đáo cho những ai yêu thích không gian cá nhân đậm chất riêng.</p>
-                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-custom btn-sm">Tham khảo ngay</a>
+                        <p class="card-text">Thiết kế phá cách, nằm ở trung tâm Quận 1.</p>
+                        <a asp-controller="PhongTro" asp-action="Index" asp-route-searchTerm="Quận 1" class="btn btn-custom btn-sm">Tham khảo ngay</a>
                     </div>
                 </div>
             </div>
 
             <!-- Phòng trọ 4 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card border-0 mb-4">
-                    <div class="product-img" style="height: 250px;">
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1 d-flex">
+                <div class="card border-0 mb-4 w-100">
+                    <div class="product-img">
                         <img src="images/trogiadinh.jpeg" alt="Phòng trọ gia đình">
                     </div>
-                    <div class="card-body text-center" style="background-color: #f9d5a0;">
+                    <div class="card-body text-center">
                         <h5 class="card-title">Trọ gia đình</h5>
-                        <p class="card-text">Không gian ấm cúng, thiết kế tinh tế, phù hợp cho gia đình nhỏ hoặc cặp đôi sinh sống.</p>
-                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-custom btn-sm">Tham khảo ngay</a>
+                        <p class="card-text">Không gian rộng rãi, diện tích từ 40.00 - 60.00 m², phù hợp cho sinh hoạt gia đình.</p>
+                        <a asp-controller="PhongTro" asp-action="Index" asp-route-minArea="40" asp-route-maxArea="60" class="btn btn-custom btn-sm">Tham khảo ngay</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Sản phẩm nổi bật End -->
     <!-- Phân loại sản phẩm End -->
     <!-- Sản phẩm giảm giá nổi bật Start -->
@@ -313,7 +369,7 @@
                     <div class="offer-text" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 0; padding: 0;">
                         <h6 class="text-white text-uppercase">Save 20%</h6>
                         <h3 class="text-white mb-3">Special Offer</h3>
-                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-success ">Tham khảo ngay</a>
+                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-custom btn-sm">Tham khảo ngay</a>
                     </div>
                 </div>
             </div>
@@ -323,7 +379,7 @@
                     <div class="offer-text" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 0; padding: 0;">
                         <h6 class="text-white text-uppercase">Save 20%</h6>
                         <h3 class="text-white mb-3">Special Offer</h3>
-                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-success ">Tham khảo ngay</a>
+                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-custom btn-sm ">Tham khảo ngay</a>
                     </div>
                 </div>
             </div>

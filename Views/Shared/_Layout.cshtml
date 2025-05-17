@@ -61,6 +61,12 @@
                 </div>
 
                 <style>
+                    .modal {
+                        z-index: 11000 !important;
+                    }
+
+                    .modal-backdrop {
+                        z-index: 10900 !important;
                     @@keyframes logoBounce {
                         0%
 
@@ -90,7 +96,7 @@
                 <div class="col-lg-4 col-6 text-left">
                     <form asp-controller="Phongtro" asp-action="Index" method="get">
                         <div class="input-group">
-                            <input type="text" class="form-control search-input" name="searchTerm" placeholder="Tìm kiếm sản phẩm..." value="@Context.Request.Query["searchTerm"]">
+                            <input type="text" class="form-control search-input" name="searchTerm" placeholder="Tìm kiếm trọ theo tên đường/quận/thành phố,.." value="@Context.Request.Query["searchTerm"]">
                             <div class="input-group-append">
                                 <button class="btn search-button" type="submit">
                                     <i class="fa fa-search"></i>
