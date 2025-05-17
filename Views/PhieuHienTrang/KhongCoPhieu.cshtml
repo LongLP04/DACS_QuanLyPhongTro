@@ -3,6 +3,32 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="alert alert-warning">
-    Hiện tại bạn chưa có phiếu hiện trạng nào được tạo.
+<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.9);">
+    <div class="alert alert-warning text-center fs-5" style="color: #856404; border:none;">
+        Hiện tại bạn chưa có phiếu hiện trạng nào được tạo.
+    </div>
+
+    <div class="mt-5 text-center">
+        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+            <i class="fas fa-arrow-left mr-2"></i> Quay về Phòng trọ của tôi
+        </a>
+    </div>
 </div>
+
+<style>
+    .btn-hover-effect {
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50rem !important;
+    }
+
+        .btn-hover-effect:hover {
+            background-color: #75c98e !important;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
+        }
+
+        .btn-hover-effect:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+</style>

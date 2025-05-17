@@ -28,3 +28,20 @@
         }
     </div>
 </div>
+<style>
+    .dropdown-menu {
+        position: absolute; /* Đảm bảo dropdown hiển thị đúng vị trí */
+        z-index: 3000 !important; /* Đặt z-index cao để nổi trên navbar */
+        background-color: #fff; /* Nền trắng để dễ nhìn */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Bóng mờ tạo nổi bật */
+        border-radius: 8px; /* Bo tròn các góc */
+        min-width: 10rem; /* Chiều rộng tối thiểu */
+    }
+
+    /* Nếu dropdown nằm bên phải, căn chỉnh đúng */
+    .dropdown-menu-right {
+        right: 0;
+        left: auto;
+    }
+
+</style>

@@ -1,30 +1,74 @@
 ﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.HopDong>
 @{
     ViewData["Title"] = "Xác Nhận Hợp Đồng";
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Điều chỉnh layout nếu cần
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Hợp đồng chờ xác nhận</h2>
+<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+    <h2 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        Hợp đồng chờ xác nhận
+    </h2>
 
-@if (Model.Any())
-{
-    <ul>
-        @foreach (var hopDong in Model)
-        {
-            <li>
-                Hợp đồng mã: @hopDong.MaHopDong - Phòng: @hopDong.PhongTro.SoPhong - Trạng thái: @hopDong.TrangThai
-                <form asp-controller="HopDong" asp-action="XacNhan" method="post" style="display:inline;">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="maHopDong" value="@hopDong.MaHopDong" />
-                    <button type="submit" name="dongY" value="true" class="btn btn-success">Xác nhận</button>
-                    <button type="submit" name="dongY" value="false" class="btn btn-danger">Từ chối</button>
-                </form>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center fs-5" style="color: #856404; border:none;">
+            Hiện không có hợp đồng nào chờ xác nhận.
+        </div>
+    }
+    else
+    {
+        <ul class="list-group shadow-sm rounded">
+            @foreach (var hopDong in Model)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center"
+                    style="
+                        border-left: 6px solid @(hopDong.TrangThai == "Đã Xác Nhận" ? "transparent" : "#f4a261");
+                        color: @(hopDong.TrangThai == "Đã Xác Nhận" ? "#6c584c" : "#4a3c2f");
+                        font-weight: @(hopDong.TrangThai == "Đã Xác Nhận" ? "400" : "600");
+                        cursor: default;
+                            ">
+                    <div>
+                        <strong>Mã hợp đồng:</strong> @hopDong.MaHopDong<br />
+                        <strong>Phòng:</strong> @hopDong.PhongTro?.SoPhong ?? "Không xác định"<br />
+                        <strong>Trạng thái:</strong> @hopDong.TrangThai
+                    </div>
 
-            </li>
+                    <form asp-controller="HopDong" asp-action="XacNhan" method="post" class="d-flex gap-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="maHopDong" value="@hopDong.MaHopDong" />
+                        <button type="submit" name="dongY" value="true" class="btn btn-success btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+                            <i class="fas fa-check mr-2"></i> Xác nhận
+                        </button>
+                        <button type="submit" name="dongY" value="false" class="btn btn-danger btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+                            <i class="fas fa-times mr-2"></i> Từ chối
+                        </button>
+                    </form>
+                </li>
+            }
+        </ul>
+    }
+
+    <div class="mt-5 text-center">
+        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+            <i class="fas fa-arrow-left mr-2"></i> Quay về Phòng trọ của tôi
+        </a>
+    </div>
+</div>
+
+<style>
+    .btn-hover-effect {
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50rem !important; /* bo tròn dạng pill */
+    }
+
+        .btn-hover-effect:hover {
+            background-color: #75c98e !important; /* màu xanh đậm hơn khi hover */
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
         }
-    </ul>
-}
-else
-{
-    <p>Không có hợp đồng chờ xác nhận.</p>
-}
+
+        .btn-hover-effect:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+</style>

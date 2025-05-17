@@ -1,44 +1,83 @@
 ﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.HoaDon>
 @{
     ViewData["Title"] = "Hóa đơn cần thanh toán";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3>@ViewData["Title"]</h3>
-<div class="mb-3 text-end">
-    <a href="@Url.Action("LichSuThanhToan", "PhieuThanhToan")" class="btn btn-warning">
-        Lịch sử thanh toán
-    </a>
+<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.85);">
+
+    <h3 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        @ViewData["Title"]
+    </h3>
+
+    <div class="mb-3 text-end">
+        <a href="@Url.Action("LichSuThanhToan", "PhieuThanhToan")" class="btn btn-warning btn-hover-effect rounded-pill px-4 shadow-sm">
+            Lịch sử thanh toán
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center fs-5">
+            Không có hóa đơn nào cần thanh toán.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-bordered mb-0" style="background-color: white; border-radius: 15px; overflow: hidden;">
+                <thead>
+                    <tr>
+                        <th>Phòng</th>
+                        <th>Ngày lập</th>
+                        <th>Tổng tiền</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.PhongTro.SoPhong</td>
+                            <td>@item.NgayLap.ToString("dd/MM/yyyy")</td>
+                            <td>@item.TongTien.ToString("N0") VND</td>
+                            <td>
+                                <a href="@Url.Action("ThanhToan", new { id = item.MaHoaDon })" class="btn btn-success btn-sm btn-hover-effect rounded-pill px-3 shadow-sm">
+                                    Thanh toán
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    <div class="mt-5 text-center">
+        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+            <i class="fas fa-arrow-left mr-2"></i> Quay về Phòng trọ của tôi
+        </a>
+    </div>
 </div>
-@if (!Model.Any())
-{
-    <div class="alert alert-info">Không có hóa đơn nào cần thanh toán.</div>
-}
-else
-{
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Phòng</th>
-                <th>Ngày lập</th>
-                <th>Tổng tiền</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.PhongTro.SoPhong</td>
-                    <td>@item.NgayLap.ToString("dd/MM/yyyy")</td>
-                    <td>@item.TongTien.ToString("N0") VND</td>
-                    <td>
-                        <a href="@Url.Action("ThanhToan", new { id = item.MaHoaDon })" class="btn btn-success btn-sm">Thanh toán</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    
 
-}
+<style>
+    thead {
+        background-color: #a0522d;
+        color: white;
+    }
+
+    .btn-hover-effect {
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50rem !important; /* bo tròn dạng pill */
+    }
+
+        .btn-hover-effect:hover {
+            background-color: #75c98e !important; /* màu xanh đậm hơn khi hover */
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
+        }
+
+        .btn-hover-effect:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+</style>

@@ -43,10 +43,7 @@ namespace DACS_QuanLyPhongTro.Controllers
                 .Include(h => h.PhongTro)
                 .ToListAsync();
 
-            if (!hopDongs.Any())
-            {
-                return NotFound("Không có hợp đồng chờ xác nhận.");
-            }
+            
 
             // Lưu số lượng hợp đồng chờ xác nhận vào session
             HttpContext.Session.SetInt32("HopDongCount", hopDongs.Count);

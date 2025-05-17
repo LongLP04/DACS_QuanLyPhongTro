@@ -1,8 +1,9 @@
-﻿@{
-    ViewData["Title"] = "Index";
+﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.PhongTro>
+
+@{
+    ViewData["Title"] = "Danh sách phòng trọ";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 
 <!-- Breadcrumb Start -->
 <div class="container-fluid">
@@ -16,14 +17,17 @@
     </div>
 </div>
 <!-- Breadcrumb End -->
-
-    <!-- Shop Start -->
-    <div class="container-fluid">
-        <div class="row px-xl-5">
-            <!-- Shop Sidebar Start -->
+<!-- Shop Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <!-- Shop Sidebar Start -->
         <div class="col-lg-3 col-md-4">
             <!-- Price Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">LỌC THEO GIÁ</span></h5>
+            <h5 class="section-title position-relative text-uppercase mb-3">
+                <span class="bg-secondary pr-3">
+                    <i class="fas fa-dollar-sign"></i> LỌC THEO GIÁ
+                </span>
+            </h5>
             <div class="bg-light p-4 mb-30">
                 <form id="filterForm">
                     <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
@@ -49,7 +53,11 @@
             </div>
             <!-- Price End -->
             <!-- Area Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">LỌC THEO DIỆN TÍCH</span></h5>
+            <h5 class="section-title position-relative text-uppercase mb-3">
+                <span class="bg-secondary pr-3">
+                    <i class="fas fa-ruler-combined"></i> LỌC THEO DIỆN TÍCH
+                </span>
+            </h5>
             <div class="bg-light p-4 mb-30">
                 <form id="filterFormArea">
                     <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
@@ -75,7 +83,11 @@
             </div>
             <!-- Area End -->
             <!-- Status Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">LỌC THEO TRẠNG THÁI</span></h5>
+            <h5 class="section-title position-relative text-uppercase mb-3">
+                <span class="bg-secondary pr-3">
+                    <i class="fas fa-info-circle"></i> LỌC THEO TRẠNG THÁI
+                </span>
+            </h5>
             <div class="bg-light p-4 mb-30">
                 <form id="filterFormStatus">
                     <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
@@ -100,7 +112,11 @@
             </div>
             <!-- Status End -->
             <!-- Address Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">LỌC THEO ĐỊA CHỈ</span></h5>
+            <h5 class="section-title position-relative text-uppercase mb-3">
+                <span class="bg-secondary pr-3">
+                    <i class="fas fa-map-marker-alt"></i> LỌC THEO ĐỊA CHỈ
+                </span>
+            </h5>
             <div class="bg-light p-4 mb-30">
                 <form id="filterFormAddress">
                     <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
@@ -125,17 +141,12 @@
             </div>
             <!-- Address End -->
         </div>
-
-            <!-- Shop Sidebar End -->
-
-
+        <!-- Shop Sidebar End -->
         <!-- Shop Product Start -->
         <div class="col-lg-9 col-md-8">
             <div class="row pb-3">
                 <div class="col-12 pb-1">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        
-
                         <div class="ml-2">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Sắp xếp</button>
@@ -145,123 +156,10 @@
                                     <a class="dropdown-item" href="#">Bán chạy nhất</a>
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
 
-                @* Danh sách sản phẩm *@
-                @model IEnumerable<DACS_QuanLyPhongTro.Models.PhongTro>
-
-                <!-- Danh sách sản phẩm -->
-                <!-- Danh sách sản phẩm -->
-                <style>
-                    .product-img {
-                        position: relative;
-                        overflow: hidden;
-                        padding-top: 100%;
-                    }
-
-                        .product-img img {
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            height: 100%;
-                            width: 100%;
-                            object-fit: cover;
-                        }
-
-                    .product-action {
-                        position: absolute;
-                        width: 100%;
-                        height: 100%;
-                        top: 0;
-                        left: 0;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        transition: .5s;
-                        background: rgba(255, 255, 255, 0.7);
-                        opacity: 0;
-                    }
-
-                        .product-action a {
-                            display: inline-block;
-                            width: 40px;
-                            height: 40px;
-                            margin: 0 5px;
-                            padding: 7px 0;
-                            text-align: center;
-                            border-radius: 0;
-                        }
-
-                    .product-item:hover .product-action {
-                        opacity: 1;
-                    }
-
-                    .size-options {
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 10px;
-                    }
-
-                    .size-radio {
-                        display: none;
-                    }
-
-                    .size-label {
-                        padding: 10px 15px;
-                        border: 2px solid #ccc;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-size: 16px;
-                        background-color: #fff;
-                        transition: all 0.3s ease;
-                    }
-
-                    .size-radio:checked + .size-label {
-                        background-color: black;
-                        color: white;
-                        border-color: black;
-                    }
-
-                    .quantity-box {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 5px;
-                    }
-
-                    .small-input {
-                        width: 50px;
-                        height: 35px;
-                        text-align: center;
-                        font-size: 16px;
-                        padding: 5px;
-                        border: 1px solid #ccc;
-                        border-radius: 5px;
-                    }
-
-                    .btn-black {
-                        background-color: black !important;
-                        color: white !important;
-                        border: none;
-                        width: 35px;
-                        height: 35px;
-                        font-size: 20px;
-                        text-align: center;
-                        line-height: 30px;
-                        border-radius: 5px;
-                    }
-
-                        .btn-black:hover {
-                            background-color: #333 !important;
-                        }
-                </style>
-                @{
-                    var favouriteProducts = ViewBag.FavouriteProducts as List<int> ?? new List<int>(); // Nhận danh sách ID sản phẩm yêu thích
-                }
-                @*danh sách sản phẩm begin *@
                 <!-- Danh sách sản phẩm -->
                 @foreach (var product in Model)
                 {
@@ -270,13 +168,11 @@
                             <div class="product-img position-relative overflow-hidden">
                                 <img class="img-fluid w-100" src="@(string.IsNullOrEmpty(product.Hinhanh) ? "/img/default-product.jpg" : product.Hinhanh)" alt="@product.SoPhong">
                                 <div class="product-action">
-
-                                    <a class="btn btn-outline-dark btn-square" href="javascript:void(0)" data-toggle="modal" data-target="appointmentModal">
-                                        <i class="fa fa-calendar"></i>
+                                    <a class="btn btn-outline-dark btn-square" href="javascript:void(0)" data-toggle="modal" data-target="appointmentModal" title="Đặt lịch">
+                                        <i class="fas fa-calendar-alt"></i>
                                     </a>
-
-                                    <a class="btn btn-outline-dark btn-square" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })">
-                                        <i class="fa fa-search"></i>
+                                    <a class="btn btn-outline-dark btn-square" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })" title="Xem chi tiết">
+                                        <i class="fas fa-search"></i>
                                     </a>
                                 </div>
                             </div>
@@ -288,46 +184,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Modal cho sản phẩm -->
-                    <div class="modal fade" id="quickAddToCartModal_@product.MaPhong" tabindex="-1" role="dialog" aria-labelledby="quickAddToCartModalLabel_@product.MaPhong" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="quickAddToCartModalLabel_@product.MaPhong">Chọn size - Phòng @product.SoPhong</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    
-
-                                    <p id="modalStockQuantity_@product.MaPhong" class="text-success mt-3">
-                                        <strong>Số lượng có sẵn: </strong>
-                                        <span id="modalAvailableStock_@product.MaPhong">0</span>
-                                    </p>
-
-                                    <div class="form-group mt-3">
-                                        <label for="modalQuantityInput_@product.MaPhong"><strong>Số lượng:</strong></label>
-                                        <div class="input-group justify-content-center quantity-box">
-                                            <button class="btn btn-black" type="button" onclick="changeModalQuantity(@product.MaPhong, -1)">−</button>
-                                            <input type="number" id="modalQuantityInput_@product.MaPhong" class="form-control text-center mx-2 small-input" value="1" min="1">
-                                            <button class="btn btn-black" type="button" onclick="changeModalQuantity(@product.MaPhong, 1)">+</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                    <button type="button" class="btn btn-primary" onclick="addToCartFromModal(@product.MaPhong)">Thêm vào giỏ hàng</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 }
-                <!-- Danh sách sản phẩm end -->
-
-
-                @*  danh sách sản phẩm end *@
 
             </div>
         </div>
@@ -336,35 +193,94 @@
 </div>
 <!-- Shop End -->
 
-<script>
-    
+<style>
+    /* Thu nhỏ font size tiêu chí lọc, giảm padding */
+    .custom-control-label {
+        font-size: 0.9rem;
+        cursor: pointer;
+    }
 
+    .custom-control-input {
+        cursor: pointer;
+    }
+
+    /* Giảm kích thước badge */
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.25em 0.5em;
+        min-width: 25px;
+        text-align: center;
+    }
+
+    /* Giảm padding vùng filter */
+    .bg-light.p-4 {
+        padding: 1rem !important;
+    }
+
+    /* Bo tròn nhẹ các thẻ phòng */
+    .product-item {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: box-shadow 0.3s ease;
+        background: white;
+    }
+
+        .product-item:hover {
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        }
+
+    /* Nút action trong phòng trọ */
+    .product-action a.btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.3s ease;
+    }
+
+        .product-action a.btn:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+    /* Tiêu đề lọc thêm icon */
+    .section-title span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        /* Icon style cho lọc */
+        .section-title span i {
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+</style>
+
+<script>
     // Xử lý lọc sản phẩm
     document.addEventListener('DOMContentLoaded', function() {
-        // Xử lý khi checkbox được click
         $('.price-filter, .area-filter, .status-filter').change(function() {
-            // Xử lý checkbox "Tất cả"
             if ($(this).attr('id').endsWith('-all')) {
                 if ($(this).prop('checked')) {
-                    // Nếu "Tất cả" được chọn, bỏ chọn các checkbox khác trong cùng nhóm
                     $(`.${$(this).attr('class').split(' ')[1]}:not([id$=all])`).prop('checked', false);
                 }
             } else {
-                // Nếu chọn một checkbox khác, bỏ chọn "Tất cả"
                 $(`#${$(this).attr('class').split(' ')[1].replace('filter', 'all')}`).prop('checked', false);
             }
 
-            // Lấy các giá trị đã chọn
             var selectedPrices = getSelectedValues('price-filter');
             var selectedAreas = getSelectedValues('area-filter');
             var selectedStatus = getSelectedValues('status-filter');
 
-            // Nếu không có gì được chọn trong một nhóm, chọn "Tất cả"
             if (selectedPrices.length === 0) $('#price-all').prop('checked', true);
-            if (selectedAreas.length === 0) $('#brand-all').prop('checked', true);
-            if (selectedStatus.length === 0) $('#size-all').prop('checked', true);
+            if (selectedAreas.length === 0) $('#area-all').prop('checked', true);
+            if (selectedStatus.length === 0) $('#status-all').prop('checked', true);
 
-            // Xây dựng URL với các tham số lọc
             var url = new URL(window.location.href);
             url.searchParams.delete('minPrice');
             url.searchParams.delete('maxPrice');
@@ -372,7 +288,6 @@
             url.searchParams.delete('maxArea');
             url.searchParams.delete('status');
 
-            // Thêm các tham số lọc vào URL
             if (!$('#price-all').prop('checked') && selectedPrices.length > 0) {
                 var priceRange = selectedPrices[0].split('-');
                 url.searchParams.set('minPrice', priceRange[0]);
@@ -393,13 +308,9 @@
                 url.searchParams.set('status', selectedStatus.join(','));
             }
 
-           
-
-            // Chuyển hướng đến URL mới
             window.location.href = url.toString();
         });
 
-        // Hàm lấy các giá trị đã chọn
         function getSelectedValues(className) {
             var values = [];
             $('.' + className + ':checked').not('[id$=all]').each(function() {
@@ -408,7 +319,6 @@
             return values;
         }
 
-        // Đánh dấu các checkbox dựa trên URL hiện tại
         var urlParams = new URLSearchParams(window.location.search);
 
         if (urlParams.has('minPrice')) {
@@ -431,7 +341,5 @@
                 $('#status-' + status).prop('checked', true);
             });
         }
-
     });
 </script>
-

@@ -1,5 +1,6 @@
 using DACS_QuanLyPhongTro.Models;
 using DACS_QuanLyPhongTro.Models.Repositories;
+using DACS_QuanLyPhongTro.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -27,6 +28,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultUI();
 
 builder.Services.AddScoped<IPhongTroRepository, EFPhongTroRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

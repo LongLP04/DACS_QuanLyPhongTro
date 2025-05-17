@@ -5,35 +5,72 @@
     var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
 }
 
-<h3>@ViewData["Title"]</h3>
+<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.85);">
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">Bạn chưa có giao dịch nào.</div>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Phòng</th>
-                <th>Ngày thanh toán</th>
-                <th>Phương thức</th>
-                <th>Số tiền</th>
-                <th>Ghi chú</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var ptt in Model)
-            {
-                <tr>
-                    <td>@ptt.HoaDon?.PhongTro?.SoPhong</td>
-                    <td>@ptt.NgayThanhToan.ToString("dd/MM/yyyy")</td>
-                    <td>@ptt.PhuongThucThanhToan?.TenPhuongThuc</td>
-                    <td>@ptt.SoTienThanhToan.ToString("C0", vnd)</td>
-					<td>Giao dịch đã được xác nhận bởi chủ trọ của bạn</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    <h3 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        @ViewData["Title"]
+    </h3>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center fs-5">
+            Bạn chưa có giao dịch nào.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-striped table-bordered mb-0" style="background-color: white; border-radius: 15px; overflow: hidden;">
+                <thead class="thead">
+                    <tr>
+                        <th>Phòng</th>
+                        <th>Ngày thanh toán</th>
+                        <th>Phương thức</th>
+                        <th>Số tiền</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ptt in Model)
+                    {
+                        <tr>
+                            <td>@ptt.HoaDon?.PhongTro?.SoPhong</td>
+                            <td>@ptt.NgayThanhToan.ToString("dd/MM/yyyy")</td>
+                            <td>@ptt.PhuongThucThanhToan?.TenPhuongThuc</td>
+                            <td>@ptt.SoTienThanhToan.ToString("C0", vnd)</td>
+                            <td>Giao dịch đã được xác nhận bởi chủ trọ của bạn</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    <div class="mt-5 text-center">
+        <a asp-controller="PhieuThanhToan" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+            <i class="fas fa-arrow-left mr-2"></i> Quay về hóa đơn thanh toán
+        </a>
+    </div>
+</div>
+
+<style>
+    thead.thead {
+        background-color: #a0522d !important;
+        color: white;
+    }
+
+    .btn-hover-effect {
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50rem !important;
+    }
+
+        .btn-hover-effect:hover {
+            background-color: #75c98e !important;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
+        }
+
+        .btn-hover-effect:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+</style>

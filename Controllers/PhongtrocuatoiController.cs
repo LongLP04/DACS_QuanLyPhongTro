@@ -16,6 +16,33 @@ namespace DACS_QuanLyPhongTro.Controllers
             _context = context;
         }
 
+        //public async Task<IActionResult> Index()
+        //{
+        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        //    if (userId == null)
+        //        return Forbid("Bạn chưa đăng nhập.");
+
+        //    var khachThue = await _context.KhachThues
+        //        .FirstOrDefaultAsync(k => k.ApplicationUserId == userId);
+
+        //    if (khachThue == null)
+        //        return NotFound("Không tìm thấy thông tin khách thuê.");
+
+        //    var hopDongs = await _context.HopDongs
+        //        .Where(h => h.MaKhachThue == khachThue.MaKhachThue && h.TrangThai == "Đã Xác Nhận")
+        //        .Include(h => h.PhongTro)
+        //            .ThenInclude(p => p.ToaNha)
+        //                .ThenInclude(t => t.ChuTro)
+        //        .ToListAsync();
+
+        //    var phongTros = hopDongs
+        //        .Select(h => h.PhongTro)
+        //        .Where(p => p != null)
+        //        .ToList();
+
+        //    return View(phongTros);
+        //}
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -29,20 +56,19 @@ namespace DACS_QuanLyPhongTro.Controllers
             if (khachThue == null)
                 return NotFound("Không tìm thấy thông tin khách thuê.");
 
-            var hopDongs = await _context.HopDongs
+            var hopDong = await _context.HopDongs
                 .Where(h => h.MaKhachThue == khachThue.MaKhachThue && h.TrangThai == "Đã Xác Nhận")
                 .Include(h => h.PhongTro)
                     .ThenInclude(p => p.ToaNha)
                         .ThenInclude(t => t.ChuTro)
-                .ToListAsync();
+                .FirstOrDefaultAsync();
 
-            var phongTros = hopDongs
-                .Select(h => h.PhongTro)
-                .Where(p => p != null)
-                .ToList();
+            if (hopDong == null)
+                return View(null);
 
-            return View(phongTros);
+            return View(hopDong.PhongTro);
         }
+
 
     }
 }

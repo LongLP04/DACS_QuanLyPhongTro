@@ -4,26 +4,74 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <h2 class="mb-4">Thông báo của bạn</h2>
+<div class="container mt-5 p-4" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+    <h2 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        Thông báo của bạn
+    </h2>
+
     @if (!Model.Any())
     {
-        <div class="alert alert-info">
+        <div class="alert alert-warning text-center fs-5 rounded shadow-sm" style="color: #856404; border:none; background-color:#fff8dc;">
             Hiện không có thông báo nào.
         </div>
     }
     else
     {
-        <ul class="list-group">
+        <ul class="list-group shadow-sm rounded">
             @foreach (var notification in Model)
             {
-                <li class="list-group-item @(notification.IsRead ? "bg-light" : "")">
-                    @notification.Message
-                    <small class="text-muted float-right">
+                <li class="list-group-item d-flex justify-content-between align-items-center"
+                    style="
+                        border-left: 6px solid @(notification.IsRead ? "transparent" : "#f4a261");
+                        color: @(notification.IsRead ? "#6c584c" : "#4a3c2f");
+                        font-weight: @(notification.IsRead ? "400" : "600");
+                        cursor: default;
+                                ">
+                    <span>@notification.Message</span>
+                    <small class="text-nowrap" style="font-size: 0.85rem; color: #7a6a53;">
                         @notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")
                     </small>
                 </li>
             }
         </ul>
     }
+
+    <div class="mt-5 text-center">
+        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+            <i class="fas fa-arrow-left mr-2"></i> Quay về Phòng trọ của tôi
+        </a>
+    </div>
 </div>
+
+<style>
+    .btn-hover-effect {
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50rem !important; /* bo tròn dạng pill */
+    }
+
+        .btn-hover-effect:hover {
+            background-color: #75c98e !important; /* màu xanh đậm hơn khi hover */
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
+        }
+
+        .btn-hover-effect:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+
+    /* Bo tròn, bóng nhẹ cho list */
+    .list-group {
+        border-radius: 1.5rem;
+        overflow: hidden;
+        background-color: #fff9e6;
+    }
+
+    .list-group-item {
+        transition: background-color 0.2s ease;
+    }
+
+        .list-group-item:hover {
+            background-color: #fff4d6;
+        }
+</style>

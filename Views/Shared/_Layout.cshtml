@@ -6,12 +6,15 @@
 @* @inject IHttpContextAccessor HttpContextAccessor  *@
 @* @inject SignInManager<IdentityUser> SignInManager  *@
 @* @inject UserManager<ApplicationUser> UserManager *@
+
+
+@inject DACS_QuanLyPhongTro.Services.IUserService userService
 @inject ApplicationDbContext _context
 <!DOCTYPE html>
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <me  name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <meta charset="utf-8">
 
@@ -42,7 +45,7 @@
 </head>
 <body>
 
-    <div class="main-content" style="background-image: url('images/backMoi.jpg') !important; background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; min-height: 100vh;">
+    <div class="main-content" style="background-image: url('@Url.Content("~/images/backMoi.jpg")') !important; background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; min-height: 100vh;">
         <!-- Topbar Start -->
         <div class="container-fluid">
 
@@ -50,15 +53,40 @@
                 <div class="col-lg-4">
                     <a href="/" class="text-decoration-none d-block w-100">
                         <img src="/images/mainlogo3.png" alt="Logo Trọ quanh ta"
-                             class="img-fluid"
+                             class="img-fluid logo-animate"
                              style="max-width: 100%; height: auto; transition: transform 0.3s ease;"
                              onmouseover="this.style.transform='scale(1.05)'"
                              onmouseout="this.style.transform='scale(1)'">
                     </a>
-
-
-
                 </div>
+
+                <style>
+                    @@keyframes logoBounce {
+                        0%
+
+                    {
+                        transform: scale(1);
+                        opacity: 0;
+                    }
+
+                    50% {
+                        transform: scale(1.1);
+                        opacity: 1;
+                    }
+
+                    100% {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+
+                    }
+
+                    .logo-animate {
+                        animation: logoBounce 1s ease forwards;
+                        /* animation chỉ chạy 1 lần khi load */
+                    }
+                </style>
+
                 <div class="col-lg-4 col-6 text-left">
                     <form asp-controller="Phongtro" asp-action="Index" method="get">
                         <div class="input-group">
@@ -109,138 +137,187 @@
         </div>
         <!-- Topbar End -->
         <!-- Navbar Start -->
-        <div class="container-fluid p-0 mb-0" style="background-color: #f39c12;" ">
+        <div class="container-fluid p-0 mb-0" style="background-color: #f39c12; border-radius: 0 0 15px 15px; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.5);">
             <div class="row px-xl-5">
-                <div class="col-lg-3 d-none d-lg-block" style="position: relative; z-index: 2;">
+                <div class="col-lg-3 d-none d-lg-block position-relative" style="z-index: 1050;">
                     <a class="btn d-flex align-items-center justify-content-between w-100"
                        data-toggle="collapse" href="#navbar-vertical"
-                       style="background-color: #f39c12; color: white; height: 65px; padding: 0 30px; transition: all 0.1s ease;">
-                        <h6 class="m-0 animate__animated animate__fadeIn" style="color: white;">
-                            <i class="fa fa-bars mr-2"></i>Truy cập nhanh các chức năng
+                       style="background-color: #f39c12; color: white; height: 65px; padding: 0 30px; transition: all 0.3s ease; border-radius: 10px 10px 0 0; box-shadow: 0 4px 8px rgba(0,0,0,0.2); cursor: pointer;">
+                        <h6 class="m-0 animate__animated animate__fadeIn d-flex align-items-center" style="color: #0b2047; font-weight: 700;">
+                            <i class="fa fa-bars mr-3" style="font-size: 1.3rem; text-shadow: 0 0 5px rgba(0,0,0,0.7);"></i>
+                            Truy cập nhanh các chức năng
                         </h6>
-                        <i class="fa fa-angle-down" style="color: white;"></i>
+                        <i class="fa fa-angle-down"
+                           style="color: white; transition: transform 0.3s ease; font-size: 1.5rem; text-shadow: 0 0 5px rgba(0,0,0,0.7);"></i>
                     </a>
 
-                    <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 bg-light" id="navbar-vertical" style="width: calc(100% - 30px); z-index: 999; transition: opacity 0.3s ease;">
+                    <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-3 bg-white rounded shadow-sm" id="navbar-vertical" style="width: calc(100% - 30px); top: 65px; left: 15px; z-index: 999; transition: opacity 0.3s ease;">
                         <div class="navbar-nav w-100">
-                            <a asp-controller="Phongtro" asp-action="Index" class="nav-item nav-link" style="transition: all 0.3s ease;">Tất cả phòng trọ</a>                           
-                            <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1" class="nav-item nav-link" style="transition: all 0.3s ease;">Thông báo lịch hẹn</a>
-                            <a asp-controller="PhieuThanhToan" asp-action="Index" asp-route-categoryId="2" class="nav-item nav-link" style="transition: all 0.3s ease;">Thanh toán hóa đơn</a>
-                            <a asp-controller="Phongtrocuatoi" asp-action="Index" asp-route-categoryId="3" class="nav-item nav-link" style="transition: all 0.3s ease;">Phòng trọ của tôi</a>
-                            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="4" class="nav-item nav-link" style="transition: all 0.3s ease;">Liên hệ</a>
+                            <a asp-controller="Phongtro" asp-action="Index" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Tất cả phòng trọ</a>
+                            <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Thông báo lịch hẹn</a>
+                            <a asp-controller="PhieuThanhToan" asp-action="Index" asp-route-categoryId="2" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Thanh toán hóa đơn</a>
+                            <a asp-controller="Phongtrocuatoi" asp-action="Index" asp-route-categoryId="3" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Phòng trọ của tôi</a>
+                            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="4" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Liên hệ</a>
                         </div>
                     </nav>
                 </div>
 
-                <div class="col-lg-9" style="position: relative; z-index: 2;">
-                    <nav class="navbar navbar-expand-lg navbar-dark py-3 py-lg-0 px-0" style="background-color: #f39c12; transition: all 0.3s ease;">
+                <div class="col-lg-9 position-relative" style="z-index: 1050;">
+                    <nav class="navbar navbar-expand-lg navbar-dark py-3 py-lg-0 px-0 rounded" style="background-color: #f39c12; transition: all 0.3s ease;">
                         <a href="/" class="text-decoration-none d-block w-100 d-lg-none">
-                            <img src="/images/mainlogo3.png"` alt="Logo Trọ quanh ta"
+                            <img src="/images/mainlogo3.png" alt="Logo Trọ quanh ta"
                                  class="img-fluid"
                                  style="max-width: 70%; height: auto; transition: transform 0.3s ease;"
                                  onmouseover="this.style.transform='scale(1.05)'"
                                  onmouseout="this.style.transform='scale(1)'">
                         </a>
-                        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse" style="transition: all 0.3s ease;">
+                        <button type="button" class="navbar-toggler border-0" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" style="transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.15); border-radius: 50%;">
                             <span class="navbar-toggler-icon"></span>
                         </button>
+
+                        @{
+                            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                            bool hasRental = false;
+                            if (User.Identity.IsAuthenticated && userId != null)
+                            {
+                                hasRental = await userService.HasActiveRentalAsync(userId);
+                            }
+                        }
+
                         <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse" style="transition: opacity 0.3s ease;">
-                            <div class="navbar-nav mr-auto py-0">
-                                <a asp-controller="Home" asp-action="Index" class="nav-item nav-link" style="transition: all 0.3s ease;">Trang chủ</a>
-                                <a asp-controller="PhongTro" asp-action="Index" class="nav-item nav-link" style="transition: all 0.3s ease;">Phòng trọ</a>
+                            <ul class="navbar-nav mr-auto font-weight-bold">
+                                <li class="nav-item mx-2">
+                                    <a asp-controller="Home" asp-action="Index" class="nav-link px-3 py-2 rounded">
+                                        <i class="fas fa-home mr-2"></i> Trang chủ
+                                    </a>
+                                </li>
+                                <li class="nav-item mx-2">
+                                    <a asp-controller="PhongTro" asp-action="Index" class="nav-link px-3 py-2 rounded">
+                                        <i class="fas fa-building mr-2"></i> Phòng trọ
+                                    </a>
+                                </li>
 
                                 @if (!User.Identity.IsAuthenticated)
                                 {
-                                    <span class="nav-item nav-link text-white fst-italic" style="transition: all 0.3s ease;">
-                                        Hãy <a asp-area="Identity" asp-page="/Account/Register" style="transition: all 0.3s ease;">đăng ký</a> / <a asp-area="Identity" asp-page="/Account/Login" style="transition: all 0.3s ease;">đăng nhập</a> để xem các tiện ích khác
-                                    </span>
+                                    <li class="nav-item mx-2">
+                                        <span class="nav-link fst-italic text-white">
+                                            Hãy
+                                            <a asp-area="Identity" asp-page="/Account/Register" class="text-light font-weight-bold">
+                                                <i class="fas fa-user-plus mr-1"></i> đăng ký
+                                            </a>
+                                            /
+                                            <a asp-area="Identity" asp-page="/Account/Login" class="text-light font-weight-bold">
+                                                <i class="fas fa-sign-in-alt mr-1"></i> đăng nhập
+                                            </a> để xem các tiện ích khác
+                                        </span>
+                                    </li>
                                 }
-                                else
+                                else if (hasRental)
                                 {
-                                    <a asp-controller="Notifications" asp-action="Index" class="nav-item nav-link" style="transition: all 0.3s ease;">Thông báo lịch hẹn</a>
-                                    <a class="nav-item nav-link" href="/HopDong/XacNhan" style="transition: all 0.3s ease;">Xác nhận hợp đồng</a>
-                                    <a asp-controller="Phongtrocuatoi" asp-action="Index" class="nav-item nav-link" style="transition: all 0.3s ease;">Phòng trọ của tôi</a>
-                                    <a asp-controller="ChiSoDienNuoc" asp-action="Index" class="nav-item nav-link" style="transition: all 0.3s ease;">Xem chỉ số điện nước</a>
-                                    <a asp-controller="PhieuThanhToan" asp-action="Index" class="nav-item nav-link" style="transition: all 0.3s ease;">Hóa đơn thanh toán</a>
-									<a asp-controller="SuCo" asp-action="Index" class="nav-item nav-link" style="transition: all 0.3s ease;">Báo sự cố</a>
-                                    <a asp-controller="PhieuHienTrang" asp-action="XemPhieu" class="nav-item nav-link" style="transition: all 0.3s ease;">Xác nhận hiện trạng</a>
-
+                                    <li class="nav-item mx-2">
+                                        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="nav-link px-3 py-2 rounded">
+                                            <i class="fas fa-door-open mr-2"></i> Phòng trọ của tôi
+                                        </a>
+                                    </li>
                                 }
-                            </div>
+                            </ul>
+
                         </div>
                     </nav>
                 </div>
             </div>
-
-            <style>
-
-                .nav-link:hover {
-                    color: #ffcc00 !important;
-                    transform: scale(1.05);
-                    background-color: rgba(0, 0, 0, 0.2);
-                }
-
-                .dropdown-toggle:hover {
-                    color: #ffcc00 !important;
-                }
-
-                #navbar-vertical.collapsing {
-                    opacity: 0;
-                }
-
-                #navbar-vertical.show {
-                    opacity: 1;
-                }
-
-                .animate__animated.animate__fadeIn {
-                    animation-delay: 0.2s;
-                }
-
-                .navbar-toggler:hover {
-                    transform: scale(1.1);
-                }
-
-                .nav-link:hover {
-                    color: #ffcc00 !important;
-                    transform: scale(1.05);
-                    background-color: rgba(0, 0, 0, 0.2);
-                }
-
-                .dropdown-toggle:hover {
-                    color: #ffcc00 !important;
-                }
-
-                #navbar-vertical.collapsing {
-                    opacity: 0;
-                }
-
-                #navbar-vertical.show {
-                    opacity: 1;
-                }
-
-                .animate__animated.animate__fadeIn {
-                    animation-delay: 0.2s;
-                }
-
-                .navbar-toggler:hover {
-                    transform: scale(1.1);
-                }
-
-                /* Thêm CSS cho chữ màu xanh */
-                .nav-link {
-                    color: #3498db; /* Màu xanh bạn muốn */
-                    font-size: 1rem; /* Kích thước chữ lớn hơn */
-                    font-weight: bold; /* Làm chữ đậm */
-                }
-
-                .nav-item a {
-                    color: #3498db; /* Màu xanh */
-                    font-size: 1rem; /* Kích thước chữ lớn hơn */
-                    font-weight: bold; /* Làm chữ đậm */
-                }
-            </style>
         </div>
-        <!-- Navbar End -->
+
+        <style>
+            /* Tổng quan navbar */
+            .navbar {
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(243, 156, 18, 0.45);
+            }
+
+            /* Nav link chung */
+            .nav-link {
+                color: #0b2047 !important; /* Màu chữ đổi sang #0b2047 */
+                font-weight: 600;
+                font-size: 1rem;
+                transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+                padding-top: 0.3rem !important;
+                padding-bottom: 0.3rem !important;
+                line-height: 1.2;
+                height: 100%;
+                display: flex;
+                align-items: center;
+            }
+
+                /* Hover nav link */
+                .nav-link:hover, .nav-link:focus {
+                    background-color: #d18b00 !important;
+                    color: white !important;
+                    box-shadow: 0 6px 15px rgba(209, 139, 0, 0.7);
+                    transform: scale(1.05);
+                    border-radius: 12px;
+                }
+
+            /* Navbar toggler button */
+            .navbar-toggler {
+                background-color: #d18b00;
+                border-radius: 50%;
+                transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+                box-shadow: 0 2px 10px rgba(209, 139, 0, 0.6);
+            }
+
+                .navbar-toggler:hover {
+                    background-color: #a97000;
+                    transform: scale(1.15);
+                    box-shadow: 0 6px 20px rgba(169, 112, 0, 0.8);
+                }
+
+            /* Vertical navbar menu */
+            #navbar-vertical {
+                border-radius: 0 0 12px 12px;
+            }
+
+                #navbar-vertical .nav-link {
+                    color: #333 !important;
+                    font-weight: 500;
+                    transition: background-color 0.3s ease, color 0.3s ease;
+                }
+
+                    #navbar-vertical .nav-link:hover {
+                        background-color: #f3c24b !important;
+                        color: #1a1a1a !important;
+                    }
+
+                /* Hide vertical navbar opacity transition fix */
+                #navbar-vertical.collapsing {
+                    opacity: 0;
+                }
+
+                #navbar-vertical.show {
+                    opacity: 1;
+                }
+
+            /* Căn chỉnh dọc nav item */
+            .navbar-nav .nav-item {
+                display: flex;
+                align-items: center;
+                height: 65px;
+            }
+            /* Hiệu ứng xoay icon mũi tên */
+            .fa-angle-down.rotated {
+                transform: rotate(180deg);
+                transition: transform 0.3s ease;
+            }
+
+            /* Hiệu ứng nhấn khi hover */
+            a.btn:hover {
+                background-color: #d18b00 !important;
+                box-shadow: 0 6px 15px rgba(209, 139, 0, 0.7);
+                transform: scale(1.05);
+                border-radius: 10px 10px 0 0;
+            }
+        </style>
+
         @RenderBody()
 
         @await Html.PartialAsync("_Footer")
@@ -266,3 +343,12 @@
     @RenderSection("Scripts", required: false)  <!-- Thêm dòng này vào đây -->
 </body>
 </html>
+<script>
+    // Thêm hiệu ứng xoay icon mũi tên khi mở/đóng collapse
+    $(document).ready(function () {
+        $('[data-toggle="collapse"]').on('click', function () {
+            var icon = $(this).find('.fa-angle-down');
+            icon.toggleClass('rotated');
+        });
+    });
+</script>

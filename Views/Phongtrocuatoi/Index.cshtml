@@ -1,62 +1,233 @@
-﻿@model List<DACS_QuanLyPhongTro.Models.PhongTro>
+﻿@model DACS_QuanLyPhongTro.Models.PhongTro
 
 @{
-    ViewData["Title"] = "Phòng trọ của tôi";
+    ViewData["Title"] = Model?.SoPhong ?? "Phòng trọ của tôi";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2 class="text-primary text-center mb-4">Phòng trọ bạn đang thuê</h2>
-
-@if (!Model.Any())
+@if (Model == null)
 {
     <div class="alert alert-info">Bạn chưa thuê phòng trọ nào.</div>
 }
 else
 {
-    <div class="table-responsive">
-        <table class="table table-striped table-hover border shadow-sm">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Mã phòng</th>
-                    <th>Tên phòng</th>
-                    <th>Giá thuê</th>
-                    <th>Tòa nhà</th>
-                    <th>Địa chỉ</th>
-                    <th>Chủ trọ</th>
-                    <th>Hình ảnh</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var phong in Model)
-                {
-                    <tr>
-                        <td>@phong.MaPhong</td>
-                        <td>@phong.SoPhong</td>
-                        <td class="text-danger font-weight-bold">@phong.GiaThue.ToString("N0") VND</td>
-                        <td>@phong.ToaNha?.TenToaNha</td>
-                        <td>@phong.ToaNha?.DiaChi</td>
-                        <td>
-                            <strong>@phong.ToaNha?.ChuTro?.HoTen</strong><br />
-                            <small class="text-muted">@phong.ToaNha?.ChuTro?.SoDienThoai</small>
-                        </td>
-                        <td>
-                            <img src="@Url.Content("~/" + (string.IsNullOrEmpty(phong.Hinhanh) ? "img/default-product.jpg" : phong.Hinhanh))"
-                                 alt="Hình ảnh phòng" class="img-thumbnail" style="width: 150px;" />
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+    <div class="container position-relative" style="max-width: 2046px; margin-left: auto; margin-right: auto; margin-top: 0.5rem;">
+        <!-- Ảnh full chiều ngang trong container max-width 2046px -->
+        <img src="@Url.Content("~/" + (string.IsNullOrEmpty(Model.Hinhanh) ? "img/default-product.jpg" : Model.Hinhanh))"
+             alt="Hình ảnh phòng"
+             class="img-fluid rounded shadow-sm w-100 hover-effect"
+             style="height: 80vh; object-fit: cover;" />
 
-    <div class="text-center mt-4">
-        <a href="@Url.Action("DangKy", "DichVu")" class="btn btn-success btn-lg">
-            Đăng ký dịch vụ
-        </a>
-        <a asp-controller="DichVu" asp-action="DanhSachDangKy" class="btn btn-success btn-lg">
-            Xem phiếu đăng ký dịch vụ
-        </a>
-    </div>
-    
+        <!-- Nút hamburger ở góc phải trên, dịch trái 10px -->
+        <button id="menuToggle" aria-label="Toggle menu" title="Menu"
+                class="hamburger-btn" type="button" aria-expanded="false" aria-controls="menuButtons">
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+            <span class="hamburger-bar"></span>
+        </button>
 
+        <!-- Menu ẩn / hiện -->
+        <div id="menuButtons" class="overlay-buttons d-flex flex-column gap-3 p-3" aria-hidden="true">
+            <a href="@Url.Action("DangKy", "DichVu")" class="btn btn-success btn-lg shadow">
+                <i class="fas fa-clipboard-list mr-2"></i> Đăng ký dịch vụ
+            </a>
+            <a asp-controller="DichVu" asp-action="DanhSachDangKy" class="btn btn-primary btn-lg shadow">
+                <i class="fas fa-file-alt mr-2"></i> Xem phiếu đăng ký dịch vụ
+            </a>
+            <a asp-controller="Notifications" asp-action="Index" class="btn btn-info btn-lg shadow">
+                <i class="fas fa-bell mr-2"></i> Thông báo lịch hẹn
+            </a>
+            <a asp-controller="HopDong" asp-action="XacNhan" class="btn btn-warning btn-lg shadow">
+                <i class="fas fa-file-signature mr-2"></i> Xác nhận hợp đồng
+            </a>
+            <a asp-controller="ChiSoDienNuoc" asp-action="Index" class="btn btn-dark btn-lg shadow">
+                <i class="fas fa-tachometer-alt mr-2"></i> Xem chỉ số điện nước
+            </a>
+            <a asp-controller="PhieuThanhToan" asp-action="Index" class="btn btn-secondary btn-lg shadow">
+                <i class="fas fa-file-invoice-dollar mr-2"></i> Hóa đơn thanh toán
+            </a>
+            <a asp-controller="SuCo" asp-action="Index" class="btn btn-danger btn-lg shadow">
+                <i class="fas fa-exclamation-triangle mr-2"></i> Báo sự cố
+            </a>
+            <a asp-controller="PhieuHienTrang" asp-action="XemPhieu" class="btn btn-info btn-lg shadow">
+                <i class="fas fa-clipboard-check mr-2"></i> Xác nhận hiện trạng
+            </a>
+        </div>
+
+        <!-- Thông tin chi tiết -->
+        <div class="mt-4 info-detail p-4 shadow-sm rounded bg-white mx-auto" style="max-width: 1000px;">
+            <h2 class="text-center mb-4">Thông tin chi tiết phòng trọ của bạn</h2>
+            <h4 class="text-primary mb-3 font-weight-bold">Phòng @Model.SoPhong</h4>
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Giá thuê:</strong></div>
+                <div class="col-md-8 text-danger font-weight-bold">@Model.GiaThue.ToString("#,##0 VNĐ")</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Diện tích:</strong></div>
+                <div class="col-md-8">@Model.DienTich m²</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Tầng:</strong></div>
+                <div class="col-md-8">@((Model.Tang.ToString()) ?? "Không rõ")</div>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Thuộc tòa nhà:</strong></div>
+                <div class="col-md-8">@Model.ToaNha?.TenToaNha</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Địa chỉ tòa nhà:</strong></div>
+                <div class="col-md-8">@Model.ToaNha?.DiaChi</div>
+            </div>
+
+            @if (Model.ToaNha?.ChuTro != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-4"><strong>Chủ trọ:</strong></div>
+                    <div class="col-md-8">@Model.ToaNha.ChuTro.HoTen</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"><strong>Số điện thoại:</strong></div>
+                    <div class="col-md-8">@Model.ToaNha.ChuTro.SoDienThoai</div>
+                </div>
+            }
+        </div>
+    </div>
 }
+
+<style>
+    .img-fluid.hover-effect {
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        cursor: pointer;
+    }
+
+        .img-fluid.hover-effect:hover {
+            transform: translateY(5px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        }
+
+    .info-detail {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #4a4a4a;
+        line-height: 1.5;
+    }
+
+        .info-detail strong {
+            color: #6c757d;
+        }
+
+        .info-detail h2 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 700;
+            color: #007bff;
+            letter-spacing: 0.03em;
+        }
+
+    @@media (max-width: 576px) {
+        .info-detail .row > div {
+            margin-bottom: 8px;
+        }
+    }
+
+    .position-relative {
+        position: relative;
+    }
+
+    /* Nút hamburger dịch trái 10px, nhảy nhẹ, bóng phát sáng */
+    .hamburger-btn {
+        position: absolute;
+        top: 20px;
+        right: 30px; /* 20px + 10px dịch trái */
+        width: 40px;
+        height: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        z-index: 15;
+        animation: jump 2s ease-in-out infinite;
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.7), 0 0 15px rgba(255, 255, 255, 0.5);
+        border-radius: 6px;
+    }
+
+    #menuButtons a.btn {
+        border-radius: 12px; /* Bo tròn góc */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+        #menuButtons a.btn:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Đổ bóng mềm */
+            transform: scale(1.05); /* Phóng to nhẹ khi hover */
+        }
+
+    .hamburger-bar {
+        height: 4px;
+        background-color: white;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+
+    @@keyframes jump {
+        0%, 100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-6px);
+        }
+    }
+
+    /* Menu */
+    .overlay-buttons {
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        background-color: rgba(0, 0, 0, 0.55);
+        padding: 20px;
+        border-radius: 12px;
+        max-width: 320px;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+    }
+
+        .overlay-buttons.show {
+            max-height: 1000px;
+            opacity: 0.95;
+        }
+
+        .overlay-buttons .btn {
+            font-size: 1.1rem;
+            text-align: left;
+            padding-left: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            white-space: nowrap;
+        }
+
+            .overlay-buttons .btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+            }
+</style>
+
+<script>
+    document.getElementById('menuToggle').addEventListener('click', function () {
+        var menu = document.getElementById('menuButtons');
+        var expanded = this.getAttribute('aria-expanded') === 'true' || false;
+        this.setAttribute('aria-expanded', !expanded);
+        menu.classList.toggle('show');
+    });
+</script>

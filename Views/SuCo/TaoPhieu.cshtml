@@ -2,57 +2,59 @@
 
 @{
     ViewData["Title"] = "Tạo Phiếu Ghi Nhận Sự Cố";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <h2>Tạo Phiếu Ghi Nhận Sự Cố</h2>
+<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.85);">
 
-    <!-- Hiển thị thông báo thành công -->
+    <h2 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        @ViewData["Title"]
+    </h2>
+
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success" id="thongBao">
+        <div class="alert alert-success shadow-sm rounded" id="thongBao">
             @TempData["Success"]
         </div>
     }
 
-    <form asp-action="TaoPhieu" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <form asp-action="TaoPhieu" method="post" class="mx-auto" style="max-width: 700px;">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label asp-for="MoTaSuCo" class="control-label">Mô tả sự cố</label>
             <textarea asp-for="MoTaSuCo" class="form-control" rows="5"></textarea>
             <span asp-validation-for="MoTaSuCo" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label asp-for="HienTrang" class="control-label">Hiện trạng</label>
             <input asp-for="HienTrang" class="form-control" />
             <span asp-validation-for="HienTrang" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label asp-for="GhiChu" class="control-label">Ghi chú</label>
             <input asp-for="GhiChu" class="form-control" />
             <span asp-validation-for="GhiChu" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
-            <input type="submit" value="Gửi" class="btn btn-primary" />
+        <div class="form-group text-center">
+            <input type="submit" value="Gửi" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect" />
         </div>
     </form>
 
-    <div>
-        <a asp-action="Index" asp-controller="Home">Quay Lại</a>
+    <div class="text-center mt-3">
+        <a asp-action="Index" asp-controller="SuCo" class="btn btn-secondary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+            <i class="fas fa-arrow-left mr-2"></i> Quay Lại
+        </a>
     </div>
+
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
-        // Tự động ẩn thông báo sau 5 giây
         document.addEventListener("DOMContentLoaded", function () {
             var thongBao = document.getElementById("thongBao");
             if (thongBao) {
@@ -67,3 +69,21 @@
         });
     </script>
 }
+
+<style>
+    .btn-hover-effect {
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50rem !important;
+    }
+
+        .btn-hover-effect:hover {
+            background-color: #75c98e !important;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
+        }
+
+        .btn-hover-effect:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+</style>

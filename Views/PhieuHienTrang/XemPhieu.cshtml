@@ -5,53 +5,82 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <h2 class="mb-4">Phiếu Hiện Trạng Khi Nhận Phòng</h2>
-    <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-            <p><strong>Ngày nhận phòng:</strong> @Model.NgayNhanPhong.ToString("dd/MM/yyyy")</p>
-            <p><strong>Ghi chú:</strong> @Model.GhiChu</p>
-            <p>
+<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; background-color: rgba(255,255,255,0.95); box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+    <h2 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        Phiếu Hiện Trạng Khi Nhận Phòng
+    </h2>
+
+    <div class="card mb-4 shadow-lg rounded border border-secondary" style="background-color: #fff;">
+        <div class="card-body p-4">
+            <p class="mb-3" style="font-size: 1.1rem; color: #4a3c2f;"><strong>Ngày nhận phòng:</strong> @Model.NgayNhanPhong.ToString("dd/MM/yyyy")</p>
+            <p class="mb-3" style="font-size: 1.1rem; color: #4a3c2f;"><strong>Ghi chú:</strong> @Model.GhiChu</p>
+            <p style="font-size: 1.1rem; font-weight: 600; color: #4a3c2f;">
                 <strong>Tình trạng:</strong>
-                <span class="badge @(Model.TinhTrang == "Đã xác nhận" ? "bg-success" : "bg-warning text-dark")">
+                <span class="badge @(Model.TinhTrang == "Đã xác nhận" ? "bg-success" : "bg-warning text-dark") px-3 py-2" style="font-size: 1rem;">
                     @Model.TinhTrang
                 </span>
             </p>
         </div>
     </div>
 
-    <h4>Danh Sách Vật Dụng</h4>
-    <table class="table table-bordered table-hover">
-        <thead class="table-light">
-            <tr>
-                <th>Tên Vật Dụng</th>
-                <th>Tình Trạng</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.HienTrangVatDungs)
-            {
+    <h4 class="mb-3" style="color: #6c584c; font-weight: 600;">Danh Sách Vật Dụng</h4>
+    <div class="table-responsive shadow-lg rounded border border-secondary" style="background-color: white;">
+        <table class="table table-bordered table-hover mb-0" style="border-radius: 12px; overflow: hidden;">
+            <thead class="table-light" style="font-weight: 600; font-size: 1rem;">
                 <tr>
-                    <td>@item.TenVatDung</td>
-                    <td>@item.TinhTrang</td>
+                    <th>Tên Vật Dụng</th>
+                    <th>Tình Trạng</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody style="font-size: 0.95rem; color: #4a3c2f;">
+                @foreach (var item in Model.HienTrangVatDungs)
+                {
+                    <tr>
+                        <td>@item.TenVatDung</td>
+                        <td>@item.TinhTrang</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
     @if (Model.TinhTrang == "Chưa xác nhận")
     {
-        <form asp-action="XacNhan" method="post" class="mt-3">
+        <form asp-action="XacNhan" method="post" class="mt-4 text-center">
             <input type="hidden" name="maPhieu" value="@Model.MaPhieuHienTrang" />
-            <button type="submit" class="btn btn-success">✅ Tôi xác nhận hiện trạng</button>
+            <button type="submit" class="btn btn-success btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+                <i class="fas fa-check mr-2"></i> Tôi xác nhận hiện trạng
+            </button>
         </form>
     }
     else
     {
-        <div class="alert alert-info mt-3">
-            ✅ Bạn đã xác nhận phiếu này.
+        <div class="alert alert-info mt-4 text-center fw-semibold" style="font-weight: 600; color: #4a3c2f;">
+            <i class="fas fa-check-circle mr-2"></i> Bạn đã xác nhận phiếu này.
         </div>
     }
 
-    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary mt-3">Quay Lại</a>
+    <div class="mt-5 text-center">
+        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+            <i class="fas fa-arrow-left mr-2"></i> Quay về Phòng trọ của tôi
+        </a>
+    </div>
 </div>
+
+<style>
+    .btn-hover-effect {
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50rem !important;
+    }
+
+        .btn-hover-effect:hover {
+            background-color: #75c98e !important;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
+        }
+
+        .btn-hover-effect:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+</style>

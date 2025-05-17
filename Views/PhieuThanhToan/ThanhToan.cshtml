@@ -5,93 +5,121 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3>@ViewData["Title"]</h3>
+<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.85);">
 
-<div class="card">
-    <div class="card-body">
-        <!-- Thông tin chi tiết hóa đơn -->
-        <p><strong>Phòng:</strong> @Model.PhongTro.SoPhong</p>
-        <p><strong>Ngày lập:</strong> @Model.NgayLap.ToString("dd/MM/yyyy")</p>
-        <p><strong>Tổng tiền:</strong> @Model.TongTien.ToString("N0") VND</p>
-        <p><strong>Trạng thái:</strong> @Model.TrangThai</p>
+    <h3 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        @ViewData["Title"]
+    </h3>
 
-        <!-- Phương thức thanh toán -->
-        <div class="payment-method-container">
-            <h5>Phương thức thanh toán</h5>
-            <div class="payment-method-options">
-                @foreach (var pt in ViewBag.PhuongThuc as List<DACS_QuanLyPhongTro.Models.PhuongThucThanhToan>)
-                {
-                    <div class="payment-method" style="cursor: pointer;" onclick="selectPaymentMethod(@pt.MaPhuongThuc, '@pt.TenPhuongThuc')">
-                        <img src="@Url.Content("~/images/" + pt.TenPhuongThuc + ".png")" alt="@pt.TenPhuongThuc" class="payment-method-img" />
-                        <p>@pt.TenPhuongThuc</p>
-                    </div>
-                }
+    <div class="card shadow-sm rounded">
+        <div class="card-body">
+            <!-- Thông tin chi tiết hóa đơn -->
+            <p><strong>Phòng:</strong> @Model.PhongTro.SoPhong</p>
+            <p><strong>Ngày lập:</strong> @Model.NgayLap.ToString("dd/MM/yyyy")</p>
+            <p><strong>Tổng tiền:</strong> @Model.TongTien.ToString("N0") VND</p>
+            <p><strong>Trạng thái:</strong> @Model.TrangThai</p>
+
+            <!-- Phương thức thanh toán -->
+            <div class="payment-method-container">
+                <h5>Phương thức thanh toán</h5>
+                <div class="payment-method-options">
+                    @foreach (var pt in ViewBag.PhuongThuc as List<DACS_QuanLyPhongTro.Models.PhuongThucThanhToan>)
+                    {
+                        <div class="payment-method" style="cursor: pointer;" onclick="selectPaymentMethod(@pt.MaPhuongThuc, '@pt.TenPhuongThuc')">
+                            <img src="@Url.Content("~/images/" + pt.TenPhuongThuc + ".png")" alt="@pt.TenPhuongThuc" class="payment-method-img" />
+                            <p>@pt.TenPhuongThuc</p>
+                        </div>
+                    }
+                </div>
             </div>
+
+            <form method="post" asp-action="XacNhanThanhToan" asp-route-id="@Model.MaHoaDon">
+                <input type="hidden" name="maPhuongThuc" id="selectedPaymentMethod" />
+
+                <!-- Hiển thị hộp xác nhận khi chọn phương thức thanh toán -->
+                <div id="confirmation" style="display:none;">
+                    <p id="confirmationMessage"></p>
+                    <button type="submit" class="btn btn-success btn-hover-effect rounded-pill px-4 shadow-sm">
+                        Xác nhận thanh toán
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-hover-effect rounded-pill px-4 shadow-sm" onclick="cancelPayment()">
+                        Hủy
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <form method="post" asp-action="XacNhanThanhToan" asp-route-id="@Model.MaHoaDon">
-            <input type="hidden" name="maPhuongThuc" id="selectedPaymentMethod" />
-
-            <!-- Hiển thị hộp xác nhận khi chọn phương thức thanh toán -->
-            <div id="confirmation" style="display:none;">
-                <p id="confirmationMessage"></p>
-                <button type="submit" class="btn btn-success">Xác nhận thanh toán</button>
-                <button type="button" class="btn btn-secondary" onclick="cancelPayment()">Hủy</button>
-            </div>
-        </form>
     </div>
+
 </div>
 
-    <style>
-        .payment-method-container {
-            margin-top: 20px;
+<style>
+    .payment-method-container {
+        margin-top: 20px;
+    }
+
+    .payment-method-options {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 10px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .payment-method {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 120px;
+        text-align: center;
+        margin: 10px 0;
+        cursor: pointer;
+        border-radius: 15px;
+        padding: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+        background-color: #fff;
+    }
+
+        .payment-method:hover {
+            box-shadow: 0 6px 15px rgba(0, 86, 179, 0.3);
+            transform: translateY(-5px);
         }
 
-        .payment-method-options {
-            display: flex;
-            justify-content: flex-start; /* Căn các phần tử về bên trái */
-            margin-top: 10px;
+    .payment-method-img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+    }
+
+    .btn-hover-effect {
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50rem !important;
+    }
+
+        .btn-hover-effect:hover {
+            background-color: #75c98e !important;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
         }
 
-        .payment-method {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 120px; /* Chiều rộng cố định cho mỗi ô */
-            text-align: center;
-            margin: 10px;
-            cursor: pointer;
+        .btn-hover-effect:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
         }
-
-        .payment-method-img {
-            width: 80px; /* Kích thước ảnh nhỏ hơn */
-            height: 80px; /* Kích thước ảnh nhỏ hơn */
-            object-fit: contain;
-        }
-
-        .payment-method img {
-            max-width: 100%;
-            max-height: 100%;
-        }
-    </style>
-
+</style>
 
 @section Scripts {
     <script>
         let selectedMethodId = null;
 
-        // Hàm chọn phương thức thanh toán
         function selectPaymentMethod(methodId, methodName) {
-            // Cập nhật id của phương thức thanh toán đã chọn
             selectedMethodId = methodId;
             document.getElementById("selectedPaymentMethod").value = selectedMethodId;
 
-            // Hiển thị hộp xác nhận thanh toán với tên phương thức đã chọn
             document.getElementById("confirmationMessage").innerText = "Bạn có chắc chắn muốn thanh toán bằng phương thức " + methodName + " không?";
             document.getElementById("confirmation").style.display = 'block';
         }
 
-        // Hủy thanh toán
         function cancelPayment() {
             selectedMethodId = null;
             document.getElementById("confirmation").style.display = 'none';
