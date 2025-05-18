@@ -1,0 +1,19 @@
+﻿@model DACS_QuanLyPhongTro.Models.ChiSoDienNuoc
+
+@{
+    ViewData["Title"] = "Xóa Chỉ Số Điện Nước";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>Xác nhận xóa chỉ số điện nước</h2>
+
+<div class="card p-3">
+    <p>Bạn có chắc chắn muốn xóa chỉ số điện nước của phòng <strong>@Model.PhongTro?.SoPhong</strong> ngày <strong>@Model.NgayGhi.ToString("dd/MM/yyyy")</strong> không?</p>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="MaChiSo" />
+        <button type="submit" class="btn btn-danger">Xóa</button>
+        <a asp-action="Index" class="btn btn-secondary ml-2">Hủy</a>
+    </form>
+
+</div>

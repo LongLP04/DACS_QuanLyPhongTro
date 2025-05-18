@@ -1,0 +1,123 @@
+﻿@model DACS_QuanLyPhongTro.Models.HopDong
+
+@{
+    ViewData["Title"] = "Chi Tiết Hợp Đồng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.85);">
+    <h2 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        Chi Tiết Hợp Đồng
+    </h2>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h5>Thông tin hợp đồng</h5>
+            <table class="table table-bordered table-striped" style="background-color: white; border-radius: 12px; overflow: hidden;">
+                <tbody>
+                    <tr>
+                        <th>Ngày lập</th>
+                        <td>@Model.NgayLap.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                    <tr>
+                        <th>Trạng thái</th>
+                        <td>@Model.TrangThai</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h5>Thông tin phòng trọ</h5>
+            <table class="table table-bordered table-striped" style="background-color: white; border-radius: 12px; overflow: hidden;">
+                <tbody>
+                    <tr>
+                        <th>Số phòng</th>
+                        <td>@Model.PhongTro?.SoPhong</td>
+                    </tr>
+                    <tr>
+                        <th>Tòa nhà</th>
+                        <td>@Model.PhongTro?.ToaNha?.TenToaNha</td>
+                    </tr>
+                    <tr>
+                        <th>Giá thuê</th>
+                        <td>@Model.PhongTro?.GiaThue.ToString("N0") VNĐ</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h5>Thông tin khách thuê</h5>
+        <table class="table table-bordered table-striped" style="background-color: white; border-radius: 12px; overflow: hidden;">
+            <tbody>
+                <tr>
+                    <th>Họ tên</th>
+                    <td>@Model.KhachThue?.HoTen</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>@Model.KhachThue?.Email</td>
+                </tr>
+                <tr>
+                    <th>Số điện thoại</th>
+                    <td>@Model.KhachThue?.SoDienThoai</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="mb-4">
+        <h5>Thông tin chủ trọ</h5>
+        <table class="table table-bordered table-striped" style="background-color: white; border-radius: 12px; overflow: hidden;">
+            <tbody>
+                <tr>
+                    <th>Họ tên</th>
+                    <td>@Model.PhongTro?.ToaNha?.ChuTro?.HoTen</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>@Model.PhongTro?.ToaNha?.ChuTro?.Email</td>
+                </tr>
+                <tr>
+                    <th>Số điện thoại</th>
+                    <td>@Model.PhongTro?.ToaNha?.ChuTro?.SoDienThoai</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="mt-5 text-center">
+        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+            <i class="fas fa-arrow-left mr-2"></i> Quay về Phòng trọ của tôi
+        </a>
+    </div>
+</div>
+
+<style>
+    h5 {
+        color: #a0522d;
+        font-weight: 700;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .btn-hover-effect {
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50rem !important;
+    }
+
+        .btn-hover-effect:hover {
+            background-color: #75c98e !important;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
+        }
+
+        .btn-hover-effect:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+
+    table th {
+        width: 40%;
+    }
+</style>

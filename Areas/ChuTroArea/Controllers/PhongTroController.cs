@@ -66,6 +66,36 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             return View(phongTros);
         }
+        // GET: ChuTroArea/PhongTro/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                TempData["ErrorMessage"] = "ID phòng trọ không hợp lệ.";
+                return NotFound();
+            }
+
+            var maChuTro = await GetMaChuTroAsync();
+            if (maChuTro == null)
+            {
+                TempData["ErrorMessage"] = "Không thể xác thực chủ trọ.";
+                return Unauthorized();
+            }
+
+            var phongTro = await _context.PhongTros
+                .Include(p => p.ToaNha)
+                .Include(p => p.KhachThue)
+                .FirstOrDefaultAsync(p => p.MaPhong == id && p.ToaNha.MaChuTro == maChuTro);
+
+            if (phongTro == null)
+            {
+                TempData["ErrorMessage"] = "Phòng trọ không tồn tại hoặc không thuộc quyền quản lý.";
+                return NotFound();
+            }
+
+            return View(phongTro);
+        }
+
 
         // GET: ChuTroArea/PhongTro/Create
         public async Task<IActionResult> Create()
@@ -77,18 +107,26 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 return Unauthorized();
             }
 
+            // Lấy danh sách tòa nhà kèm số tầng
             var toaNhas = await _context.ToaNhas
                 .Where(t => t.MaChuTro == maChuTro)
-                .Select(t => new SelectListItem
+                .Select(t => new
                 {
-                    Value = t.MaToaNha.ToString(),
-                    Text = t.TenToaNha
+                    t.MaToaNha,
+                    t.TenToaNha,
+                    t.TongSoTang
                 })
                 .ToListAsync();
 
-            ViewBag.MaToaNha = toaNhas;
+            // Chuyển sang SelectList cho dropdown tòa nhà
+            ViewBag.MaToaNha = new SelectList(toaNhas, "MaToaNha", "TenToaNha");
+
+            // Tạo dictionary MaToaNha => SoTang để gửi về view làm dữ liệu JS
+            ViewBag.ToaNhaSoTang = toaNhas.ToDictionary(x => x.MaToaNha, x => x.TongSoTang);
+
             return View();
         }
+
 
         // POST: ChuTroArea/PhongTro/Create
         [HttpPost]

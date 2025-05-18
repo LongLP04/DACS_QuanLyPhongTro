@@ -34,12 +34,13 @@ else
             <a asp-controller="DichVu" asp-action="DanhSachDangKy" class="btn btn-primary btn-lg shadow">
                 <i class="fas fa-file-alt mr-2"></i> Xem phiếu đăng ký dịch vụ
             </a>
-            <a asp-controller="Notifications" asp-action="Index" class="btn btn-info btn-lg shadow">
-                <i class="fas fa-bell mr-2"></i> Thông báo lịch hẹn
+            @* <a asp-controller="Notifications" asp-action="Index" class="btn btn-info btn-lg shadow"> *@
+            @*     <i class="fas fa-bell mr-2"></i> Thông báo lịch hẹn *@
+            @* </a> *@
+            <a asp-controller="HopDong" asp-action="Details" asp-route-id="@Model.MaPhong" class="btn btn-warning btn-lg shadow">
+                <i class="fas fa-file-signature mr-2"></i> Hợp đồng của tôi
             </a>
-            <a asp-controller="HopDong" asp-action="XacNhan" class="btn btn-warning btn-lg shadow">
-                <i class="fas fa-file-signature mr-2"></i> Xác nhận hợp đồng
-            </a>
+
             <a asp-controller="ChiSoDienNuoc" asp-action="Index" class="btn btn-dark btn-lg shadow">
                 <i class="fas fa-tachometer-alt mr-2"></i> Xem chỉ số điện nước
             </a>

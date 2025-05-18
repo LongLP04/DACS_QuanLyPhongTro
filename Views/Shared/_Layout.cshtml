@@ -202,7 +202,17 @@
                                         <i class="fas fa-building mr-2"></i> Phòng trọ
                                     </a>
                                 </li>
-
+                                <li class="nav-item mx-2">
+                                    <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1" class="nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">
+                                        <i class="fas fa-bell mr-2"></i> Thông báo lịch hẹn
+                                    </a>
+                                </li>
+                                
+                                <li class="nav-item mx-2">
+                                    <a asp-controller="HopDong" asp-action="XacNhan" class="nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">
+                                        <i class="fas fa-file-signature mr-2"></i> Xác nhận hợp đồng
+                                    </a>
+                                </li>
                                 @if (!User.Identity.IsAuthenticated)
                                 {
                                     <li class="nav-item mx-2">

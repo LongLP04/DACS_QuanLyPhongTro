@@ -32,6 +32,7 @@ else
                 <th>Phòng</th>
                 <th>Dịch vụ</th>
                 <th>Tổng tiền</th>
+                <th>Hành động</th>
             </tr>
         </thead>
         <tbody>
@@ -55,6 +56,13 @@ else
                     </td>
                     <td class="text-danger">
                         @phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu).ToString("N0") VND
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@phieu.MaDangKyDichVu" class="btn btn-info btn-sm">Xem</a>
+                        <form asp-action="XoaPhieu" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa phiếu này?');">
+                            <input type="hidden" name="id" value="@phieu.MaDangKyDichVu" />
+                            <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                        </form>
                     </td>
                 </tr>
             }

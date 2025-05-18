@@ -83,14 +83,21 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         // Action để tạo hóa đơn
         public IActionResult Create()
         {
-            // Lấy danh sách phòng trọ để người dùng chọn
-            var phongTros = _context.PhongTros.ToList();
+            var currentChuTroEmail = User.Identity.Name;
 
-            // Truyền danh sách phòng vào View
+            // Lấy phòng trọ của chủ trọ đang đăng nhập có trạng thái "Đã Thuê"
+            var phongTros = _context.ChuTros
+                .Where(c => c.Email == currentChuTroEmail)
+                .SelectMany(c => c.ToaNhas)
+                .SelectMany(t => t.PhongTros)
+                .Where(p => p.TrangThai == "Đã Thuê")
+                .ToList();
+
             ViewBag.PhongTros = new SelectList(phongTros, "MaPhong", "SoPhong");
 
             return View();
         }
+
 
         // Action xử lý khi người dùng submit form
         [HttpPost]

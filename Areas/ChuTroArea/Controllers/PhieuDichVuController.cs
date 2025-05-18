@@ -179,6 +179,45 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             }
             return RedirectToAction("DanhSachDichVu");
         }
+        // GET: Chi tiết phiếu đăng ký dịch vụ
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var phieu = await _context.PhieuDangKyDichVus
+                .Include(p => p.KhachThue)
+                .Include(p => p.ChiTietPhieuDangKyDichVus)
+                    .ThenInclude(ct => ct.DichVu)
+                .FirstOrDefaultAsync(p => p.MaDangKyDichVu == id);
+
+            if (phieu == null) return NotFound();
+
+            return View(phieu);
+        }
+
+        // POST: Xóa phiếu đăng ký dịch vụ
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> XoaPhieu(int id)
+        {
+            var phieu = await _context.PhieuDangKyDichVus
+                .Include(p => p.ChiTietPhieuDangKyDichVus)
+                .FirstOrDefaultAsync(p => p.MaDangKyDichVu == id);
+
+            if (phieu == null) return NotFound();
+
+            // Xóa chi tiết phiếu trước nếu có (nếu có liên kết FK)
+            if (phieu.ChiTietPhieuDangKyDichVus != null)
+            {
+                _context.ChiTietPhieuDangKyDichVus.RemoveRange(phieu.ChiTietPhieuDangKyDichVus);
+            }
+
+            _context.PhieuDangKyDichVus.Remove(phieu);
+            await _context.SaveChangesAsync();
+
+            TempData["ThongBao"] = "Phiếu đăng ký dịch vụ đã được xóa.";
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }

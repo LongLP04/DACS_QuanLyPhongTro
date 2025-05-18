@@ -58,7 +58,7 @@ namespace DACS_QuanLyPhongTro.Controllers
             var notification = new Notification
             {
                 MaKhachThue = appointment.KhachThue.MaKhachThue,
-                Message = $"Lịch hẹn cho phòng {appointment.PhongTro.SoPhong} đã được chấp nhận.",
+                Message = $"Lịch hẹn cho phòng {appointment.PhongTro.SoPhong} đã được chấp nhận. Vui lòng gặp trực tiếp đúng ngày giờ đã chọn",
                 CreatedAt = DateTime.Now,
                 IsRead = false // Đánh dấu thông báo là chưa đọc
             };

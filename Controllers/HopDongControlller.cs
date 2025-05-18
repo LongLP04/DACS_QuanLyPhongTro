@@ -14,6 +14,33 @@ namespace DACS_QuanLyPhongTro.Controllers
         {
             _context = context;
         }
+        // GET: Xem chi tiết hợp đồng
+        [HttpGet]
+        [Authorize(Roles = "KhachThue")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var hopDong = await _context.HopDongs
+                .Include(h => h.KhachThue)
+                .Include(h => h.PhongTro)
+                    .ThenInclude(p => p.ToaNha)
+                        .ThenInclude(t => t.ChuTro)  // Phải include chu tro
+                .FirstOrDefaultAsync(h => h.MaPhong == id);
+
+
+            if (hopDong == null)
+                return NotFound();
+
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var khachThue = await _context.KhachThues.FirstOrDefaultAsync(k => k.ApplicationUserId == currentUserId);
+
+            if (khachThue == null || hopDong.MaKhachThue != khachThue.MaKhachThue)
+                return Forbid();
+
+            return View(hopDong);
+        }
 
         // GET: Xác nhận hợp đồng
         [HttpGet]

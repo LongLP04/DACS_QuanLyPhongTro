@@ -95,14 +95,14 @@ public class LichHenController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> RejectAppointment(int id)
+    public async Task<IActionResult> RejectAppointment([FromBody] AppointmentRequest request)
     {
         try
         {
             var appointment = await _context.LichHen
                 .Include(a => a.KhachThue)
                 .Include(a => a.PhongTro) // Đảm bảo rằng phòng được bao gồm
-                .FirstOrDefaultAsync(a => a.MaLichHen == id);
+                .FirstOrDefaultAsync(a => a.MaLichHen == request.Id);
 
             if (appointment == null)
             {
@@ -140,6 +140,36 @@ public class LichHenController : Controller
         catch (Exception ex)
         {
             // Ghi lại lỗi chi tiết vào log hoặc console để kiểm tra
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+            return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình xử lý." });
+        }
+    }
+    [HttpPost]
+    public async Task<IActionResult> DeleteAppointment([FromBody] AppointmentRequest request)
+    {
+        try
+        {
+            if (request?.Id <= 0)
+                return Json(new { success = false, message = "ID lịch hẹn không hợp lệ." });
+
+            var appointment = await _context.LichHen
+                .FirstOrDefaultAsync(a => a.MaLichHen == request.Id);
+
+            if (appointment == null)
+                return Json(new { success = false, message = "Lịch hẹn không tồn tại." });
+
+            _context.LichHen.Remove(appointment);
+
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+                return Json(new { success = true, message = "Lịch hẹn đã được xóa thành công." });
+            else
+                return Json(new { success = false, message = "Không có thay đổi nào được lưu vào cơ sở dữ liệu." });
+        }
+        catch (Exception ex)
+        {
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
             return Json(new { success = false, message = "Có lỗi xảy ra trong quá trình xử lý." });

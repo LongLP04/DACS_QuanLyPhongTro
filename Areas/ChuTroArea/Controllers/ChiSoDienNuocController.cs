@@ -59,7 +59,8 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                     {
                         MaChiSo = 0, // Đặt MaChiSo = 0 để đánh dấu bản ghi giả
                         PhongTro = phong,
-                        MaPhong = phong.MaPhong
+                        MaPhong = phong.MaPhong,
+                        NgayGhi = DateTime.MinValue,
                     });
                 }
             }
@@ -208,6 +209,105 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             return View(chiSoDienNuoc);
         }
+        // GET: Chỉnh sửa chỉ số điện nước
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var chiSoDienNuoc = await _context.ChiSoDienNuocs
+                .Include(c => c.PhongTro)
+                .FirstOrDefaultAsync(c => c.MaChiSo == id);
+
+            if (chiSoDienNuoc == null)
+                return NotFound();
+
+            var currentChuTroEmail = User.Identity.Name;
+            var currentChuTro = await _context.ChuTros
+                .Include(c => c.ToaNhas)
+                .ThenInclude(t => t.PhongTros)
+                .FirstOrDefaultAsync(c => c.Email == currentChuTroEmail);
+
+            if (currentChuTro == null || !currentChuTro.ToaNhas.SelectMany(t => t.PhongTros).Any(p => p.MaPhong == chiSoDienNuoc.MaPhong))
+            {
+                return Forbid("Bạn không có quyền chỉnh sửa thông tin này.");
+            }
+
+            var phongTrosDaThue = currentChuTro.ToaNhas
+                .SelectMany(t => t.PhongTros)
+                .Where(p => p.TrangThai == "Đã Thuê")
+                .ToList();
+
+            ViewBag.PhongTros = new SelectList(phongTrosDaThue, "MaPhong", "SoPhong", chiSoDienNuoc.MaPhong);
+
+            return View(chiSoDienNuoc);
+        }
+
+        // POST: Chỉnh sửa chỉ số điện nước
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, ChiSoDienNuoc chiSoDienNuoc)
+        {
+            if (id != chiSoDienNuoc.MaChiSo)
+                return NotFound();
+
+            var currentChuTroEmail = User.Identity.Name;
+            var currentChuTro = await _context.ChuTros
+                .Include(c => c.ToaNhas)
+                .ThenInclude(t => t.PhongTros)
+                .FirstOrDefaultAsync(c => c.Email == currentChuTroEmail);
+
+            if (currentChuTro == null || !currentChuTro.ToaNhas.SelectMany(t => t.PhongTros).Any(p => p.MaPhong == chiSoDienNuoc.MaPhong))
+            {
+                return Forbid("Bạn không có quyền chỉnh sửa thông tin này.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Kiểm tra phòng thuộc chủ trọ và đang thuê
+                    var phongTro = currentChuTro.ToaNhas
+                        .SelectMany(t => t.PhongTros)
+                        .FirstOrDefault(p => p.MaPhong == chiSoDienNuoc.MaPhong && p.TrangThai == "Đã Thuê");
+
+                    if (phongTro == null)
+                    {
+                        ModelState.AddModelError("MaPhong", "Phòng không hợp lệ hoặc không được thuê.");
+                        var phongTros = currentChuTro.ToaNhas
+                            .SelectMany(t => t.PhongTros)
+                            .Where(p => p.TrangThai == "Đã Thuê")
+                            .ToList();
+                        ViewBag.PhongTros = new SelectList(phongTros, "MaPhong", "SoPhong", chiSoDienNuoc.MaPhong);
+                        return View(chiSoDienNuoc);
+                    }
+
+                    chiSoDienNuoc.PhongTro = phongTro;
+
+                    _context.Update(chiSoDienNuoc);
+                    await _context.SaveChangesAsync();
+
+                    TempData["ThongBao"] = "Chỉ số điện nước đã được cập nhật thành công.";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.ChiSoDienNuocs.Any(e => e.MaChiSo == chiSoDienNuoc.MaChiSo))
+                        return NotFound();
+                    else
+                        throw;
+                }
+            }
+
+            var phongTrosDaThue = currentChuTro.ToaNhas
+                .SelectMany(t => t.PhongTros)
+                .Where(p => p.TrangThai == "Đã Thuê")
+                .ToList();
+
+            ViewBag.PhongTros = new SelectList(phongTrosDaThue, "MaPhong", "SoPhong", chiSoDienNuoc.MaPhong);
+            return View(chiSoDienNuoc);
+        }
+
 
         // GET: Xác nhận xóa chỉ số điện nước
         public async Task<IActionResult> Delete(int? id)
@@ -262,5 +362,6 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             TempData["ThongBao"] = "Chỉ số điện nước đã được xóa thành công.";
             return RedirectToAction(nameof(Index));
         }
+
     }
 }

@@ -1,0 +1,37 @@
+﻿@model DACS_QuanLyPhongTro.Models.PhongTro
+
+@{
+    ViewData["Title"] = "Chi tiết phòng trọ";
+    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>Chi tiết phòng trọ: @Model.SoPhong</h2>
+
+<div class="card mb-3" style="max-width: 800px;">
+    <div class="row no-gutters">
+        <div class="col-md-5">
+            @if (!string.IsNullOrEmpty(Model.Hinhanh))
+            {
+                <img src="@Url.Content("~/" + Model.Hinhanh)" class="card-img" alt="Hình ảnh phòng trọ" />
+            }
+            else
+            {
+                <img src="~/images/default-room.jpg" class="card-img" alt="Không có hình ảnh" />
+            }
+        </div>
+        <div class="col-md-7">
+            <div class="card-body">
+                <h5 class="card-title">Phòng số: @Model.SoPhong</h5>
+                <p class="card-text"><strong>Tòa nhà:</strong> @Model.ToaNha?.TenToaNha</p>
+                <p class="card-text"><strong>Tầng:</strong> @Model.Tang</p>
+                <p class="card-text"><strong>Diện tích:</strong> @Model.DienTich m²</p>
+                <p class="card-text"><strong>Giá thuê:</strong> @Model.GiaThue.ToString("N0") VNĐ</p>
+                <p class="card-text"><strong>Trạng thái:</strong> @Model.TrangThai</p>
+                <p class="card-text"><strong>Mô tả:</strong> @Model.MoTa</p>
+                <p class="card-text"><strong>Khách thuê:</strong> @(Model.KhachThue != null ? Model.KhachThue.HoTen : "Chưa có khách thuê")</p>
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                <a asp-action="Edit" asp-route-id="@Model.MaPhong" class="btn btn-primary">Sửa</a>
+            </div>
+        </div>
+    </div>
+</div>

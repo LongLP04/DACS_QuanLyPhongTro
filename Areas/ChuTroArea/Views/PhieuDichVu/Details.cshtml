@@ -1,0 +1,32 @@
+﻿@model DACS_QuanLyPhongTro.Models.PhieuDangKyDichVu
+
+@{
+    ViewData["Title"] = "Chi tiết Phiếu đăng ký dịch vụ";
+    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+}
+
+<h2>Chi tiết Phiếu đăng ký dịch vụ</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Khách thuê</th>
+        <td>@Model.KhachThue.HoTen</td>
+    </tr>
+    <tr>
+        <th>Trạng thái</th>
+        <td>@Model.TrangThai</td>
+    </tr>
+    <tr>
+        <th>Chi tiết dịch vụ</th>
+        <td>
+            <ul>
+                @foreach (var ct in Model.ChiTietPhieuDangKyDichVus)
+                {
+                    <li>@ct.DichVu.TenDichVu - Số lượng: @ct.SoLuong - Thành tiền: @ct.TongTienDichVu.ToString("N0") VNĐ</li>
+                }
+            </ul>
+        </td>
+    </tr>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Quay lại</a>

@@ -166,11 +166,12 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             var hopDong = await _context.HopDongs.FindAsync(id);
             if (hopDong != null)
             {
-                // Cập nhật lại trạng thái phòng nếu cần
+                // Cập nhật lại trạng thái phòng và xóa MaKhachThue trong phòng trọ
                 var phong = await _context.PhongTros.FindAsync(hopDong.MaPhong);
                 if (phong != null)
                 {
-                    phong.TrangThai = "Trống";
+                    phong.TrangThai = "Trống"; // Đánh dấu phòng trống
+                    phong.MaKhachThue = null;  // Xóa liên kết khách thuê
                     _context.PhongTros.Update(phong);
                 }
 
@@ -180,6 +181,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
 
     }
 }

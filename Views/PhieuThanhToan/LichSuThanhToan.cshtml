@@ -38,7 +38,21 @@
                             <td>@ptt.NgayThanhToan.ToString("dd/MM/yyyy")</td>
                             <td>@ptt.PhuongThucThanhToan?.TenPhuongThuc</td>
                             <td>@ptt.SoTienThanhToan.ToString("C0", vnd)</td>
-                            <td>Giao dịch đã được xác nhận bởi chủ trọ của bạn</td>
+                            <td>
+                                @if (ptt.HoaDon?.TrangThai == "Chờ xác nhận")
+                                {
+                                    <span class="text-warning font-weight-bold">Đang chờ xác nhận</span>
+                                }
+                                else if (ptt.HoaDon?.TrangThai == "Đã thanh toán")
+                                {
+                                    <span class="text-success">Giao dịch đã được xác nhận bởi chủ trọ của bạn</span>
+                                }
+                                else
+                                {
+                                    <span>@ptt.HoaDon?.TrangThai</span>  @* Hoặc thông báo khác nếu muốn *@
+                                }
+                            </td>
+
                         </tr>
                     }
                 </tbody>
