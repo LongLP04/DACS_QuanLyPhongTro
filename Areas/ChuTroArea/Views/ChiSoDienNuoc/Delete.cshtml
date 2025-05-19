@@ -5,15 +5,30 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2>Xác nhận xóa chỉ số điện nước</h2>
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="mb-4 text-danger text-center">@ViewData["Title"]</h2>
 
-<div class="card p-3">
-    <p>Bạn có chắc chắn muốn xóa chỉ số điện nước của phòng <strong>@Model.PhongTro?.SoPhong</strong> ngày <strong>@Model.NgayGhi.ToString("dd/MM/yyyy")</strong> không?</p>
+    <div class="card shadow-sm rounded p-4 mb-4">
+        <p>Bạn có chắc chắn muốn xóa chỉ số điện nước của phòng <strong>@Model.PhongTro?.SoPhong</strong> ngày <strong>@Model.NgayGhi.ToString("dd/MM/yyyy")</strong> không?</p>
+    </div>
 
-    <form asp-action="Delete" method="post">
+    <form asp-action="Delete" method="post" class="d-flex justify-content-center gap-3">
         <input type="hidden" asp-for="MaChiSo" />
-        <button type="submit" class="btn btn-danger">Xóa</button>
-        <a asp-action="Index" class="btn btn-secondary ml-2">Hủy</a>
+        <button type="submit" class="btn btn-danger btn-custom btn-zoom px-4">Xóa</button>
+        <a asp-action="Index" class="btn btn-secondary btn-custom btn-zoom px-4">Hủy</a>
     </form>
-
 </div>
+
+<style>
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom.btn-zoom:hover {
+            transform: scale(1.1);
+            position: relative;
+            z-index: 10;
+        }
+</style>

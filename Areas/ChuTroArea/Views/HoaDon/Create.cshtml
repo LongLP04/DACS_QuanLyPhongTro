@@ -2,22 +2,61 @@
 
 @{
     ViewData["Title"] = "Tạo Hóa Đơn";
-	Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2>Tạo Hóa Đơn</h2>
+<h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
 
-<form asp-action="Create" method="post">
-	<h4>Chọn phòng bạn muốn tạo hóa đơn tự động </h4>
-    <div class="form-group">
-        <label for="MaPhong">Phòng</label>
-        <select asp-for="MaPhong" class="form-control" asp-items="ViewBag.PhongTros"></select>
+<form asp-action="Create" method="post" novalidate>
+    <div class="mb-3" style="max-width: 400px; margin:auto;">
+        <label asp-for="MaPhong" class="form-label fw-bold">Phòng</label>
+        <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.PhongTros">
+            <option value="">-- Chọn phòng trọ --</option>
+        </select>
+        <span asp-validation-for="MaPhong" class="text-danger"></span>
     </div>
-    
-    <!-- Các trường khác nếu cần -->
-    <button type="submit" class="btn btn-primary">Tạo hóa đơn</button>
+
+    <div class="text-center mt-3">
+        <button type="submit" class="btn btn-primary btn-custom btn-zoom px-4">Tạo hóa đơn</button>
+    </div>
 </form>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
 
+<style>
+    .text-highlight {
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #ff8a00, #e52e71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        padding: 0.375rem 0.75rem;
+    }
+
+        .btn-custom.btn-zoom:hover {
+            transform: scale(1.1);
+            position: relative;
+            z-index: 10;
+        }
+
+    .btn-primary.btn-custom {
+        background-color: #7e57c2 !important;
+        border-color: #7e57c2 !important;
+        color: white !important;
+    }
+
+        .btn-primary.btn-custom:hover {
+            background-color: #9c80f0 !important;
+            border-color: #9c80f0 !important;
+            color: #2a0d6a !important;
+        }
+</style>

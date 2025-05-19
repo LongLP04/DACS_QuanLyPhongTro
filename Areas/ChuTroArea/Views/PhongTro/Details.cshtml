@@ -5,33 +5,63 @@
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2>Chi tiết phòng trọ: @Model.SoPhong</h2>
-
-<div class="card mb-3" style="max-width: 800px;">
-    <div class="row no-gutters">
-        <div class="col-md-5">
-            @if (!string.IsNullOrEmpty(Model.Hinhanh))
-            {
-                <img src="@Url.Content("~/" + Model.Hinhanh)" class="card-img" alt="Hình ảnh phòng trọ" />
-            }
-            else
-            {
-                <img src="~/images/default-room.jpg" class="card-img" alt="Không có hình ảnh" />
-            }
-        </div>
-        <div class="col-md-7">
-            <div class="card-body">
-                <h5 class="card-title">Phòng số: @Model.SoPhong</h5>
-                <p class="card-text"><strong>Tòa nhà:</strong> @Model.ToaNha?.TenToaNha</p>
-                <p class="card-text"><strong>Tầng:</strong> @Model.Tang</p>
-                <p class="card-text"><strong>Diện tích:</strong> @Model.DienTich m²</p>
-                <p class="card-text"><strong>Giá thuê:</strong> @Model.GiaThue.ToString("N0") VNĐ</p>
-                <p class="card-text"><strong>Trạng thái:</strong> @Model.TrangThai</p>
-                <p class="card-text"><strong>Mô tả:</strong> @Model.MoTa</p>
-                <p class="card-text"><strong>Khách thuê:</strong> @(Model.KhachThue != null ? Model.KhachThue.HoTen : "Chưa có khách thuê")</p>
-                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-                <a asp-action="Edit" asp-route-id="@Model.MaPhong" class="btn btn-primary">Sửa</a>
+<div class="container d-flex justify-content-center mt-4">
+    <div class="card mb-3" style="max-width: 800px; width: 100%;">
+        <h2 class="text-center mt-3 mb-4">Chi tiết phòng trọ: @Model.SoPhong</h2>
+        <div class="row no-gutters">
+            <div class="col-md-5 d-flex align-items-center justify-content-center p-3">
+                @if (!string.IsNullOrEmpty(Model.Hinhanh))
+                {
+                    <img src="@Url.Content("~/" + Model.Hinhanh)" alt="Hình ảnh phòng trọ" class="img-fluid rounded border" style="max-height: 400px; width: 100%; object-fit: contain;" />
+                }
+                else
+                {
+                    <img src="~/images/default-room.jpg" alt="Không có hình ảnh" class="img-fluid rounded border" style="max-height: 400px; width: 100%; object-fit: contain;" />
+                }
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <h5 class="card-title">Phòng số: @Model.SoPhong</h5>
+                    <p class="card-text nowrap-text"><strong>Tòa nhà:</strong> @Model.ToaNha?.TenToaNha</p>
+                    <p class="card-text nowrap-text"><strong>Tầng:</strong> @Model.Tang</p>
+                    <p class="card-text nowrap-text"><strong>Diện tích:</strong> @Model.DienTich m²</p>
+                    <p class="card-text nowrap-text"><strong>Giá thuê:</strong> @Model.GiaThue.ToString("N0") VNĐ</p>
+                    <p class="card-text nowrap-text"><strong>Trạng thái:</strong> @Model.TrangThai</p>
+                    <p class="card-text nowrap-text"><strong>Mô tả:</strong> @Model.MoTa</p>
+                    <p class="card-text nowrap-text"><strong>Khách thuê:</strong> @(Model.KhachThue != null ? Model.KhachThue.HoTen : "Chưa có khách thuê")</p>
+                    <div class="mt-4">
+                        <a asp-action="Index" class="btn btn-secondary btn-custom me-2">Quay lại</a>
+                        <a asp-action="Edit" asp-route-id="@Model.MaPhong" class="btn btn-primary btn-custom">Sửa</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .text-highlight {
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #ff8a00, #e52e71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+
+    
+
+
+</style>

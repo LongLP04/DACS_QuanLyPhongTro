@@ -4,76 +4,87 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<div class="container mt-5">
-    <h2>Ghi Chỉ Số Điện Nước</h2>
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="mb-4 text-primary text-center">@ViewData["Title"]</h2>
 
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" novalidate>
         @Html.AntiForgeryToken()
 
-        <!-- Hiển thị thông báo lỗi tổng quát -->
         @if (!ViewData.ModelState.IsValid)
         {
             <div class="alert alert-danger">
                 @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
                 {
-                    <p>@error.ErrorMessage</p>
+                    <p class="mb-0">@error.ErrorMessage</p>
                 }
             </div>
         }
 
-        <div class="form-group">
-            <label asp-for="MaPhong" class="control-label">Phòng Trọ</label>
-            <select asp-for="MaPhong" class="form-control" asp-items="ViewBag.PhongTros" required>
+        <div class="mb-3">
+            <label asp-for="MaPhong" class="form-label">Phòng Trọ</label>
+            <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.PhongTros" required>
                 <option value="">-- Chọn phòng trọ --</option>
             </select>
             <span asp-validation-for="MaPhong" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
-            <label asp-for="ChiSoDienCu" class="control-label">Chỉ Số Điện Cũ</label>
-            <input asp-for="ChiSoDienCu" class="form-control" type="number" step="0.01" required />
+        <div class="mb-3">
+            <label asp-for="ChiSoDienCu" class="form-label">Chỉ Số Điện Cũ</label>
+            <input asp-for="ChiSoDienCu" type="number" step="0.01" class="form-control" required />
             <span asp-validation-for="ChiSoDienCu" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
-            <label asp-for="ChiSoDienMoi" class="control-label">Chỉ Số Điện Mới</label>
-            <input asp-for="ChiSoDienMoi" class="form-control" type="number" step="0.01" required />
+        <div class="mb-3">
+            <label asp-for="ChiSoDienMoi" class="form-label">Chỉ Số Điện Mới</label>
+            <input asp-for="ChiSoDienMoi" type="number" step="0.01" class="form-control" required />
             <span asp-validation-for="ChiSoDienMoi" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
-            <label asp-for="ChiSoNuocCu" class="control-label">Chỉ Số Nước Cũ</label>
-            <input asp-for="ChiSoNuocCu" class="form-control" type="number" step="0.01" required />
+        <div class="mb-3">
+            <label asp-for="ChiSoNuocCu" class="form-label">Chỉ Số Nước Cũ</label>
+            <input asp-for="ChiSoNuocCu" type="number" step="0.01" class="form-control" required />
             <span asp-validation-for="ChiSoNuocCu" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
-            <label asp-for="ChiSoNuocMoi" class="control-label">Chỉ Số Nước Mới</label>
-            <input asp-for="ChiSoNuocMoi" class="form-control" type="number" step="0.01" required />
+        <div class="mb-3">
+            <label asp-for="ChiSoNuocMoi" class="form-label">Chỉ Số Nước Mới</label>
+            <input asp-for="ChiSoNuocMoi" type="number" step="0.01" class="form-control" required />
             <span asp-validation-for="ChiSoNuocMoi" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
-            <label asp-for="DonGiaDien" class="control-label">Đơn Giá Điện (VNĐ)</label>
-            <input asp-for="DonGiaDien" class="form-control" type="number" step="0.01" required />
+        <div class="mb-3">
+            <label asp-for="DonGiaDien" class="form-label">Đơn Giá Điện (VNĐ)</label>
+            <input asp-for="DonGiaDien" type="number" step="0.01" class="form-control" required />
             <span asp-validation-for="DonGiaDien" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
-            <label asp-for="DonGiaNuoc" class="control-label">Đơn Giá Nước (VNĐ)</label>
-            <input asp-for="DonGiaNuoc" class="form-control" type="number" step="0.01" required />
+        <div class="mb-3">
+            <label asp-for="DonGiaNuoc" class="form-label">Đơn Giá Nước (VNĐ)</label>
+            <input asp-for="DonGiaNuoc" type="number" step="0.01" class="form-control" required />
             <span asp-validation-for="DonGiaNuoc" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
-            <input type="submit" value="Ghi Chỉ Số" class="btn btn-primary" />
-            <a asp-action="Index" class="btn btn-secondary ml-2">Quay Lại</a>
+        <div class="d-flex justify-content-center gap-3">
+            <input type="submit" value="Ghi Chỉ Số" class="btn btn-primary btn-custom btn-zoom px-4" />
+            <a asp-action="Index" class="btn btn-secondary btn-custom btn-zoom px-4">Quay Lại</a>
         </div>
     </form>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }
+
+<style>
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom.btn-zoom:hover {
+            transform: scale(1.1);
+            position: relative;
+            z-index: 10;
+        }
+</style>

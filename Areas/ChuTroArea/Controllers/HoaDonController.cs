@@ -12,7 +12,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public HoaDonController(ApplicationDbContext context)
+        public HoaDonController(ApplicationDbContext context) 
         {
             _context = context;
         }

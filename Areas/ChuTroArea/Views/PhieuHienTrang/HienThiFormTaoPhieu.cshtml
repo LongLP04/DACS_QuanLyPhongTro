@@ -1,21 +1,22 @@
 ﻿@model DACS_QuanLyPhongTro.ViewModels.TaoPhieuHienTrangViewModel
+
 @{
     ViewData["Title"] = "Tạo phiếu hiện trạng";
-	Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2>Tạo phiếu hiện trạng - @Model.TenPhong</h2>
+<h2 class="text-highlight mb-4 text-center">Tạo phiếu hiện trạng - @Model.TenPhong</h2>
 
-<form asp-action="TaoPhieu" method="post">
+<form asp-action="TaoPhieu" method="post" style="max-width: 700px; margin:auto;">
     <input type="hidden" asp-for="MaPhong" />
     <div class="mb-3">
-        <label asp-for="GhiChu">Ghi chú</label>
+        <label asp-for="GhiChu" class="form-label fw-bold">Ghi chú</label>
         <textarea asp-for="GhiChu" class="form-control"></textarea>
     </div>
 
-    <h4>Vật dụng</h4>
-    <table class="table" id="table-vatdung">
-        <thead>
+    <h4 class="mb-3">Vật dụng</h4>
+    <table class="table table-bordered" id="table-vatdung">
+        <thead class="thead-custom text-white">
             <tr>
                 <th>Tên vật dụng</th>
                 <th>Tình trạng</th>
@@ -23,13 +24,15 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Dữ liệu thêm tự động bởi JS -->
         </tbody>
     </table>
 
-    <button type="button" onclick="themVatDung()" class="btn btn-sm btn-secondary">+ Thêm vật dụng</button>
+    <button type="button" onclick="themVatDung()" class="btn btn-secondary btn-custom btn-zoom mb-3">+ Thêm vật dụng</button>
 
-    <br /><br />
-    <button type="submit" class="btn btn-primary">Tạo phiếu</button>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary btn-custom btn-zoom px-5">Tạo phiếu</button>
+    </div>
 </form>
 
 @section Scripts {
@@ -40,9 +43,36 @@
                 <tr>
                     <td><input name="VatDungs[${index}].TenVatDung" class="form-control" required /></td>
                     <td><input name="VatDungs[${index}].TinhTrang" class="form-control" required /></td>
-                    <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-sm btn-danger">X</button></td>
+                    <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-sm btn-danger btn-custom btn-zoom">X</button></td>
                 </tr>`;
             document.querySelector('#table-vatdung tbody').insertAdjacentHTML('beforeend', row);
         }
     </script>
 }
+
+<style>
+    .text-highlight {
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #ff8a00, #e52e71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .thead-custom {
+        background-color: #5a2ea6;
+    }
+
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom.btn-zoom:hover {
+            transform: scale(1.1);
+            position: relative;
+            z-index: 10;
+        }
+</style>

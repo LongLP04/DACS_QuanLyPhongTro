@@ -13,7 +13,7 @@ public class LichHenController : Controller
 
     public LichHenController(ApplicationDbContext context)
     {
-        _context = context;
+       _context = context;
     }
 
     public async Task<IActionResult> Appointments()

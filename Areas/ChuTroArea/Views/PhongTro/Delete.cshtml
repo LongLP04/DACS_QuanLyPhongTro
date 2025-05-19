@@ -5,91 +5,94 @@
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2>Xóa Phòng Trọ</h2>
+<div class="container my-5" style="max-width: 700px;">
+    <h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
 
-<hr />
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        @TempData["ErrorMessage"]
-    </div>
-}
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        @TempData["SuccessMessage"]
-    </div>
-}
+    <hr />
 
-<h3>Bạn có chắc muốn xóa phòng trọ này?</h3>
-<div>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <h4 class="mb-3">Bạn có chắc muốn xóa phòng trọ này?</h4>
+
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SoPhong)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SoPhong)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ToaNha.TenToaNha)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ToaNha.TenToaNha)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Tang)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tang)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DienTich)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DienTich)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.GiaThue)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.GiaThue)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TrangThai)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TrangThai)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.MoTa)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MoTa)
-        </dd>
-        <dt class="col-sm-2">
-            Khách Thuê
-        </dt>
-        <dd class="col-sm-10">
-            @(Model.KhachThue != null ? Model.KhachThue.HoTen : "Không")
-        </dd>
-        <dt class="col-sm-2">
-            Hình Ảnh
-        </dt>
-        <dd class="col-sm-10">
+        <dt class="col-sm-4 fw-bold">Số phòng</dt>
+        <dd class="col-sm-8">@Model.SoPhong</dd>
+
+        <dt class="col-sm-4 fw-bold">Tòa nhà</dt>
+        <dd class="col-sm-8">@Model.ToaNha?.TenToaNha</dd>
+
+        <dt class="col-sm-4 fw-bold">Tầng</dt>
+        <dd class="col-sm-8">@Model.Tang</dd>
+
+        <dt class="col-sm-4 fw-bold">Diện tích</dt>
+        <dd class="col-sm-8">@Model.DienTich</dd>
+
+        <dt class="col-sm-4 fw-bold">Giá thuê</dt>
+        <dd class="col-sm-8">@Model.GiaThue</dd>
+
+        <dt class="col-sm-4 fw-bold">Trạng thái</dt>
+        <dd class="col-sm-8">@Model.TrangThai</dd>
+
+        <dt class="col-sm-4 fw-bold">Mô tả</dt>
+        <dd class="col-sm-8">@Model.MoTa</dd>
+
+        <dt class="col-sm-4 fw-bold">Khách thuê</dt>
+        <dd class="col-sm-8">@((Model.KhachThue != null) ? Model.KhachThue.HoTen : "Không")</dd>
+
+        <dt class="col-sm-4 fw-bold">Hình ảnh</dt>
+        <dd class="col-sm-8">
             @if (!string.IsNullOrEmpty(Model.Hinhanh))
             {
-                <img src="@Model.Hinhanh" alt="Hình ảnh phòng trọ" style="max-width: 200px; max-height: 200px;" />
+                <img src="@Url.Content("~/" + Model.Hinhanh)" alt="Hình ảnh phòng trọ" class="img-fluid rounded border" style="max-height: 400px; width: 100%; object-fit: contain;" />
             }
             else
             {
-                <span>Không có</span>
+                <img src="~/images/default-room.jpg" alt="Không có hình ảnh" class="img-fluid rounded border" style="max-height: 400px; width: 100%; object-fit: contain;" />
             }
         </dd>
     </dl>
 
-    <form asp-action="Delete" method="post">
+    <form asp-action="Delete" method="post" class="text-center">
         <input type="hidden" asp-for="MaPhong" />
-        <input type="submit" value="Xóa" class="btn btn-danger" />
-        <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại</a>
+        <button type="submit" class="btn btn-danger btn-custom px-5">Xóa</button>
+        <a asp-action="Index" class="btn btn-secondary btn-custom ms-3 px-4">Quay lại</a>
     </form>
 </div>
+
+<style>
+    .text-highlight {
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #ff8a00, #e52e71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+
+    dt, dd {
+        font-weight: 600;
+    }
+</style>

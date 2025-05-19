@@ -5,18 +5,17 @@
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<div class="container mt-5">
-    <h2>Danh Sách Phiếu Sự Cố</h2>
+<div class="container mt-5" style="max-width: 1100px;">
+    <h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
 
-    <!-- Hiển thị thông báo -->
     @if (TempData["ThongBao"] != null)
     {
-        <div class="alert alert-success" id="thongBao">
+        <div class="alert alert-success alert-dismissible fade show" id="thongBao" role="alert">
             @TempData["ThongBao"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <!-- Cảnh báo nếu có phiếu chưa xử lý -->
     @if (ViewBag.CoPhieuChuaXuLy == true)
     {
         <div class="alert alert-warning">
@@ -32,53 +31,55 @@
     }
     else
     {
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Mã Phiếu</th>
-                    <th>Ngày Ghi Nhận</th>
-                    <th>Mô Tả Sự Cố</th>
-                    <th>Hiện Trạng</th>
-                    <th>Ghi Chú</th>
-                    <th>Tình Trạng</th>
-                    <th>Hành Động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var phieu in Model)
-                {
+        <div class="table-responsive shadow-sm rounded custom-table">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-custom text-white">
                     <tr>
-                        <td>@phieu.MaPhieuSuCo</td>
-                        <td>@phieu.NgayGhiNhan.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@phieu.MoTaSuCo</td>
-                        <td>@phieu.HienTrang</td>
-                        <td>@phieu.GhiChu</td>
-                        <td>@phieu.TinhTrang</td>
-                        <td>
-                            @if (phieu.TinhTrang == "Chưa xử lý" || phieu.TinhTrang == "Đã tiếp nhận")
-                            {
-                                <form asp-action="XacNhan" method="post">
-                                    <input type="hidden" name="id" value="@phieu.MaPhieuSuCo" />
-                                    <select name="tinhTrang" class="form-control d-inline w-auto" required>
-                                        <option value="">Chọn trạng thái</option>
-                                        @if (phieu.TinhTrang == "Chưa xử lý")
-                                        {
-                                            <option value="Đã tiếp nhận">Đã tiếp nhận</option>
-                                        }
-                                        <option value="Đã xử lý">Đã xử lý</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-primary mt-2">Xác nhận</button>
-                                </form>
-                            }
-                            else
-                            {
-                                <span class="text-success">Đã xử lý</span>
-                            }
-                        </td>
+                        <th>Mã Phiếu</th>
+                        <th>Ngày Ghi Nhận</th>
+                        <th>Mô Tả Sự Cố</th>
+                        <th>Hiện Trạng</th>
+                        <th>Ghi Chú</th>
+                        <th>Tình Trạng</th>
+                        <th>Hành Động</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var phieu in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@phieu.MaPhieuSuCo</td>
+                            <td>@phieu.NgayGhiNhan.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@phieu.MoTaSuCo</td>
+                            <td>@phieu.HienTrang</td>
+                            <td>@phieu.GhiChu</td>
+                            <td>@phieu.TinhTrang</td>
+                            <td>
+                                @if (phieu.TinhTrang == "Chưa xử lý" || phieu.TinhTrang == "Đã tiếp nhận")
+                                {
+                                    <form asp-action="XacNhan" method="post" class="d-flex flex-column flex-md-row align-items-center gap-2">
+                                        <input type="hidden" name="id" value="@phieu.MaPhieuSuCo" />
+                                        <select name="tinhTrang" class="form-select form-select-sm w-auto" required>
+                                            <option value="">Chọn trạng thái</option>
+                                            @if (phieu.TinhTrang == "Chưa xử lý")
+                                            {
+                                                <option value="Đã tiếp nhận">Đã tiếp nhận</option>
+                                            }
+                                            <option value="Đã xử lý">Đã xử lý</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-primary btn-sm btn-custom btn-zoom">Xác nhận</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-success fw-bold">Đã xử lý</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 </div>
 
@@ -98,3 +99,54 @@
         });
     </script>
 }
+
+<style>
+    .text-highlight {
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #ff8a00, #e52e71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .custom-table {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+        transition: box-shadow 0.3s ease;
+    }
+
+        .custom-table:hover {
+            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
+        }
+
+    .thead-custom {
+        background-color: #5a2ea6;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #d9caff;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .custom-table tbody tr:hover td:hover {
+            background-color: #a884f7 !important;
+            color: #3e2d5e;
+            font-weight: 600;
+        }
+
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom.btn-zoom:hover {
+            transform: scale(1.1);
+            position: relative;
+            z-index: 10;
+        }
+</style>

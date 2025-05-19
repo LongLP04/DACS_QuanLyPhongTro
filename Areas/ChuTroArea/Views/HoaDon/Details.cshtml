@@ -6,57 +6,119 @@
     var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
 
-<div class="card p-4 shadow-sm border">
+<div class="card p-4 shadow-sm rounded custom-card">
     <h4 class="mb-3">Thông tin hóa đơn #@Model.MaHoaDon</h4>
 
     <dl class="row">
-        <dt class="col-sm-3">Ngày lập:</dt>
+        <dt class="col-sm-3 fw-bold">Ngày lập:</dt>
         <dd class="col-sm-9">@Model.NgayLap.ToString("dd/MM/yyyy")</dd>
 
-        <dt class="col-sm-3">Khách thuê:</dt>
+        <dt class="col-sm-3 fw-bold">Khách thuê:</dt>
         <dd class="col-sm-9">@Model.KhachThue?.HoTen</dd>
 
-        <dt class="col-sm-3">Phòng:</dt>
+        <dt class="col-sm-3 fw-bold">Phòng:</dt>
         <dd class="col-sm-9">@Model.ChiSoDienNuoc?.PhongTro?.SoPhong</dd>
 
-        <dt class="col-sm-3">Tiền điện:</dt>
+        <dt class="col-sm-3 fw-bold">Tiền điện:</dt>
         <dd class="col-sm-9">@Model.TienDien.ToString("C0", vnd)</dd>
 
-        <dt class="col-sm-3">Tiền nước:</dt>
+        <dt class="col-sm-3 fw-bold">Tiền nước:</dt>
         <dd class="col-sm-9">@Model.TienNuoc.ToString("C0", vnd)</dd>
 
-        <dt class="col-sm-3">Tiền phòng:</dt>
+        <dt class="col-sm-3 fw-bold">Tiền phòng:</dt>
         <dd class="col-sm-9">@Model.TienPhong.ToString("C0", vnd)</dd>
 
-        <dt class="col-sm-3">Tiền dịch vụ:</dt>
+        <dt class="col-sm-3 fw-bold">Tiền dịch vụ:</dt>
         <dd class="col-sm-9">@Model.TienDichVu.ToString("C0", vnd)</dd>
 
-        <dt class="col-sm-3 font-weight-bold">Tổng tiền:</dt>
-        <dd class="col-sm-9 text-danger font-weight-bold">@Model.TongTien.ToString("C0", vnd)</dd>
+        <dt class="col-sm-3 fw-bold text-danger">Tổng tiền:</dt>
+        <dd class="col-sm-9 text-danger fw-bold">@Model.TongTien.ToString("C0", vnd)</dd>
 
-        @if (Model.PhieuThanhToans != null && Model.PhieuThanhToans.Any())
+        @if (Model.PhieuThanhToans?.Any() == true)
         {
             var phieuMoiNhat = Model.PhieuThanhToans.OrderByDescending(p => p.NgayThanhToan).First();
-            <dt class="col-sm-3 font-weight-bold">Hình thức thanh toán:</dt>
-            <dd class="col-sm-9 text-danger font-weight-bold">@phieuMoiNhat.PhuongThucThanhToan?.TenPhuongThuc</dd>
+            <dt class="col-sm-3 fw-bold text-danger">Hình thức thanh toán:</dt>
+            <dd class="col-sm-9 text-danger fw-bold">@phieuMoiNhat.PhuongThucThanhToan?.TenPhuongThuc</dd>
         }
 
-        <dt class="col-sm-3">Trạng thái:</dt>
+        <dt class="col-sm-3 fw-bold">Trạng thái:</dt>
         <dd class="col-sm-9">@Model.TrangThai</dd>
     </dl>
 
-    <div class="mt-3">
-        <a href="@Url.Action("Index", "HoaDon")" class="btn btn-secondary">Quay lại danh sách</a>
+    <div class="mt-4 d-flex gap-2">
+        <a asp-action="Index" class="btn btn-secondary btn-custom btn-zoom">Quay lại danh sách</a>
 
         @if (Model.TrangThai == "Chờ xác nhận")
         {
-            <a href="@Url.Action("XacNhanThanhToan", "HoaDon", new { id = Model.MaHoaDon })"
-               class="btn btn-success"
+            <a asp-action="XacNhanThanhToan" asp-route-id="@Model.MaHoaDon" class="btn btn-success btn-custom btn-zoom"
                onclick="return confirm('Xác nhận hóa đơn đã được thanh toán?');">
                 Xác nhận thanh toán
             </a>
         }
     </div>
 </div>
+
+<style>
+    .text-highlight {
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #ff8a00, #e52e71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .custom-card {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+        transition: box-shadow 0.3s ease;
+    }
+
+        .custom-card:hover {
+            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
+        }
+
+    dt {
+        font-weight: 700;
+    }
+
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        padding: 0.375rem 0.75rem;
+    }
+
+        .btn-custom.btn-zoom:hover {
+            transform: scale(1.1);
+            position: relative;
+            z-index: 10;
+        }
+
+    .btn-secondary.btn-custom {
+        background-color: #7e57c2 !important;
+        border-color: #7e57c2 !important;
+        color: white !important;
+    }
+
+        .btn-secondary.btn-custom:hover {
+            background-color: #9c80f0 !important;
+            border-color: #9c80f0 !important;
+            color: #2a0d6a !important;
+        }
+
+    .btn-success.btn-custom {
+        background-color: #43a047 !important;
+        border-color: #43a047 !important;
+        color: white !important;
+    }
+
+        .btn-success.btn-custom:hover {
+            background-color: #66bb6a !important;
+            border-color: #66bb6a !important;
+            color: #1b3a17 !important;
+        }
+</style>

@@ -5,52 +5,58 @@
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2 class="mb-4 text-primary">Danh sách phiếu đăng ký dịch vụ chờ xác nhận</h2>
+<div class="container mt-5" style="max-width: 1100px;">
+    <h2 class="mb-4 text-primary text-center">@ViewData["Title"]</h2>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">Không có phiếu đăng ký dịch vụ nào cần xác nhận.</div>
-}
-else
-{
-    <table class="table table-bordered table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>Khách thuê</th>
-                <th>Ngày bắt đầu</th>
-                <th>Ngày kết thúc</th>
-                <th>Dịch vụ</th>
-                <th>Tổng tiền</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var phieu in Model)
-            {
-                <tr>
-                    <td>@phieu.KhachThue.HoTen</td>
-                    <td>@phieu.NgayBatDau.ToShortDateString()</td>
-                    <td>@phieu.NgayKetThuc.ToShortDateString()</td>
-                    <td>
-                        <ul>
-                            @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
-                            {
-                                <li>@ct.DichVu.TenDichVu - SL: @ct.SoLuong - @ct.TongTienDichVu.ToString("N0") VND</li>
-                            }
-                        </ul>
-                    </td>
-                    <td class="text-danger">
-                        @phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu).ToString("N0") VND
-                    </td>
-                    <td>
-                        <form asp-action="XacNhan" asp-route-id="@phieu.MaDangKyDichVu" method="post">
-                            <button type="submit" class="btn btn-success btn-sm">Xác nhận</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-            <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại</a>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Không có phiếu đăng ký dịch vụ nào cần xác nhận.</div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded">
+            <table class="table table-bordered table-hover custom-table">
+                <thead class="thead-custom text-white">
+                    <tr>
+                        <th>Khách thuê</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Dịch vụ</th>
+                        <th>Tổng tiền</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var phieu in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@phieu.KhachThue.HoTen</td>
+                            <td>@phieu.NgayBatDau.ToShortDateString()</td>
+                            <td>@phieu.NgayKetThuc.ToShortDateString()</td>
+                            <td>
+                                <ul>
+                                    @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
+                                    {
+                                        <li>@ct.DichVu.TenDichVu - SL: @ct.SoLuong - @ct.TongTienDichVu.ToString("N0") VND</li>
+                                    }
+                                </ul>
+                            </td>
+                            <td class="text-danger fw-bold">
+                                @phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu).ToString("N0") VND
+                            </td>
+                            <td>
+                                <form asp-action="XacNhan" asp-route-id="@phieu.MaDangKyDichVu" method="post">
+                                    <button type="submit" class="btn btn-success btn-sm btn-custom btn-zoom">Xác nhận</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 
-        </tbody>
-    </table>
-}
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-secondary btn-custom btn-zoom">Quay lại</a>
+    </div>
+</div>

@@ -2,50 +2,54 @@
 
 @{
     ViewData["Title"] = "Sửa Tòa Nhà";
-	Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2>Sửa Tòa Nhà</h2>
+<div class="container my-5" style="max-width: 900px;">
+    <h2 class="text-highlight mb-5 text-center">@ViewData["Title"]</h2>
 
-<hr />
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        @TempData["ErrorMessage"]
-    </div>
-}
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MaToaNha" />
-            <input type="hidden" asp-for="MaChuTro" />
-            <div class="form-group mb-3">
-                <label asp-for="TenToaNha" class="control-label"></label>
-                <input asp-for="TenToaNha" class="form-control" />
-                <span asp-validation-for="TenToaNha" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="DiaChi" class="control-label"></label>
-                <input asp-for="DiaChi" class="form-control" />
-                <span asp-validation-for="DiaChi" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="TongSoTang" class="control-label"></label>
-                <input asp-for="TongSoTang" class="form-control" type="number" min="1" />
-                <span asp-validation-for="TongSoTang" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="MoTa" class="control-label"></label>
-                <textarea asp-for="MoTa" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="MoTa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Lưu" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại</a>
-            </div>
-        </form>
-    </div>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <form asp-action="Edit">
+        <input type="hidden" asp-for="MaToaNha" />
+        <input type="hidden" asp-for="MaChuTro" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+
+        <div class="form-group mb-4">
+            <label asp-for="TenToaNha" class="control-label"></label>
+            <input asp-for="TenToaNha" class="form-control form-control-lg" />
+            <span asp-validation-for="TenToaNha" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="DiaChi" class="control-label"></label>
+            <input asp-for="DiaChi" class="form-control form-control-lg" />
+            <span asp-validation-for="DiaChi" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="TongSoTang" class="control-label"></label>
+            <input asp-for="TongSoTang" class="form-control form-control-lg" type="number" min="1" />
+            <span asp-validation-for="TongSoTang" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="MoTa" class="control-label"></label>
+            <textarea asp-for="MoTa" class="form-control form-control-lg" rows="5"></textarea>
+            <span asp-validation-for="MoTa" class="text-danger"></span>
+        </div>
+
+        <div class="form-group text-center">
+            <input type="submit" value="Lưu" class="btn btn-primary btn-custom btn-lg px-5" />
+            <a asp-action="Index" class="btn btn-secondary ms-3 btn-lg px-5">Quay lại</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

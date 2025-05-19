@@ -1,71 +1,203 @@
-﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.HoaDon>
+﻿@model List<DACS_QuanLyPhongTro.Models.HoaDon>
 
 @{
-    ViewData["Title"] = "Danh sách hóa đơn";
+    ViewData["Title"] = "Danh Sách Hóa Đơn";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
     var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container my-5" style="width: 100%;">
+    <h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
 
-@if (ViewBag.ThongBao != null)
-{
-    <div class="alert alert-warning">
-        @ViewBag.ThongBao
+    @if (ViewBag.ThongBao != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            @ViewBag.ThongBao
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["ThongBao"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <p class="text-center">
+        <a asp-action="Create" class="btn btn-primary btn-custom btn-lg px-5">Tạo Hóa Đơn Mới</a>
+    </p>
+
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-hover custom-table">
+            <thead class="thead-custom text-white">
+                <tr>
+                    <th>Mã Hóa Đơn</th>
+                    <th>Ngày Lập</th>
+                    <th>Khách Thuê</th>
+                    <th>Phòng</th>
+                    <th>Tiền Điện</th>
+                    <th>Tiền Nước</th>
+                    <th>Tiền Phòng</th>
+                    <th>Tiền Dịch Vụ</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var hoaDon in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@hoaDon.MaHoaDon</td>
+                        <td>@hoaDon.NgayLap.ToString("dd/MM/yyyy")</td>
+                        <td class="wrap-text">@hoaDon.KhachThue?.HoTen</td>
+                        <td>@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong</td>
+                        <td>@hoaDon.TienDien.ToString("N0", vnd) VNĐ</td>
+                        <td>@hoaDon.TienNuoc.ToString("N0", vnd) VNĐ</td>
+                        <td>@hoaDon.TienPhong.ToString("N0", vnd) VNĐ</td>
+                        <td>@hoaDon.TienDichVu.ToString("N0", vnd) VNĐ</td>
+                        <td>@hoaDon.TongTien.ToString("N0", vnd) VNĐ</td>
+                        <td>@hoaDon.TrangThai</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@hoaDon.MaHoaDon" class="btn btn-info btn-sm btn-custom btn-zoom me-1">Xem chi tiết</a>
+                            @if (hoaDon.TrangThai == "Chờ xác nhận")
+                            {
+                                <a asp-action="XacNhanThanhToan" asp-route-id="@hoaDon.MaHoaDon"
+                                   class="btn btn-success btn-sm btn-custom btn-zoom"
+                                   onclick="return confirm('Bạn có chắc muốn xác nhận thanh toán hóa đơn này?');">
+                                    Xác nhận
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-}
-
-@if (TempData["ThongBao"] != null)
-{
-    <div class="alert alert-info">
-        @TempData["ThongBao"]
-    </div>
-}
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Mã hóa đơn</th>
-            <th>Ngày lập</th>
-            <th>Khách thuê</th>
-            <th>Phòng</th>
-            <th>Tiền điện</th>
-            <th>Tiền nước</th>
-            <th>Tiền phòng</th>
-            <th>Tiền dịch vụ</th>
-            <th>Tổng tiền</th>
-            <th>Trạng thái</th>
-            <th>Chi tiết</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var hoaDon in Model)
-        {
-            <tr>
-                <td>@hoaDon.MaHoaDon</td>
-                <td>@hoaDon.NgayLap.ToString("dd/MM/yyyy")</td>
-                <td>@hoaDon.KhachThue?.HoTen</td>
-                <td>@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong</td>
-                <td>@hoaDon.TienDien.ToString("C2", vnd)</td>
-                <td>@hoaDon.TienNuoc.ToString("C2", vnd)</td>
-                <td>@hoaDon.TienPhong.ToString("C2", vnd)</td>
-                <td>@hoaDon.TienDichVu.ToString("C2", vnd)</td>
-                <td>@hoaDon.TongTien.ToString("C2", vnd)</td>
-                <td>@hoaDon.TrangThai</td>
-                <td>
-                    <a href="@Url.Action("Details", "HoaDon", new { id = hoaDon.MaHoaDon })" class="btn btn-info btn-sm">Xem</a>
-
-                    @if (hoaDon.TrangThai == "Chờ xác nhận")
-                    {
-                        <a href="@Url.Action("XacNhanThanhToan", "HoaDon", new { id = hoaDon.MaHoaDon })" class="btn btn-success btn-sm" onclick="return confirm('Bạn có chắc muốn xác nhận thanh toán hóa đơn này?');">Xác nhận</a>
-                    }
-                </td>
-
-            </tr>
-        }
-    </tbody>
-</table>
-
-<div class="text-center">
-    <a href="@Url.Action("Create", "HoaDon")" class="btn btn-primary">Tạo hóa đơn mới</a>
 </div>
+
+<style>
+    .text-highlight {
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #ff8a00, #e52e71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .custom-table {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+        transition: box-shadow 0.3s ease;
+        width: 100%;
+    }
+
+        .custom-table:hover {
+            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
+        }
+
+    .thead-custom {
+        background-color: #5a2ea6;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #d9caff;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .custom-table tbody tr:hover td {
+            position: relative;
+        }
+
+            .custom-table tbody tr:hover td:hover {
+                background-color: #a884f7 !important;
+                color: #3e2d5e;
+                transition: background-color 0.3s ease, color 0.3s ease;
+                font-weight: 600;
+            }
+
+    .custom-table th,
+    .custom-table td {
+        font-weight: 700;
+        vertical-align: middle;
+    }
+
+    .custom-table tbody tr td:nth-child(3) /* Khách Thuê */ {
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    /* Nút chung */
+    .btn-custom {
+        background-color: #7e57c2 !important;
+        border-color: #7e57c2 !important;
+        color: white !important;
+        font-weight: 600;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn-custom:hover {
+            background-color: #9c80f0 !important;
+            border-color: #9c80f0 !important;
+            color: #2a0d6a !important;
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+
+    .btn-custom-warning {
+        background-color: #ffb74d !important;
+        border-color: #ffb74d !important;
+        color: #4e342e !important;
+        font-weight: 600;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn-custom-warning:hover {
+            background-color: #ffcc80 !important;
+            border-color: #ffcc80 !important;
+            color: #663c00 !important;
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+
+    .btn-custom-info {
+        background-color: #2196f3 !important;
+        border-color: #2196f3 !important;
+        color: white !important;
+    }
+
+        .btn-custom-info:hover {
+            background-color: #64b5f6 !important;
+            border-color: #64b5f6 !important;
+            color: #0d47a1 !important;
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+
+    .btn-custom-success {
+        background-color: #43a047 !important;
+        border-color: #43a047 !important;
+        color: white !important;
+    }
+
+        .btn-custom-success:hover {
+            background-color: #66bb6a !important;
+            border-color: #66bb6a !important;
+            color: #1b5e20 !important;
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+</style>

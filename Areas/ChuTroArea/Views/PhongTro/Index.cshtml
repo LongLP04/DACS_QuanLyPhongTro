@@ -2,71 +2,193 @@
 
 @{
     ViewData["Title"] = "Danh Sách Phòng Trọ";
-	Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2>Danh Sách Phòng Trọ</h2>
+<div class="container my-5" style="width: 100%;">
+    <h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
 
-<hr />
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        @TempData["ErrorMessage"]
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <p class="text-center">
+        <a asp-action="Create" class="btn btn-primary btn-custom btn-lg px-5">Thêm Phòng Trọ</a>
+    </p>
+
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-hover custom-table">
+            <thead class="thead-custom text-white">
+                <tr>
+                    <th>Số Phòng</th>
+                    <th>Tòa Nhà</th>
+                    <th>Tầng</th>
+                    <th>Diện Tích (m²)</th>
+                    <th>Giá Thuê (VND)</th>
+                    <th>Trạng Thái</th>
+                    <th>Khách Thuê</th>
+                    <th>Hình Ảnh</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-bold">@item.SoPhong</td>
+                        <td class="wrap-text">@item.ToaNha.TenToaNha</td>
+                        <td>@item.Tang</td>
+                        <td>@item.DienTich</td>
+                        <td>@string.Format("{0:N0}", item.GiaThue)</td>
+                        <td>@item.TrangThai</td>
+                        <td class="wrap-text">@((item.KhachThue != null) ? item.KhachThue.HoTen : "Không")</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Hinhanh))
+                            {
+                                <img src="@Url.Content("~/" + item.Hinhanh)" alt="Hình ảnh phòng trọ" style="max-width: 100px; max-height: 100px;" />
+                            }
+                            else
+                            {
+                                <span>Không có</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.MaPhong" class="btn btn-info btn-sm btn-custom btn-zoom me-1">Xem chi tiết</a>
+                            <a asp-action="Edit" asp-route-id="@item.MaPhong" class="btn btn-warning btn-sm btn-custom-warning btn-zoom me-1">Sửa</a>
+                            <a asp-action="Delete" asp-route-id="@item.MaPhong" class="btn btn-danger btn-sm btn-custom-danger btn-zoom">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-}
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        @TempData["SuccessMessage"]
-    </div>
-}
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Thêm Phòng Trọ</a>
-</p>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Số Phòng</th>
-            <th>Tòa Nhà</th>
-            <th>Tầng</th>
-            <th>Diện Tích (m²)</th>
-            <th>Giá Thuê (VND)</th>
-            <th>Trạng Thái</th>
-            <th>Khách Thuê</th>
-            <th>Hình Ảnh</th>
-            <th>Hành Động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.SoPhong)</td>
-                <td>@Html.DisplayFor(modelItem => item.ToaNha.TenToaNha)</td>
-                <td>@Html.DisplayFor(modelItem => item.Tang)</td>
-                <td>@Html.DisplayFor(modelItem => item.DienTich)</td>
-                <td>@Html.DisplayFor(modelItem => item.GiaThue)</td>
-                <td>@Html.DisplayFor(modelItem => item.TrangThai)</td>
-                <td>@(item.KhachThue != null ? item.KhachThue.HoTen : "Không")</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.Hinhanh))
-                    {
-                        <img src="@Url.Content("~/" + item.Hinhanh)" alt="Hình ảnh phòng trọ" style="max-width: 100px; max-height: 100px;" />
-                    }
-                    else
-                    {
-                        <span>Không có</span>
-                    }
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.MaPhong" class="btn btn-sm btn-info">Xem chi tiết</a>
-                    <a asp-action="Edit" asp-route-id="@item.MaPhong" class="btn btn-sm btn-warning">Sửa</a>
-                    <a asp-action="Delete" asp-route-id="@item.MaPhong" class="btn btn-sm btn-danger">Xóa</a>
-                </td>
+    .text-highlight {
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #ff8a00, #e52e71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
 
-            </tr>
+    .custom-table {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+        transition: box-shadow 0.3s ease;
+    }
+
+        .custom-table:hover {
+            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
         }
-    </tbody>
-</table>
+
+    .thead-custom {
+        background-color: #5a2ea6;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #d9caff;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .custom-table tbody tr:hover td {
+            position: relative;
+        }
+
+            .custom-table tbody tr:hover td:hover {
+                background-color: #a884f7 !important;
+                color: #3e2d5e;
+                transition: background-color 0.3s ease, color 0.3s ease;
+                font-weight: 600;
+            }
+
+    /* In đậm tất cả các cell */
+    .custom-table th,
+    .custom-table td {
+        font-weight: 700;
+        vertical-align: middle;
+    }
+
+    /* Cho phép xuống dòng chỉ ở cột Tòa Nhà (2) và Khách Thuê (7) */
+    .custom-table tbody tr td:nth-child(2),
+    .custom-table tbody tr td:nth-child(7),
+    .custom-table thead tr th:nth-child(2),
+    .custom-table thead tr th:nth-child(7) {
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    /* Nút chung */
+    .btn-custom {
+        background-color: #7e57c2 !important;
+        border-color: #7e57c2 !important;
+        color: white !important;
+        font-weight: 600;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn-custom:hover {
+            background-color: #9c80f0 !important;
+            border-color: #9c80f0 !important;
+            color: #2a0d6a !important;
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+
+    .btn-custom-warning {
+        background-color: #ffb74d !important;
+        border-color: #ffb74d !important;
+        color: #4e342e !important;
+        font-weight: 600;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn-custom-warning:hover {
+            background-color: #ffcc80 !important;
+            border-color: #ffcc80 !important;
+            color: #663c00 !important;
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+
+    .btn-custom-danger {
+        background-color: #e53935 !important;
+        border-color: #e53935 !important;
+        color: white !important;
+        font-weight: 600;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn-custom-danger:hover {
+            background-color: #ef5350 !important;
+            border-color: #ef5350 !important;
+            color: #330000 !important;
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+</style>

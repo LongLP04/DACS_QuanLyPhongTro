@@ -3,15 +3,14 @@
 @{
     ViewData["Title"] = "Danh sách hóa đơn";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
-
 }
 
 <h3>@ViewData["Title"]</h3>
 
 <div class="card">
     <div class="card-body">
-        <table class="table table-bordered">
-            <thead>
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
                 <tr>
                     <th>Mã Hóa Đơn</th>
                     <th>Phòng</th>
@@ -26,14 +25,17 @@
                 {
                     <tr>
                         <td>@hoaDon.MaHoaDon</td>
-                        <td>@hoaDon.PhongTro.SoPhong</td>
+                        <td>@hoaDon.PhongTro?.SoPhong</td>
                         <td>@hoaDon.NgayLap.ToString("dd/MM/yyyy")</td>
                         <td>@hoaDon.TongTien.ToString("N0") VND</td>
                         <td>@hoaDon.TrangThai</td>
                         <td>
                             @if (hoaDon.TrangThai == "Chờ xác nhận")
                             {
-                                <a href="@Url.Action("XacNhanThanhToan", "HoaDon", new { id = hoaDon.MaHoaDon })" class="btn btn-primary">Xác nhận</a>
+                                <a asp-action="XacNhanThanhToan" asp-route-id="@hoaDon.MaHoaDon" class="btn btn-primary"
+                                   onclick="return confirm('Bạn có chắc muốn xác nhận thanh toán hóa đơn này?');">
+                                    Xác nhận
+                                </a>
                             }
                         </td>
                     </tr>

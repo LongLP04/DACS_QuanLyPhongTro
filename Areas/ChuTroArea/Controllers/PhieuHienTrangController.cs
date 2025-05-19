@@ -9,11 +9,11 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 {
     [Area("ChuTroArea")]
     [Authorize(Roles = "ChuTro")]
-    public class PhieuHienTrangController : Controller
+    public class PhieuHienTrangController :Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public PhieuHienTrangController(ApplicationDbContext context)
+        public PhieuHienTrangController(ApplicationDbContext context) 
         {
             _context = context;
         }

@@ -1,23 +1,48 @@
 ﻿@model DACS_QuanLyPhongTro.Models.HopDong
 @{
     ViewData["Title"] = "Xóa Hợp Đồng";
-	Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2>Xác nhận xóa hợp đồng</h2>
+<div class="container my-5" style="max-width: 600px;">
+    <h2 class="text-highlight mb-4 text-center">Xác nhận xóa hợp đồng</h2>
 
-<div>
-    <p><strong>Bạn có chắc chắn muốn xóa hợp đồng này không?</strong></p>
-    <p><strong>Phòng:</strong> @Model.PhongTro?.SoPhong</p>
-    <p><strong>Khách thuê:</strong> @Model.KhachThue?.HoTen</p>
-    <p><strong>Ngày lập:</strong> @Model.NgayLap.ToString("dd/MM/yyyy")</p>
-    <p><strong>Ngày bắt đầu:</strong> @Model.NgayBatDau.ToString("dd/MM/yyyy")</p>
-	<p><strong>Ngày kết thúc:</strong> @Model.NgayKetThuc.ToString("dd/MM/yyyy")</p>
+    <div class="card p-4 shadow-sm rounded mb-4">
+        <p><strong>Bạn có chắc chắn muốn xóa hợp đồng này không?</strong></p>
+        <p><strong>Phòng:</strong> @Model.PhongTro?.SoPhong</p>
+        <p><strong>Khách thuê:</strong> @Model.KhachThue?.HoTen</p>
+        <p><strong>Ngày lập:</strong> @Model.NgayLap.ToString("dd/MM/yyyy")</p>
+        <p><strong>Ngày bắt đầu:</strong> @Model.NgayBatDau.ToString("dd/MM/yyyy")</p>
+        <p><strong>Ngày kết thúc:</strong> @Model.NgayKetThuc.ToString("dd/MM/yyyy")</p>
+    </div>
+
+    <form asp-action="Delete" method="post" class="text-center">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="MaHopDong" />
+        <button type="submit" class="btn btn-danger btn-custom btn-zoom">Xóa</button>
+        <a asp-action="Index" class="btn btn-secondary btn-custom ms-2">Hủy</a>
+    </form>
 </div>
 
-<form asp-action="Delete" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="MaHopDong" />
-    <button type="submit" class="btn btn-danger">Xóa</button>
-    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-</form>
+<style>
+    .text-highlight {
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #ff8a00, #e52e71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+</style>

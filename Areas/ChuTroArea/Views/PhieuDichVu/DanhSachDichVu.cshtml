@@ -1,45 +1,121 @@
 ﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.DichVu>
+
 @{
     ViewData["Title"] = "Quản lý dịch vụ";
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2 class="text-primary">Danh sách dịch vụ</h2>
+<div class="container mt-5" style="max-width: 1100px;">
+    <h2 class="mb-4 text-primary text-center">@ViewData["Title"]</h2>
 
-@if (TempData["ThongBao"] != null)
-{
-    <div class="alert alert-success">@TempData["ThongBao"]</div>
-}
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["ThongBao"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-<a asp-action="TaoDichVu" class="btn btn-success mb-3">Thêm dịch vụ mới</a>
+    <div class="mb-3 text-center">
+        <a asp-action="TaoDichVu" class="btn btn-success btn-custom btn-zoom px-4">Thêm dịch vụ mới</a>
+    </div>
 
-<table class="table table-bordered table-hover">
-    <thead class="thead-light">
-        <tr>
-            <th>Tên dịch vụ</th>
-            <th>Đơn giá</th>
-            <th>Mô tả</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var dv in Model)
-        {
-            <tr>
-                <td>@dv.TenDichVu</td>
-                <td>@dv.DonGiaDichVu.ToString("N0") VND</td>
-                <td>@dv.MoTa</td>
-                <td>
-                    <a asp-action="SuaDichVu" asp-route-id="@dv.MaDichVu" class="btn btn-sm btn-primary">Sửa</a>
-                    <form asp-action="XoaDichVu" asp-route-id="@dv.MaDichVu" method="post" style="display:inline-block" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
-                        <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-
-</table>
-<div class="text-center mt-4">
-    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-hover custom-table">
+            <thead class="thead-custom text-white">
+                <tr>
+                    <th>Tên dịch vụ</th>
+                    <th>Đơn giá</th>
+                    <th>Mô tả</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dv in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@dv.TenDichVu</td>
+                        <td>@dv.DonGiaDichVu.ToString("N0") VND</td>
+                        <td>@dv.MoTa</td>
+                        <td>
+                            <a asp-action="SuaDichVu" asp-route-id="@dv.MaDichVu" class="btn btn-primary btn-sm btn-custom btn-zoom me-1">Sửa</a>
+                            <form asp-action="XoaDichVu" asp-route-id="@dv.MaDichVu" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
+                                <button type="submit" class="btn btn-danger btn-sm btn-custom-danger btn-zoom">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-secondary btn-custom btn-zoom">Quay lại</a>
+    </div>
 </div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn-custom.btn-zoom:hover {
+            transform: scale(1.1);
+            position: relative;
+            z-index: 10;
+        }
+
+    .btn-custom-danger {
+        background-color: #e53935 !important;
+        border-color: #e53935 !important;
+        color: white !important;
+    }
+
+        .btn-custom-danger:hover {
+            background-color: #ef5350 !important;
+            border-color: #ef5350 !important;
+            color: #330000 !important;
+        }
+
+    .custom-table {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+        transition: box-shadow 0.3s ease;
+    }
+
+        .custom-table:hover {
+            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
+        }
+
+    .thead-custom {
+        background-color: #5a2ea6;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #d9caff;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .custom-table tbody tr:hover td {
+            position: relative;
+        }
+
+            .custom-table tbody tr:hover td:hover {
+                background-color: #a884f7 !important;
+                color: #3e2d5e;
+                font-weight: 600;
+            }
+
+    .custom-table th, .custom-table td {
+        font-weight: 700;
+        vertical-align: middle;
+    }
+</style>

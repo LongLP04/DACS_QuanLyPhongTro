@@ -23,7 +23,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         public PhongTroController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment) 
         {
             _context = context;
             _userManager = userManager;

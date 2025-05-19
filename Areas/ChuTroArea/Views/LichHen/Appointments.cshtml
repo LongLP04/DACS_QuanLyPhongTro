@@ -5,47 +5,151 @@
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<div class="container mt-5">
-    <h2 class="mb-4">Danh sách lịch hẹn</h2>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Phòng</th>
-                <th>Ngày hẹn</th>
-                <th>Giờ hẹn</th>
-                <th>Khách thuê</th>
-                <th>Ghi chú</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var appointment in Model)
-            {
-                <tr>
-                    <td>@appointment.PhongTro?.SoPhong</td>
-                    <td>@appointment.NgayHen.ToString("dd/MM/yyyy")</td>
-                    <td>@appointment.GioHen.ToString(@"hh\:mm")</td>
-                    <td>@appointment.KhachThue?.HoTen</td>
-                    <td>@appointment.GhiChu</td>
-                    <td>@appointment.TrangThai</td>
-                    <td>
-                        @if (appointment.TrangThai == "Pending")
-                        {
-                            <button class="btn btn-success btn-sm" data-id="@appointment.MaLichHen">Chấp nhận</button>
-                            <button class="btn btn-danger btn-sm" data-id="@appointment.MaLichHen">Từ chối</button>
-                        }
-                        else
-                        {
-                            <button class="btn btn-outline-danger btn-sm delete-btn" data-id="@appointment.MaLichHen">Xóa</button>
-                        }
-                    </td>
+<div class="container my-5" style="max-width: 1100px;">
+    <h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
 
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-hover custom-table">
+            <thead class="thead-custom text-white">
+                <tr>
+                    <th>Phòng</th>
+                    <th>Ngày hẹn</th>
+                    <th>Giờ hẹn</th>
+                    <th>Khách thuê</th>
+                    <th>Ghi chú</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var appointment in Model)
+                {
+                    <tr>
+                        <td class="text-bold">@appointment.PhongTro?.SoPhong</td>
+                        <td>@appointment.NgayHen.ToString("dd/MM/yyyy")</td>
+                        <td>@appointment.GioHen.ToString(@"hh\:mm")</td>
+                        <td class="wrap-text">@appointment.KhachThue?.HoTen</td>
+                        <td class="wrap-text">@appointment.GhiChu</td>
+                        <td>@appointment.TrangThai</td>
+                        <td>
+                            @if (appointment.TrangThai == "Pending")
+                            {
+                                <button class="btn btn-success btn-sm btn-custom btn-zoom me-1" data-id="@appointment.MaLichHen">Chấp nhận</button>
+                                <button class="btn btn-danger btn-sm btn-custom-danger btn-zoom" data-id="@appointment.MaLichHen">Từ chối</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-danger btn-sm btn-custom btn-zoom delete-btn" data-id="@appointment.MaLichHen">Xóa</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .text-highlight {
+        font-weight: 700;
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #ff8a00, #e52e71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .custom-table {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+        transition: box-shadow 0.3s ease;
+    }
+
+        .custom-table:hover {
+            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
+        }
+
+    .thead-custom {
+        background-color: #5a2ea6;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #d9caff;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .custom-table tbody tr:hover td {
+            position: relative;
+        }
+
+            .custom-table tbody tr:hover td:hover {
+                background-color: #a884f7 !important;
+                color: #3e2d5e;
+                transition: background-color 0.3s ease, color 0.3s ease;
+                font-weight: 600;
+            }
+
+    /* In đậm tất cả các cell */
+    .custom-table th,
+    .custom-table td {
+        font-weight: 700;
+        vertical-align: middle;
+    }
+
+    /* Cho phép xuống dòng chỉ ở cột Khách Thuê (4) và Ghi chú (5) */
+    .custom-table tbody tr td:nth-child(4),
+    .custom-table tbody tr td:nth-child(5),
+    .custom-table thead tr th:nth-child(4),
+    .custom-table thead tr th:nth-child(5) {
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    /* Nút chung */
+    .btn-custom {
+        background-color: #7e57c2 !important;
+        border-color: #7e57c2 !important;
+        color: white !important;
+        font-weight: 600;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn-custom:hover {
+            background-color: #9c80f0 !important;
+            border-color: #9c80f0 !important;
+            color: #2a0d6a !important;
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+
+    .btn-custom-danger {
+        background-color: #e53935 !important;
+        border-color: #e53935 !important;
+        color: white !important;
+        font-weight: 600;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+
+        .btn-custom-danger:hover {
+            background-color: #ef5350 !important;
+            border-color: #ef5350 !important;
+            color: #330000 !important;
+            transform: scale(1.1);
+            z-index: 10;
+            position: relative;
+        }
+</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -55,7 +159,7 @@
                 acceptAppointment(appointmentId);
             }
 
-            if (event.target.classList.contains('btn-danger')) {
+            if (event.target.classList.contains('btn-danger') && !event.target.classList.contains('btn-custom-danger')) {
                 var appointmentId = event.target.getAttribute('data-id');
                 rejectAppointment(appointmentId);
             }
@@ -78,9 +182,9 @@
             .then(data => {
                 if (data.success) {
                     const row = document.querySelector(`[data-id="${appointmentId}"]`).closest('tr');
-                    row.querySelector('td:nth-child(5)').textContent = 'Đã chấp nhận';
+                    row.querySelector('td:nth-child(6)').textContent = 'Đã chấp nhận';
                     row.querySelector('.btn-success').disabled = true;
-                    row.querySelector('.btn-danger').disabled = true;
+                    row.querySelector('.btn-danger:not(.btn-custom-danger)').disabled = true;
                 } else {
                     alert(data.message);
                 }
@@ -100,9 +204,9 @@
             .then(data => {
                 if (data.success) {
                     const row = document.querySelector(`[data-id="${appointmentId}"]`).closest('tr');
-                    row.querySelector('td:nth-child(5)').textContent = 'Đã từ chối';
+                    row.querySelector('td:nth-child(6)').textContent = 'Đã từ chối';
                     row.querySelector('.btn-success').disabled = true;
-                    row.querySelector('.btn-danger').disabled = true;
+                    row.querySelector('.btn-danger:not(.btn-custom-danger)').disabled = true;
                 } else {
                     alert(data.message);
                 }
