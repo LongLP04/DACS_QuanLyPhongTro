@@ -33,7 +33,15 @@
                 <hr />
 
                 <p><strong>Thuộc tòa nhà:</strong> @Model.ToaNha?.TenToaNha</p>
-                <p><strong>Địa chỉ tòa nhà:</strong> @Model.ToaNha?.DiaChi</p>
+                <p><strong>Địa chỉ tòa nhà :</strong> @Model.ToaNha?.DiaChi</p>
+
+                <!-- Link đơn giản tới Google Maps với tọa độ -->
+                @if (!string.IsNullOrEmpty(Model.ToaNha?.ViTri))
+                {
+                    <a href="https://www.google.com/maps/search/?api=1&query=@Model.ToaNha.ViTri" target="_blank" class="btn btn-info btn-md rounded-pill d-flex align-items-center px-3 py-1">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Xem vị trí trên Google Maps
+                    </a>
+                }
 
                 @if (Model.ToaNha?.ChuTro != null)
                 {
@@ -50,7 +58,6 @@
                     <i class="fas fa-calendar-alt mr-2"></i> Đặt lịch hẹn
                 </button>
             </div>
-
         </div>
     </div>
 </div>
@@ -92,45 +99,40 @@
 
 @section Scripts {
     <script>
-        function submitAppointment() {
-            var date = document.getElementById("appointmentDate").value;
-            var time = document.getElementById("appointmentTime").value;
-            var note = document.getElementById("note").value;
-            var phongTroId = document.getElementById("phongTroId").value;
+        function initMap() {
+            var geocoder = new google.maps.Geocoder();
 
-            if (!date || !time) {
-                alert("Vui lòng chọn ngày và giờ hẹn!");
-                return;
-            }
+            var viTri = '@(Model.ToaNha?.ViTri ?? "")';
+            if (viTri) {
+                var latlngStr = viTri.split(',');
+                if (latlngStr.length === 2) {
+                    var lat = parseFloat(latlngStr[0]);
+                    var lng = parseFloat(latlngStr[1]);
+                    var latlng = { lat: lat, lng: lng };
 
-            fetch('/PhongTro/BookAppointment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    MaPhong: phongTroId,
-                    NgayHen: date,
-                    GioHen: time,
-                    GhiChu: note
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Yêu cầu đặt lịch hẹn đã được gửi! Bạn sẽ nhận được thông báo khi được chấp nhận.");
-                    $('#appointmentModal').modal('hide');
+                    geocoder.geocode({ location: latlng }, function (results, status) {
+                        if (status === 'OK') {
+                            if (results[0]) {
+                                document.getElementById('reverseAddress').textContent = results[0].formatted_address;
+                            } else {
+                                document.getElementById('reverseAddress').textContent = "Không tìm thấy địa chỉ";
+                            }
+                        } else {
+                            document.getElementById('reverseAddress').textContent = "Lỗi khi lấy địa chỉ: " + status;
+                        }
+                    });
                 } else {
-                    alert("Lỗi: " + data.message);
+                    document.getElementById('reverseAddress').textContent = "Tọa độ không hợp lệ";
                 }
-            })
-            .catch(error => {
-                console.error('Lỗi:', error);
-                alert("Đã xảy ra lỗi khi gửi yêu cầu đặt lịch hẹn!");
-            });
+            } else {
+                document.getElementById('reverseAddress').textContent = "Không có tọa độ";
+            }
         }
-
-        document.getElementById("appointmentDate").min = new Date().toISOString().split("T")[0];
     </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKjse9i60p-i4Ld99JfraTgjMsoMBGjX4&callback=initMap" async defer></script>
 }
+
 
 <style>
     .badge-info {

@@ -76,26 +76,33 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         }
 
         // POST: ChuTroArea/ToaNha/Create
+        // POST: ChuTroArea/ToaNha/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ToaNha toaNha)
         {
-            _logger.LogInformation("Create POST action called with ToaNha: {ToaNhaName}", toaNha.TenToaNha);
             var maChuTro = await GetMaChuTroAsync();
             if (maChuTro == null)
             {
-                _logger.LogError("Unauthorized access: MaChuTro is null.");
                 return Unauthorized();
             }
 
-            
-                toaNha.MaChuTro = maChuTro.Value;
-                _context.ToaNhas.Add(toaNha);
-                await _context.SaveChangesAsync();
-                _logger.LogInformation("ToaNha created successfully: {ToaNhaName}", toaNha.TenToaNha);
-                return RedirectToAction(nameof(Index));
-           
+            // Nếu không có tọa độ vị trí, gán mặc định
+            if (string.IsNullOrEmpty(toaNha.ViTri))
+            {
+                toaNha.ViTri = "10.823,106.627"; // Tọa độ TP.HCM mặc định
+            }
+
+            toaNha.MaChuTro = maChuTro.Value;
+
+            _context.ToaNhas.Add(toaNha);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
+
+
+
 
         // GET: ChuTroArea/ToaNha/Edit/5
         public async Task<IActionResult> Edit(int? id)

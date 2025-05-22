@@ -23,5 +23,7 @@ namespace DACS_QuanLyPhongTro.Models
         public ChuTro ChuTro { get; set; }
 
         public ICollection<PhongTro> PhongTros { get; set; } = new List<PhongTro>();
+        // Thêm trường lưu tọa độ (ví trí) dạng string "longitude,latitude"
+        public string ViTri { get; set; }
     }
 }
