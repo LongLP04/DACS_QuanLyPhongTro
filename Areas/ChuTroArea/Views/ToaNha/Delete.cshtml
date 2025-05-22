@@ -5,32 +5,26 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<div class="container my-4" style="max-width: 600px;">
-    <h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
+<h2 class="text-center">Xóa Tòa Nhà</h2>
 
-    <h4 class="text-center">Bạn có chắc muốn xóa tòa nhà này?</h4>
 
-    <div class="border rounded p-3 mb-4 shadow-sm">
-        <dl class="row mb-0">
-            <dt class="col-sm-4 fw-bold">
-                @Html.DisplayNameFor(model => model.TenToaNha)
-            </dt>
-            <dd class="col-sm-8">
-                @Html.DisplayFor(model => model.TenToaNha)
-            </dd>
 
-            <dt class="col-sm-4 fw-bold">
-                Chủ trọ
-            </dt>
-            <dd class="col-sm-8">
-                @Html.DisplayFor(model => model.ChuTro.HoTen)
-            </dd>
-        </dl>
+<form method="post">
+    <input type="hidden" asp-for="MaToaNha" />
+    <div class="form-group">
+        <label asp-for="TenToaNha"></label>
+        <p>@Model.TenToaNha</p>
     </div>
-
-    <form asp-action="Delete" method="post" class="text-center">
-        <input type="hidden" asp-for="MaToaNha" />
-        <button type="submit" class="btn btn-danger btn-custom">Xóa</button>
-        <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại</a>
-    </form>
-</div>
+    <div class="form-group">
+        <label asp-for="DiaChi"></label>
+        <p>@Model.DiaChi</p>
+    </div>
+    <div class="form-group">
+        <label asp-for="TongSoTang"></label>
+        <p>@Model.TongSoTang</p>
+    </div>
+    <div class="form-group text-center">
+        <input type="submit" value="Xóa" class="btn btn-danger btn-lg rounded-pill px-5" />
+        <a asp-action="Index" class="btn btn-secondary ms-3 btn-lg px-5">Quay lại</a>
+    </div>
+</form>

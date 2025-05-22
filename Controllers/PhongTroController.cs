@@ -136,7 +136,69 @@ namespace DACS_QuanLyPhongTro.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        // Action trả view giao diện tìm phòng gần tôi
+        public IActionResult TimPhongGanToi()
+        {
+            return View();
+        }
+
+        // API trả JSON danh sách phòng trọ gần vị trí lat,lng
+        [HttpGet]
+        public IActionResult GetPhongGanToi(double lat, double lng)
+        {
+            var phongGanToi = _context.PhongTros
+                .Include(p => p.ToaNha)
+                .Where(p => !string.IsNullOrEmpty(p.ToaNha.ViTri))
+                .AsEnumerable()  // Chuyển sang LINQ to Objects để dùng hàm tính khoảng cách
+                .Select(p =>
+                {
+                    var parts = p.ToaNha.ViTri.Split(',');
+                    if (parts.Length != 2) return null;
+
+                    if (!double.TryParse(parts[0], out double lat2) || !double.TryParse(parts[1], out double lng2)) return null;
+
+                    double distance = GetDistanceCosine(lat, lng, lat2, lng2);
+
+                    return new
+                    {
+                        p.MaPhong,
+                        p.SoPhong,
+                        TenToaNha = p.ToaNha.TenToaNha,
+                        p.GiaThue,
+                        DiaChi = p.ToaNha.DiaChi,
+                        ViTri = p.ToaNha.ViTri,
+                        Distance = distance
+                    };
+                })
+                .Where(x => x != null)
+                .OrderBy(x => x.Distance)
+                .Take(20)
+                .ToList();
+
+            return Json(phongGanToi);
+        }
+
+        // Hàm tính khoảng cách giữa 2 tọa độ (km) theo công thức cosine
+        private double GetDistanceCosine(double lat1, double lon1, double lat2, double lon2)
+        {
+            double R = 6371; // Bán kính Trái Đất (km)
+            double d = Math.Acos(
+                Math.Sin(ToRadians(lat1)) * Math.Sin(ToRadians(lat2)) +
+                Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) * Math.Cos(ToRadians(lon2 - lon1))
+            ) * R;
+            return d;
+        }
+
+        private double ToRadians(double angle)
+        {
+            return Math.PI * angle / 180.0;
+        }
+
+
+
     }
+
+
     public class AppointmentRequest
     {
         public int MaPhong { get; set; }

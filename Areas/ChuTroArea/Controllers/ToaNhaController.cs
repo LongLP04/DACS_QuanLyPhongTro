@@ -133,57 +133,52 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         }
 
         // POST: ChuTroArea/ToaNha/Edit/5
+        // POST: ChuTroArea/ToaNha/Edit/5
+        // POST: ChuTroArea/ToaNha/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ToaNha toaNha)
         {
-
-            _logger.LogInformation("Edit POST action called with id: {Id}, ToaNha: {ToaNhaName}", id, toaNha.TenToaNha);
             if (id != toaNha.MaToaNha)
             {
-                _logger.LogWarning("Id mismatch: {Id} != {MaToaNha}", id, toaNha.MaToaNha);
                 return NotFound();
             }
 
             var maChuTro = await GetMaChuTroAsync();
             if (maChuTro == null)
             {
-                _logger.LogError("Unauthorized access: MaChuTro is null.");
                 return Unauthorized();
             }
 
-              try
+            try
+            {
+                var existingToaNha = await _context.ToaNhas
+                    .FirstOrDefaultAsync(t => t.MaToaNha == id && t.MaChuTro == maChuTro);
+                if (existingToaNha == null)
                 {
-                    // Kiểm tra quyền sở hữu
-                    var existingToaNha = await _context.ToaNhas
-                        .FirstOrDefaultAsync(t => t.MaToaNha == id && t.MaChuTro == maChuTro);
-                    if (existingToaNha == null)
-                    {
-                        _logger.LogWarning("ToaNha not found with id: {Id} for MaChuTro: {MaChuTro}", id, maChuTro);
-                        return NotFound();
-                    }
-
-                    // Cập nhật tất cả các trường
-                    existingToaNha.TenToaNha = toaNha.TenToaNha;
-                    existingToaNha.DiaChi = toaNha.DiaChi;
-                    existingToaNha.TongSoTang = toaNha.TongSoTang;
-                    existingToaNha.MoTa = toaNha.MoTa;
-                    // MaChuTro không thay đổi
-
-                    _context.Update(existingToaNha);
-                    await _context.SaveChangesAsync();
-                    _logger.LogInformation("ToaNha updated successfully: {ToaNhaName}", toaNha.TenToaNha);
-                    return RedirectToAction(nameof(Index));
+                    return NotFound();
                 }
-                catch (DbUpdateException ex)
-                {
-                    _logger.LogError(ex, "Error updating ToaNha: {ToaNhaName}", toaNha.TenToaNha);
-                    ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi khi cập nhật tòa nhà.");
-                }
-            
-            
+
+                // Cập nhật các trường
+                existingToaNha.TenToaNha = toaNha.TenToaNha;
+                existingToaNha.DiaChi = toaNha.DiaChi;
+                existingToaNha.TongSoTang = toaNha.TongSoTang;
+                existingToaNha.MoTa = toaNha.MoTa;
+                existingToaNha.ViTri = toaNha.ViTri; // Cập nhật vị trí
+
+                _context.Update(existingToaNha);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi khi cập nhật tòa nhà.");
+            }
+
             return View(toaNha);
         }
+
 
         // GET: ChuTroArea/ToaNha/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -214,6 +209,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         }
 
         // POST: ChuTroArea/ToaNha/Delete/5
+        // POST: ChuTroArea/ToaNha/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -234,6 +230,15 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 return NotFound();
             }
 
+            // Kiểm tra nếu tòa nhà có phòng đã đăng ký
+            var hasRooms = await _context.PhongTros.AnyAsync(p => p.MaToaNha == id);
+            if (hasRooms)
+            {
+                // Nếu có phòng, không cho phép xóa và thông báo
+                TempData["ErrorMessage"] = "Không thể xóa tòa nhà này vì có phòng trọ đã đăng ký. Vui lòng xóa phòng trước.";
+                return RedirectToAction(nameof(Index));
+            }
+
             try
             {
                 _context.ToaNhas.Remove(toaNha);
@@ -248,5 +253,6 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 return View(toaNha);
             }
         }
+
     }
 }

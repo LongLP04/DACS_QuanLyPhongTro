@@ -70,7 +70,7 @@ namespace DACS_QuanLyPhongTro.Controllers
                 .Include(h => h.PhongTro)
                 .ToListAsync();
 
-            
+
 
             // Lưu số lượng hợp đồng chờ xác nhận vào session
             HttpContext.Session.SetInt32("HopDongCount", hopDongs.Count);
@@ -121,15 +121,15 @@ namespace DACS_QuanLyPhongTro.Controllers
                 {
                     phongTro.TrangThai = "Trống";
                     _context.Update(phongTro);
-                }    
-                    TempData["ThongBao"] = "Bạn đã từ chối xác nhận hợp đồng.";
+                }
+                TempData["ThongBao"] = "Bạn đã từ chối xác nhận hợp đồng.";
                 HttpContext.Session.Remove("MaHopDong");
             }
-                
+
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
         }
         // POST: Từ chối hợp đồng
-        
+
     }
 }

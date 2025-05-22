@@ -1,24 +1,14 @@
 ﻿@model DACS_QuanLyPhongTro.Models.ToaNha
 
 @{
-    ViewData["Title"] = "Sửa Tòa Nhà";
+    ViewData["Title"] = "Chỉnh sửa Tòa Nhà";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
 <div class="container my-5" style="max-width: 900px;">
     <h2 class="text-highlight mb-5 text-center">@ViewData["Title"]</h2>
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            @TempData["ErrorMessage"]
-        </div>
-    }
-
-    <form asp-action="Edit">
-        <input type="hidden" asp-for="MaToaNha" />
-        <input type="hidden" asp-for="MaChuTro" />
-
+    <form asp-action="Edit" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
         <div class="form-group mb-4">
@@ -45,6 +35,15 @@
             <span asp-validation-for="MoTa" class="text-danger"></span>
         </div>
 
+        <!-- Chỉnh sửa vị trí tòa nhà -->
+        <div class="form-group mb-4">
+            <label>Chỉnh sửa vị trí trên bản đồ</label>
+            <input type="text" id="addressSearch" class="form-control form-control-lg mb-2" placeholder="Nhập địa chỉ để tìm kiếm" />
+            <div id="map" style="width: 100%; height: 400px; border: 1px solid #ddd;"></div>
+            <input type="hidden" asp-for="ViTri" id="ViTri" value="@Model.ViTri" />
+            <small class="form-text text-muted">Kéo marker hoặc tìm kiếm để cập nhật vị trí tọa độ.</small>
+        </div>
+
         <div class="form-group text-center">
             <input type="submit" value="Lưu" class="btn btn-primary btn-custom btn-lg px-5" />
             <a asp-action="Index" class="btn btn-secondary ms-3 btn-lg px-5">Quay lại</a>
@@ -54,4 +53,56 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKjse9i60p-i4Ld99JfraTgjMsoMBGjX4&callback=initMap&libraries=&v=weekly" async></script>
+    <script>
+        function initMap() {
+            // Vị trí mặc định
+            var defaultLocation = { lat: 10.823, lng: 106.627 };
+
+            // Nếu có vị trí của tòa nhà, sử dụng nó
+            var initialLocation = '@Model.ViTri'.split(',');
+            if (initialLocation.length === 2) {
+                defaultLocation = { lat: parseFloat(initialLocation[0]), lng: parseFloat(initialLocation[1]) };
+            }
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: defaultLocation,
+                zoom: 12
+            });
+
+            var marker = new google.maps.Marker({
+                position: defaultLocation,
+                map: map,
+                draggable: true
+            });
+
+            // Cập nhật tọa độ khi kéo marker
+            google.maps.event.addListener(marker, 'dragend', function (event) {
+                var lat = event.latLng.lat();
+                var lng = event.latLng.lng();
+                document.getElementById('ViTri').value = lat + ',' + lng;
+            });
+
+            // Cập nhật khi tìm kiếm địa chỉ (Google Maps API geocoder)
+            var geocoder = new google.maps.Geocoder();
+            document.getElementById('addressSearch').addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    var address = this.value.trim();
+                    if (address) {
+                        geocoder.geocode({ 'address': address }, function (results, status) {
+                            if (status === 'OK') {
+                                var loc = results[0].geometry.location;
+                                map.setCenter(loc);
+                                marker.setPosition(loc);
+                                document.getElementById('ViTri').value = loc.lat() + ',' + loc.lng();
+                            } else {
+                                alert('Không thể tìm thấy địa chỉ này.');
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    </script>
 }

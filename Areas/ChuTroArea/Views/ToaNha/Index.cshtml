@@ -3,7 +3,12 @@
     ViewData["Title"] = "Danh sách Tòa Nhà";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
-
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
 
 <p class="text-center">
