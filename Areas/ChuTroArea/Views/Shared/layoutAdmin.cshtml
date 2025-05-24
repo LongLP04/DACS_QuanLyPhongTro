@@ -268,3 +268,29 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<style>
+    .sidebar .nav-link {
+        transition: all 0.3s ease;
+        color: #333; /* màu chữ mặc định */
+        font-weight: 400;
+    }
+
+        .sidebar .nav-link:hover {
+            background-color: rgba(111, 66, 193, 0.1); /* nền tím nhạt */
+            color: #6f42c1 !important; /* chữ tím đậm */
+            font-weight: 700; /* chữ đậm */
+            transform: scale(1.05); /* phóng to nhẹ */
+            border-radius: 6px;
+        }
+
+        .sidebar .nav-link.active,
+        .sidebar .nav-link.active:hover {
+            background-color: rgba(111, 66, 193, 0.15);
+            color: #5a32a3 !important;
+            font-weight: 700;
+            transform: scale(1.05);
+            border-radius: 6px;
+        }
+
+
+</style>

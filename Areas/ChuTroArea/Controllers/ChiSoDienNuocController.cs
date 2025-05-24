@@ -1,4 +1,5 @@
-﻿using DACS_QuanLyPhongTro.Models;
+﻿using System.Security.Claims;
+using DACS_QuanLyPhongTro.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,6 +21,23 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         // GET: Danh sách chỉ số điện nước
         public async Task<IActionResult> Index()
         {
+            string hoTen = "Chủ trọ";
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var email = User.FindFirstValue(ClaimTypes.Email);
+                if (!string.IsNullOrEmpty(email))
+                {
+                    var chuTro = await _context.ChuTros.FirstOrDefaultAsync(c => c.Email == email);
+                    if (chuTro != null)
+                    {
+                        hoTen = chuTro.HoTen;
+                    }
+                }
+            }
+
+            ViewData["ChuTroHoTen"] = hoTen; // Truyền xuống layout
+
             var currentChuTroEmail = User.Identity.Name; // Lấy email của chủ trọ đang đăng nhập
             var currentChuTro = await _context.ChuTros
                 .Include(c => c.ToaNhas)

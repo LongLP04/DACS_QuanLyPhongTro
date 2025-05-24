@@ -152,7 +152,7 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('click', function(event) {
             if (event.target.classList.contains('btn-success')) {
                 var appointmentId = event.target.getAttribute('data-id');
@@ -172,6 +172,10 @@
     });
 
     function acceptAppointment(appointmentId) {
+        if (!appointmentId) {
+            alert('ID lịch hẹn không hợp lệ');
+            return;
+        }
         if (confirm("Xác nhận chấp nhận lịch hẹn này?")) {
             fetch('@Url.Action("AcceptAppointment", "LichHen", new { area = "ChuTroArea" })', {
                 method: 'POST',
@@ -181,10 +185,21 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const row = document.querySelector(`[data-id="${appointmentId}"]`).closest('tr');
-                    row.querySelector('td:nth-child(6)').textContent = 'Đã chấp nhận';
-                    row.querySelector('.btn-success').disabled = true;
-                    row.querySelector('.btn-danger:not(.btn-custom-danger)').disabled = true;
+                    const button = document.querySelector(`.btn-success[data-id="${appointmentId}"]`);
+                    const rejectBtn = document.querySelector(`.btn-danger[data-id="${appointmentId}"]:not(.btn-custom-danger)`);
+                    if (button) {
+                        button.disabled = true;
+                    }
+                    if (rejectBtn) {
+                        rejectBtn.disabled = true;
+                    }
+                    const row = button ? button.closest('tr') : null;
+                    if (row) {
+                        const statusCell = row.querySelector('td:nth-child(6)');
+                        if (statusCell) {
+                            statusCell.textContent = 'Đã chấp nhận';
+                        }
+                    }
                 } else {
                     alert(data.message);
                 }
@@ -194,6 +209,10 @@
     }
 
     function rejectAppointment(appointmentId) {
+        if (!appointmentId) {
+            alert('ID lịch hẹn không hợp lệ');
+            return;
+        }
         if (confirm("Xác nhận từ chối lịch hẹn này?")) {
             fetch('@Url.Action("RejectAppointment", "LichHen", new { area = "ChuTroArea" })', {
                 method: 'POST',
@@ -203,10 +222,21 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const row = document.querySelector(`[data-id="${appointmentId}"]`).closest('tr');
-                    row.querySelector('td:nth-child(6)').textContent = 'Đã từ chối';
-                    row.querySelector('.btn-success').disabled = true;
-                    row.querySelector('.btn-danger:not(.btn-custom-danger)').disabled = true;
+                    const acceptBtn = document.querySelector(`.btn-success[data-id="${appointmentId}"]`);
+                    const rejectBtn = document.querySelector(`.btn-danger[data-id="${appointmentId}"]:not(.btn-custom-danger)`);
+                    if (acceptBtn) {
+                        acceptBtn.disabled = true;
+                    }
+                    if (rejectBtn) {
+                        rejectBtn.disabled = true;
+                    }
+                    const row = rejectBtn ? rejectBtn.closest('tr') : null;
+                    if (row) {
+                        const statusCell = row.querySelector('td:nth-child(6)');
+                        if (statusCell) {
+                            statusCell.textContent = 'Đã từ chối';
+                        }
+                    }
                 } else {
                     alert(data.message);
                 }
@@ -215,6 +245,10 @@
     }
 
     function deleteAppointment(appointmentId) {
+        if (!appointmentId) {
+            alert('ID lịch hẹn không hợp lệ');
+            return;
+        }
         if (confirm("Bạn có chắc chắn muốn xóa lịch hẹn này?")) {
             fetch('@Url.Action("DeleteAppointment", "LichHen", new { area = "ChuTroArea" })', {
                 method: 'POST',
@@ -224,8 +258,11 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const row = document.querySelector(`[data-id="${appointmentId}"]`).closest('tr');
-                    row.remove();
+                    const deleteBtn = document.querySelector(`.delete-btn[data-id="${appointmentId}"]`);
+                    const row = deleteBtn ? deleteBtn.closest('tr') : null;
+                    if (row) {
+                        row.remove();
+                    }
                     alert(data.message);
                 } else {
                     alert(data.message);
@@ -234,4 +271,6 @@
             .catch(() => alert('Có lỗi xảy ra khi xóa lịch hẹn!'));
         }
     }
+
+
 </script>

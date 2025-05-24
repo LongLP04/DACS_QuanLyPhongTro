@@ -5,9 +5,58 @@
 
 <h2 style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #a0522d;">Tìm phòng trọ gần tôi</h2>
 
+<div style="max-width: 600px; margin: 0 auto 30px auto; display: flex; justify-content: center; gap: 15px; align-items: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <label for="distanceFilter" style="font-weight: 700; font-size: 1.1rem; color: #5a2ea6; user-select: none;">
+        <i class="fas fa-route" style="color:#ff8a00; margin-right: 8px;"></i>
+        Chọn khoảng cách tối đa (km):
+    </label>
+
+    <select id="distanceFilter" class="custom-distance-select">
+        <option value="0" selected>Tất cả</option>
+        <option value="1">1 km</option>
+        <option value="3">3 km</option>
+        <option value="5">5 km</option>
+        <option value="10">10 km</option>
+    </select>
+</div>
+
+<style>
+    .custom-distance-select {
+        max-width: 160px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        border: 2px solid #5a2ea6;
+        border-radius: 30px;
+        background: white url('data:image/svg+xml;utf8,<svg fill="%235a2ea6" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 15px center;
+        background-size: 16px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        cursor: pointer;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        color: #5a2ea6;
+    }
+
+        .custom-distance-select:hover {
+            border-color: #ff8a00;
+            box-shadow: 0 0 8px #ff8a00;
+        }
+
+        .custom-distance-select:focus {
+            outline: none;
+            border-color: #e52e71;
+            box-shadow: 0 0 10px #e52e71;
+        }
+
+    /* Remove default dropdown arrow for IE */
+    select::-ms-expand {
+        display: none;
+    }
+</style>
 <div id="phongGanContainer" class="container mt-5" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
     Đang tải phòng trọ gần bạn...
 </div>
+
 
 <style>
     /* Container các phòng trọ */
@@ -89,14 +138,13 @@
                 const lng = position.coords.longitude;
                 console.log("Vị trí hiện tại:", lat, lng);
 
-                fetch(`/PhongTro/GetPhongGanToi?lat=${lat}&lng=${lng}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        renderPhongGan(data);
-                    })
-                    .catch(err => {
-                        alert("Lỗi khi lấy danh sách phòng trọ gần: " + err);
-                    });
+                // Gọi hàm fetch với khoảng cách hiện tại
+                fetchPhongGan(lat, lng);
+
+                // Bắt sự kiện thay đổi dropdown khoảng cách
+                document.getElementById("distanceFilter").addEventListener("change", function () {
+                    fetchPhongGan(lat, lng);
+                });
 
             }, function (error) {
                 alert("Không thể lấy vị trí hiện tại: " + error.message);
@@ -104,6 +152,24 @@
         } else {
             alert("Trình duyệt không hỗ trợ Geolocation.");
         }
+    }
+
+    function fetchPhongGan(lat, lng) {
+        const maxDistance = document.getElementById("distanceFilter").value;
+        // Xây dựng URL API, thêm param maxDistance nếu > 0
+        let url = `/PhongTro/GetPhongGanToi?lat=${lat}&lng=${lng}`;
+        if (maxDistance && maxDistance !== "0") {
+            url += `&maxDistance=${maxDistance}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                renderPhongGan(data);
+            })
+            .catch(err => {
+                alert("Lỗi khi lấy danh sách phòng trọ gần: " + err);
+            });
     }
 
     function renderPhongGan(phongList) {
@@ -135,3 +201,4 @@
         getUserLocationAndSearch();
     };
 </script>
+

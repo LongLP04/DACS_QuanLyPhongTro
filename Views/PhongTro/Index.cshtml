@@ -10,10 +10,38 @@
         <!-- Shop Sidebar Start -->
         <div class="col-lg-3 col-md-4">
             <div class="mb-3">
-                <a href="@Url.Action("TimPhongGanToi", "PhongTro")" class="btn btn-primary">
-                    <i class="fas fa-map-marker-alt mr-2"></i> Tìm trọ gần tôi
+                <a href="@Url.Action("TimPhongGanToi", "PhongTro")" class="btn btn-highlighted w-100 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-map-marker-alt me-2"></i> Tìm trọ gần tôi
                 </a>
             </div>
+
+            <style>
+                .btn-highlighted {
+                    background-color: #ff6f00; /* màu cam nổi bật */
+                    color: white;
+                    font-weight: 700;
+                    font-size: 1.15rem;
+                    padding: 12px 0;
+                    border-radius: 30px;
+                    box-shadow: 0 4px 12px rgba(255, 111, 0, 0.6);
+                    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+                    border: none;
+                    text-align: center;
+                    text-decoration: none;
+                }
+
+                    .btn-highlighted:hover, .btn-highlighted:focus {
+                        background-color: #e65100; /* cam đậm hơn khi hover */
+                        box-shadow: 0 6px 18px rgba(230, 81, 0, 0.8);
+                        color: white;
+                        text-decoration: none;
+                    }
+
+                    .btn-highlighted i {
+                        font-size: 1.3rem;
+                    }
+            </style>
+
 
             <!-- Price Start -->
             <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">LỌC THEO GIÁ</span></h5>
@@ -92,7 +120,7 @@
                                 </div>
                             </div>
                             <div class="text-center py-4 product-info flex-grow-1 d-flex flex-column justify-content-center">
-                                <a class="h6 text-decoration-none text-truncate" href="@Url.Action("Detail", "Shop", new { id = product.MaPhong })">@product.SoPhong</a>
+                                <a class="h6 text-decoration-none text-truncate" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })"> Phòng @product.SoPhong</a>
                                 <div class="d-flex align-items-center justify-content-center mt-2 flex-column">
                                     <h5>@product.GiaThue.ToString("#,##0 VNĐ")</h5>
                                     <span class="badge badge-pill badge-info mt-2" style="font-size: 0.9rem;">@product.TrangThai</span>

@@ -18,6 +18,22 @@ public class LichHenController : Controller
 
     public async Task<IActionResult> Appointments()
     {
+        string hoTen = "Chủ trọ";
+
+        if (User.Identity.IsAuthenticated)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            if (!string.IsNullOrEmpty(email))
+            {
+                var chuTro = await _context.ChuTros.FirstOrDefaultAsync(c => c.Email == email);
+                if (chuTro != null)
+                {
+                    hoTen = chuTro.HoTen;
+                }
+            }
+        }
+
+        ViewData["ChuTroHoTen"] = hoTen; // Truyền xuống layout
         var appUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         var appointments = await _context.LichHen

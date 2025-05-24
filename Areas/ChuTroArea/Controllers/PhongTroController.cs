@@ -9,6 +9,7 @@ using System.Linq;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System;
+using System.Security.Claims;
 
 namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 {
@@ -51,6 +52,22 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         // GET: ChuTroArea/PhongTro
         public async Task<IActionResult> Index()
         {
+            string hoTen = "Chủ trọ";
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var email = User.FindFirstValue(ClaimTypes.Email);
+                if (!string.IsNullOrEmpty(email))
+                {
+                    var chuTro = await _context.ChuTros.FirstOrDefaultAsync(c => c.Email == email);
+                    if (chuTro != null)
+                    {
+                        hoTen = chuTro.HoTen;
+                    }
+                }
+            }
+
+            ViewData["ChuTroHoTen"] = hoTen; // Truyền xuống layout
             var maChuTro = await GetMaChuTroAsync();
             if (maChuTro == null)
             {

@@ -29,13 +29,13 @@
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
         <div class="mb-3">
-            <label asp-for="SoPhong" class="form-label"></label>
+            <label asp-for="SoPhong" class="form-label">Số phòng</label>
             <input asp-for="SoPhong" class="form-control" />
             <span asp-validation-for="SoPhong" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="MaToaNha" class="form-label"></label>
+            <label asp-for="MaToaNha" class="form-label">Tên tòa nhà</label>
             <select asp-for="MaToaNha" class="form-select" asp-items="ViewBag.MaToaNha" id="selectToaNha">
                 <option value="">-- Chọn tòa nhà --</option>
             </select>
@@ -43,7 +43,7 @@
         </div>
 
         <div class="mb-3">
-            <label asp-for="Tang" class="form-label"></label>
+            <label asp-for="Tang" class="form-label">Tầng</label>
             <select asp-for="Tang" class="form-select" id="selectTang">
                 <option value="">-- Chọn tầng --</option>
             </select>
@@ -57,19 +57,19 @@
         </div>
 
         <div class="mb-3">
-            <label asp-for="DienTich" class="form-label"></label>
+            <label asp-for="DienTich" class="form-label">Diện tích</label>
             <input asp-for="DienTich" class="form-control" type="number" step="0.01" min="0" />
             <span asp-validation-for="DienTich" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="GiaThue" class="form-label"></label>
+            <label asp-for="GiaThue" class="form-label">Giá thuê</label>
             <input asp-for="GiaThue" class="form-control" type="number" step="0.01" min="0" />
             <span asp-validation-for="GiaThue" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="TrangThai" class="form-label"></label>
+            <label asp-for="TrangThai" class="form-label">Trạng thái</label>
             <select asp-for="TrangThai" class="form-select">
                 <option value="Trống">Trống</option>
                 <option value="Đã thuê">Đã thuê</option>
@@ -78,7 +78,7 @@
         </div>
 
         <div class="mb-3">
-            <label asp-for="MoTa" class="form-label"></label>
+            <label asp-for="MoTa" class="form-label">Mô tả</label>
             <textarea asp-for="MoTa" class="form-control" rows="4"></textarea>
             <span asp-validation-for="MoTa" class="text-danger"></span>
         </div>

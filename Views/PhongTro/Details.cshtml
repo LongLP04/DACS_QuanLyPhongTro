@@ -128,6 +128,41 @@
                 document.getElementById('reverseAddress').textContent = "Không có tọa độ";
             }
         }
+        function submitAppointment() {
+            var date = document.getElementById("appointmentDate").value;
+            var time = document.getElementById("appointmentTime").value;
+            var note = document.getElementById("note").value;
+            var phongTroId = document.getElementById("phongTroId").value;
+
+            if (!date || !time) {
+                alert("Vui lòng chọn ngày và giờ hẹn!");
+                return;
+            }
+
+            fetch('/PhongTro/BookAppointment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    MaPhong: phongTroId,
+                    NgayHen: date,
+                    GioHen: time,
+                    GhiChu: note
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Đặt lịch hẹn thành công! Bạn sẽ được thông báo khi chủ nhà xác nhận.");
+                    $('#appointmentModal').modal('hide'); // Đóng modal nếu bạn dùng Bootstrap + jQuery
+                } else {
+                    alert("Lỗi: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi đặt lịch:', error);
+                alert("Có lỗi xảy ra khi gửi yêu cầu đặt lịch hẹn.");
+            });
+        }
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKjse9i60p-i4Ld99JfraTgjMsoMBGjX4&callback=initMap" async defer></script>

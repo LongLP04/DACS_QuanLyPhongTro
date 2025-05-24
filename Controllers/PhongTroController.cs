@@ -144,7 +144,7 @@ namespace DACS_QuanLyPhongTro.Controllers
 
         // API trả JSON danh sách phòng trọ gần vị trí lat,lng
         [HttpGet]
-        public IActionResult GetPhongGanToi(double lat, double lng)
+        public IActionResult GetPhongGanToi(double lat, double lng, double? maxDistance)
         {
             var phongGanToi = _context.PhongTros
                 .Include(p => p.ToaNha)
@@ -171,12 +171,15 @@ namespace DACS_QuanLyPhongTro.Controllers
                     };
                 })
                 .Where(x => x != null)
+                // Nếu có maxDistance > 0 thì lọc
+                .Where(x => !maxDistance.HasValue || maxDistance.Value <= 0 || x.Distance <= maxDistance.Value)
                 .OrderBy(x => x.Distance)
                 .Take(20)
                 .ToList();
 
             return Json(phongGanToi);
         }
+
 
         // Hàm tính khoảng cách giữa 2 tọa độ (km) theo công thức cosine
         private double GetDistanceCosine(double lat1, double lon1, double lat2, double lon2)

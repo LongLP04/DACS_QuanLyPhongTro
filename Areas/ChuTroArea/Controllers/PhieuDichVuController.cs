@@ -20,6 +20,27 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         // Trang chính: Hiển thị dịch vụ đã xác nhận + cảnh báo nếu có phiếu chờ xác nhận
         public async Task<IActionResult> Index()
         {
+
+            string hoTen = "Chủ trọ";
+
+            string userEmail = null; // Đổi tên biến email thành userEmail
+
+            if (User.Identity.IsAuthenticated)
+            {
+                userEmail = User.FindFirstValue(ClaimTypes.Email);
+                if (!string.IsNullOrEmpty(userEmail))
+                {
+                    var chuTroInfo = await _context.ChuTros.FirstOrDefaultAsync(c => c.Email == userEmail);
+                    if (chuTroInfo != null)
+                    {
+                        hoTen = chuTroInfo.HoTen;
+                    }
+                }
+            }
+
+            ViewData["ChuTroHoTen"] = hoTen;
+
+            ViewData["ChuTroHoTen"] = hoTen;
             var email = User.Identity.Name;
             var chuTro = await _context.ChuTros
                 .Include(c => c.ToaNhas)

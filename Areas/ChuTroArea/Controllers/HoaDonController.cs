@@ -1,4 +1,5 @@
-﻿using DACS_QuanLyPhongTro.Models;
+﻿using System.Security.Claims;
+using DACS_QuanLyPhongTro.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,6 +21,25 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         // GET: Xem danh sách hóa đơn của các phòng trọ
         public async Task<IActionResult> Index()
         {
+            string hoTen = "Chủ trọ";
+
+            string userEmail = null; // Đổi tên biến email thành userEmail
+
+            if (User.Identity.IsAuthenticated)
+            {
+                userEmail = User.FindFirstValue(ClaimTypes.Email);
+                if (!string.IsNullOrEmpty(userEmail))
+                {
+                    var chuTroInfo = await _context.ChuTros.FirstOrDefaultAsync(c => c.Email == userEmail);
+                    if (chuTroInfo != null)
+                    {
+                        hoTen = chuTroInfo.HoTen;
+                    }
+                }
+            }
+
+            ViewData["ChuTroHoTen"] = hoTen;
+
             var currentChuTroEmail = User.Identity.Name;
             if (currentChuTroEmail == null)
             {
@@ -41,10 +61,10 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 .Where(p => p.TrangThai == "Đã Thuê")
                 .ToList();
 
-            if (!phongTrosDaThue.Any())
-            {
-                return NotFound("Không có phòng nào đang được thuê.");
-            }
+            //if (!phongTrosDaThue.Any())
+            //{
+            //    return NotFound("Không có phòng nào đang được thuê.");
+            //}
 
             var hoaDons = await _context.HoaDons
                 .Where(h => phongTrosDaThue.Select(p => p.MaPhong).Contains(h.ChiSoDienNuoc.PhongTro.MaPhong))

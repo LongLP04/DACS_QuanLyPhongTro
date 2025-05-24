@@ -1,7 +1,95 @@
-﻿
-@{
+﻿@{
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+    var hoTen = ViewData["ChuTroHoTen"] as string ?? "Chủ trọ";
 }
 
-<h1>Chào mừng đến trang quản lý của Chủ trọ</h1>
-<p>Bạn đã đăng nhập thành công với quyền Chủ trọ.</p>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .welcome-container {
+        margin-top: 10px;
+        width: 100%; /* full width */
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #ede7f6 0%, #f3e5f5 100%); /* nền nhạt tím dịu */
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .welcome-card {
+        width: 100%;
+        max-width: 900px; /* rộng hơn */
+        padding: 50px 40px;
+        border-radius: 15px;
+        box-shadow: 0 6px 18px rgba(111, 66, 193, 0.1);
+        background: rgba(111, 66, 193, 0.15); /* nền tím nhạt hơn, bán trong suốt */
+        color: #4a148c; /* tím đậm dịu mắt */
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+        .welcome-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(111, 66, 193, 0.25);
+        }
+
+    .welcome-title {
+        font-weight: 700;
+        font-size: 3.5rem;
+        margin-bottom: 25px;
+        text-shadow: none;
+    }
+
+    .welcome-text {
+        font-size: 1.5rem;
+        margin-bottom: 40px;
+        font-weight: 600;
+        color: #5e35b1;
+    }
+
+    .welcome-icon {
+        font-size: 6rem;
+        margin-bottom: 30px;
+        color: #9575cd;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        transition: color 0.3s ease;
+    }
+
+    .welcome-card:hover .welcome-icon {
+        color: #7e57c2;
+    }
+
+    .btn-dashboard {
+        font-weight: 700;
+        font-size: 1.25rem;
+        padding: 14px 48px;
+        border-radius: 50px;
+        background-color: #7e57c2;
+        border: none;
+        color: #fff;
+        box-shadow: 0 6px 20px rgba(126, 87, 194, 0.45);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .btn-dashboard:hover {
+            background-color: #5e35b1;
+            box-shadow: 0 8px 28px rgba(94, 53, 177, 0.7);
+        }
+</style>
+
+<div class="welcome-container">
+    <div class="welcome-card">
+        <i class="fas fa-home welcome-icon"></i>
+        <h1 class="welcome-title">Chào mừng đến trang quản lý của Chủ trọ</h1>
+        <p class="welcome-text">
+            Hi <strong>@hoTen</strong>, bạn đã đăng nhập thành công với quyền <strong>Chủ trọ</strong>.
+        </p>
+        <a href="@Url.Action("Index", "ToaNha", new { area = "ChuTroArea" })" class="btn btn-dashboard">
+            Hãy tạo tòa nhà cho riêng mình
+        </a>
+    </div>
+</div>

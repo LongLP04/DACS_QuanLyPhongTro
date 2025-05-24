@@ -21,6 +21,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         // Hiển thị danh sách phòng có khách thuê để chọn
         public async Task<IActionResult> ChonPhong()
         {
+
             var email = User.Identity.Name;
             var chuTro = await _context.ChuTros
                 .FirstOrDefaultAsync(c => c.Email == email);
@@ -29,16 +30,23 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 return NotFound("Không tìm thấy chủ trọ.");
 
             var phongCoKhachThue = await _context.PhongTros
-                .Where(p => p.TrangThai == "Đã Thuê" &&
-                            _context.ToaNhas
-                                .Where(t => t.MaChuTro == chuTro.MaChuTro)
-                                .Select(t => t.MaToaNha)
-                                .Contains(p.MaToaNha))
-                .Include(p => p.HopDongs)
-                    .ThenInclude(h => h.KhachThue)
-                .ToListAsync();
+    .Where(p => p.TrangThai == "Đã Thuê" &&
+                _context.ToaNhas
+                    .Where(t => t.MaChuTro == chuTro.MaChuTro)
+                    .Select(t => t.MaToaNha)
+                    .Contains(p.MaToaNha))
+    .Include(p => p.HopDongs)
+        .ThenInclude(h => h.KhachThue)
+    .ToListAsync();
 
-            return View(phongCoKhachThue);
+            var phongLoc = phongCoKhachThue
+                .Where(p => p.HopDongs.Any(h =>
+                    !string.IsNullOrEmpty(h.TrangThai) &&
+                    h.TrangThai.Trim().Equals("Đã Xác Nhận", StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            return View(phongLoc);
+
         }
         [HttpGet]
         public async Task<IActionResult> HienThiFormTaoPhieu(int maPhong)
@@ -104,6 +112,25 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         // Hiển thị danh sách phiếu hiện trạng và vật dụng
         public async Task<IActionResult> Index()
         {
+            string hoTen = "Chủ trọ";
+
+            string userEmail = null; // Đổi tên biến email thành userEmail
+
+            if (User.Identity.IsAuthenticated)
+            {
+                userEmail = User.FindFirstValue(ClaimTypes.Email);
+                if (!string.IsNullOrEmpty(userEmail))
+                {
+                    var chuTroInfo = await _context.ChuTros.FirstOrDefaultAsync(c => c.Email == userEmail);
+                    if (chuTroInfo != null)
+                    {
+                        hoTen = chuTroInfo.HoTen;
+                    }
+                }
+            }
+
+            ViewData["ChuTroHoTen"] = hoTen;
+
             var email = User.Identity.Name;
             var chuTro = await _context.ChuTros
                 .Include(c => c.ToaNhas)

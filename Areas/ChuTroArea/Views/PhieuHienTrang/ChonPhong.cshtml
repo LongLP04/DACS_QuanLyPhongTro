@@ -19,7 +19,10 @@
         <tbody>
             @foreach (var phong in Model)
             {
-                var hopDong = phong.HopDongs.FirstOrDefault(h => h.TrangThai == "Đã xác nhận");
+                var hopDong = phong.HopDongs
+                .FirstOrDefault(h =>
+                !string.IsNullOrEmpty(h.TrangThai) &&
+                h.TrangThai.Trim().Equals("Đã Xác Nhận", StringComparison.OrdinalIgnoreCase));
                 <tr>
                     <td class="fw-bold">@phong.SoPhong</td>
                     <td class="wrap-text">@hopDong?.KhachThue?.HoTen</td>
@@ -28,6 +31,7 @@
                     </td>
                 </tr>
             }
+
         </tbody>
     </table>
 </div>
