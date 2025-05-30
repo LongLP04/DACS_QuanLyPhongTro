@@ -145,6 +145,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             // Cập nhật trạng thái phòng thành "Đã Thuê"
             phongTro.TrangThai = "Đã Thuê";
+
             _context.PhongTros.Update(phongTro);
             await _context.SaveChangesAsync();
 
@@ -178,6 +179,9 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             var hopDong = await _context.HopDongs
                 .Include(h => h.KhachThue)
+                    .ThenInclude(k => k.PhieuGhiNhanSuCos)      // chú ý 'PhieuGhiNhanSuCos' (có s)
+                .Include(h => h.KhachThue)
+                    .ThenInclude(k => k.PhieuHienTrangNhanPhongs)  // chú ý 'PhieuHienTrangNhanPhongs' (có s)
                 .Include(h => h.PhongTro)
                 .FirstOrDefaultAsync(h => h.MaHopDong == id);
 
@@ -195,20 +199,78 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             var hopDong = await _context.HopDongs.FindAsync(id);
             if (hopDong != null)
             {
-                // Cập nhật lại trạng thái phòng và xóa liên kết khách thuê
+                // Xóa hóa đơn và chỉ số điện nước liên quan
+                var chiSoDienNuocList = await _context.ChiSoDienNuocs
+                    .Where(c => c.MaPhong == hopDong.MaPhong)
+                    .ToListAsync();
+
+                if (chiSoDienNuocList.Any())
+                {
+                    var maChiSoList = chiSoDienNuocList.Select(c => c.MaChiSo).ToList();
+
+                    var hoaDonList = await _context.HoaDons
+                        .Where(hd => maChiSoList.Contains(hd.MaChiSo))
+                        .ToListAsync();
+
+                    if (hoaDonList.Any())
+                    {
+                        _context.HoaDons.RemoveRange(hoaDonList);
+                    }
+
+                    _context.ChiSoDienNuocs.RemoveRange(chiSoDienNuocList);
+                }
+
+                // Xóa phiếu ghi nhận sự cố của khách thuê
+                var phieuSuCoList = await _context.PhieuGhiNhanSuCos
+                    .Where(p => p.MaKhachThue == hopDong.MaKhachThue)
+                    .ToListAsync();
+
+                if (phieuSuCoList.Any())
+                {
+                    _context.PhieuGhiNhanSuCos.RemoveRange(phieuSuCoList);
+                }
+
+                // Xóa phiếu hiện trạng nhận phòng của khách thuê
+                var phieuHienTrangList = await _context.PhieuHienTrangNhanPhongs
+                    .Where(p => p.MaKhachThue == hopDong.MaKhachThue)
+                    .ToListAsync();
+
+                if (phieuHienTrangList.Any())
+                {
+                    _context.PhieuHienTrangNhanPhongs.RemoveRange(phieuHienTrangList);
+                }
+
+                // **Xóa phiếu đăng ký dịch vụ của khách thuê**
+                var phieuDangKyDichVuList = await _context.PhieuDangKyDichVus
+                    .Where(p => p.MaKhachThue == hopDong.MaKhachThue)
+                    .ToListAsync();
+
+                if (phieuDangKyDichVuList.Any())
+                {
+                    _context.PhieuDangKyDichVus.RemoveRange(phieuDangKyDichVuList);
+                }
+
+                // Cập nhật trạng thái phòng và xóa liên kết khách thuê
                 var phong = await _context.PhongTros.FindAsync(hopDong.MaPhong);
                 if (phong != null)
                 {
-                    phong.TrangThai = "Trống"; // Đánh dấu phòng trống
-                    phong.MaKhachThue = null;  // Xóa liên kết khách thuê
+                    phong.TrangThai = "Trống";
+                    phong.MaKhachThue = null;
                     _context.PhongTros.Update(phong);
                 }
 
+                // Xóa hợp đồng
                 _context.HopDongs.Remove(hopDong);
+
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index));
         }
+
+
+
+
+
     }
 }

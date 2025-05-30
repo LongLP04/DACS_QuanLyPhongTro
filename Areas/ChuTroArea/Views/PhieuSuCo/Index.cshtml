@@ -36,6 +36,8 @@
                 <thead class="thead-custom text-white">
                     <tr>
                         <th>Mã Phiếu</th>
+                        <th>Khách thuê</th>
+                        <th>Phòng</th>
                         <th>Ngày Ghi Nhận</th>
                         <th>Mô Tả Sự Cố</th>
                         <th>Hiện Trạng</th>
@@ -49,6 +51,15 @@
                     {
                         <tr>
                             <td class="fw-bold">@phieu.MaPhieuSuCo</td>
+							<td>@phieu.KhachThue.HoTen</td>
+                            @if (phieu.KhachThue.PhongTros != null && phieu.KhachThue.PhongTros.Any())
+                            {
+                                <td>@phieu.KhachThue.PhongTros.First().SoPhong</td>
+                            }
+                            else
+                            {
+                                <td><em>Chưa có phòng</em></td>
+                            }
                             <td>@phieu.NgayGhiNhan.ToString("dd/MM/yyyy HH:mm")</td>
                             <td>@phieu.MoTaSuCo</td>
                             <td>@phieu.HienTrang</td>

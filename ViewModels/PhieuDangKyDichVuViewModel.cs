@@ -8,13 +8,18 @@ namespace DACS_QuanLyPhongTro.ViewModels
         public DateTime NgayKetThuc { get; set; }
 
         public List<DichVu> DichVus { get; set; } = new();
+
+        // Thay đổi SelectedDichVus thành List có số phần tử = số dịch vụ
         public List<DichVuSelection> SelectedDichVus { get; set; } = new();
     }
 
     public class DichVuSelection
     {
         public int MaDichVu { get; set; }
-        public bool IsSelected { get; set; }
-        public int SoLuong { get; set; }
+
+        // Sử dụng bool? để tránh binding lỗi khi checkbox không check (checkbox không gửi giá trị)
+        public bool? IsSelected { get; set; } = false;
+
+        public int SoLuong { get; set; } = 1;
     }
 }

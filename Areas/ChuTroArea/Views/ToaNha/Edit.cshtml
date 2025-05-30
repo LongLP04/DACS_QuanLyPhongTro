@@ -12,29 +12,16 @@
         <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
 
         <div class="form-group mb-4">
-            <label asp-for="TenToaNha" class="control-label"></label>
+            <label asp-for="TenToaNha" class="control-label">Tên tòa nhà</label>
             <input asp-for="TenToaNha" class="form-control form-control-lg" />
             <span asp-validation-for="TenToaNha" class="text-danger"></span>
         </div>
 
         <div class="form-group mb-4">
-            <label asp-for="DiaChi" class="control-label"></label>
+            <label asp-for="DiaChi" class="control-label">Địa chỉ</label>
             <input asp-for="DiaChi" class="form-control form-control-lg" />
             <span asp-validation-for="DiaChi" class="text-danger"></span>
         </div>
-
-        <div class="form-group mb-4">
-            <label asp-for="TongSoTang" class="control-label"></label>
-            <input asp-for="TongSoTang" class="form-control form-control-lg" type="number" min="1" />
-            <span asp-validation-for="TongSoTang" class="text-danger"></span>
-        </div>
-
-        <div class="form-group mb-4">
-            <label asp-for="MoTa" class="control-label"></label>
-            <textarea asp-for="MoTa" class="form-control form-control-lg" rows="5"></textarea>
-            <span asp-validation-for="MoTa" class="text-danger"></span>
-        </div>
-
         <!-- Chỉnh sửa vị trí tòa nhà -->
         <div class="form-group mb-4">
             <label>Chỉnh sửa vị trí trên bản đồ</label>
@@ -43,6 +30,19 @@
             <input type="hidden" asp-for="ViTri" id="ViTri" value="@Model.ViTri" />
             <small class="form-text text-muted">Kéo marker hoặc tìm kiếm để cập nhật vị trí tọa độ.</small>
         </div>
+        <div class="form-group mb-4">
+            <label asp-for="TongSoTang" class="control-label">Tổng số tầng</label>
+            <input asp-for="TongSoTang" class="form-control form-control-lg" type="number" min="1" />
+            <span asp-validation-for="TongSoTang" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="MoTa" class="control-label">Mô tả tòa nhà</label>
+            <textarea asp-for="MoTa" class="form-control form-control-lg" rows="5"></textarea>
+            <span asp-validation-for="MoTa" class="text-danger"></span>
+        </div>
+
+        
 
         <div class="form-group text-center">
             <input type="submit" value="Lưu" class="btn btn-primary btn-custom btn-lg px-5" />

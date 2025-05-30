@@ -1,4 +1,5 @@
 ﻿using DACS_QuanLyPhongTro.Models;
+using DACS_QuanLyPhongTro.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,16 +18,32 @@ namespace DACS_QuanLyPhongTro.Controllers
         }
 
         // GET: /DichVu/DangKy
+        // Trả về ViewModel chứa danh sách dịch vụ + các lựa chọn mặc định
         public async Task<IActionResult> DangKy()
         {
             var dichVus = await _context.DichVus.ToListAsync();
-            return View(dichVus);
+
+            var viewModel = new PhieuDangKyDichVuViewModel
+            {
+                NgayBatDau = DateTime.Today,
+                NgayKetThuc = DateTime.Today.AddMonths(1),
+                DichVus = dichVus,
+                SelectedDichVus = dichVus.Select(dv => new DichVuSelection
+                {
+                    MaDichVu = dv.MaDichVu,
+                    IsSelected = false,
+                    SoLuong = 1
+                }).ToList()
+            };
+
+            return View(viewModel);
         }
 
-        // POST: /DichVu/DangKyMot
+        // POST: /DichVu/DangKyNhieu
+        // Xử lý đăng ký nhiều dịch vụ cùng lúc
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DangKyMot(int maDichVu, int soLuong, DateTime ngayBatDau, DateTime ngayKetThuc)
+        public async Task<IActionResult> DangKyNhieu(PhieuDangKyDichVuViewModel model)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
@@ -36,36 +53,53 @@ namespace DACS_QuanLyPhongTro.Controllers
             if (khachThue == null)
                 return NotFound("Không tìm thấy thông tin khách thuê.");
 
-            var dichVu = await _context.DichVus.FindAsync(maDichVu);
-            if (dichVu == null || soLuong <= 0)
-                return BadRequest("Dịch vụ không hợp lệ.");
+            var selectedServices = model.SelectedDichVus
+                .Where(s => s.IsSelected == true && s.SoLuong > 0)
+                .ToList();
 
+            if (!selectedServices.Any())
+            {
+                TempData["Error"] = "Bạn chưa chọn dịch vụ nào.";
+                return RedirectToAction("DangKy");
+            }
+
+            // Tạo phiếu đăng ký chung cho tất cả dịch vụ lần này
             var phieu = new PhieuDangKyDichVu
             {
                 MaKhachThue = khachThue.MaKhachThue,
-                NgayBatDau = ngayBatDau,
-                NgayKetThuc = ngayBatDau.AddMonths(1),
+                NgayBatDau = model.NgayBatDau,
+                NgayKetThuc = model.NgayKetThuc,
                 TrangThai = "Chờ xác nhận"
             };
 
             _context.PhieuDangKyDichVus.Add(phieu);
             await _context.SaveChangesAsync();
 
-            var chiTiet = new ChiTietPhieuDangKyDichVu
+            // Thêm chi tiết cho từng dịch vụ đăng ký
+            foreach (var item in selectedServices)
             {
-                MaDangKyDichVu = phieu.MaDangKyDichVu,
-                MaDichVu = dichVu.MaDichVu,
-                SoLuong = soLuong,
-                TongTienDichVu = dichVu.DonGiaDichVu * soLuong
-            };
+                var dv = await _context.DichVus.FindAsync(item.MaDichVu);
+                if (dv == null) continue;
 
-            _context.ChiTietPhieuDangKyDichVus.Add(chiTiet);
+                var chiTiet = new ChiTietPhieuDangKyDichVu
+                {
+                    MaDangKyDichVu = phieu.MaDangKyDichVu,
+                    MaDichVu = dv.MaDichVu,
+                    SoLuong = item.SoLuong,
+                    TongTienDichVu = dv.DonGiaDichVu * item.SoLuong
+                };
+
+                _context.ChiTietPhieuDangKyDichVus.Add(chiTiet);
+            }
+
             await _context.SaveChangesAsync();
 
             TempData["Success"] = "Đăng ký dịch vụ thành công.";
             return RedirectToAction("DangKy");
         }
+
         // GET: /DichVu/DanhSachDangKy
+        // Hiển thị danh sách các phiếu đăng ký dịch vụ của khách thuê
         public async Task<IActionResult> DanhSachDangKy()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -85,6 +119,5 @@ namespace DACS_QuanLyPhongTro.Controllers
 
             return View(danhSachPhieu);
         }
-
     }
 }

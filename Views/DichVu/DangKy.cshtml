@@ -1,161 +1,196 @@
-﻿@model List<DACS_QuanLyPhongTro.Models.DichVu>
+﻿@model DACS_QuanLyPhongTro.ViewModels.PhieuDangKyDichVuViewModel
+
 @{
-	ViewData["Title"] = "Đăng ký dịch vụ";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Đăng ký dịch vụ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+    <h2 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        Đăng ký dịch vụ
+    </h2>
 
-	<h2 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-		Đăng ký dịch vụ
-	</h2>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success shadow-sm rounded">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger shadow-sm rounded">@TempData["Error"]</div>
+    }
 
-	@if (TempData["Success"] != null)
-	{
-		<div class="alert alert-success shadow-sm rounded">@TempData["Success"]</div>
-	}
+    <form asp-action="DangKyNhieu" method="post">
+        <div class="date-container mb-4 d-flex justify-content-center align-items-center gap-4 flex-wrap">
+            <div class="date-input-group">
+                <label>Ngày bắt đầu</label>
+                <input asp-for="NgayBatDau" type="date" class="form-control" required />
+            </div>
+            <div class="date-input-group">
+                <label>Ngày kết thúc</label>
+                <input asp-for="NgayKetThuc" type="date" class="form-control" readonly />
+            </div>
+        </div>
 
-	<div class="container" style="max-width: 1630px; padding: 30px;">
-		<div class="service-grid">
-			@foreach (var dv in Model)
-			{
-				<div class="card mb-4 border-primary shadow-sm service-card">
-					<div class="card-body">
-						<h5 class="card-title text-primary">
-							<i class="fas fa-concierge-bell mr-2"></i> @dv.TenDichVu
-						</h5>
-						<p class="card-text">@dv.MoTa</p>
-						<p class="card-text text-danger font-weight-bold">
-							<i class="fas fa-dollar-sign mr-1"></i> Đơn giá: @dv.DonGiaDichVu.ToString("N0") VND
-						</p>
+        <div class="service-grid mt-3">
+            @for (int i = 0; i < Model.DichVus.Count; i++)
+            {
+                <div class="card mb-4 border-primary shadow-sm service-card">
+                    <div class="card-body">
+                        <input type="hidden" name="SelectedDichVus[@i].MaDichVu" value="@Model.DichVus[i].MaDichVu" />
+                        <h5 class="card-title text-primary">
+                            <label class="d-flex align-items-center cursor-pointer">
+                                <input type="checkbox" class="service-checkbox mr-3" name="SelectedDichVus[@i].IsSelected" value="true" />
+                                <i class="fas fa-concierge-bell mr-2"></i> @Model.DichVus[i].TenDichVu
+                            </label>
+                        </h5>
+                        <p class="card-text">@Model.DichVus[i].MoTa</p>
+                        <p class="card-text text-danger font-weight-bold">
+                            <i class="fas fa-dollar-sign mr-1"></i> Đơn giá: @Model.DichVus[i].DonGiaDichVu.ToString("N0") VND
+                        </p>
 
-						<form asp-action="DangKyMot" method="post" class="form-inline align-items-center service-form">
-							<input type="hidden" name="maDichVu" value="@dv.MaDichVu" />
+                        <div class="form-group mr-3 mb-2">
+                            <label class="mr-2 font-weight-semibold"><i class="fas fa-sort-numeric-up mr-1"></i> Số lượng:</label>
+                            <input type="number" name="SelectedDichVus[@i].SoLuong" value="1" min="1" class="form-control" />
+                        </div>
 
-							<div class="form-group mr-3 mb-2">
-								<label class="mr-2 font-weight-semibold"><i class="fas fa-sort-numeric-up mr-1"></i> Số lượng:</label>
-								<input type="number" name="soLuong" value="1" min="1" class="form-control" required />
-							</div>
+                        <div class="form-group mr-3 mb-2">
+                            <small class="form-text text-danger ml-1" style="font-style: italic">* Ngày kết thúc là 1 tháng sau ngày bắt đầu</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
 
-							<div class="form-group mr-3 mb-2">
-								<label class="mr-2 font-weight-semibold"><i class="fas fa-calendar-alt mr-1"></i> Ngày bắt đầu:</label>
-								<input type="date" name="ngayBatDau" class="form-control ngay-bat-dau" required />
-							</div>
+        <div class="text-center mt-4">
+            <button id="btnDangKy" type="submit" class="btn btn-success btn-lg rounded-pill px-4 shadow-sm btn-hover-effect mb-2" style="display:none;">
+                <i class="fas fa-check-circle mr-2"></i> Đăng ký tất cả dịch vụ đã chọn
+            </button>
+        </div>
+    </form>
 
-							<div class="form-group mr-3 mb-2">
-								<small class="form-text text-danger ml-1" style="font-style: italic">* Ngày kết thúc là 1 tháng sau ngày bắt đầu</small>
-							</div>
-
-							<button type="submit" class="btn btn-success btn-lg rounded-pill px-4 shadow-sm btn-hover-effect mb-2">
-								<i class="fas fa-check-circle mr-2"></i> Đăng ký
-							</button>
-						</form>
-					</div>
-				</div>
-			}
-		</div>
-	</div>
-
-	<div class="text-center mt-4 mb-5">
-		<a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-warning btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
-			<i class="fas fa-arrow-left mr-2"></i> Quay lại
-		</a>
-	</div>
+    <div class="text-center mt-4 mb-5">
+        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-warning btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
+            <i class="fas fa-arrow-left mr-2"></i> Quay lại
+        </a>
+    </div>
 </div>
+
 @section Scripts {
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			const forms = document.querySelectorAll('form');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ngayBatDauInput = document.querySelector('input[name="NgayBatDau"]');
+            const ngayKetThucInput = document.querySelector('input[name="NgayKetThuc"]');
+            const checkboxes = document.querySelectorAll('.service-checkbox');
+            const btnDangKy = document.getElementById('btnDangKy');
 
-			forms.forEach(form => {
-				const inputNgayBatDau = form.querySelector('.ngay-bat-dau');
+            function updateNgayKetThuc() {
+                const ngayBatDau = new Date(ngayBatDauInput.value);
+                if (!isNaN(ngayBatDau)) {
+                    const ngayKetThuc = new Date(ngayBatDau);
+                    ngayKetThuc.setMonth(ngayKetThuc.getMonth() + 1);
+                    const yyyy = ngayKetThuc.getFullYear();
+                    const mm = String(ngayKetThuc.getMonth() + 1).padStart(2, '0');
+                    const dd = String(ngayKetThuc.getDate()).padStart(2, '0');
+                    ngayKetThucInput.value = `${yyyy}-${mm}-${dd}`;
+                } else {
+                    ngayKetThucInput.value = '';
+                }
+            }
 
-				inputNgayBatDau.addEventListener('change', function () {
-					const ngayBatDau = new Date(this.value);
-					if (!isNaN(ngayBatDau)) {
-						const ngayKetThuc = new Date(ngayBatDau);
-						ngayKetThuc.setMonth(ngayKetThuc.getMonth() + 1);
+            function toggleButton() {
+                const anyChecked = Array.from(checkboxes).some(chk => chk.checked);
+                btnDangKy.style.display = anyChecked ? 'inline-block' : 'none';
+            }
 
-						const yyyy = ngayKetThuc.getFullYear();
-						const mm = String(ngayKetThuc.getMonth() + 1).padStart(2, '0');
-						const dd = String(ngayKetThuc.getDate()).padStart(2, '0');
-						const formattedDate = `${yyyy}-${mm}-${dd}`;
+            ngayBatDauInput.addEventListener('change', updateNgayKetThuc);
+            updateNgayKetThuc();
 
-						const inputNgayKetThuc = form.querySelector('.ngay-ket-thuc');
-						if(inputNgayKetThuc) inputNgayKetThuc.value = formattedDate;
-					} else {
-						const inputNgayKetThuc = form.querySelector('.ngay-ket-thuc');
-						if(inputNgayKetThuc) inputNgayKetThuc.value = '';
-					}
-				});
-			});
-		});
-	</script>
+            checkboxes.forEach(chk => {
+                chk.addEventListener('change', toggleButton);
+            });
+
+            toggleButton(); // chạy lúc đầu để ẩn nút nếu chưa chọn dịch vụ
+        });
+    </script>
 }
 
 <style>
-	/* Container rộng max 1630px */
-	.container {
-		max-width: 1630px !important;
-	}
+    .container {
+        max-width: 1630px !important;
+    }
 
-	/* Grid 3 cột trên màn hình rộng, tự co lại trên màn hình nhỏ */
-	.service-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-		gap: 30px;
-	}
+    .date-container {
+        /* sẽ dùng flexbox, đã áp dụng trong view */
+    }
 
-	/* Bo tròn mạnh hơn */
-	.service-card {
-		border-radius: 1.5rem !important;
-		overflow: hidden;
-		transition: all 0.3s ease;
-	}
+    .date-input-group {
+        min-width: 180px;
+        margin: 0 10px;
+    }
 
-		.service-card:hover {
-			box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-			transform: translateY(-4px);
-		}
+    .service-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+        gap: 30px;
+    }
 
-	.btn-hover-effect {
-		transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-		border-radius: 50rem !important;
-	}
+    .service-card {
+        border-radius: 1.5rem !important;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
 
-		.btn-hover-effect:hover {
-			background-color: #449d44 !important;
-			transform: scale(1.05);
-			box-shadow: 0 8px 16px rgba(68, 157, 68, 0.5);
-		}
+        .service-card:hover {
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+        }
 
-		.btn-hover-effect:active {
-			transform: scale(0.95);
-			box-shadow: 0 4px 8px rgba(68, 157, 68, 0.4);
-		}
+    .btn-hover-effect {
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 50rem !important;
+    }
 
-	.service-form label {
-		font-weight: 600;
-		color: #555;
-	}
+        .btn-hover-effect:hover {
+            background-color: #449d44 !important;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(68, 157, 68, 0.5);
+        }
 
-	.form-control {
-		min-width: 130px;
-	}
+        .btn-hover-effect:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 8px rgba(68, 157, 68, 0.4);
+        }
 
-	@@media (max-width: 767px) {
-		.form-inline {
-			flex-direction: column !important;
-			align-items: flex-start !important;
-		}
+    .form-control {
+        min-width: 130px;
+    }
 
-			.form-inline .form-group {
-				margin-right: 0 !important;
-				margin-bottom: 0.75rem;
-				width: 100%;
-			}
+    .service-checkbox {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
 
-			.form-inline button {
-				width: 100%;
-			}
-	}
+    label {
+        cursor: pointer;
+    }
+
+    @@media (max-width: 767px) {
+        .service-grid
+
+    {
+        grid-template-columns: 1fr !important;
+    }
+
+    .date-container {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .date-input-group {
+        margin: 10px 0;
+    }
+
+    }
 </style>

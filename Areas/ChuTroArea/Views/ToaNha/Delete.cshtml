@@ -5,24 +5,26 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
 }
 
-<h2 class="text-center">Xóa Tòa Nhà</h2>
-
-
+<h2 class="text-center mb-4">Xóa Tòa Nhà</h2>
 
 <form method="post">
     <input type="hidden" asp-for="MaToaNha" />
-    <div class="form-group">
-        <label asp-for="TenToaNha"></label>
-        <p>@Model.TenToaNha</p>
+
+    <div class="card p-3 mb-4" style="max-width: 600px; margin: 0 auto;">
+        <label asp-for="TenToaNha" class="form-label fw-bold">Tên tòa nhà</label>
+        <p class="form-control-plaintext">@Model.TenToaNha</p>
     </div>
-    <div class="form-group">
-        <label asp-for="DiaChi"></label>
-        <p>@Model.DiaChi</p>
+
+    <div class="card p-3 mb-4" style="max-width: 600px; margin: 0 auto;">
+        <label asp-for="DiaChi" class="form-label fw-bold">Địa chỉ</label>
+        <p class="form-control-plaintext">@Model.DiaChi</p>
     </div>
-    <div class="form-group">
-        <label asp-for="TongSoTang"></label>
-        <p>@Model.TongSoTang</p>
+
+    <div class="card p-3 mb-4" style="max-width: 600px; margin: 0 auto;">
+        <label asp-for="TongSoTang" class="form-label fw-bold">Tổng số tầng</label>
+        <p class="form-control-plaintext">@Model.TongSoTang</p>
     </div>
+
     <div class="form-group text-center">
         <input type="submit" value="Xóa" class="btn btn-danger btn-lg rounded-pill px-5" />
         <a asp-action="Index" class="btn btn-secondary ms-3 btn-lg px-5">Quay lại</a>

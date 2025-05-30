@@ -82,6 +82,8 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 return BadRequest("Trạng thái không hợp lệ.");
 
             var phieu = await _context.PhieuGhiNhanSuCos
+                .Include(p => p.KhachThue)
+                    .ThenInclude(k => k.PhongTros)
                 .FirstOrDefaultAsync(p => p.MaPhieuSuCo == id);
 
             if (phieu == null)
