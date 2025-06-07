@@ -197,7 +197,13 @@ namespace DACS_QuanLyPhongTro.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    
+                    // Kiểm tra nếu vai trò là "ChuTro" và không yêu cầu xác nhận email
+                    if (Input.Role == "ChuTro")
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToAction("Index", "Home", new { area = "ChuTroArea" }); // Chuyển hướng đến layout của Chủ trọ
+                    }
+
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
