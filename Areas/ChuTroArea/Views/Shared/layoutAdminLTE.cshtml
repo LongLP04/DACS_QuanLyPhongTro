@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chu Tro Admin</title>
+
+    <!-- AdminLTE 3 + deps (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@@5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@@1.13.3/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@@3.2/dist/css/adminlte.min.css">
+    <!-- Datatables + Toastr (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-bs4@@1.13.5/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastr@@2.1.4/build/toastr.min.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed ">
+    <div class="wrapper">
+        <style>
+            .content-wrapper { background: #f6f7fb; }
+            .card, .table { border-radius: 0.5rem; }
+            .btn { border-radius: .35rem; }
+            /* Sidebar width customization */
+            :root { --sidebar-width: 270px; --sidebar-mini-width: 4.6rem; }
+            .layout-fixed .main-sidebar,
+            .layout-fixed .main-sidebar::before { width: var(--sidebar-width); }
+            .layout-fixed .content-wrapper,
+            .layout-fixed .main-footer,
+            .layout-fixed .main-header { margin-left: var(--sidebar-width); }
+            /* Fix navbar positioning - NO MORE OVERLAP */
+            .layout-navbar-fixed .main-header { 
+                position: fixed;
+                top: 0;
+                left: var(--sidebar-width);
+                right: 0;
+                width: calc(100% - var(--sidebar-width));
+                z-index: 1030;
+                background: white;
+            }
+            /* Sidebar positioning */
+            .main-sidebar { 
+                z-index: 1040; 
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: var(--sidebar-width);
+            }
+            /* Remove top spacing from sidebar */
+            .sidebar {
+                padding-top: 0 !important;
+                margin-top: 0 !important;
+            }
+            .sidebar .user-panel {
+                margin-top: 0 !important;
+                padding-top: 1rem !important;
+            }
+            /* Fix sidebar collapse behavior */
+            .sidebar-mini.sidebar-collapse .main-sidebar,
+            .sidebar-mini.sidebar-collapse .main-sidebar::before { width: var(--sidebar-mini-width); }
+            .sidebar-mini.sidebar-collapse .content-wrapper,
+            .sidebar-mini.sidebar-collapse .main-footer,
+            .sidebar-mini.sidebar-collapse .main-header { margin-left: var(--sidebar-mini-width); }
+            .sidebar-mini.sidebar-collapse .layout-navbar-fixed .main-header { 
+                left: var(--sidebar-mini-width);
+                width: calc(100% - var(--sidebar-mini-width));
+            }
+            /* Make navbar sit beside sidebar on desktop */
+            @@media (min-width: 992px){
+                .layout-navbar-fixed .wrapper .main-header { 
+                    margin-left: var(--sidebar-width) !important;
+                    width: calc(100% - var(--sidebar-width));
+                }
+                .sidebar-collapse.layout-navbar-fixed .wrapper .main-header {
+                    margin-left: var(--sidebar-mini-width) !important;
+                    width: calc(100% - var(--sidebar-mini-width));
+                }
+            }
+            @@media (min-width: 992px){
+                .sidebar-collapse .main-sidebar,
+                .sidebar-collapse .main-sidebar::before { width: var(--sidebar-mini-width); }
+                .sidebar-collapse .content-wrapper,
+                .sidebar-collapse .main-footer,
+                .sidebar-collapse .main-header { margin-left: var(--sidebar-mini-width); }
+            }
+            @@media (max-width: 991.98px){
+                .layout-fixed .content-wrapper,
+                .layout-fixed .main-footer,
+                .layout-fixed .main-header { margin-left: 0 !important; }
+                .layout-navbar-fixed .main-header { left: 0 !important; right: 0; width: 100%; }
+                .main-sidebar { position: fixed; }
+            }
+        </style>
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a asp-area="ChuTroArea" asp-controller="Home" asp-action="Index" class="nav-link">Dashboard</a>
+                </li>
+            </ul>
+
+            <!-- Right navbar -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <partial name="_LoginPartial" />
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel pb-3 d-flex">
+                    <div class="image">
+                        <img src="https://ui-avatars.com/api/?name=@(ViewData["ChuTroHoTen"] ?? "Chu tro")" class="img-circle elevation-2" alt="User Image">
+                    </div>
+                    <div class="info">
+                        <a href="#" class="d-block">@ViewData["ChuTroHoTen"]</a>
+                    </div>
+                </div>
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <li class="nav-item">
+                            <a asp-area="ChuTroArea" asp-controller="Home" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-home"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="ChuTroArea" asp-controller="ToaNha" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-city"></i>
+                                <p>Tòa nhà</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="ChuTroArea" asp-controller="PhongTro" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-door-open"></i>
+                                <p>Phòng trọ</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="ChuTroArea" asp-controller="LichHen" asp-action="Appointments" class="nav-link">
+                                <i class="nav-icon fas fa-calendar-check"></i>
+                                <p>Lịch hẹn</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="ChuTroArea" asp-controller="HopDong" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-file-contract"></i>
+                                <p>Hợp đồng</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="ChuTroArea" asp-controller="PhieuDichVu" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-concierge-bell"></i>
+                                <p>Dịch vụ</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="ChuTroArea" asp-controller="ChiSoDienNuoc" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>Chỉ số điện nước</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="ChuTroArea" asp-controller="HoaDon" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-file-invoice"></i>
+                                <p>Hóa đơn</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="ChuTroArea" asp-controller="PhieuSuCo" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-tools"></i>
+                                <p>Sự cố</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-area="ChuTroArea" asp-controller="PhieuHienTrang" asp-action="Index" class="nav-link">
+                                <i class="nav-icon fas fa-clipboard-check"></i>
+                                <p>Hiện trạng</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <section class="content pt-3">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </section>
+        </div>
+
+        <!-- Main Footer -->
+        <footer class="main-footer text-sm">
+            <div class="float-right d-none d-sm-inline">
+                v1
+            </div>
+            <strong>&copy; @(DateTime.Now.Year) QuanLyPhongTro.</strong>
+        </footer>
+    </div>
+
+    <!-- Scripts (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@@1.13.3/js/OverlayScrollbars.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@@3.2/dist/js/adminlte.min.js"></script>
+    <!-- Datatables + Toastr (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@@1.13.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-bs4@@1.13.5/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@@2.1.4/build/toastr.min.js"></script>
+    <script>
+        // Toastr default config
+        toastr.options = { positionClass: 'toast-bottom-right', timeOut: 3000 };
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+

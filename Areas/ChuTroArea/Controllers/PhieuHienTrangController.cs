@@ -69,7 +69,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         public async Task<IActionResult> TaoPhieu(TaoPhieuHienTrangViewModel model)
         {
             var hopDong = await _context.HopDongs
-                .FirstOrDefaultAsync(h => h.MaPhong == model.MaPhong && h.TrangThai == "Đã xác nhận");
+                .FirstOrDefaultAsync(h => h.MaPhong == model.MaPhong && h.TrangThai == "Đã Xác Nhận");
 
             if (hopDong == null)
                 return NotFound("Không tìm thấy hợp đồng.");

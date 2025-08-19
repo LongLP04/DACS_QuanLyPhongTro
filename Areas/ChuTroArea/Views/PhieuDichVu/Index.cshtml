@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Dịch vụ đã xác nhận";
-    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
 <div class="container mt-5" style="max-width: 1100px;">
@@ -27,7 +27,7 @@
     else
     {
         <div class="table-responsive shadow-sm rounded custom-table">
-            <table class="table table-bordered table-hover">
+            <table id="pdvTable" class="table table-bordered table-hover">
                 <thead class="thead-custom text-white">
                     <tr>
                         <th>Khách thuê</th>
@@ -154,3 +154,15 @@
         vertical-align: middle;
     }
 </style>
+@section Scripts {
+    <script>
+        $(function () {
+            $('#pdvTable').DataTable({
+                pageLength: 10,
+                lengthChange: false,
+                order: [],
+                language: { url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/vi.json' }
+            });
+        });
+    </script>
+}

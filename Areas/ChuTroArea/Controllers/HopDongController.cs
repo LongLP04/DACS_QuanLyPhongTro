@@ -23,6 +23,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         {
             string hoTen = "Chủ trọ";
 
+            // Kiểm tra xem người dùng đã đăng nhập chưa
             if (User.Identity.IsAuthenticated)
             {
                 var email = User.FindFirstValue(ClaimTypes.Email);
@@ -36,14 +37,23 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 }
             }
 
-            ViewData["ChuTroHoTen"] = hoTen; // Truyền xuống layout
+            // Truyền tên chủ trọ xuống ViewData để sử dụng trong layout
+            ViewData["ChuTroHoTen"] = hoTen;
+
+            // Lấy ApplicationUserId của chủ trọ đang đăng nhập
+            var appUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Lọc hợp đồng của chủ trọ hiện tại
             var hopDongs = await _context.HopDongs
                 .Include(h => h.KhachThue)
                 .Include(h => h.PhongTro)
+                    .ThenInclude(p => p.ToaNha) // Nếu cần thêm thông tin về tòa nhà của phòng
+                .Where(h => h.PhongTro.ToaNha.ChuTro.ApplicationUserId == appUserId) // Lọc theo chủ trọ
                 .ToListAsync();
 
             return View(hopDongs);
         }
+
 
         // GET: Tạo hợp đồng
         public async Task<IActionResult> Create()

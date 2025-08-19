@@ -19,8 +19,8 @@ namespace DACS_QuanLyPhongTro.Services
             var khachThue = await _context.KhachThues.FirstOrDefaultAsync(k => k.ApplicationUserId == userId);
             if (khachThue == null) return false;
 
-            // Kiểm tra có hợp đồng thuê nào với trạng thái "Đã xác nhận" không
-            return await _context.HopDongs.AnyAsync(h => h.MaKhachThue == khachThue.MaKhachThue && h.TrangThai == "Đã xác nhận");
+            // Kiểm tra có hợp đồng thuê nào với trạng thái "Đã Xác Nhận" không
+            return await _context.HopDongs.AnyAsync(h => h.MaKhachThue == khachThue.MaKhachThue && h.TrangThai == "Đã Xác Nhận");
         }
 
 

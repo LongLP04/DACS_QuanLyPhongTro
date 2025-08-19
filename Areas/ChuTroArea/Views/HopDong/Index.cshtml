@@ -1,7 +1,7 @@
 ﻿@model List<DACS_QuanLyPhongTro.Models.HopDong>
 @{
     ViewData["Title"] = "Danh Sách Hợp Đồng";
-    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
 <div class="container my-5" style="max-width: 1100px;">
@@ -20,7 +20,7 @@
     </p>
 
     <div class="table-responsive shadow-sm rounded">
-        <table class="table table-bordered table-hover custom-table">
+        <table id="hopDongTable" class="table table-bordered table-hover custom-table">
             <thead class="thead-custom text-white">
                 <tr>
                     <th>Mã Hợp Đồng</th>
@@ -147,3 +147,15 @@
             position: relative;
         }
 </style>
+@section Scripts {
+    <script>
+        $(function () {
+            $('#hopDongTable').DataTable({
+                pageLength: 10,
+                lengthChange: false,
+                order: [],
+                language: { url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/vi.json' }
+            });
+        });
+    </script>
+}

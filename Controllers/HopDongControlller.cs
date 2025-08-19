@@ -27,7 +27,7 @@ namespace DACS_QuanLyPhongTro.Controllers
                 .Include(h => h.PhongTro)
                     .ThenInclude(p => p.ToaNha)
                         .ThenInclude(t => t.ChuTro)  // Phải include chu tro
-                .FirstOrDefaultAsync(h => h.MaPhong == id);
+                .FirstOrDefaultAsync(h => h.MaHopDong == id);
 
 
             if (hopDong == null)

@@ -1,177 +1,159 @@
 ﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.ToaNha>
 @{
     ViewData["Title"] = "Danh sách Tòa Nhà";
-    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdmin.cshtml";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+
+    var totalBuildings = Model?.Count() ?? 0;
+    var totalFloors = Model?.Sum(t => t.TongSoTang) ?? 0;
+    var totalRooms = Model?.Sum(t => (t.PhongTros?.Count) ?? 0) ?? 0;
 }
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
         @TempData["ErrorMessage"]
     </div>
 }
-<h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
 
-<p class="text-center">
-    <a asp-action="Create" class="btn btn-primary btn-custom btn-lg px-5">Thêm mới tòa nhà</a>
-</p>
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-2">
+            <div class="input-group input-group-sm me-2" style="width:260px;">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
+                </div>
+                <input id="searchBox" type="text" class="form-control" placeholder="Tìm theo tên hoặc địa chỉ">
+            </div>
+            <select id="sortSelect" class="form-select form-select-sm" style="width:180px;">
+                <option value="name">Sắp xếp: Tên (A→Z)</option>
+                <option value="floors">Số tầng (Cao→Thấp)</option>
+            </select>
+            <a asp-action="Create" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i> Thêm tòa nhà</a>
+        </div>
+    </div>
+</div>
 
-<div class="table-responsive shadow-sm rounded">
-    <table class="table table-bordered table-hover custom-table">
-        <thead class="thead-custom text-white">
-            <tr>
-                <th>Tên Tòa Nhà</th>
-                <th>Địa Chỉ</th>
-                <th>Tổng Số Tầng</th>
-                <th>Mô Tả</th>
-                <th>Thao Tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.TenToaNha</td>
-                    <td>@item.DiaChi</td>
-                    <td>@item.TongSoTang</td>
-                    <td>@item.MoTa</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.MaToaNha" class="btn btn-warning btn-sm btn-custom-warning btn-zoom">Sửa</a>
-                        <a asp-action="Delete" asp-route-id="@item.MaToaNha" class="btn btn-danger btn-sm btn-custom-danger btn-zoom">Xóa</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<!-- Summary widgets -->
+<div class="row px-2 px-md-3 mt-3 g-3">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-primary mb-0">
+            <div class="inner">
+                <h3>@totalBuildings</h3>
+                <p>Tổng tòa nhà</p>
+            </div>
+            <div class="icon"><i class="fas fa-city"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-info mb-0">
+            <div class="inner">
+                <h3>@totalFloors</h3>
+                <p>Tổng số tầng</p>
+            </div>
+            <div class="icon"><i class="fas fa-layer-group"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-success mb-0">
+            <div class="inner">
+                <h3>@totalRooms</h3>
+                <p>Tổng phòng (ước tính)</p>
+            </div>
+            <div class="icon"><i class="fas fa-door-open"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-warning mb-0">
+            <div class="inner">
+                <h3>@DateTime.Now:MM/yyyy</h3>
+                <p>Tháng hiện tại</p>
+            </div>
+            <div class="icon"><i class="fas fa-calendar-alt"></i></div>
+        </div>
+    </div>
+    <div class="col-12"><hr class="my-2"></div>
+</div>
+
+<!-- Card grid -->
+<div class="row px-2 px-md-3 g-3" id="buildingsGrid">
+    @foreach (var t in Model)
+    {
+        var rooms = t.PhongTros?.Count ?? 0;
+        <div class="col-12 col-sm-6 col-lg-4 building-item" data-name="@t.TenToaNha" data-address="@t.DiaChi" data-floors="@t.TongSoTang">
+            <div class="card shadow-sm border-0 h-100 building-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-start justify-content-between">
+                        <div>
+                            <h5 class="card-title mb-1 fw-bold">@t.TenToaNha</h5>
+                            <div class="text-muted small"><i class="fas fa-map-marker-alt me-1"></i>@t.DiaChi</div>
+                        </div>
+                        <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                            <i class="fas fa-building"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3 d-flex gap-2 flex-wrap">
+                        <span class="badge bg-primary-subtle text-primary border border-primary">Tầng: <strong>@t.TongSoTang</strong></span>
+                        <span class="badge bg-success-subtle text-success border border-success">Phòng: <strong>@rooms</strong></span>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(t.MoTa))
+                    {
+                        <p class="mt-3 text-secondary small mb-0">@t.MoTa</p>
+                    }
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
+                    <div class="d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@t.MaToaNha" class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Sửa</a>
+                        <a asp-action="Delete" asp-route-id="@t.MaToaNha" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Xóa</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 <style>
-    /* Nền tím nhẹ cho toàn trang */
-    body {
-        background-color: #6f42c1; /* tím nhẹ */
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    .small-box .icon{right:10px; top: 6px;}
+    .bg-primary-subtle{ background: #e8f0ff; }
+    .bg-success-subtle{ background: #e8f7ef; }
+    .building-card{ transition: transform .15s ease, box-shadow .15s ease; }
+    .building-card:hover{ transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .avatar{ background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); }
+</style>
 
-    /* Tiêu đề nổi bật hơn với màu gradient và bóng chữ */
-    .text-highlight {
-        font-weight: 700;
-        font-size: 2.5rem;
-        background: linear-gradient(90deg, #ff8a00, #e52e71);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
-    }
+@section Scripts {
+    <script>
+        (function(){
+            const grid = document.getElementById('buildingsGrid');
+            const searchBox = document.getElementById('searchBox');
+            const sortSelect = document.getElementById('sortSelect');
 
-    /* Custom bảng */
-    .custom-table {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
-        transition: box-shadow 0.3s ease;
-        /* bỏ table-layout fixed để cho cột tự giãn */
-        word-wrap: break-word;
-        white-space: normal;
-    }
-
-        .custom-table:hover {
-            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
-        }
-
-    /* Đầu bảng tím đậm */
-    .thead-custom {
-        background-color: #5a2ea6;
-    }
-
-    /* Hover từng dòng */
-    .custom-table tbody tr:hover {
-        background-color: #d9caff;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-        /* Hiệu ứng highlight từng cột khi hover */
-        .custom-table tbody tr:hover td {
-            position: relative;
-        }
-
-            .custom-table tbody tr:hover td:hover {
-                background-color: #a884f7 !important;
-                color: #3e2d5e; /* Màu chữ đậm hơn, không phải trắng */
-                transition: background-color 0.3s ease, color 0.3s ease;
-                font-weight: 600;
+            function filter() {
+                const q = (searchBox?.value || '').trim().toLowerCase();
+                const items = grid.querySelectorAll('.building-item');
+                items.forEach(el => {
+                    const name = (el.dataset.name || '').toLowerCase();
+                    const addr = (el.dataset.address || '').toLowerCase();
+                    el.style.display = (!q || name.includes(q) || addr.includes(q)) ? '' : 'none';
+                });
             }
 
-    /* Nút chung */
-    .btn-custom {
-        background-color: #7e57c2;
-        border-color: #7e57c2;
-        color: white;
-        font-weight: 600;
-        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
-        border-radius: 5px;
-    }
+            function sort() {
+                const items = Array.from(grid.querySelectorAll('.building-item'));
+                const type = sortSelect.value;
+                items.sort((a,b)=>{
+                    if(type==='floors'){
+                        return (parseInt(b.dataset.floors||'0') - parseInt(a.dataset.floors||'0'));
+                    }
+                    // default name asc
+                    return (a.dataset.name||'').localeCompare(b.dataset.name||'');
+                });
+                items.forEach(i=>grid.appendChild(i));
+            }
 
-        .btn-custom:hover {
-            background-color: #9c80f0;
-            border-color: #9c80f0;
-            color: #2a0d6a; /* Màu chữ đậm nổi bật khi hover */
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
-
-    /* Nút sửa */
-    .btn-custom-warning {
-        background-color: #ffb74d;
-        border-color: #ffb74d;
-        color: #4e342e;
-        font-weight: 600;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
-    }
-
-        .btn-custom-warning:hover {
-            background-color: #ffcc80;
-            border-color: #ffcc80;
-            color: #663c00; /* Màu chữ đậm nổi bật khi hover */
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
-
-    /* Nút xóa */
-    .btn-custom-danger {
-        background-color: #e53935;
-        border-color: #e53935;
-        color: white;
-        font-weight: 600;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
-    }
-
-        .btn-custom-danger:hover {
-            background-color: #ef5350;
-            border-color: #ef5350;
-            color: #330000; /* Màu chữ đậm nổi bật khi hover */
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
-
-    .custom-table th,
-    .custom-table td {
-        font-weight: 700; /* In đậm tất cả chữ trong bảng */
-
-    }
-    /* Áp dụng xuống dòng chỉ cho cột Mô Tả (cột thứ 4) và Địa Chỉ (cột thứ 2) */
-    .custom-table tbody tr td:nth-child(2),
-    .custom-table tbody tr td:nth-child(4),
-    .custom-table thead tr th:nth-child(2),
-    .custom-table thead tr th:nth-child(4) {
-        white-space: normal;
-        word-wrap: break-word;
-        word-break: break-word;
-    }
-
-
-</style>
+            searchBox?.addEventListener('input', filter);
+            sortSelect?.addEventListener('change', sort);
+            sort();
+        })();
+    </script>
+}
