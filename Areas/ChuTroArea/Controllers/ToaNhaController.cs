@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System;
+using System.Text.Json;
 
 namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 {
@@ -25,6 +27,33 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             _context = context;
             _userManager = userManager;
             _logger = logger;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyPassword([FromBody] PasswordVerificationModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Người dùng không hợp lệ." });
+                }
+
+                var result = await _userManager.CheckPasswordAsync(user, model.Password);
+                if (result)
+                {
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Mật khẩu không đúng." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Đã xảy ra lỗi: " + ex.Message });
+            }
         }
 
         private async Task<int?> GetMaChuTroAsync()
@@ -79,9 +108,10 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             var toaNhas = await _context.ToaNhas
                 .Where(t => t.MaChuTro == maChuTro)
+                .Include(t => t.PhongTros)
                 .Include(t => t.ChuTro)
                 .ToListAsync();
-
+            
             _logger.LogInformation("Retrieved {Count} ToaNhas for MaChuTro: {MaChuTro}", toaNhas.Count, maChuTro);
             return View(toaNhas);
         }
@@ -272,5 +302,10 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             }
         }
 
+    }
+
+    public class PasswordVerificationModel
+    {
+        public string Password { get; set; }
     }
 }
