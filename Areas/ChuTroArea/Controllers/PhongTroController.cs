@@ -438,5 +438,31 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 return View("Delete", phongTro);
             }
         }
+
+        // POST: ChuTroArea/PhongTro/VerifyPassword
+        [HttpPost]
+        public async Task<IActionResult> VerifyPassword([FromBody] PasswordVerificationModel model)
+        {
+            if (string.IsNullOrEmpty(model.Password))
+            {
+                return Json(new { success = false, message = "Mật khẩu không được để trống." });
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Người dùng không tồn tại." });
+            }
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
+            if (isPasswordValid)
+            {
+                return Json(new { success = true, message = "Mật khẩu chính xác." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Mật khẩu không đúng." });
+            }
+        }
     }
 }

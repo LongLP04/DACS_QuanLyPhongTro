@@ -2,287 +2,446 @@
 
 @{
     ViewData["Title"] = "Quản lý lịch hẹn";
-    Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+
+    var totalAppointments = Model?.Count ?? 0;
+    var pendingAppointments = Model?.Count(a => a.TrangThai == "Pending") ?? 0;
+    var acceptedAppointments = Model?.Count(a => a.TrangThai == "Accepted") ?? 0;
+    var rejectedAppointments = Model?.Count(a => a.TrangThai == "Rejected") ?? 0;
 }
 
-<div class="container my-5" style="max-width: 1100px;">
-    <h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
+@Html.AntiForgeryToken()
 
-    <div class="table-responsive shadow-sm rounded">
-        <table id="appointmentsTable" class="table table-bordered table-hover custom-table">
-            <thead class="thead-custom text-white">
-                <tr>
-                    <th>Phòng</th>
-                    <th>Ngày hẹn</th>
-                    <th>Giờ hẹn</th>
-                    <th>Khách thuê</th>
-                    <th>Ghi chú</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var appointment in Model)
-                {
-                    <tr>
-                        <td class="text-bold">@appointment.PhongTro?.SoPhong</td>
-                        <td>@appointment.NgayHen.ToString("dd/MM/yyyy")</td>
-                        <td>@appointment.GioHen.ToString(@"hh\:mm")</td>
-                        <td class="wrap-text">@appointment.KhachThue?.HoTen</td>
-                        <td class="wrap-text">@appointment.GhiChu</td>
-                        <td>@appointment.TrangThai</td>
-                        <td>
-                            @if (appointment.TrangThai == "Pending")
-                            {
-                                <button class="btn btn-success btn-sm btn-custom btn-zoom me-1" data-id="@appointment.MaLichHen">Chấp nhận</button>
-                                <button class="btn btn-danger btn-sm  btn-zoom" data-id="@appointment.MaLichHen">Từ chối</button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-outline-danger btn-sm btn-custom btn-zoom delete-btn" data-id="@appointment.MaLichHen">Xóa</button>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-2">
+            <div class="input-group input-group-sm me-2" style="width:260px;">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
+                </div>
+                <input id="searchBox" type="text" class="form-control" placeholder="Tìm theo phòng hoặc khách thuê">
+            </div>
+            <select id="sortSelect" class="form-select form-select-sm" style="width:180px;">
+                <option value="date">Sắp xếp: Ngày hẹn (Gần nhất)</option>
+                <option value="room">Sắp xếp: Phòng (A→Z)</option>
+                <option value="status">Sắp xếp: Trạng thái</option>
+            </select>
+        </div>
     </div>
 </div>
 
+<!-- Summary widgets -->
+<div class="row px-2 px-md-3 mt-3 g-3">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-primary mb-0">
+            <div class="inner">
+                <h3>@totalAppointments</h3>
+                <p>Tổng lịch hẹn</p>
+            </div>
+            <div class="icon"><i class="fas fa-calendar-check"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-warning mb-0">
+            <div class="inner">
+                <h3>@pendingAppointments</h3>
+                <p>Chờ xác nhận</p>
+            </div>
+            <div class="icon"><i class="fas fa-clock"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-success mb-0">
+            <div class="inner">
+                <h3>@acceptedAppointments</h3>
+                <p>Đã chấp nhận</p>
+            </div>
+            <div class="icon"><i class="fas fa-check-circle"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-danger mb-0">
+            <div class="inner">
+                <h3>@rejectedAppointments</h3>
+                <p>Đã từ chối</p>
+            </div>
+            <div class="icon"><i class="fas fa-times-circle"></i></div>
+        </div>
+    </div>
+    <div class="col-12"><hr class="my-2"></div>
+</div>
+
+<!-- Card grid -->
+<div class="row px-2 px-md-3 g-3" id="appointmentsGrid">
+    @foreach (var appointment in Model)
+    {
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 appointment-item" 
+             data-room="@appointment.PhongTro?.SoPhong" 
+             data-tenant="@appointment.KhachThue?.HoTen"
+             data-date="@appointment.NgayHen.ToString("yyyy-MM-dd")"
+             data-status="@appointment.TrangThai">
+            <div class="card shadow-sm border-0 h-100 appointment-card">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-start justify-content-between mb-2">
+                        <div class="flex-grow-1 me-2">
+                            <h5 class="card-title mb-1 fw-bold text-dark">
+                                <i class="fas fa-door-open me-2 text-primary"></i>@appointment.PhongTro?.SoPhong
+                            </h5>
+                            <div class="text-muted mb-2">
+                                <i class="fas fa-building me-1"></i><span class="fs-6">@appointment.PhongTro?.ToaNha?.TenToaNha</span>
+                            </div>
+                        </div>
+                        <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
+                            <i class="fas fa-calendar-alt fs-6"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <div class="d-flex gap-2 mb-1">
+                            <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
+                                <i class="fas fa-user me-1"></i>@(appointment.KhachThue?.HoTen ?? "Không có")
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <div class="d-flex gap-2 mb-1">
+                            <span class="badge bg-warning-subtle text-warning border border-warning fs-6 px-2 py-1">
+                                <i class="fas fa-calendar me-1"></i>@appointment.NgayHen.ToString("dd/MM/yyyy")
+                            </span>
+                            <span class="badge bg-success-subtle text-success border border-success fs-6 px-2 py-1">
+                                <i class="fas fa-clock me-1"></i>@appointment.GioHen.ToString(@"hh\:mm")
+                            </span>
+                        </div>
+                    </div>
+                    
+                    @if (!string.IsNullOrWhiteSpace(appointment.GhiChu))
+                    {
+                        <p class="mt-2 text-secondary mb-0 fs-6 lh-base">
+                            <i class="fas fa-comment me-1"></i>@appointment.GhiChu
+                        </p>
+                    }
+                    
+                    <div class="mt-2">
+                        @if (appointment.TrangThai == "Pending")
+                        {
+                            <span class="badge bg-warning text-dark fs-6 px-2 py-1">
+                                <i class="fas fa-clock me-1"></i>Chờ xác nhận
+                            </span>
+                        }
+                        else if (appointment.TrangThai == "Accepted")
+                        {
+                            <span class="badge bg-success text-white fs-6 px-2 py-1">
+                                <i class="fas fa-check me-1"></i>Đã chấp nhận
+                            </span>
+                        }
+                        else if (appointment.TrangThai == "Rejected")
+                        {
+                            <span class="badge bg-danger text-white fs-6 px-2 py-1">
+                                <i class="fas fa-times me-1"></i>Đã từ chối
+                            </span>
+                        }
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
+                    <div class="d-flex gap-2">
+                        @if (appointment.TrangThai == "Pending")
+                        {
+                            <button class="btn btn-success btn-sm px-2 py-1 btn-accept" data-id="@appointment.MaLichHen">
+                                <i class="fas fa-check me-1"></i>Chấp nhận
+                            </button>
+                            <button class="btn btn-danger btn-sm px-2 py-1 btn-reject" data-id="@appointment.MaLichHen">
+                                <i class="fas fa-times me-1"></i>Từ chối
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-outline-danger btn-sm px-2 py-1 btn-delete" data-id="@appointment.MaLichHen">
+                                <i class="fas fa-trash me-1"></i>Xóa
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
 <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    .small-box .icon{right:10px; top: 6px;}
+    .bg-primary-subtle{ background: #e8f0ff; }
+    .bg-success-subtle{ background: #e8f7ef; }
+    .bg-warning-subtle{ background: #fff3cd; }
+    .bg-info-subtle{ background: #d1ecf1; }
+    .bg-danger-subtle{ background: #f8d7da; }
+    
+    .appointment-card{ 
+        transition: transform .15s ease, box-shadow .15s ease; 
+        margin-bottom: 0;
+    }
+    .appointment-card:hover{ 
+        transform: translateY(-4px); 
+        box-shadow: 0 8px 24px rgba(0,0,0,.08); 
+    }
+    .avatar{ 
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); 
+    }
+    
+    /* Improved typography */
+    .appointment-card .card-title {
+        font-size: 1.25rem;
+        line-height: 1.3;
+        color: #2c3e50;
+    }
+    .appointment-card .badge {
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    .appointment-card .btn {
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    /* Better spacing between elements */
+    .appointment-card .card-body > * + * {
+        margin-top: 1rem;
+    }
+    
+    /* Ensure consistent spacing between cards */
+    .appointment-item {
+        margin-bottom: 1rem;
+    }
+    
+    /* Remove bottom margin from last row */
+    .appointment-item:nth-last-child(-n+4) {
+        margin-bottom: 0;
+    }
+    
+    /* Card background colors - 4 different light colors */
+    .appointment-item:nth-child(4n+1) .appointment-card {
+        background-color: #e3ffff; /* Morning Glory */
     }
 
-    .text-highlight {
-        font-weight: 700;
-        font-size: 2.5rem;
-        background: linear-gradient(90deg, #ff8a00, #e52e71);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    .appointment-item:nth-child(4n+2) .appointment-card {
+        background-color: #fff9f0; /* Light orange */
     }
-
-    .custom-table {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
-        transition: box-shadow 0.3s ease;
+    
+    .appointment-item:nth-child(4n+3) .appointment-card {
+        background-color: #f0fff4; /* Light green */
     }
-
-        .custom-table:hover {
-            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
-        }
-
-    .thead-custom {
-        background-color: #5a2ea6;
+    
+    .appointment-item:nth-child(4n+4) .appointment-card {
+        background-color: #fff0f5; /* Light pink */
     }
-
-    .custom-table tbody tr:hover {
-        background-color: #d9caff;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+    
+    /* Ensure text and buttons remain readable */
+    .appointment-card .card-title,
+    .appointment-card .text-muted,
+    .appointment-card .text-secondary {
+        color: #2c3e50 !important;
     }
-
-        .custom-table tbody tr:hover td {
-            position: relative;
-        }
-
-            .custom-table tbody tr:hover td:hover {
-                background-color: #a884f7 !important;
-                color: #3e2d5e;
-                transition: background-color 0.3s ease, color 0.3s ease;
-                font-weight: 600;
-            }
-
-    /* In đậm tất cả các cell */
-    .custom-table th,
-    .custom-table td {
-        font-weight: 700;
-        vertical-align: middle;
+    
+    .appointment-card .badge {
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(10px);
     }
-
-    /* Cho phép xuống dòng chỉ ở cột Khách Thuê (4) và Ghi chú (5) */
-    .custom-table tbody tr td:nth-child(4),
-    .custom-table tbody tr td:nth-child(5),
-    .custom-table thead tr th:nth-child(4),
-    .custom-table thead tr th:nth-child(5) {
-        white-space: normal;
-        word-wrap: break-word;
-        word-break: break-word;
+    
+    /* Đảm bảo các badge trạng thái hiển thị đúng */
+    .appointment-card .badge.bg-success,
+    .appointment-card .badge.bg-danger,
+    .appointment-card .badge.bg-warning {
+        background-color: inherit !important;
+        color: inherit !important;
     }
-
-    /* Nút chung */
-    .btn-custom {
-        background-color: #7e57c2 !important;
-        border-color: #7e57c2 !important;
-        color: white !important;
-        font-weight: 600;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    
+    /* Ensure room number and building name are on separate lines */
+    .appointment-card .card-title {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.5rem;
     }
-
-        .btn-custom:hover {
-            background-color: #9c80f0 !important;
-            border-color: #9c80f0 !important;
-            color: #2a0d6a !important;
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
-
-    .btn-custom-danger {
-        background-color: #e53935 !important;
-        border-color: #e53935 !important;
-        color: white !important;
-        font-weight: 600;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    
+    .appointment-card .text-muted {
+        display: block;
+        width: 100%;
+        margin-top: 0;
+        line-height: 1.4;
     }
-
-        .btn-custom-danger:hover {
-            background-color: #ef5350 !important;
-            border-color: #ef5350 !important;
-            color: #330000 !important;
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
+    
+    /* Increase spacing between header elements */
+    .content-header .d-flex.gap-2 {
+        gap: 1rem !important;
+    }
+    
+    .content-header .input-group {
+        margin-right: 1rem !important;
+    }
+    
+    .content-header .form-select {
+        margin-right: 1rem !important;
+    }
+    
+    /* Button hover effects */
+    .btn-accept:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-reject:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-delete:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
 </style>
+
 @section Scripts {
     <script>
-        $(function () {
-            $('#appointmentsTable').DataTable({
-                pageLength: 10,
-                lengthChange: false,
-                order: [],
-                language: { url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/vi.json' }
+        (function(){
+            const grid = document.getElementById('appointmentsGrid');
+            const searchBox = document.getElementById('searchBox');
+            const sortSelect = document.getElementById('sortSelect');
+
+            function filter() {
+                const q = (searchBox?.value || '').trim().toLowerCase();
+                const items = grid.querySelectorAll('.appointment-item');
+                items.forEach(el => {
+                    const room = (el.dataset.room || '').toLowerCase();
+                    const tenant = (el.dataset.tenant || '').toLowerCase();
+                    el.style.display = (!q || room.includes(q) || tenant.includes(q)) ? '' : 'none';
+                });
+            }
+
+            function sort() {
+                const items = Array.from(grid.querySelectorAll('.appointment-item'));
+                const type = sortSelect.value;
+                items.sort((a,b)=>{
+                    if(type==='room'){
+                        return (a.dataset.room||'').localeCompare(b.dataset.room||'');
+                    }
+                    if(type==='status'){
+                        return (a.dataset.status||'').localeCompare(b.dataset.status||'');
+                    }
+                    // default date desc (most recent first)
+                    return new Date(b.dataset.date||'') - new Date(a.dataset.date||'');
+                });
+                items.forEach(i=>grid.appendChild(i));
+            }
+            
+            searchBox?.addEventListener('input', filter);
+            sortSelect?.addEventListener('change', sort);
+            sort();
+        })();
+        
+        // Appointment action handling
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('btn-accept') || event.target.closest('.btn-accept')) {
+                    const button = event.target.classList.contains('btn-accept') ? event.target : event.target.closest('.btn-accept');
+                    const appointmentId = button.getAttribute('data-id');
+                    acceptAppointment(appointmentId);
+                }
+
+                if (event.target.classList.contains('btn-reject') || event.target.closest('.btn-reject')) {
+                    const button = event.target.classList.contains('btn-reject') ? event.target : event.target.closest('.btn-reject');
+                    const appointmentId = button.getAttribute('data-id');
+                    rejectAppointment(appointmentId);
+                }
+
+                if (event.target.classList.contains('btn-delete') || event.target.closest('.btn-delete')) {
+                    const button = event.target.classList.contains('btn-delete') ? event.target : event.target.closest('.btn-delete');
+                    const appointmentId = button.getAttribute('data-id');
+                    deleteAppointment(appointmentId);
+                }
             });
         });
+
+        function acceptAppointment(appointmentId) {
+            if (!appointmentId) {
+                alert('ID lịch hẹn không hợp lệ');
+                return;
+            }
+            if (confirm("Xác nhận chấp nhận lịch hẹn này?")) {
+                fetch('@Url.Action("AcceptAppointment", "LichHen", new { area = "ChuTroArea" })', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ id: appointmentId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // Reload to show updated status
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(() => alert('Có lỗi xảy ra!'));
+            }
+        }
+
+        function rejectAppointment(appointmentId) {
+            if (!appointmentId) {
+                alert('ID lịch hẹn không hợp lệ');
+                return;
+            }
+            if (confirm("Xác nhận từ chối lịch hẹn này?")) {
+                fetch('@Url.Action("RejectAppointment", "LichHen", new { area = "ChuTroArea" })', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ id: appointmentId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // Reload to show updated status
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(() => alert('Có lỗi xảy ra!'));
+            }
+        }
+
+        function deleteAppointment(appointmentId) {
+            if (!appointmentId) {
+                alert('ID lịch hẹn không hợp lệ');
+                return;
+            }
+            if (confirm("Bạn có chắc chắn muốn xóa lịch hẹn này?")) {
+                fetch('@Url.Action("DeleteAppointment", "LichHen", new { area = "ChuTroArea" })', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ id: appointmentId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // Reload to show updated list
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(() => alert('Có lỗi xảy ra khi xóa lịch hẹn!'));
+            }
+        }
     </script>
 }
-
-<script>
-        document.addEventListener('DOMContentLoaded', function() {
-        document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('btn-success')) {
-                var appointmentId = event.target.getAttribute('data-id');
-                acceptAppointment(appointmentId);
-            }
-
-            if (event.target.classList.contains('btn-danger') && !event.target.classList.contains('btn-custom-danger')) {
-                var appointmentId = event.target.getAttribute('data-id');
-                rejectAppointment(appointmentId);
-            }
-
-            if (event.target.classList.contains('delete-btn')) {
-                var appointmentId = event.target.getAttribute('data-id');
-                deleteAppointment(appointmentId);
-            }
-        });
-    });
-
-    function acceptAppointment(appointmentId) {
-        if (!appointmentId) {
-            alert('ID lịch hẹn không hợp lệ');
-            return;
-        }
-        if (confirm("Xác nhận chấp nhận lịch hẹn này?")) {
-            fetch('@Url.Action("AcceptAppointment", "LichHen", new { area = "ChuTroArea" })', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id: appointmentId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const button = document.querySelector(`.btn-success[data-id="${appointmentId}"]`);
-                    const rejectBtn = document.querySelector(`.btn-danger[data-id="${appointmentId}"]:not(.btn-custom-danger)`);
-                    if (button) {
-                        button.disabled = true;
-                    }
-                    if (rejectBtn) {
-                        rejectBtn.disabled = true;
-                    }
-                    const row = button ? button.closest('tr') : null;
-                    if (row) {
-                        const statusCell = row.querySelector('td:nth-child(6)');
-                        if (statusCell) {
-                            statusCell.textContent = 'Đã chấp nhận';
-                        }
-                    }
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(() => alert('Có lỗi xảy ra!'));
-        }
-    }
-
-    function rejectAppointment(appointmentId) {
-        if (!appointmentId) {
-            alert('ID lịch hẹn không hợp lệ');
-            return;
-        }
-        if (confirm("Xác nhận từ chối lịch hẹn này?")) {
-            fetch('@Url.Action("RejectAppointment", "LichHen", new { area = "ChuTroArea" })', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id: appointmentId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const acceptBtn = document.querySelector(`.btn-success[data-id="${appointmentId}"]`);
-                    const rejectBtn = document.querySelector(`.btn-danger[data-id="${appointmentId}"]:not(.btn-custom-danger)`);
-                    if (acceptBtn) {
-                        acceptBtn.disabled = true;
-                    }
-                    if (rejectBtn) {
-                        rejectBtn.disabled = true;
-                    }
-                    const row = rejectBtn ? rejectBtn.closest('tr') : null;
-                    if (row) {
-                        const statusCell = row.querySelector('td:nth-child(6)');
-                        if (statusCell) {
-                            statusCell.textContent = 'Đã từ chối';
-                        }
-                    }
-                } else {
-                    alert(data.message);
-                }
-            });
-        }
-    }
-
-    function deleteAppointment(appointmentId) {
-        if (!appointmentId) {
-            alert('ID lịch hẹn không hợp lệ');
-            return;
-        }
-        if (confirm("Bạn có chắc chắn muốn xóa lịch hẹn này?")) {
-            fetch('@Url.Action("DeleteAppointment", "LichHen", new { area = "ChuTroArea" })', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id: appointmentId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const deleteBtn = document.querySelector(`.delete-btn[data-id="${appointmentId}"]`);
-                    const row = deleteBtn ? deleteBtn.closest('tr') : null;
-                    if (row) {
-                        row.remove();
-                    }
-                    alert(data.message);
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(() => alert('Có lỗi xảy ra khi xóa lịch hẹn!'));
-        }
-    }
-
-
-</script>
