@@ -1,203 +1,198 @@
 ﻿@model List<DACS_QuanLyPhongTro.Models.HoaDon>
-
 @{
     ViewData["Title"] = "Danh Sách Hóa Đơn";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
     var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+    
+    var totalInvoices = Model?.Count() ?? 0;
+    var pendingInvoices = Model?.Count(h => h.TrangThai == "Chờ xác nhận") ?? 0;
+    var paidInvoices = Model?.Count(h => h.TrangThai == "Đã thanh toán") ?? 0;
+    var totalRevenue = Model?.Where(h => h.TrangThai == "Đã thanh toán").Sum(h => h.TongTien) ?? 0;
 }
 
-<div class="container my-5" style="width: 100%;">
-    <h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
-
-    @if (ViewBag.ThongBao != null)
-    {
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            @ViewBag.ThongBao
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Create" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus me-1"></i> Tạo Hóa Đơn Mới
+            </a>
         </div>
-    }
-
-    @if (TempData["ThongBao"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["ThongBao"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
-    <p class="text-center">
-        <a asp-action="Create" class="btn btn-primary btn-custom btn-lg px-5">Tạo Hóa Đơn Mới</a>
-    </p>
-
-    <div class="table-responsive shadow-sm rounded">
-        <table class="table table-bordered table-hover custom-table">
-            <thead class="thead-custom text-white">
-                <tr>
-                    <th>Mã Hóa Đơn</th>
-                    <th>Ngày Lập</th>
-                    <th>Khách Thuê</th>
-                    <th>Phòng</th>
-                    <th>Tiền Điện</th>
-                    <th>Tiền Nước</th>
-                    <th>Tiền Phòng</th>
-                    <th>Tiền Dịch Vụ</th>
-                    <th>Tổng Tiền</th>
-                    <th>Trạng Thái</th>
-                    <th>Hành Động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var hoaDon in Model)
-                {
-                    <tr>
-                        <td class="fw-bold">@hoaDon.MaHoaDon</td>
-                        <td>@hoaDon.NgayLap.ToString("dd/MM/yyyy")</td>
-                        <td class="wrap-text">@hoaDon.KhachThue?.HoTen</td>
-                        <td>@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong</td>
-                        <td>@hoaDon.TienDien.ToString("N0", vnd) VNĐ</td>
-                        <td>@hoaDon.TienNuoc.ToString("N0", vnd) VNĐ</td>
-                        <td>@hoaDon.TienPhong.ToString("N0", vnd) VNĐ</td>
-                        <td>@hoaDon.TienDichVu.ToString("N0", vnd) VNĐ</td>
-                        <td>@hoaDon.TongTien.ToString("N0", vnd) VNĐ</td>
-                        <td>@hoaDon.TrangThai</td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@hoaDon.MaHoaDon" class="btn btn-info btn-sm btn-custom btn-zoom me-1">Xem chi tiết</a>
-                            @if (hoaDon.TrangThai == "Chờ xác nhận")
-                            {
-                                <a asp-action="XacNhanThanhToan" asp-route-id="@hoaDon.MaHoaDon"
-                                   class="btn btn-success btn-sm btn-custom btn-zoom"
-                                   onclick="return confirm('Bạn có chắc muốn xác nhận thanh toán hóa đơn này?');">
-                                    Xác nhận
-                                </a>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
     </div>
 </div>
 
+<!-- Summary widgets -->
+<div class="row px-2 px-md-3 mt-3 g-3">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-primary mb-0">
+            <div class="inner">
+                <h3>@totalInvoices</h3>
+                <p>Tổng hóa đơn</p>
+            </div>
+            <div class="icon"><i class="fas fa-file-invoice"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-warning mb-0">
+            <div class="inner">
+                <h3>@pendingInvoices</h3>
+                <p>Chờ xác nhận</p>
+            </div>
+            <div class="icon"><i class="fas fa-clock"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-success mb-0">
+            <div class="inner">
+                <h3>@paidInvoices</h3>
+                <p>Đã thanh toán</p>
+            </div>
+            <div class="icon"><i class="fas fa-check-circle"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-info mb-0">
+            <div class="inner">
+                <h3>@string.Format("{0:N0}", totalRevenue)</h3>
+                <p>Doanh thu (VND)</p>
+            </div>
+            <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
+        </div>
+    </div>
+    <div class="col-12"><hr class="my-2"></div>
+</div>
+
+<div class="row px-2 px-md-3 g-3" id="hoadonGrid">
+    @foreach (var hoaDon in Model)
+    {
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 hoadon-item" data-room="@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong" data-date="@hoaDon.NgayLap.ToString("yyyy-MM-dd")">
+            <div class="card shadow-sm border-0 h-100 hoadon-card">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-start justify-content-between mb-2">
+                        <div class="flex-grow-1 me-2">
+                            <h5 class="card-title mb-1 fw-bold text-dark">
+                                <i class="fas fa-file-invoice-dollar me-2 text-primary"></i>Mã: @hoaDon.MaHoaDon
+                            </h5>
+                            <div class="text-muted mb-2">
+                                <i class="fas fa-calendar-alt me-1"></i><span class="fs-6">@hoaDon.NgayLap.ToString("dd/MM/yyyy")</span>
+                            </div>
+                            <div class="text-muted mb-2">
+                                <i class="fas fa-user me-1"></i><span class="fs-6">@hoaDon.KhachThue?.HoTen</span>
+                            </div>
+                            <div class="text-muted mb-2">
+                                <i class="fas fa-door-open me-1"></i>Phòng: <span class="fs-6">@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong</span>
+                            </div>
+                        </div>
+                        <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
+                            <i class="fas fa-money-bill-wave fs-6"></i>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <span class="badge bg-primary-subtle text-primary border border-primary fs-6 px-2 py-1">
+                            Tiền điện: <strong>@hoaDon.TienDien.ToString("N0", vnd) VNĐ</strong>
+                        </span>
+                        <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
+                            Tiền nước: <strong>@hoaDon.TienNuoc.ToString("N0", vnd) VNĐ</strong>
+                        </span>
+                    </div>
+                    <div class="mb-2">
+                        <span class="badge bg-success-subtle text-success border border-success fs-6 px-2 py-1">
+                            Tiền phòng: <strong>@hoaDon.TienPhong.ToString("N0", vnd) VNĐ</strong>
+                        </span>
+                        <span class="badge bg-warning-subtle text-warning border border-warning fs-6 px-2 py-1">
+                            Tiền dịch vụ: <strong>@hoaDon.TienDichVu.ToString("N0", vnd) VNĐ</strong>
+                        </span>
+                    </div>
+                    <div class="mb-2">
+                        <span class="badge bg-danger-subtle text-danger border border-danger fs-6 px-2 py-1">
+                            Tổng tiền: <strong>@hoaDon.TongTien.ToString("N0", vnd) VNĐ</strong>
+                        </span>
+                    </div>
+                    <div class="mb-2">
+                        @if (hoaDon.TrangThai == "Đã thanh toán")
+                        {
+                            <span class="badge bg-success text-white px-2 py-1"><i class="fas fa-check me-1"></i>@hoaDon.TrangThai</span>
+                        }
+                        else if (hoaDon.TrangThai == "Chờ xác nhận")
+                        {
+                            <span class="badge bg-warning text-dark px-2 py-1"><i class="fas fa-clock me-1"></i>@hoaDon.TrangThai</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger text-white px-2 py-1"><i class="fas fa-times me-1"></i>@hoaDon.TrangThai</span>
+                        }
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
+                    <div class="d-flex gap-2">
+                        <a asp-action="Details" asp-route-id="@hoaDon.MaHoaDon" class="btn btn-outline-info btn-sm px-2 py-1">
+                            <i class="fas fa-eye me-1"></i>Chi tiết
+                        </a>
+                        @if (hoaDon.TrangThai == "Chờ xác nhận")
+                        {
+                            <a asp-action="XacNhanThanhToan" asp-route-id="@hoaDon.MaHoaDon" class="btn btn-outline-success btn-sm px-2 py-1" onclick="return confirm('Bạn có chắc muốn xác nhận thanh toán hóa đơn này?');">
+                                <i class="fas fa-check me-1"></i>Xác nhận
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
 <style>
-    .text-highlight {
-        font-weight: 700;
-        font-size: 2.5rem;
-        background: linear-gradient(90deg, #ff8a00, #e52e71);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    .hoadon-card {
+        transition: transform .15s ease, box-shadow .15s ease;
+        margin-bottom: 0;
+        background-color: #f0f8ff;
     }
-
-    .custom-table {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
-        transition: box-shadow 0.3s ease;
-        width: 100%;
+    .hoadon-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.08);
     }
-
-        .custom-table:hover {
-            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
-        }
-
-    .thead-custom {
-        background-color: #5a2ea6;
+    .avatar {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     }
-
-    .custom-table tbody tr:hover {
-        background-color: #d9caff;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+    .hoadon-card .card-title {
+        font-size: 1.15rem;
+        line-height: 1.3;
+        color: #2c3e50;
     }
-
-        .custom-table tbody tr:hover td {
-            position: relative;
-        }
-
-            .custom-table tbody tr:hover td:hover {
-                background-color: #a884f7 !important;
-                color: #3e2d5e;
-                transition: background-color 0.3s ease, color 0.3s ease;
-                font-weight: 600;
-            }
-
-    .custom-table th,
-    .custom-table td {
-        font-weight: 700;
-        vertical-align: middle;
+    .hoadon-card .badge {
+        font-size: 0.875rem;
+        font-weight: 500;
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(10px);
     }
-
-    .custom-table tbody tr td:nth-child(3) /* Khách Thuê */ {
-        white-space: normal;
-        word-wrap: break-word;
-        word-break: break-word;
+    .hoadon-card .btn {
+        font-size: 0.875rem;
+        font-weight: 500;
     }
-
-    /* Nút chung */
-    .btn-custom {
-        background-color: #7e57c2 !important;
-        border-color: #7e57c2 !important;
-        color: white !important;
-        font-weight: 600;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    .hoadon-card .card-body > * + * {
+        margin-top: 1rem;
     }
-
-        .btn-custom:hover {
-            background-color: #9c80f0 !important;
-            border-color: #9c80f0 !important;
-            color: #2a0d6a !important;
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
-
-    .btn-custom-warning {
-        background-color: #ffb74d !important;
-        border-color: #ffb74d !important;
-        color: #4e342e !important;
-        font-weight: 600;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    .hoadon-item {
+        margin-bottom: 1rem;
     }
-
-        .btn-custom-warning:hover {
-            background-color: #ffcc80 !important;
-            border-color: #ffcc80 !important;
-            color: #663c00 !important;
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
-
-    .btn-custom-info {
-        background-color: #2196f3 !important;
-        border-color: #2196f3 !important;
-        color: white !important;
+    .hoadon-item:nth-last-child(-n+4) {
+        margin-bottom: 0;
     }
-
-        .btn-custom-info:hover {
-            background-color: #64b5f6 !important;
-            border-color: #64b5f6 !important;
-            color: #0d47a1 !important;
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
-
-    .btn-custom-success {
-        background-color: #43a047 !important;
-        border-color: #43a047 !important;
-        color: white !important;
+    .hoadon-item:nth-child(4n+1) .hoadon-card {
+        background-color: #e3ffff;
     }
-
-        .btn-custom-success:hover {
-            background-color: #66bb6a !important;
-            border-color: #66bb6a !important;
-            color: #1b5e20 !important;
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
+    .hoadon-item:nth-child(4n+2) .hoadon-card {
+        background-color: #fff9f0;
+    }
+    .hoadon-item:nth-child(4n+3) .hoadon-card {
+        background-color: #f0fff4;
+    }
+    .hoadon-item:nth-child(4n+4) .hoadon-card {
+        background-color: #fff0f5;
+    }
+    .hoadon-card .card-title,
+    .hoadon-card .text-muted,
+    .hoadon-card .text-secondary {
+        color: #2c3e50 !important;
+    }
 </style>

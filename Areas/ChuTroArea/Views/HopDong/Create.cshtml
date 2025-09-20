@@ -4,56 +4,99 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
-<div class="container my-5" style="max-width: 800px;">
-    <h2 class="text-highlight mb-4 text-center">Tạo Hợp Đồng Mới</h2>
-
-    <form asp-action="Create" method="post" novalidate>
-        @Html.AntiForgeryToken()
-        
-
-        <div class="mb-4">
-            <label class="form-label">Email Khách Thuê</label>
-            <input name="emailKhachThue" class="form-control" />
-            <span class="text-danger">@ViewData.ModelState["Email"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Quay Lại
+            </a>
         </div>
-        <div class="mb-3">
-            <label asp-for="MaPhong" class="form-label">Phòng Trọ</label>
-            <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.PhongTros">
-                <option value="">-- Chọn phòng trọ --</option>
-            </select>
-            <span asp-validation-for="MaPhong" class="text-danger"></span>
-        </div>
-        <div class="mb-3">
-            <label asp-for="NgayBatDau" class="form-label">Ngày Bắt Đầu</label>
-            <input asp-for="NgayBatDau" class="form-control" type="date" />
-            <span asp-validation-for="NgayBatDau" class="text-danger"></span>
-        </div>
+    </div>
+</div>
 
-        <div class="mb-3">
-            <label asp-for="NgayKetThuc" class="form-label">Ngày Kết Thúc</label>
-            <input asp-for="NgayKetThuc" class="form-control" type="date" />
-            <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+<div class="row px-2 px-md-3 mt-3">
+    <div class="col-12">
+        <div class="card shadow-sm border-0 create-contract-card">
+            <div class="card-header bg-gradient-primary text-white">
+                <div class="d-flex align-items-center">
+                    <div class="avatar bg-white text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:48px;height:48px;">
+                        <i class="fas fa-file-signature fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold">Tạo Hợp Đồng Mới</h5>
+                        <small class="opacity-75">Nhập thông tin hợp đồng thuê phòng trọ</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="form-floating">
+                                <input name="emailKhachThue" class="form-control" placeholder="Email khách thuê" />
+                                <label><i class="fas fa-envelope me-2"></i>Email Khách Thuê</label>
+                                <span class="text-danger">@ViewData.ModelState["Email"]?.Errors.FirstOrDefault()?.ErrorMessage</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <div class="form-floating">
+                                <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.PhongTros">
+                                    <option value="">-- Chọn phòng trọ --</option>
+                                </select>
+                                <label><i class="fas fa-door-open me-2"></i>Phòng Trọ</label>
+                                <span asp-validation-for="MaPhong" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="NgayBatDau" class="form-control" type="date" />
+                                <label><i class="fas fa-calendar-alt me-2"></i>Ngày Bắt Đầu</label>
+                                <span asp-validation-for="NgayBatDau" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="NgayKetThuc" class="form-control" type="date" />
+                                <label><i class="fas fa-calendar-check me-2"></i>Ngày Kết Thúc</label>
+                                <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input asp-for="TienCoc" class="form-control" type="number" step="0.01" min="0" placeholder="0" />
+                                <label><i class="fas fa-money-bill me-2"></i>Tiền Cọc (VNĐ)</label>
+                                <span asp-validation-for="TienCoc" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <textarea asp-for="NoiDungHopDong" class="form-control" rows="4" placeholder="Nhập nội dung hợp đồng"></textarea>
+                                <label><i class="fas fa-file-text me-2"></i>Nội Dung Hợp Đồng</label>
+                                <span asp-validation-for="NoiDungHopDong" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <i class="fas fa-save me-2"></i>Tạo Hợp Đồng
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">
+                            <i class="fas fa-times me-2"></i>Hủy Bỏ
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label asp-for="TienCoc" class="form-label">Tiền Cọc (VNĐ)</label>
-            <input asp-for="TienCoc" class="form-control" type="number" step="0.01" min="0" />
-            <span asp-validation-for="TienCoc" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="NoiDungHopDong" class="form-label">Nội Dung Hợp Đồng</label>
-            <textarea asp-for="NoiDungHopDong" class="form-control" rows="4"></textarea>
-            <span asp-validation-for="NoiDungHopDong" class="text-danger"></span>
-        </div>
-
-        
-
-        <div class="d-flex justify-content-center gap-3">
-            <input type="submit" value="Tạo Hợp Đồng" class="btn btn-primary btn-custom px-5" />
-            <a asp-action="Index" class="btn btn-secondary btn-custom px-4">Quay Lại</a>
-        </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {
@@ -61,24 +104,81 @@
 }
 
 <style>
-    .text-highlight {
-        font-weight: 700;
-        font-size: 2.5rem;
-        background: linear-gradient(90deg, #ff8a00, #e52e71);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    .create-contract-card {
+        transition: transform .15s ease, box-shadow .15s ease;
+        margin-bottom: 0;
+        border-radius: 12px;
+        overflow: hidden;
     }
-
-    .btn-custom {
+    
+    .create-contract-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    }
+    
+    .create-contract-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1.5rem;
+    }
+    
+    .create-contract-card .avatar {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    .create-contract-card .card-title {
+        font-size: 1.5rem;
+        line-height: 1.3;
+        color: white;
+    }
+    
+    .create-contract-card .form-floating {
+        margin-bottom: 1rem;
+    }
+    
+    .create-contract-card .form-floating > label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    .create-contract-card .form-control:focus,
+    .create-contract-card .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .create-contract-card .btn {
+        font-size: 1rem;
         font-weight: 600;
-        border-radius: 5px;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
         transition: all 0.3s ease;
     }
-
-        .btn-custom:hover {
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
+    
+    .create-contract-card .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    
+    .create-contract-card .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    .create-contract-card .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+    }
+    
+    .create-contract-card .form-floating > textarea.form-control {
+        height: auto;
+        min-height: 120px;
+    }
+    
+    .create-contract-card .form-floating > textarea.form-control:focus ~ label {
+        color: #667eea;
+    }
 </style>

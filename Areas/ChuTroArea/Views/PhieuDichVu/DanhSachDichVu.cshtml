@@ -1,121 +1,170 @@
 ﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.DichVu>
-
 @{
     ViewData["Title"] = "Quản lý dịch vụ";
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+    
+    var totalServices = Model?.Count() ?? 0;
+    var activeServices = totalServices; // DichVu không có TrangThai, coi như tất cả đều hoạt động
+    var inactiveServices = 0; // DichVu không có trạng thái tạm dừng
+    var avgPrice = Model?.Average(d => d.DonGiaDichVu) ?? 0;
 }
 
-<div class="container mt-5" style="max-width: 1100px;">
-    <h2 class="mb-4 text-primary text-center">@ViewData["Title"]</h2>
-
-    @if (TempData["ThongBao"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["ThongBao"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="TaoDichVu" class="btn btn-success btn-sm">
+                <i class="fas fa-plus me-1"></i> Thêm dịch vụ mới
+            </a>
         </div>
-    }
-
-    <div class="mb-3 text-center">
-        <a asp-action="TaoDichVu" class="btn btn-success btn-custom btn-zoom px-4">Thêm dịch vụ mới</a>
-    </div>
-
-    <div class="table-responsive shadow-sm rounded">
-        <table class="table table-bordered table-hover custom-table">
-            <thead class="thead-custom text-white">
-                <tr>
-                    <th>Tên dịch vụ</th>
-                    <th>Đơn giá</th>
-                    <th>Mô tả</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var dv in Model)
-                {
-                    <tr>
-                        <td class="fw-bold">@dv.TenDichVu</td>
-                        <td>@dv.DonGiaDichVu.ToString("N0") VND</td>
-                        <td>@dv.MoTa</td>
-                        <td>
-                            <a asp-action="SuaDichVu" asp-route-id="@dv.MaDichVu" class="btn btn-primary btn-sm btn-custom btn-zoom me-1">Sửa</a>
-                            <form asp-action="XoaDichVu" asp-route-id="@dv.MaDichVu" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
-                                <button type="submit" class="btn btn-danger btn-sm btn-custom-danger btn-zoom">Xóa</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="text-center mt-4">
-        <a asp-action="Index" class="btn btn-secondary btn-custom btn-zoom">Quay lại</a>
     </div>
 </div>
 
+<!-- Summary widgets -->
+<div class="row px-2 px-md-3 mt-3 g-3">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-primary mb-0">
+            <div class="inner">
+                <h3>@totalServices</h3>
+                <p>Tổng dịch vụ</p>
+            </div>
+            <div class="icon"><i class="fas fa-concierge-bell"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-success mb-0">
+            <div class="inner">
+                <h3>@activeServices</h3>
+                <p>Đang hoạt động</p>
+            </div>
+            <div class="icon"><i class="fas fa-check-circle"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-warning mb-0">
+            <div class="inner">
+                <h3>@inactiveServices</h3>
+                <p>Tạm dừng</p>
+            </div>
+            <div class="icon"><i class="fas fa-pause-circle"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-info mb-0">
+            <div class="inner">
+                <h3>@string.Format("{0:N0}", avgPrice)</h3>
+                <p>Giá TB (VND)</p>
+            </div>
+            <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
+        </div>
+    </div>
+    <div class="col-12"><hr class="my-2"></div>
+</div>
+
+@if (TempData["ThongBao"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        @TempData["ThongBao"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row px-2 px-md-3 g-3 mt-3" id="dichvuGrid">
+    @foreach (var dv in Model)
+    {
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 dichvu-item">
+            <div class="card shadow-sm border-0 h-100 dichvu-card">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-start justify-content-between mb-2">
+                        <div class="flex-grow-1 me-2">
+                            <h5 class="card-title mb-1 fw-bold text-dark">
+                                <i class="fas fa-cog me-2 text-primary"></i>@dv.TenDichVu
+                            </h5>
+                            <div class="text-muted mb-2">
+                                <i class="fas fa-money-bill-wave me-1"></i>Đơn giá: <span class="fs-6">@dv.DonGiaDichVu.ToString("N0") VND</span>
+                            </div>
+                        </div>
+                        <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
+                            <i class="fas fa-cogs fs-6"></i>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
+                            @dv.MoTa
+                        </span>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
+                    <div class="d-flex gap-2">
+                        <a asp-action="SuaDichVu" asp-route-id="@dv.MaDichVu" class="btn btn-outline-warning btn-sm px-2 py-1">
+                            <i class="fas fa-edit me-1"></i>Sửa
+                        </a>
+                        <form asp-action="XoaDichVu" asp-route-id="@dv.MaDichVu" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
+                            <button type="submit" class="btn btn-outline-danger btn-sm px-2 py-1"><i class="fas fa-trash me-1"></i>Xóa</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="text-center mt-4">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-4">Quay lại</a>
+</div>
+
 <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    .dichvu-card {
+        transition: transform .15s ease, box-shadow .15s ease;
+        margin-bottom: 0;
+        background-color: #f0f8ff;
     }
-
-    .btn-custom {
-        font-weight: 600;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    .dichvu-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.08);
     }
-
-        .btn-custom.btn-zoom:hover {
-            transform: scale(1.1);
-            position: relative;
-            z-index: 10;
-        }
-
-    .btn-custom-danger {
-        background-color: #e53935 !important;
-        border-color: #e53935 !important;
-        color: white !important;
+    .avatar {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     }
-
-        .btn-custom-danger:hover {
-            background-color: #ef5350 !important;
-            border-color: #ef5350 !important;
-            color: #330000 !important;
-        }
-
-    .custom-table {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
-        transition: box-shadow 0.3s ease;
+    .dichvu-card .card-title {
+        font-size: 1.15rem;
+        line-height: 1.3;
+        color: #2c3e50;
     }
-
-        .custom-table:hover {
-            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
-        }
-
-    .thead-custom {
-        background-color: #5a2ea6;
+    .dichvu-card .badge {
+        font-size: 0.875rem;
+        font-weight: 500;
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(10px);
     }
-
-    .custom-table tbody tr:hover {
-        background-color: #d9caff;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+    .dichvu-card .btn {
+        font-size: 0.875rem;
+        font-weight: 500;
     }
-
-        .custom-table tbody tr:hover td {
-            position: relative;
-        }
-
-            .custom-table tbody tr:hover td:hover {
-                background-color: #a884f7 !important;
-                color: #3e2d5e;
-                font-weight: 600;
-            }
-
-    .custom-table th, .custom-table td {
-        font-weight: 700;
-        vertical-align: middle;
+    .dichvu-card .card-body > * + * {
+        margin-top: 1rem;
+    }
+    .dichvu-item {
+        margin-bottom: 1rem;
+    }
+    .dichvu-item:nth-last-child(-n+4) {
+        margin-bottom: 0;
+    }
+    .dichvu-item:nth-child(4n+1) .dichvu-card {
+        background-color: #e3ffff;
+    }
+    .dichvu-item:nth-child(4n+2) .dichvu-card {
+        background-color: #fff9f0;
+    }
+    .dichvu-item:nth-child(4n+3) .dichvu-card {
+        background-color: #f0fff4;
+    }
+    .dichvu-item:nth-child(4n+4) .dichvu-card {
+        background-color: #fff0f5;
+    }
+    .dichvu-card .card-title,
+    .dichvu-card .text-muted,
+    .dichvu-card .text-secondary {
+        color: #2c3e50 !important;
     }
 </style>

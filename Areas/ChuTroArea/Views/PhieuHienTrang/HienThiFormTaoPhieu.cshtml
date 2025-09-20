@@ -5,36 +5,55 @@
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
-<h2 class="text-highlight mb-4 text-center">Tạo phiếu hiện trạng - @Model.TenPhong</h2>
-
-<form asp-action="TaoPhieu" method="post" style="max-width: 700px; margin:auto;">
-    <input type="hidden" asp-for="MaPhong" />
-    <div class="mb-3">
-        <label asp-for="GhiChu" class="form-label fw-bold">Ghi chú</label>
-        <textarea asp-for="GhiChu" class="form-control"></textarea>
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"] - @Model.TenPhong</h2>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="ChonPhong" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Quay Lại
+            </a>
+        </div>
     </div>
+</div>
 
-    <h4 class="mb-3">Vật dụng</h4>
-    <table class="table table-bordered" id="table-vatdung">
-        <thead class="thead-custom text-white">
-            <tr>
-                <th>Tên vật dụng</th>
-                <th>Tình trạng</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Dữ liệu thêm tự động bởi JS -->
-        </tbody>
-    </table>
-
-    <button type="button" onclick="themVatDung()" class="btn btn-secondary btn-custom btn-zoom mb-3">+ Thêm vật dụng</button>
-
-    <div class="text-center">
-        <button type="submit" class="btn btn-primary btn-custom btn-zoom px-5">Tạo phiếu</button>
+<div class="row justify-content-center mt-3">
+    <div class="col-12 col-md-10 col-lg-8">
+        <div class="card shadow-sm border-0 phieuhientrang-create-card">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:48px;height:48px;">
+                        <i class="fas fa-clipboard-list fs-4"></i>
+                    </div>
+                    <h5 class="card-title mb-0 fw-bold text-dark">Tạo phiếu hiện trạng - @Model.TenPhong</h5>
+                </div>
+                <form asp-action="TaoPhieu" method="post" style="max-width: 700px; margin:auto;">
+                    <input type="hidden" asp-for="MaPhong" />
+                    <div class="mb-3">
+                        <label asp-for="GhiChu" class="form-label fw-bold">Ghi chú</label>
+                        <textarea asp-for="GhiChu" class="form-control"></textarea>
+                    </div>
+                    <h4 class="mb-3">Vật dụng</h4>
+                    <table class="table table-bordered" id="table-vatdung">
+                        <thead class="thead-custom text-white">
+                            <tr>
+                                <th>Tên vật dụng</th>
+                                <th>Tình trạng</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dữ liệu thêm tự động bởi JS -->
+                        </tbody>
+                    </table>
+                    <button type="button" onclick="themVatDung()" class="btn btn-secondary btn-custom btn-zoom mb-3">+ Thêm vật dụng</button>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-custom btn-zoom px-5">Tạo phiếu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</form>
-
+</div>
 @section Scripts {
     <script>
         function themVatDung() {
@@ -49,30 +68,29 @@
         }
     </script>
 }
-
 <style>
-    .text-highlight {
-        font-weight: 700;
-        font-size: 2.5rem;
-        background: linear-gradient(90deg, #ff8a00, #e52e71);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    .phieuhientrang-create-card {
+        transition: transform .15s ease, box-shadow .15s ease;
+        margin-bottom: 0;
+        background-color: #f0fff4;
     }
-
-    .thead-custom {
-        background-color: #5a2ea6;
+    .phieuhientrang-create-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.08);
     }
-
-    .btn-custom {
+    .avatar {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    }
+    .phieuhientrang-create-card .card-title {
+        font-size: 1.15rem;
+        line-height: 1.3;
+        color: #2c3e50;
+    }
+    .phieuhientrang-create-card .btn {
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+    .phieuhientrang-create-card .form-label {
         font-weight: 600;
-        border-radius: 5px;
-        transition: all 0.3s ease;
     }
-
-        .btn-custom.btn-zoom:hover {
-            transform: scale(1.1);
-            position: relative;
-            z-index: 10;
-        }
 </style>

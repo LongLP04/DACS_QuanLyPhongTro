@@ -279,6 +279,46 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         }
 
 
+    // POST: Xác minh mật khẩu trước khi thao tác (tạo / xóa hợp đồng)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> VerifyPassword([FromBody] PasswordCheckModel model)
+        {
+            if (string.IsNullOrEmpty(model?.Password))
+            {
+                return Json(new { success = false, message = "Mật khẩu không được để trống." });
+            }
+
+            var userEmail = User.Identity?.Name;
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Json(new { success = false, message = "Không tìm thấy thông tin người dùng." });
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Người dùng không tồn tại." });
+            }
+
+            var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<ApplicationUser>();
+            var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
+
+            if (result == Microsoft.AspNetCore.Identity.PasswordVerificationResult.Success)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Mật khẩu không chính xác." });
+            }
+        }
+
+        // Model phụ trợ cho VerifyPassword
+        public class PasswordCheckModel
+        {
+            public string Password { get; set; }
+        }
 
 
 

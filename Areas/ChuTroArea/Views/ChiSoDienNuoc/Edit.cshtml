@@ -1,66 +1,103 @@
 ﻿@model DACS_QuanLyPhongTro.Models.ChiSoDienNuoc
-
 @{
     ViewData["Title"] = "Chỉnh sửa chỉ số điện nước";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
-<div class="container mt-5" style="max-width: 600px;">
-    <h2 class="mb-4 text-primary text-center">@ViewData["Title"]</h2>
-
-    <form asp-action="Edit" method="post" novalidate>
-        @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="MaChiSo" />
-
-        <div class="mb-3">
-            <label asp-for="MaPhong" class="form-label">Phòng Trọ</label>
-            <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.PhongTros" required></select>
-            <span asp-validation-for="MaPhong" class="text-danger"></span>
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Quay Lại
+            </a>
         </div>
-
-        <div class="mb-3">
-            <label asp-for="ChiSoDienCu" class="form-label">Chỉ Số Điện Cũ</label>
-            <input asp-for="ChiSoDienCu" class="form-control" type="number" step="0.01" required />
-            <span asp-validation-for="ChiSoDienCu" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="ChiSoDienMoi" class="form-label">Chỉ Số Điện Mới</label>
-            <input asp-for="ChiSoDienMoi" class="form-control" type="number" step="0.01" required />
-            <span asp-validation-for="ChiSoDienMoi" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="ChiSoNuocCu" class="form-label">Chỉ Số Nước Cũ</label>
-            <input asp-for="ChiSoNuocCu" class="form-control" type="number" step="0.01" required />
-            <span asp-validation-for="ChiSoNuocCu" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="ChiSoNuocMoi" class="form-label">Chỉ Số Nước Mới</label>
-            <input asp-for="ChiSoNuocMoi" class="form-control" type="number" step="0.01" required />
-            <span asp-validation-for="ChiSoNuocMoi" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="DonGiaDien" class="form-label">Đơn Giá Điện (VNĐ)</label>
-            <input asp-for="DonGiaDien" class="form-control" type="number" step="0.01" required />
-            <span asp-validation-for="DonGiaDien" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="DonGiaNuoc" class="form-label">Đơn Giá Nước (VNĐ)</label>
-            <input asp-for="DonGiaNuoc" class="form-control" type="number" step="0.01" required />
-            <span asp-validation-for="DonGiaNuoc" class="text-danger"></span>
-        </div>
-
-        <div class="d-flex justify-content-center gap-3">
-            <input type="submit" value="Cập nhật" class="btn btn-primary btn-custom btn-zoom px-4" />
-            <a asp-action="Index" class="btn btn-secondary btn-custom btn-zoom px-4">Quay lại</a>
-        </div>
-    </form>
+    </div>
 </div>
 
+<div class="row justify-content-center mt-3">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0 csdn-edit-card">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:48px;height:48px;">
+                        <i class="fas fa-bolt fs-4"></i>
+                    </div>
+                    <h5 class="card-title mb-0 fw-bold text-dark">Chỉnh sửa chỉ số điện nước</h5>
+                </div>
+                <form asp-action="Edit" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="MaChiSo" />
+                    <div class="mb-3">
+                        <label asp-for="MaPhong" class="form-label">Phòng Trọ</label>
+                        <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.PhongTros" required></select>
+                        <span asp-validation-for="MaPhong" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ChiSoDienCu" class="form-label">Chỉ Số Điện Cũ</label>
+                        <input asp-for="ChiSoDienCu" class="form-control" type="number" step="0.01" required />
+                        <span asp-validation-for="ChiSoDienCu" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ChiSoDienMoi" class="form-label">Chỉ Số Điện Mới</label>
+                        <input asp-for="ChiSoDienMoi" class="form-control" type="number" step="0.01" required />
+                        <span asp-validation-for="ChiSoDienMoi" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ChiSoNuocCu" class="form-label">Chỉ Số Nước Cũ</label>
+                        <input asp-for="ChiSoNuocCu" class="form-control" type="number" step="0.01" required />
+                        <span asp-validation-for="ChiSoNuocCu" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ChiSoNuocMoi" class="form-label">Chỉ Số Nước Mới</label>
+                        <input asp-for="ChiSoNuocMoi" class="form-control" type="number" step="0.01" required />
+                        <span asp-validation-for="ChiSoNuocMoi" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DonGiaDien" class="form-label">Đơn Giá Điện (VNĐ)</label>
+                        <input asp-for="DonGiaDien" class="form-control" type="number" step="0.01" required />
+                        <span asp-validation-for="DonGiaDien" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DonGiaNuoc" class="form-label">Đơn Giá Nước (VNĐ)</label>
+                        <input asp-for="DonGiaNuoc" class="form-control" type="number" step="0.01" required />
+                        <span asp-validation-for="DonGiaNuoc" class="text-danger"></span>
+                    </div>
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <input type="submit" value="Cập nhật" class="btn btn-primary btn-sm px-5" />
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-4">Quay lại</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
+<style>
+    .csdn-edit-card {
+        transition: transform .15s ease, box-shadow .15s ease;
+        margin-bottom: 0;
+        background-color: #f0fff4;
+    }
+    .csdn-edit-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    }
+    .avatar {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    }
+    .csdn-edit-card .card-title {
+        font-size: 1.15rem;
+        line-height: 1.3;
+        color: #2c3e50;
+    }
+    .csdn-edit-card .btn {
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+    .csdn-edit-card .form-label {
+        font-weight: 600;
+    }
+</style>

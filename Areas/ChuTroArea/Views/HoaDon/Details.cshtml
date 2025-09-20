@@ -1,124 +1,133 @@
 ﻿@model DACS_QuanLyPhongTro.Models.HoaDon
-
 @{
     ViewData["Title"] = "Chi tiết hóa đơn";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
     var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
 }
 
-<h2 class="text-highlight mb-4 text-center">@ViewData["Title"]</h2>
-
-<div class="card p-4 shadow-sm rounded custom-card">
-    <h4 class="mb-3">Thông tin hóa đơn #@Model.MaHoaDon</h4>
-
-    <dl class="row">
-        <dt class="col-sm-3 fw-bold">Ngày lập:</dt>
-        <dd class="col-sm-9">@Model.NgayLap.ToString("dd/MM/yyyy")</dd>
-
-        <dt class="col-sm-3 fw-bold">Khách thuê:</dt>
-        <dd class="col-sm-9">@Model.KhachThue?.HoTen</dd>
-
-        <dt class="col-sm-3 fw-bold">Phòng:</dt>
-        <dd class="col-sm-9">@Model.ChiSoDienNuoc?.PhongTro?.SoPhong</dd>
-
-        <dt class="col-sm-3 fw-bold">Tiền điện:</dt>
-        <dd class="col-sm-9">@Model.TienDien.ToString("C0", vnd)</dd>
-
-        <dt class="col-sm-3 fw-bold">Tiền nước:</dt>
-        <dd class="col-sm-9">@Model.TienNuoc.ToString("C0", vnd)</dd>
-
-        <dt class="col-sm-3 fw-bold">Tiền phòng:</dt>
-        <dd class="col-sm-9">@Model.TienPhong.ToString("C0", vnd)</dd>
-
-        <dt class="col-sm-3 fw-bold">Tiền dịch vụ:</dt>
-        <dd class="col-sm-9">@Model.TienDichVu.ToString("C0", vnd)</dd>
-
-        <dt class="col-sm-3 fw-bold text-danger">Tổng tiền:</dt>
-        <dd class="col-sm-9 text-danger fw-bold">@Model.TongTien.ToString("C0", vnd)</dd>
-
-        @if (Model.PhieuThanhToans?.Any() == true)
-        {
-            var phieuMoiNhat = Model.PhieuThanhToans.OrderByDescending(p => p.NgayThanhToan).First();
-            <dt class="col-sm-3 fw-bold text-danger">Hình thức thanh toán:</dt>
-            <dd class="col-sm-9 text-danger fw-bold">@phieuMoiNhat.PhuongThucThanhToan?.TenPhuongThuc</dd>
-        }
-
-        <dt class="col-sm-3 fw-bold">Trạng thái:</dt>
-        <dd class="col-sm-9">@Model.TrangThai</dd>
-    </dl>
-
-    <div class="mt-4 d-flex gap-2">
-        <a asp-action="Index" class="btn btn-secondary btn-custom btn-zoom">Quay lại danh sách</a>
-
-        @if (Model.TrangThai == "Chờ xác nhận")
-        {
-            <a asp-action="XacNhanThanhToan" asp-route-id="@Model.MaHoaDon" class="btn btn-success btn-custom btn-zoom"
-               onclick="return confirm('Xác nhận hóa đơn đã được thanh toán?');">
-                Xác nhận thanh toán
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Quay Lại
             </a>
-        }
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center mt-3">
+    <div class="col-12 col-md-10 col-lg-8">
+        <div class="card shadow-sm border-0 hoadon-detail-card">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:48px;height:48px;">
+                        <i class="fas fa-file-invoice fs-4"></i>
+                    </div>
+                    <h5 class="card-title mb-0 fw-bold text-dark">Thông tin hóa đơn #@Model.MaHoaDon</h5>
+                </div>
+                <div class="mb-2">
+                    <span class="badge bg-primary-subtle text-primary border border-primary fs-6 px-2 py-1">
+                        Ngày lập: <strong>@Model.NgayLap.ToString("dd/MM/yyyy")</strong>
+                    </span>
+                </div>
+                <div class="mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
+                        Khách thuê: <strong>@Model.KhachThue?.HoTen</strong>
+                    </span>
+                </div>
+                <div class="mb-2">
+                    <span class="badge bg-success-subtle text-success border border-success fs-6 px-2 py-1">
+                        Phòng: <strong>@Model.ChiSoDienNuoc?.PhongTro?.SoPhong</strong>
+                    </span>
+                </div>
+                <div class="mb-2">
+                    <span class="badge bg-warning-subtle text-warning border border-warning fs-6 px-2 py-1">
+                        Tiền điện: <strong>@Model.TienDien.ToString("N0", vnd) VNĐ</strong>
+                    </span>
+                    <span class="badge bg-primary-subtle text-primary border border-primary fs-6 px-2 py-1">
+                        Tiền nước: <strong>@Model.TienNuoc.ToString("N0", vnd) VNĐ</strong>
+                    </span>
+                </div>
+                <div class="mb-2">
+                    <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
+                        Tiền phòng: <strong>@Model.TienPhong.ToString("N0", vnd) VNĐ</strong>
+                    </span>
+                    <span class="badge bg-success-subtle text-success border border-success fs-6 px-2 py-1">
+                        Tiền dịch vụ: <strong>@Model.TienDichVu.ToString("N0", vnd) VNĐ</strong>
+                    </span>
+                </div>
+                <div class="mb-2">
+                    <span class="badge bg-danger-subtle text-danger border border-danger fs-6 px-2 py-1">
+                        Tổng tiền: <strong>@Model.TongTien.ToString("N0", vnd) VNĐ</strong>
+                    </span>
+                </div>
+                @if (Model.PhieuThanhToans?.Any() == true)
+                {
+                    var phieuMoiNhat = Model.PhieuThanhToans.OrderByDescending(p => p.NgayThanhToan).First();
+                    <div class="mb-2">
+                        <span class="badge bg-warning-subtle text-warning border border-warning fs-6 px-2 py-1">
+                            Hình thức thanh toán: <strong>@phieuMoiNhat.PhuongThucThanhToan?.TenPhuongThuc</strong>
+                        </span>
+                    </div>
+                }
+                <div class="mb-2">
+                    @if (Model.TrangThai == "Chờ xác nhận")
+                    {
+                        <span class="badge bg-warning text-dark px-2 py-1"><i class="fas fa-clock me-1"></i>@Model.TrangThai</span>
+                    }
+                    else if (Model.TrangThai == "Đã thanh toán")
+                    {
+                        <span class="badge bg-success text-white px-2 py-1"><i class="fas fa-check me-1"></i>@Model.TrangThai</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger text-white px-2 py-1"><i class="fas fa-times me-1"></i>@Model.TrangThai</span>
+                    }
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
+                <div class="d-flex gap-2 justify-content-end">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3">Quay lại danh sách</a>
+                    @if (Model.TrangThai == "Chờ xác nhận")
+                    {
+                        <a asp-action="XacNhanThanhToan" asp-route-id="@Model.MaHoaDon" class="btn btn-outline-success btn-sm px-3"
+                           onclick="return confirm('Xác nhận hóa đơn đã được thanh toán?');">
+                            <i class="fas fa-check me-1"></i>Xác nhận thanh toán
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
-    .text-highlight {
-        font-weight: 700;
-        font-size: 2.5rem;
-        background: linear-gradient(90deg, #ff8a00, #e52e71);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    .hoadon-detail-card {
+        transition: transform .15s ease, box-shadow .15s ease;
+        margin-bottom: 0;
+        background-color: #f0fff4;
     }
-
-    .custom-card {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
-        transition: box-shadow 0.3s ease;
+    .hoadon-detail-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.08);
     }
-
-        .custom-card:hover {
-            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
-        }
-
-    dt {
-        font-weight: 700;
+    .avatar {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     }
-
-    .btn-custom {
-        font-weight: 600;
-        border-radius: 5px;
-        transition: all 0.3s ease;
-        padding: 0.375rem 0.75rem;
+    .hoadon-detail-card .card-title {
+        font-size: 1.15rem;
+        line-height: 1.3;
+        color: #2c3e50;
     }
-
-        .btn-custom.btn-zoom:hover {
-            transform: scale(1.1);
-            position: relative;
-            z-index: 10;
-        }
-
-    .btn-secondary.btn-custom {
-        background-color: #7e57c2 !important;
-        border-color: #7e57c2 !important;
-        color: white !important;
+    .hoadon-detail-card .badge {
+        font-size: 0.875rem;
+        font-weight: 500;
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(10px);
     }
-
-        .btn-secondary.btn-custom:hover {
-            background-color: #9c80f0 !important;
-            border-color: #9c80f0 !important;
-            color: #2a0d6a !important;
-        }
-
-    .btn-success.btn-custom {
-        background-color: #43a047 !important;
-        border-color: #43a047 !important;
-        color: white !important;
+    .hoadon-detail-card .btn {
+        font-size: 0.95rem;
+        font-weight: 500;
     }
-
-        .btn-success.btn-custom:hover {
-            background-color: #66bb6a !important;
-            border-color: #66bb6a !important;
-            color: #1b3a17 !important;
-        }
 </style>

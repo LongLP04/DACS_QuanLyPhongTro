@@ -4,45 +4,241 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
-<div class="container my-5" style="max-width: 600px;">
-    <h2 class="text-highlight mb-4 text-center">Xác nhận xóa hợp đồng</h2>
-
-    <div class="card p-4 shadow-sm rounded mb-4">
-        <p><strong>Bạn có chắc chắn muốn xóa hợp đồng này không?</strong></p>
-        <p><strong>Phòng:</strong> @Model.PhongTro?.SoPhong</p>
-        <p><strong>Khách thuê:</strong> @Model.KhachThue?.HoTen</p>
-        <p><strong>Ngày lập:</strong> @Model.NgayLap.ToString("dd/MM/yyyy")</p>
-        <p><strong>Ngày bắt đầu:</strong> @Model.NgayBatDau.ToString("dd/MM/yyyy")</p>
-        <p><strong>Ngày kết thúc:</strong> @Model.NgayKetThuc.ToString("dd/MM/yyyy")</p>
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Index" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Quay Lại
+            </a>
+        </div>
     </div>
+</div>
 
-    <form asp-action="Delete" method="post" class="text-center">
-        @Html.AntiForgeryToken()
-        <input type="hidden" asp-for="MaHopDong" />
-        <button type="submit" class="btn btn-danger btn-custom btn-zoom">Xóa</button>
-        <a asp-action="Index" class="btn btn-secondary btn-custom ms-2">Hủy</a>
-    </form>
+<div class="row px-2 px-md-3 mt-3">
+    <div class="col-12 col-md-8 col-lg-6 mx-auto">
+        <div class="card shadow-sm border-0 contract-delete-card">
+            <div class="card-header bg-gradient-danger text-white">
+                <div class="d-flex align-items-center">
+                    <div class="avatar bg-white text-danger rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:48px;height:48px;">
+                        <i class="fas fa-exclamation-triangle fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold">Xóa Hợp Đồng</h5>
+                        <small class="opacity-75">Xác nhận xóa hợp đồng này</small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2 fs-4"></i>
+                    <div>
+                        <strong>Cảnh báo!</strong> Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xóa hợp đồng này?
+                    </div>
+                </div>
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-6">
+                        <div class="info-item">
+                            <label class="info-label"><i class="fas fa-file-contract me-2"></i>Mã hợp đồng</label>
+                            <div class="info-value">@Model.MaHopDong</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="info-item">
+                            <label class="info-label"><i class="fas fa-door-open me-2"></i>Phòng</label>
+                            <div class="info-value">@Model.PhongTro?.SoPhong</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="info-item">
+                            <label class="info-label"><i class="fas fa-user me-2"></i>Khách thuê</label>
+                            <div class="info-value">@Model.KhachThue?.HoTen</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="info-item">
+                            <label class="info-label"><i class="fas fa-calendar me-2"></i>Ngày lập</label>
+                            <div class="info-value">@Model.NgayLap.ToString("dd/MM/yyyy")</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="info-item">
+                            <label class="info-label"><i class="fas fa-calendar-alt me-2"></i>Thời gian hợp đồng</label>
+                            <div class="info-value">
+                                @Model.NgayBatDau.ToString("dd/MM/yyyy") - @Model.NgayKetThuc.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <form asp-action="Delete" method="post" id="deleteForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="MaHopDong" />
+                    
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Nhập mật khẩu để xác nhận" required />
+                        <label for="confirmPassword"><i class="fas fa-lock me-2"></i>Nhập mật khẩu để xác nhận</label>
+                        <div class="invalid-feedback" id="passwordError" style="display: none;">
+                            Mật khẩu không đúng. Vui lòng thử lại.
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-danger btn-lg px-4" id="deleteBtn" disabled>
+                            <i class="fas fa-trash me-2"></i>Xóa Hợp Đồng
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">
+                            <i class="fas fa-times me-2"></i>Hủy Bỏ
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
-    .text-highlight {
-        font-weight: 700;
-        font-size: 2.5rem;
-        background: linear-gradient(90deg, #ff8a00, #e52e71);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    .contract-delete-card {
+        transition: transform .15s ease, box-shadow .15s ease;
+        margin-bottom: 0;
+        border-radius: 12px;
+        overflow: hidden;
     }
-
-    .btn-custom {
+    
+    .contract-delete-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    }
+    
+    .contract-delete-card .card-header {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        border: none;
+        padding: 1.5rem;
+    }
+    
+    .contract-delete-card .avatar {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    .contract-delete-card .card-title {
+        font-size: 1.5rem;
+        line-height: 1.3;
+        color: white;
+    }
+    
+    .info-item {
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+    }
+    
+    .info-label {
+        font-size: 0.875rem;
         font-weight: 600;
-        border-radius: 5px;
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .info-value {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    
+    .contract-delete-card .form-floating > label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    .contract-delete-card .form-control:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+    
+    .contract-delete-card .btn {
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
         transition: all 0.3s ease;
     }
-
-        .btn-custom:hover {
-            transform: scale(1.1);
-            z-index: 10;
-            position: relative;
-        }
+    
+    .contract-delete-card .btn-danger {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        border: none;
+    }
+    
+    .contract-delete-card .btn-danger:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+    }
+    
+    .contract-delete-card .btn-danger:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .contract-delete-card .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+    }
+    
+    .alert-danger {
+        border: none;
+        background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+        color: #c62828;
+    }
 </style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('confirmPassword');
+            const deleteBtn = document.getElementById('deleteBtn');
+            const deleteForm = document.getElementById('deleteForm');
+            const passwordError = document.getElementById('passwordError');
+            
+            // Enable delete button when password is entered
+            passwordInput.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    deleteBtn.disabled = false;
+                } else {
+                    deleteBtn.disabled = true;
+                }
+                passwordError.style.display = 'none';
+            });
+            
+            // Handle delete button click
+            deleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (!passwordInput.value) {
+                    passwordInput.focus();
+                    return;
+                }
+                
+                // Show confirmation dialog
+                if (confirm('Bạn có chắc chắn muốn xóa hợp đồng này? Hành động này không thể hoàn tác!')) {
+                    // Here you would typically verify the password with the server
+                    // For now, we'll just submit the form
+                    deleteForm.submit();
+                }
+            });
+            
+            // Add some visual feedback
+            passwordInput.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            passwordInput.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+    </script>
+}

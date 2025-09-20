@@ -3,166 +3,186 @@
 @{
     ViewData["Title"] = "Dịch vụ đã xác nhận";
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+    
+    var totalRecords = Model?.Count() ?? 0;
+    var thisMonthRecords = Model?.Count(p => p.NgayBatDau.Month == DateTime.Now.Month && p.NgayBatDau.Year == DateTime.Now.Year) ?? 0;
+    var approvedRecords = Model?.Count(p => p.TrangThai == "Đã xác nhận") ?? 0;
+    var totalRevenue = Model?.Sum(p => p.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu)) ?? 0;
 }
 
-<div class="container mt-5" style="max-width: 1100px;">
-    <h2 class="mb-4 text-highlight text-center">@ViewData["Title"]</h2>
-    <div class="mb-3 text-center">
-        <a asp-action="DanhSachDichVu" class="btn btn-warning btn-custom me-2">Quản lý dịch vụ</a>
-        <a asp-action="TaoDichVu" class="btn btn-success btn-custom">Thêm dịch vụ mới</a>
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="DanhSachDichVu" class="btn btn-warning btn-sm">
+                <i class="fas fa-cogs me-1"></i> Quản lý dịch vụ
+            </a>
+            <a asp-action="TaoDichVu" class="btn btn-success btn-sm">
+                <i class="fas fa-plus me-1"></i> Thêm dịch vụ mới
+            </a>
+        </div>
     </div>
-
-    @if ((bool)ViewBag.CoPhieuCho)
-    {
-        <div class="alert alert-warning d-flex justify-content-between align-items-center">
-            <span>Có phiếu đăng ký dịch vụ đang chờ xác nhận!</span>
-            <a asp-action="DanhSachChoXacNhan" class="btn btn-sm btn-outline-success btn-custom">Xác nhận ngay</a>
-        </div>
-    }
-
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info">Chưa có dịch vụ nào được xác nhận.</div>
-    }
-    else
-    {
-        <div class="table-responsive shadow-sm rounded custom-table">
-            <table id="pdvTable" class="table table-bordered table-hover">
-                <thead class="thead-custom text-white">
-                    <tr>
-                        <th>Khách thuê</th>
-                        <th>Phòng</th>
-                        <th>Dịch vụ</th>
-                        <th>Tổng tiền</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var phieu in Model)
-                    {
-                        var phongContext = Context.RequestServices.GetService(typeof(DACS_QuanLyPhongTro.Models.ApplicationDbContext)) as DACS_QuanLyPhongTro.Models.ApplicationDbContext;
-                        var maPhong = phongContext.HopDongs.FirstOrDefault(h => h.MaKhachThue == phieu.MaKhachThue)?.MaPhong ?? 0;
-
-                        <tr>
-                            <td class="fw-bold">@phieu.KhachThue.HoTen</td>
-                            <td>Phòng @maPhong</td>
-                            <td>
-                                <ul>
-                                    @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
-                                    {
-                                        <li>@ct.DichVu.TenDichVu - SL: @ct.SoLuong - @ct.TongTienDichVu.ToString("N0") VND</li>
-                                    }
-                                </ul>
-                            </td>
-                            <td class="text-danger fw-bold">
-                                @phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu).ToString("N0") VND
-                            </td>
-                            <td>
-                                <a asp-action="Details" asp-route-id="@phieu.MaDangKyDichVu" class="btn btn-info btn-sm btn-custom btn-zoom me-1">Xem</a>
-                                <form asp-action="XoaPhieu" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa phiếu này?');">
-                                    <input type="hidden" name="id" value="@phieu.MaDangKyDichVu" />
-                                    <button type="submit" class="btn btn-danger btn-sm btn-custom-danger btn-zoom">Xóa</button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
 </div>
 
+<!-- Summary widgets -->
+<div class="row px-2 px-md-3 mt-3 g-3">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-primary mb-0">
+            <div class="inner">
+                <h3>@totalRecords</h3>
+                <p>Tổng phiếu đăng ký</p>
+            </div>
+            <div class="icon"><i class="fas fa-clipboard-list"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-info mb-0">
+            <div class="inner">
+                <h3>@thisMonthRecords</h3>
+                <p>Tháng này</p>
+            </div>
+            <div class="icon"><i class="fas fa-calendar-alt"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-success mb-0">
+            <div class="inner">
+                <h3>@approvedRecords</h3>
+                <p>Đã xác nhận</p>
+            </div>
+            <div class="icon"><i class="fas fa-check-circle"></i></div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="small-box bg-gradient-warning mb-0">
+            <div class="inner">
+                <h3>@string.Format("{0:N0}", totalRevenue)</h3>
+                <p>Doanh thu (VND)</p>
+            </div>
+            <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
+        </div>
+    </div>
+    <div class="col-12"><hr class="my-2"></div>
+</div>
+
+@if ((bool)ViewBag.CoPhieuCho)
+{
+    <div class="alert alert-warning d-flex justify-content-between align-items-center mt-3">
+        <span>Có phiếu đăng ký dịch vụ đang chờ xác nhận!</span>
+        <a asp-action="DanhSachChoXacNhan" class="btn btn-sm btn-outline-success btn-custom">Xác nhận ngay</a>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info mt-3">Chưa có dịch vụ nào được xác nhận.</div>
+}
+else
+{
+    <div class="row px-2 px-md-3 g-3 mt-3" id="phieudichvuGrid">
+        @foreach (var phieu in Model)
+        {
+            var phongContext = Context.RequestServices.GetService(typeof(DACS_QuanLyPhongTro.Models.ApplicationDbContext)) as DACS_QuanLyPhongTro.Models.ApplicationDbContext;
+            var maPhong = phongContext.HopDongs.FirstOrDefault(h => h.MaKhachThue == phieu.MaKhachThue)?.MaPhong ?? 0;
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3 phieudichvu-item">
+                <div class="card shadow-sm border-0 h-100 phieudichvu-card">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div class="flex-grow-1 me-2">
+                                <h5 class="card-title mb-1 fw-bold text-dark">
+                                    <i class="fas fa-user me-2 text-primary"></i>@phieu.KhachThue.HoTen
+                                </h5>
+                                <div class="text-muted mb-2">
+                                    <i class="fas fa-door-open me-1"></i>Phòng: <span class="fs-6">@maPhong</span>
+                                </div>
+                            </div>
+                            <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
+                                <i class="fas fa-cogs fs-6"></i>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <ul class="mb-0 ps-3">
+                                @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
+                                {
+                                    <li>@ct.DichVu.TenDichVu - SL: @ct.SoLuong - @ct.TongTienDichVu.ToString("N0") VND</li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="mb-2">
+                            <span class="badge bg-danger-subtle text-danger border border-danger fs-6 px-2 py-1">
+                                Tổng tiền: <strong>@phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu).ToString("N0") VND</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
+                        <div class="d-flex gap-2">
+                            <a asp-action="Details" asp-route-id="@phieu.MaDangKyDichVu" class="btn btn-outline-info btn-sm px-2 py-1">
+                                <i class="fas fa-eye me-1"></i>Xem
+                            </a>
+                            <form asp-action="XoaPhieu" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa phiếu này?');">
+                                <input type="hidden" name="id" value="@phieu.MaDangKyDichVu" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm px-2 py-1"><i class="fas fa-trash me-1"></i>Xóa</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
 <style>
-    .text-highlight {
-        font-weight: 700;
-        font-size: 2.5rem;
-        background: linear-gradient(90deg, #ff8a00, #e52e71);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    .phieudichvu-card {
+        transition: transform .15s ease, box-shadow .15s ease;
+        margin-bottom: 0;
+        background-color: #f0f8ff;
     }
-    .btn-custom {
-        font-weight: 600;
-        border-radius: 5px;
-        transition: all 0.3s ease;
+    .phieudichvu-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,.08);
     }
-
-        .btn-custom.btn-zoom:hover {
-            transform: scale(1.1);
-            position: relative;
-            z-index: 10;
-        }
-
-    .btn-custom-danger {
-        background-color: #e53935 !important;
-        border-color: #e53935 !important;
-        color: white !important;
+    .avatar {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     }
-
-        .btn-custom-danger:hover {
-            background-color: #ef5350 !important;
-            border-color: #ef5350 !important;
-            color: #330000 !important;
-        }
-
-    .btn-warning.btn-custom {
-        background-color: #ffb74d !important;
-        border-color: #ffb74d !important;
-        color: #4e342e !important;
+    .phieudichvu-card .card-title {
+        font-size: 1.15rem;
+        line-height: 1.3;
+        color: #2c3e50;
     }
-
-        .btn-warning.btn-custom:hover {
-            background-color: #ffcc80 !important;
-            border-color: #ffcc80 !important;
-            color: #663c00 !important;
-        }
-
-    .custom-table {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
-        transition: box-shadow 0.3s ease;
+    .phieudichvu-card .badge {
+        font-size: 0.875rem;
+        font-weight: 500;
+        background-color: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(10px);
     }
-
-        .custom-table:hover {
-            box-shadow: 0 8px 24px rgba(111, 66, 193, 0.4);
-        }
-
-    .thead-custom {
-        background-color: #5a2ea6;
+    .phieudichvu-card .btn {
+        font-size: 0.875rem;
+        font-weight: 500;
     }
-
-    .custom-table tbody tr:hover {
-        background-color: #d9caff;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+    .phieudichvu-card .card-body > * + * {
+        margin-top: 1rem;
     }
-
-        .custom-table tbody tr:hover td {
-            position: relative;
-        }
-
-            .custom-table tbody tr:hover td:hover {
-                background-color: #a884f7 !important;
-                color: #3e2d5e;
-                font-weight: 600;
-            }
-
-    .custom-table th, .custom-table td {
-        font-weight: 700;
-        vertical-align: middle;
+    .phieudichvu-item {
+        margin-bottom: 1rem;
+    }
+    .phieudichvu-item:nth-last-child(-n+4) {
+        margin-bottom: 0;
+    }
+    .phieudichvu-item:nth-child(4n+1) .phieudichvu-card {
+        background-color: #e3ffff;
+    }
+    .phieudichvu-item:nth-child(4n+2) .phieudichvu-card {
+        background-color: #fff9f0;
+    }
+    .phieudichvu-item:nth-child(4n+3) .phieudichvu-card {
+        background-color: #f0fff4;
+    }
+    .phieudichvu-item:nth-child(4n+4) .phieudichvu-card {
+        background-color: #fff0f5;
+    }
+    .phieudichvu-card .card-title,
+    .phieudichvu-card .text-muted,
+    .phieudichvu-card .text-secondary {
+        color: #2c3e50 !important;
     }
 </style>
-@section Scripts {
-    <script>
-        $(function () {
-            $('#pdvTable').DataTable({
-                pageLength: 10,
-                lengthChange: false,
-                order: [],
-                language: { url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/vi.json' }
-            });
-        });
-    </script>
-}
