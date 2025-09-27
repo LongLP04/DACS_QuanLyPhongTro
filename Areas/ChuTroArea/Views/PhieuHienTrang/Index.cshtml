@@ -14,13 +14,32 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h2 class="h4 mb-0">@ViewData["Title"]</h2>
         <div class="d-flex align-items-center gap-2">
-            <a asp-action="ChonPhong" class="btn btn-primary btn-sm">
+            <button type="button" class="btn btn-primary btn-sm" onclick="showPasswordModal(event)">
                 <i class="fas fa-plus me-1"></i> Tạo Phiếu Mới
-            </a>
-            <a asp-action="Index" asp-controller="Home" asp-area="ChuTroArea" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i> Quay Lại
-            </a>
+            </button>
         </div>
+<!-- Modal xác nhận mật khẩu -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordModalLabel">Xác nhận mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Nhập mật khẩu để xác nhận</label>
+                    <input type="password" class="form-control" id="confirmPassword" autocomplete="current-password">
+                </div>
+                <div id="passwordError" class="text-danger small"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="verifyPasswordAndRedirect()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
     </div>
 </div>
 
@@ -116,6 +135,45 @@
     }
 </div>
 
+@section Scripts {
+    <script>
+        function showPasswordModal(e) {
+            e.preventDefault();
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('passwordError').innerText = '';
+            var modal = new bootstrap.Modal(document.getElementById('passwordModal'));
+            modal.show();
+        }
+        function verifyPasswordAndRedirect() {
+            var password = document.getElementById('confirmPassword').value;
+            var errorDiv = document.getElementById('passwordError');
+            errorDiv.innerText = '';
+            if (!password) {
+                errorDiv.innerText = 'Vui lòng nhập mật khẩu.';
+                return;
+            }
+            fetch('/ChuTroArea/PhieuHienTrang/VerifyPassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name=__RequestVerificationToken]')?.value || ''
+                },
+                body: JSON.stringify({ password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/ChuTroArea/PhieuHienTrang/ChonPhong';
+                } else {
+                    errorDiv.innerText = data.message || 'Mật khẩu không đúng.';
+                }
+            })
+            .catch(() => {
+                errorDiv.innerText = 'Có lỗi xảy ra khi xác thực.';
+            });
+        }
+    </script>
+}
 <style>
     .phieuhientrang-card {
         transition: transform .15s ease, box-shadow .15s ease;
@@ -134,7 +192,7 @@
     .phieuhientrang-card .badge {
         font-size: 0.875rem;
         font-weight: 500;
-        background-color: rgba(255, 255, 255, 0.8) !important;
+        background-color: rgba(44, 189, 25, 0.8) !important;
         backdrop-filter: blur(10px);
     }
     .phieuhientrang-card .btn {
@@ -166,5 +224,10 @@
     .phieuhientrang-card .text-muted,
     .phieuhientrang-card .text-secondary {
         color: #2c3e50 !important;
+    }
+    .phieuhientrang-card table,
+    .phieuhientrang-card th,
+    .phieuhientrang-card td {
+        color: #222 !important;
     }
 </style>

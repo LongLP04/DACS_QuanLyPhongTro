@@ -82,12 +82,15 @@ else
                 <div class="card shadow-sm border-0 h-100 phieusuco-card">
                     <div class="card-body p-3">
                         <div class="d-flex align-items-start justify-content-between mb-2">
-                            <div class="flex-grow-1 me-2">
-                                <h5 class="card-title mb-1 fw-bold text-dark">
-                                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Mã phiếu: @phieu.MaPhieuSuCo
-                                </h5>
+                            <div class="flex-grow-1 me-2 d-flex flex-column">
                                 <div class="text-muted mb-2">
-                                    <i class="fas fa-user me-1"></i>Khách thuê: <span class="fs-6">@phieu.KhachThue?.HoTen</span>
+                                    <h5 class="card-title mb-1 fw-bold text-dark">
+                                        <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Mã phiếu: @phieu.MaPhieuSuCo
+                                    </h5>
+                                </div>
+                                <div class="text-muted fs-6 mb-2">
+                                    <i class="fas fa-user me-1"></i>Khách thuê:
+                                    <span class="fs-6">@phieu.KhachThue?.HoTen</span>
                                 </div>
                                 <div class="text-muted mb-2">
                                     <i class="fas fa-door-open me-1"></i>Phòng: <span class="fs-6">@(phieu.KhachThue?.PhongTros != null && phieu.KhachThue.PhongTros.Any() ? phieu.KhachThue.PhongTros.First().SoPhong : "Chưa có phòng")</span>
@@ -131,13 +134,10 @@ else
                                     <button type="submit" class="btn btn-primary btn-sm px-3">Xác nhận</button>
                                 </form>
                             }
-                            else
-                            {
-                                <span class="badge bg-success text-white px-2 py-1"><i class="fas fa-check me-1"></i>Đã xử lý</span>
-                            }
+                            
                         </div>
                         <div class="mb-2">
-                            <span class="badge bg-primary-subtle text-primary border border-primary fs-6 px-2 py-1">
+                            <span class="badge-tinhtrang bg-primary-subtle text-primary border border-primary fs-6 px-2 py-1">
                                 Tình trạng: <strong>@phieu.TinhTrang</strong>
                             </span>
                         </div>
@@ -184,7 +184,11 @@ else
     .phieusuco-card .badge {
         font-size: 0.875rem;
         font-weight: 500;
-        background-color: rgba(255, 255, 255, 0.8) !important;
+        background-color: rgba(255, 255, 255, 0.8) ;
+        backdrop-filter: blur(10px);
+    }
+    .phieusuco-carrd .badge-tinhtrang{
+        background-color: rgba(81, 199, 26, 0.8) !important;
         backdrop-filter: blur(10px);
     }
     .phieusuco-card .btn {
@@ -216,5 +220,20 @@ else
     .phieusuco-card .text-muted,
     .phieusuco-card .text-secondary {
         color: #2c3e50 !important;
+    }
+    h5 {
+        display: block;
+    }
+
+    .phieusuco-card .badge,
+    .phieusuco-card .card-body,
+    .phieusuco-card .card-title,
+    .phieusuco-card .text-muted,
+    .phieusuco-card .text-secondary,
+    .phieusuco-card .form-select,
+    .phieusuco-card .btn {
+        word-break: break-word;
+        white-space: normal !important;
+        overflow-wrap: break-word;
     }
 </style>

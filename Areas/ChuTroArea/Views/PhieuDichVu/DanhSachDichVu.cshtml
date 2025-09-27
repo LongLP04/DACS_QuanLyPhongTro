@@ -13,9 +13,9 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h2 class="h4 mb-0">@ViewData["Title"]</h2>
         <div class="d-flex align-items-center gap-2">
-            <a asp-action="TaoDichVu" class="btn btn-success btn-sm">
+            <button type="button" class="btn btn-success btn-sm" onclick="showPasswordModal('create')">
                 <i class="fas fa-plus me-1"></i> Thêm dịch vụ mới
-            </a>
+            </button>
         </div>
     </div>
 </div>
@@ -80,7 +80,7 @@
                             <h5 class="card-title mb-1 fw-bold text-dark">
                                 <i class="fas fa-cog me-2 text-primary"></i>@dv.TenDichVu
                             </h5>
-                            <div class="text-muted mb-2">
+                            <div class="text-muted fs-6 mb-2">
                                 <i class="fas fa-money-bill-wave me-1"></i>Đơn giá: <span class="fs-6">@dv.DonGiaDichVu.ToString("N0") VND</span>
                             </div>
                         </div>
@@ -89,7 +89,7 @@
                         </div>
                     </div>
                     <div class="mb-2">
-                        <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
+                        <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1 d-block text-break" style="white-space:pre-line;word-break:break-word;max-width:100%;">
                             @dv.MoTa
                         </span>
                     </div>
@@ -100,7 +100,7 @@
                             <i class="fas fa-edit me-1"></i>Sửa
                         </a>
                         <form asp-action="XoaDichVu" asp-route-id="@dv.MaDichVu" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
-                            <button type="submit" class="btn btn-outline-danger btn-sm px-2 py-1"><i class="fas fa-trash me-1"></i>Xóa</button>
+                            <button type="button" class="btn btn-outline-danger btn-sm px-2 py-1" onclick="showPasswordModal('delete', '@dv.MaDichVu')"><i class="fas fa-trash me-1"></i>Xóa</button>
                         </form>
                     </div>
                 </div>
@@ -113,7 +113,85 @@
     <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-4">Quay lại</a>
 </div>
 
+<!-- Password Confirmation Modal -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordModalLabel">Xác minh mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="password" id="verifyPassword" class="form-control" placeholder="Nhập mật khẩu của bạn" />
+                <div id="passwordError" class="text-danger mt-2" style="display:none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="submitPassword()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
+@section Scripts {
+    <script>
+        let actionType = null;
+        let deleteId = null;
+        function showPasswordModal(type, id = null) {
+            actionType = type;
+            deleteId = id;
+            document.getElementById("verifyPassword").value = "";
+            document.getElementById("passwordError").style.display = "none";
+            var modal = new bootstrap.Modal(document.getElementById('passwordModal'));
+            modal.show();
+        }
+
+        function submitPassword() {
+            const password = document.getElementById("verifyPassword").value;
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            fetch("/ChuTroArea/PhieuDichVu/VerifyPassword", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": token
+                },
+                body: JSON.stringify({ password: password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (actionType === "create") {
+                        window.location.href = "/ChuTroArea/PhieuDichVu/TaoDichVu";
+                    } else if (actionType === "delete" && deleteId) {
+                        // Tạo form ẩn để submit delete request
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/ChuTroArea/PhieuDichVu/XoaDichVu';
+                        const idInput = document.createElement('input');
+                        idInput.type = 'hidden';
+                        idInput.name = 'id';
+                        idInput.value = deleteId;
+                        const tokenInput = document.createElement('input');
+                        tokenInput.type = 'hidden';
+                        tokenInput.name = '__RequestVerificationToken';
+                        tokenInput.value = token;
+                        form.appendChild(idInput);
+                        form.appendChild(tokenInput);
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                } else {
+                    const err = document.getElementById("passwordError");
+                    err.innerText = data.message;
+                    err.style.display = "block";
+                }
+            })
+            .catch(err => console.error("Error:", err));
+        }
+    </script>
+}
     .dichvu-card {
         transition: transform .15s ease, box-shadow .15s ease;
         margin-bottom: 0;

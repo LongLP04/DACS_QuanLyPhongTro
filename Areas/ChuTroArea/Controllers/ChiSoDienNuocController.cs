@@ -7,16 +7,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 {
-    [Area("ChuTroArea")]
-    [Authorize(Roles = "ChuTro")]
-    public class ChiSoDienNuocController : Controller
-    {
-        private readonly ApplicationDbContext _context;
-
-        public ChiSoDienNuocController(ApplicationDbContext context) 
+        [Area("ChuTroArea")]
+        [Authorize(Roles = "ChuTro")]
+        public class ChiSoDienNuocController : Controller
         {
-            _context = context;
-        }
+            public class PasswordVerificationModel
+            {
+                public string Password { get; set; }
+            }
+
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> VerifyPassword([FromBody] PasswordVerificationModel model)
+            {
+                var email = User.Identity.Name;
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+                if (user == null)
+                    return Json(new { success = false, message = "Không tìm thấy người dùng." });
+
+                var signInManager = HttpContext.RequestServices.GetService(typeof(Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser>)) as Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser>;
+                var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+
+                if (result.Succeeded)
+                    return Json(new { success = true });
+                else
+                    return Json(new { success = false, message = "Mật khẩu không đúng." });
+            }
+
+            private readonly ApplicationDbContext _context;
+
+            public ChiSoDienNuocController(ApplicationDbContext context) 
+            {
+                _context = context;
+            }
 
         // GET: Danh sách chỉ số điện nước
         public async Task<IActionResult> Index()

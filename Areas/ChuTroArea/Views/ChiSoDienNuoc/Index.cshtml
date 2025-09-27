@@ -15,9 +15,9 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h2 class="h4 mb-0">@ViewData["Title"]</h2>
         <div class="d-flex align-items-center gap-2">
-            <a asp-action="Create" class="btn btn-primary btn-sm">
+            <button type="button" class="btn btn-primary btn-sm" onclick="showPasswordModal('create')">
                 <i class="fas fa-plus me-1"></i> Ghi Chỉ Số Điện Nước
-            </a>
+            </button>
         </div>
     </div>
 </div>
@@ -74,12 +74,14 @@
                             <h5 class="card-title mb-1 fw-bold text-dark">
                                 <i class="fas fa-bolt me-2 text-warning"></i>Phòng: @chiSo.PhongTro?.SoPhong
                             </h5>
-                            <div class="text-muted mb-2">
-                                <i class="fas fa-calendar-alt me-1"></i><span class="fs-6">@chiSo.NgayGhi.ToString("dd/MM/yyyy")</span>
-                            </div>
                         </div>
                         <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
                             <i class="fas fa-tint fs-6"></i>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="text-muted mb-2" style="margin-top:0.75rem; display:block;">
+                                <i class="fas fa-calendar-alt me-1"></i><span class="fs-6">@chiSo.NgayGhi.ToString("dd/MM/yyyy")</span>
                         </div>
                     </div>
                     <div class="mb-2">
@@ -104,12 +106,12 @@
                         <a asp-action="Details" asp-route-id="@chiSo.MaChiSo" class="btn btn-outline-info btn-sm px-2 py-1">
                             <i class="fas fa-eye me-1"></i>Xem
                         </a>
-                        <a asp-action="Edit" asp-route-id="@chiSo.MaChiSo" class="btn btn-outline-warning btn-sm px-2 py-1">
+                        <button type="button" class="btn btn-outline-warning btn-sm px-2 py-1" onclick="showPasswordModal('edit', '@chiSo.MaChiSo')">
                             <i class="fas fa-edit me-1"></i>Sửa
-                        </a>
-                        <a asp-action="Delete" asp-route-id="@chiSo.MaChiSo" class="btn btn-outline-danger btn-sm px-2 py-1">
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-sm px-2 py-1" onclick="showPasswordModal('delete', '@chiSo.MaChiSo')">
                             <i class="fas fa-trash me-1"></i>Xóa
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -117,7 +119,82 @@
     }
 </div>
 
+<!-- Password Confirmation Modal -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordModalLabel">Xác minh mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="password" id="verifyPassword" class="form-control" placeholder="Nhập mật khẩu của bạn" />
+                <div id="passwordError" class="text-danger mt-2" style="display:none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="submitPassword()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
+@section Scripts {
+    <script>
+        let actionType = null;
+        let recordId = null;
+        function showPasswordModal(type, id = null) {
+            actionType = type;
+            recordId = id;
+            document.getElementById("verifyPassword").value = "";
+            document.getElementById("passwordError").style.display = "none";
+            var modal = new bootstrap.Modal(document.getElementById('passwordModal'));
+            modal.show();
+        }
+
+        function submitPassword() {
+            const password = document.getElementById("verifyPassword").value;
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            fetch("/ChuTroArea/ChiSoDienNuoc/VerifyPassword", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": token
+                },
+                body: JSON.stringify({ password: password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (actionType === "create") {
+                        window.location.href = "/ChuTroArea/ChiSoDienNuoc/Create";
+                    } else if (actionType === "edit" && recordId) {
+                        window.location.href = `/ChuTroArea/ChiSoDienNuoc/Edit/${recordId}`;
+                    } else if (actionType === "delete" && recordId) {
+                        // Tạo form ẩn để submit delete request
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `/ChuTroArea/ChiSoDienNuoc/Delete/${recordId}`;
+                        const tokenInput = document.createElement('input');
+                        tokenInput.type = 'hidden';
+                        tokenInput.name = '__RequestVerificationToken';
+                        tokenInput.value = token;
+                        form.appendChild(tokenInput);
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                } else {
+                    const err = document.getElementById("passwordError");
+                    err.innerText = data.message;
+                    err.style.display = "block";
+                }
+            })
+            .catch(err => console.error("Error:", err));
+        }
+    </script>
+}
     .csdn-card {
         transition: transform .15s ease, box-shadow .15s ease;
         margin-bottom: 0;

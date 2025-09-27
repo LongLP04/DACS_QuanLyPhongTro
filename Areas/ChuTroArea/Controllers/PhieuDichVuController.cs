@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 {
@@ -11,10 +12,14 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
     public class PhieuDichVuController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public PhieuDichVuController(ApplicationDbContext context) 
+        public PhieuDichVuController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager) 
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // Trang chính: Hiển thị dịch vụ đã xác nhận + cảnh báo nếu có phiếu chờ xác nhận
@@ -240,5 +245,37 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> VerifyPassword([FromBody] PasswordVerificationRequest request)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Người dùng không tồn tại." });
+                }
+
+                var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+                if (result.Succeeded)
+                {
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Mật khẩu không đúng." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xác thực mật khẩu." });
+            }
+        }
+
+    }
+
+    public class PasswordVerificationRequest
+    {
+        public string Password { get; set; }
     }
 }

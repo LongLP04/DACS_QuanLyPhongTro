@@ -10,16 +10,37 @@
     var totalRevenue = Model?.Sum(p => p.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu)) ?? 0;
 }
 
+@Html.AntiForgeryToken()
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 <div class="content-header px-2 px-md-3 pt-1 pb-0">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h2 class="h4 mb-0">@ViewData["Title"]</h2>
         <div class="d-flex align-items-center gap-2">
+            <select id="sortSelect" class="form-select form-select-sm" style="width:180px;">
+                <option value="name">Sắp xếp: Tên (A→Z)</option>
+                <option value="date">Ngày đăng ký (Gần nhất)</option>
+                <option value="revenue">Doanh thu (Cao→Thấp)</option>
+            </select>
             <a asp-action="DanhSachDichVu" class="btn btn-warning btn-sm">
                 <i class="fas fa-cogs me-1"></i> Quản lý dịch vụ
             </a>
-            <a asp-action="TaoDichVu" class="btn btn-success btn-sm">
+            <button type="button" class="btn btn-success btn-sm" onclick="showPasswordModal('create')">
                 <i class="fas fa-plus me-1"></i> Thêm dịch vụ mới
-            </a>
+            </button>
         </div>
     </div>
 </div>
@@ -84,7 +105,12 @@ else
         {
             var phongContext = Context.RequestServices.GetService(typeof(DACS_QuanLyPhongTro.Models.ApplicationDbContext)) as DACS_QuanLyPhongTro.Models.ApplicationDbContext;
             var maPhong = phongContext.HopDongs.FirstOrDefault(h => h.MaKhachThue == phieu.MaKhachThue)?.MaPhong ?? 0;
-            <div class="col-12 col-sm-6 col-lg-4 col-xl-3 phieudichvu-item">
+            var totalAmount = phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu);
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3 phieudichvu-item" 
+                 data-name="@phieu.KhachThue.HoTen" 
+                 data-room="@maPhong" 
+                 data-date="@phieu.NgayBatDau.ToString("yyyy-MM-dd")"
+                 data-revenue="@totalAmount">
                 <div class="card shadow-sm border-0 h-100 phieudichvu-card">
                     <div class="card-body p-3">
                         <div class="d-flex align-items-start justify-content-between mb-2">
@@ -92,37 +118,56 @@ else
                                 <h5 class="card-title mb-1 fw-bold text-dark">
                                     <i class="fas fa-user me-2 text-primary"></i>@phieu.KhachThue.HoTen
                                 </h5>
-                                <div class="text-muted mb-2">
-                                    <i class="fas fa-door-open me-1"></i>Phòng: <span class="fs-6">@maPhong</span>
-                                </div>
                             </div>
                             <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
                                 <i class="fas fa-cogs fs-6"></i>
                             </div>
                         </div>
+                        
                         <div class="mb-2">
-                            <ul class="mb-0 ps-3">
+                            <div class="text-muted fs-6">
+                                <i class="fas fa-door-open me-1"></i>Phòng: <span class="fw-bold">@maPhong</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <div class="d-flex gap-2 mb-1">
+                                <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
+                                    <i class="fas fa-calendar me-1"></i>@phieu.NgayBatDau.ToString("dd/MM/yyyy")
+                                </span>
+                                <span class="badge bg-success-subtle text-success border border-success fs-6 px-2 py-1">
+                                    <i class="fas fa-check me-1"></i>@phieu.TrangThai
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <div class="text-muted fs-6">
+                                <i class="fas fa-list me-1"></i><strong>Dịch vụ:</strong>
+                            </div>
+                            <ul class="mb-0 ps-3 fs-6">
                                 @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
                                 {
                                     <li>@ct.DichVu.TenDichVu - SL: @ct.SoLuong - @ct.TongTienDichVu.ToString("N0") VND</li>
                                 }
                             </ul>
                         </div>
+                        
                         <div class="mb-2">
-                            <span class="badge bg-danger-subtle text-danger border border-danger fs-6 px-2 py-1">
-                                Tổng tiền: <strong>@phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu).ToString("N0") VND</strong>
+                            <span class="badge bg-warning-subtle text-warning border border-warning fs-6 px-2 py-1">
+                                <i class="fas fa-money-bill me-1"></i>Tổng: <strong>@totalAmount.ToString("N0") VND</strong>
                             </span>
                         </div>
                     </div>
                     <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
                         <div class="d-flex gap-2">
                             <a asp-action="Details" asp-route-id="@phieu.MaDangKyDichVu" class="btn btn-outline-info btn-sm px-2 py-1">
-                                <i class="fas fa-eye me-1"></i>Xem
+                                <i class="fas fa-eye me-1"></i>Chi tiết
                             </a>
-                            <form asp-action="XoaPhieu" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa phiếu này?');">
-                                <input type="hidden" name="id" value="@phieu.MaDangKyDichVu" />
-                                <button type="submit" class="btn btn-outline-danger btn-sm px-2 py-1"><i class="fas fa-trash me-1"></i>Xóa</button>
-                            </form>
+                            <button type="button" class="btn btn-outline-danger btn-sm px-2 py-1" 
+                                    onclick="showPasswordModal('delete', '@phieu.MaDangKyDichVu')">
+                                <i class="fas fa-trash me-1"></i>Xóa
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -132,10 +177,16 @@ else
 }
 
 <style>
+    .small-box .icon{right:10px; top: 6px;}
+    .bg-primary-subtle{ background: #e8f0ff; }
+    .bg-success-subtle{ background: #e8f7ef; }
+    .bg-warning-subtle{ background: #fff3cd; }
+    .bg-info-subtle{ background: #d1ecf1; }
+    .bg-danger-subtle{ background: #f8d7da; }
+    
     .phieudichvu-card {
         transition: transform .15s ease, box-shadow .15s ease;
         margin-bottom: 0;
-        background-color: #f0f8ff;
     }
     .phieudichvu-card:hover {
         transform: translateY(-4px);
@@ -145,9 +196,19 @@ else
         background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     }
     .phieudichvu-card .card-title {
-        font-size: 1.15rem;
+        font-size: 1.25rem;
         line-height: 1.3;
         color: #2c3e50;
+        display: block;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .phieudichvu-card .text-muted {
+        display: block;
+        width: 100%;
+        margin-top: 0;
+        line-height: 1.4;
     }
     .phieudichvu-card .badge {
         font-size: 0.875rem;
@@ -185,4 +246,122 @@ else
     .phieudichvu-card .text-secondary {
         color: #2c3e50 !important;
     }
+    
+    /* Increase spacing between header elements */
+    .content-header .d-flex.gap-2 {
+        gap: 1rem !important;
+    }
+    
+    
+    .content-header .form-select {
+        margin-right: 1rem !important;
+    }
 </style>
+
+@section Scripts {
+    <script>
+        (function(){
+            const grid = document.getElementById('phieudichvuGrid');
+            const sortSelect = document.getElementById('sortSelect');
+
+            function sort() {
+                const items = Array.from(grid.querySelectorAll('.phieudichvu-item'));
+                const type = sortSelect.value;
+                items.sort((a,b)=>{
+                    if(type==='date'){
+                        return new Date(b.dataset.date||'') - new Date(a.dataset.date||'');
+                    }
+                    if(type==='revenue'){
+                        return (parseInt(b.dataset.revenue||'0') - parseInt(a.dataset.revenue||'0'));
+                    }
+                    // default name asc
+                    return (a.dataset.name||'').localeCompare(b.dataset.name||'');
+                });
+                items.forEach(i=>grid.appendChild(i));
+            }
+            
+            sortSelect?.addEventListener('change', sort);
+            sort();
+        })();
+        
+        // Password confirmation modal handling
+        let actionType = null;
+        let deleteId = null;
+
+        function showPasswordModal(type, id = null) {
+            actionType = type;
+            deleteId = id;
+            document.getElementById("verifyPassword").value = "";
+            document.getElementById("passwordError").style.display = "none";
+            var modal = new bootstrap.Modal(document.getElementById('passwordModal'));
+            modal.show();
+        }
+
+        function submitPassword() {
+            const password = document.getElementById("verifyPassword").value;
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            fetch("/ChuTroArea/PhieuDichVu/VerifyPassword", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": token
+                },
+                body: JSON.stringify({ password: password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (actionType === "create") {
+                        window.location.href = "/ChuTroArea/PhieuDichVu/DanhSachDichVu";
+                    } else if (actionType === "delete" && deleteId) {
+                        // Tạo form ẩn để submit delete request
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/ChuTroArea/PhieuDichVu/XoaPhieu';
+                        
+                        const idInput = document.createElement('input');
+                        idInput.type = 'hidden';
+                        idInput.name = 'id';
+                        idInput.value = deleteId;
+                        
+                        const tokenInput = document.createElement('input');
+                        tokenInput.type = 'hidden';
+                        tokenInput.name = '__RequestVerificationToken';
+                        tokenInput.value = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                        
+                        form.appendChild(idInput);
+                        form.appendChild(tokenInput);
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                } else {
+                    const err = document.getElementById("passwordError");
+                    err.innerText = data.message;
+                    err.style.display = "block";
+                }
+            })
+            .catch(err => console.error("Error:", err));
+        }
+    </script>
+}
+
+<!-- Password Confirmation Modal -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordModalLabel">Xác minh mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="password" id="verifyPassword" class="form-control" placeholder="Nhập mật khẩu của bạn" />
+                <div id="passwordError" class="text-danger mt-2" style="display:none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="submitPassword()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
