@@ -1,0 +1,51 @@
+@model DACS_QuanLyPhongTro.Models.HoaDon
+@{
+    ViewData["Title"] = "Sửa hóa đơn";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+    var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+}
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <h2 class="h4 mb-0">Sửa hóa đơn #@Model.MaHoaDon</h2>
+</div>
+<div class="row justify-content-center mt-3">
+    <div class="col-12 col-md-10 col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="MaHoaDon" />
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tiền điện</label>
+                        <input asp-for="TienDien" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tiền nước</label>
+                        <input asp-for="TienNuoc" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tiền phòng</label>
+                        <input asp-for="TienPhong" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tiền dịch vụ</label>
+                        <input asp-for="TienDichVu" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tổng tiền</label>
+                        <input asp-for="TongTien" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Trạng thái</label>
+                        <select asp-for="TrangThai" class="form-select">
+                            <option value="Chờ xác nhận">Chờ xác nhận</option>
+                            <option value="Đã thanh toán">Đã thanh toán</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-5">Lưu thay đổi</button>
+                        <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Quay lại</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

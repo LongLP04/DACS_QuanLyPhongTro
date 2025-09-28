@@ -68,22 +68,29 @@
         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 hoadon-item" data-room="@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong" data-date="@hoaDon.NgayLap.ToString("yyyy-MM-dd")">
             <div class="card shadow-sm border-0 h-100 hoadon-card">
                 <div class="card-body p-3">
-                    <div class="d-flex align-items-start justify-content-between mb-2">
-                        <div class="flex-grow-1 me-2">
-                            <h5 class="card-title mb-1 fw-bold text-dark">
-                                <i class="fas fa-file-invoice-dollar me-2 text-primary"></i>Mã: @hoaDon.MaHoaDon
-                            </h5>
-                            <div class="text-muted mb-2" >
-                                <i class="fas fa-calendar-alt me-1"></i><span class="fs-6">@hoaDon.NgayLap.ToString("dd/MM/yyyy")</span>
+                    <div class="mb-2">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div class="flex-grow-1 me-2">
+                                <h5 class="card-title mb-1 fw-bold text-dark">
+                                    <i class="fas fa-file-invoice-dollar me-2 text-primary"></i>
+                                    Mã: @hoaDon.MaHoaDon
+                                </h5>
                             </div>
-                            <div class="text-muted mb-2">
-                                <i class="fas fa-user me-1"></i><span class="fs-6">@hoaDon.KhachThue?.HoTen</span>
-                            </div>
-                            <div class="text-muted mb-2">
-                                <i class="fas fa-door-open me-1"></i>Phòng: <span class="fs-6">@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong</span>
+                            <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
+                                <i class="fas fa-money-bill-wave fs-6"></i>
                             </div>
                         </div>
-                        <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
+
+                        <div class="text-muted mb-2">
+                            <i class="fas fa-calendar-alt me-1"></i><span class="fs-6">@hoaDon.NgayLap.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="text-muted mb-2">
+                            <i class="fas fa-user me-1"></i><span class="fs-6">@hoaDon.KhachThue?.HoTen</span>
+                        </div>
+                        <div class="text-muted mb-2">
+                            <i class="fas fa-door-open me-1"></i>Phòng: <span class="fs-6">@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong</span>
+                        </div>
+                        <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mt-2" style="width:40px;height:40px;">
                             <i class="fas fa-money-bill-wave fs-6"></i>
                         </div>
                     </div>
@@ -91,6 +98,8 @@
                         <span class="badge bg-primary-subtle text-primary border border-primary fs-6 px-2 py-1">
                             Tiền điện: <strong>@hoaDon.TienDien.ToString("N0", vnd) VNĐ</strong>
                         </span>
+                    </div>
+                    <div class="mb-2">
                         <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
                             Tiền nước: <strong>@hoaDon.TienNuoc.ToString("N0", vnd) VNĐ</strong>
                         </span>
@@ -99,6 +108,8 @@
                         <span class="badge bg-success-subtle text-success border border-success fs-6 px-2 py-1">
                             Tiền phòng: <strong>@hoaDon.TienPhong.ToString("N0", vnd) VNĐ</strong>
                         </span>
+                    </div>
+                    <div class="mb-2">
                         <span class="badge bg-warning-subtle text-warning border border-warning fs-6 px-2 py-1">
                             Tiền dịch vụ: <strong>@hoaDon.TienDichVu.ToString("N0", vnd) VNĐ</strong>
                         </span>
@@ -115,10 +126,10 @@
                         }
                         else if (hoaDon.TrangThai == "Chờ xác nhận")
                         {
-                            <span class="badge bg-warning text-dark px-2 py-1"><i class="fas fa-clock me-1"></i>@hoaDon.TrangThai</span>
+                            <span class="badge bg-warning text-dark px-2 py-1" style="color:#333 !important;"><i class="fas fa-clock me-1"></i>@hoaDon.TrangThai</span>
                         }
                         else
-                        {
+                        {   
                             <span class="badge bg-danger text-white px-2 py-1"><i class="fas fa-times me-1"></i>@hoaDon.TrangThai</span>
                         }
                     </div>
@@ -245,8 +256,20 @@
     .hoadon-card .badge {
         font-size: 0.875rem;
         font-weight: 500;
-        background-color: rgba(255, 255, 255, 0.8) !important;
+        background-color: unset !important;
         backdrop-filter: blur(10px);
+    }
+    .badge.bg-warning {
+        background-color: #ffe066 !important;
+        color: #333 !important;
+    }
+    .badge.bg-success {
+        background-color: #51cf66 !important;
+        color: #fff !important;
+    }
+    .badge.bg-danger {
+        background-color: #ff6b6b !important;
+        color: #fff !important;
     }
     .hoadon-card .btn {
         font-size: 0.875rem;

@@ -1,0 +1,28 @@
+@model DACS_QuanLyPhongTro.Models.HoaDon
+@{
+    ViewData["Title"] = "Xóa hóa đơn";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+}
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <h2 class="h4 mb-0">Xóa hóa đơn #@Model.MaHoaDon</h2>
+</div>
+<div class="row justify-content-center mt-3">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h5 class="mb-3">Bạn có chắc chắn muốn xóa hóa đơn này?</h5>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item">Khách thuê: <strong>@Model.KhachThue?.HoTen</strong></li>
+                    <li class="list-group-item">Phòng: <strong>@Model.ChiSoDienNuoc?.PhongTro?.SoPhong</strong></li>
+                    <li class="list-group-item">Ngày lập: <strong>@Model.NgayLap.ToString("dd/MM/yyyy")</strong></li>
+                    <li class="list-group-item">Tổng tiền: <strong>@Model.TongTien.ToString("N0") VNĐ</strong></li>
+                </ul>
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="MaHoaDon" />
+                    <button type="submit" class="btn btn-danger px-5">Xóa</button>
+                    <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Quay lại</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

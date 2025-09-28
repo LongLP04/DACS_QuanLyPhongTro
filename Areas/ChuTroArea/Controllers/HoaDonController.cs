@@ -177,41 +177,41 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         var khachThue = _context.KhachThues
             .FirstOrDefault(k => k.MaKhachThue == phong.MaKhachThue); // Giả sử PhongTro có MaKhachThue
 
-    if (khachThue == null)
-    {
-        ModelState.AddModelError("", "Phòng này chưa có khách thuê.");
-        ViewBag.PhongTros = new SelectList(_context.PhongTros, "MaPhong", "SoPhong");
-        return View(hoaDon);
-    }
+                if (khachThue == null)
+                {
+                    ModelState.AddModelError("", "Phòng này chưa có khách thuê.");
+                    ViewBag.PhongTros = new SelectList(_context.PhongTros, "MaPhong", "SoPhong");
+                    return View(hoaDon);
+                }
 
-    // Gán MaKhachThue
-    hoaDon.MaKhachThue = khachThue.MaKhachThue;
+                // Gán MaKhachThue
+                hoaDon.MaKhachThue = khachThue.MaKhachThue;
 
-            // ✅ Tính tiền dịch vụ chính xác
-            var phieuDichVus = _context.PhieuDangKyDichVus
-                .Where(p => p.MaKhachThue == khachThue.MaKhachThue && p.TrangThai == "Đã xác nhận")
-                .Include(p => p.ChiTietPhieuDangKyDichVus)
-                .ToList();
+                        // ✅ Tính tiền dịch vụ chính xác
+                        var phieuDichVus = _context.PhieuDangKyDichVus
+                            .Where(p => p.MaKhachThue == khachThue.MaKhachThue && p.TrangThai == "Đã xác nhận")
+                            .Include(p => p.ChiTietPhieuDangKyDichVus)
+                            .ToList();
 
-            decimal tongTienDichVu = phieuDichVus
-                .SelectMany(p => p.ChiTietPhieuDangKyDichVus)
-                .Sum(ct => ct.TongTienDichVu);
+                        decimal tongTienDichVu = phieuDichVus
+                            .SelectMany(p => p.ChiTietPhieuDangKyDichVus)
+                            .Sum(ct => ct.TongTienDichVu);
 
-            hoaDon.TienDichVu = tongTienDichVu;
-            // Tính toán hóa đơn
-            hoaDon.TienDien = chiSoDienNuoc.SoDienTieuThu* chiSoDienNuoc.DonGiaDien;
-    hoaDon.TienNuoc = chiSoDienNuoc.SoNuocTieuThu* chiSoDienNuoc.DonGiaNuoc;
-    hoaDon.TienPhong = phong.GiaThue;
-    hoaDon.TongTien = hoaDon.TienDien + hoaDon.TienNuoc + hoaDon.TienPhong + hoaDon.TienDichVu;
-    hoaDon.NgayLap = DateTime.Now;
-            hoaDon.TrangThai = "Chưa thanh toán";
+                        hoaDon.TienDichVu = tongTienDichVu;
+                        // Tính toán hóa đơn
+                        hoaDon.TienDien = chiSoDienNuoc.SoDienTieuThu* chiSoDienNuoc.DonGiaDien;
+                hoaDon.TienNuoc = chiSoDienNuoc.SoNuocTieuThu* chiSoDienNuoc.DonGiaNuoc;
+                hoaDon.TienPhong = phong.GiaThue;
+                hoaDon.TongTien = hoaDon.TienDien + hoaDon.TienNuoc + hoaDon.TienPhong + hoaDon.TienDichVu;
+                hoaDon.NgayLap = DateTime.Now;
+                        hoaDon.TrangThai = "Chưa thanh toán";
 
-            // Lưu hóa đơn
-            _context.HoaDons.Add(hoaDon);
-    _context.SaveChanges();
+                        // Lưu hóa đơn
+                        _context.HoaDons.Add(hoaDon);
+                _context.SaveChanges();
 
-    return RedirectToAction("Index");
-}
+                return RedirectToAction("Index");
+            }
 
         public async Task<IActionResult> XacNhanThanhToan(int id)
         {
@@ -229,6 +229,70 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             return RedirectToAction("Index"); // Quay lại danh sách hóa đơn
         }
+        public async Task<IActionResult> ExportPdf(int id)
+            {
+                QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+                var hoaDon = await _context.HoaDons
+                    .Include(h => h.KhachThue)
+                    .Include(h => h.PhongTro)
+                        .ThenInclude(pt => pt.ToaNha)
+                            .ThenInclude(tn => tn.ChuTro)
+                    .FirstOrDefaultAsync(h => h.MaHoaDon == id);
 
+                if (hoaDon == null)
+                    return NotFound();
+
+                var pdfBytes = HoaDonPdfGenerator.Generate(hoaDon);
+                return File(pdfBytes, "application/pdf", $"HoaDon_{hoaDon.MaHoaDon}.pdf");
+            }
+
+        // GET: HoaDon/Edit/5
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var hoaDon = await _context.HoaDons
+                .Include(h => h.KhachThue)
+                .Include(h => h.PhongTro)
+                .FirstOrDefaultAsync(h => h.MaHoaDon == id);
+            if (hoaDon == null)
+                return NotFound();
+            // Có thể truyền thêm ViewBag nếu cần
+            return View(hoaDon);
+        }
+
+        // POST: HoaDon/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(HoaDon hoaDon)
+        {
+            if (!ModelState.IsValid)
+                return View(hoaDon);
+            var existing = await _context.HoaDons.FindAsync(hoaDon.MaHoaDon);
+            if (existing == null)
+                return NotFound();
+            // Cập nhật các trường cần thiết
+            existing.TienDien = hoaDon.TienDien;
+            existing.TienNuoc = hoaDon.TienNuoc;
+            existing.TienPhong = hoaDon.TienPhong;
+            existing.TienDichVu = hoaDon.TienDichVu;
+            existing.TongTien = hoaDon.TongTien;
+            existing.TrangThai = hoaDon.TrangThai;
+            // ... có thể cập nhật thêm các trường khác nếu cần
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        // POST: HoaDon/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var hoaDon = await _context.HoaDons.FindAsync(id);
+            if (hoaDon == null)
+                return NotFound();
+            _context.HoaDons.Remove(hoaDon);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
     }
 }
