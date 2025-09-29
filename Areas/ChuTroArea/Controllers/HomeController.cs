@@ -56,7 +56,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             data.TongSoToaNha = toaNhas.Count;
             data.TongSoPhongTro = toaNhas.Sum(t => t.PhongTros.Count);
-            data.TongSoPhongDaThue = toaNhas.Sum( t => t.PhongTros.Count(p => p.TrangThai == "Đã thuê"));
+            data.TongSoPhongDaThue = toaNhas.Sum( t => t.PhongTros.Count(p => p.TrangThai == "Đã Thuê"));
 
             // Lấy mã phòng của các tòa nhà
             var maPhongs = toaNhas.SelectMany(t => t.PhongTros.Select(p => p.MaPhong)).ToList();

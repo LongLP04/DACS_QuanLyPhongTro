@@ -263,6 +263,14 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             if (chiSoDienNuoc == null)
                 return NotFound();
 
+            // Kiểm tra chỉ số đã được in ra hóa đơn chưa
+            bool daCoHoaDon = await _context.HoaDons.AnyAsync(hd => hd.MaChiSo == chiSoDienNuoc.MaChiSo);
+            if (daCoHoaDon)
+            {
+                TempData["Error"] = "Chỉ số này đã được in ra hóa đơn và được xác nhận bởi khách thuê, vui lòng không sửa !";
+                return RedirectToAction("Index");
+            }
+
             var currentChuTroEmail = User.Identity.Name;
             var currentChuTro = await _context.ChuTros
                 .Include(c => c.ToaNhas)

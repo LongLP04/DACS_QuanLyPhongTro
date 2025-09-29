@@ -4,6 +4,8 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
+
+
 @{
     var totalRecords = Model?.Count() ?? 0;
     var thisMonthRecords = Model?.Count(c => c.NgayGhi.Month == DateTime.Now.Month && c.NgayGhi.Year == DateTime.Now.Year) ?? 0;
@@ -12,6 +14,36 @@
 }
 
 <div class="content-header px-2 px-md-3 pt-1 pb-0">
+@if (TempData["Error"] != null)
+{
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="errorModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Thông báo lỗi
+                    </h5>
+                    <a>
+                        <h7>
+                            Nhấn ESC để tắt
+                        </h7>
+                    </a>
+                </div>
+                <div class="modal-body" style="font-weight: bold;">
+                    @TempData["Error"]
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        });
+    </script>
+}
+
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h2 class="h4 mb-0">@ViewData["Title"]</h2>
         <div class="d-flex align-items-center gap-2">
@@ -88,14 +120,18 @@
                         <span class="badge bg-primary-subtle text-primary border border-primary fs-6 px-2 py-1">
                             Điện tiêu thụ: <strong>@chiSo.SoDienTieuThu</strong>
                         </span>
-                        <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
-                            Nước tiêu thụ: <strong>@chiSo.SoNuocTieuThu</strong>
-                        </span>
                     </div>
                     <div class="mb-2">
                         <span class="badge bg-warning-subtle text-warning border border-warning fs-6 px-2 py-1">
                             Đơn giá điện: <strong>@chiSo.DonGiaDien.ToString("N0") VNĐ</strong>
                         </span>
+                    </div>
+                    <div class="mb-2">
+                        <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
+                            Nước tiêu thụ: <strong>@chiSo.SoNuocTieuThu</strong>
+                        </span>
+                    </div>
+                    <div class="mb-2">
                         <span class="badge bg-success-subtle text-success border border-success fs-6 px-2 py-1">
                             Đơn giá nước: <strong>@chiSo.DonGiaNuoc.ToString("N0") VNĐ</strong>
                         </span>
@@ -219,6 +255,7 @@
         backdrop-filter: blur(10px);
     }
     .csdn-card .btn {
+        margin-left: 5px;
         font-size: 0.875rem;
         font-weight: 500;
     }

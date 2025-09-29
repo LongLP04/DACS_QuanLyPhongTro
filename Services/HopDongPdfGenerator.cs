@@ -32,7 +32,7 @@ public class HopDongPdfGenerator
                     col.Item().PaddingTop(5).Text(
                         t =>
                         {
-                            t.Span("Họ và Tên: ");
+                            t.Span("Ông / Bà: ");
                             t.Span($"{chuTro?.HoTen ?? "..."}").Bold();
                         }
                     );
@@ -58,7 +58,7 @@ public class HopDongPdfGenerator
                     col.Item().PaddingTop(5).Text(
                         t =>
                         {
-                            t.Span("Họ và Tên: ");
+                            t.Span("Ông / Bà : ");
                             t.Span($"{khachThue?.HoTen ?? "..."}").Bold();
                         }
                     );

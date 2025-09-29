@@ -34,7 +34,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
                 </div>
-                <input id="searchBox" type="text" class="form-control" placeholder="Tìm theo phòng hoặc khách thuê">
+                <input id="searchBox" type="text" class="form-control" placeholder="Tìm theo tên khách hoặc số phòng">
             </div>
             <select id="sortSelect" class="form-select form-select-sm" style="width:180px;">
                 <option value="date">Sắp xếp: Ngày hẹn (Gần nhất)</option>
@@ -140,19 +140,19 @@
                     <div class="mt-2">
                         @if (appointment.TrangThai == "Pending")
                         {
-                            <span class="badge bg-warning text-dark fs-6 px-2 py-1">
+                            <span class="badge bg-warning text-dark fs-6 px-2 py-1" style = "background-color: rgba(22, 231, 220, 0.8) !important;" >
                                 <i class="fas fa-clock me-1"></i>Chờ xác nhận
                             </span>
                         }
                         else if (appointment.TrangThai == "Accepted")
                         {
-                            <span class="badge bg-success text-white fs-6 px-2 py-1">
+                            <span class="badge bg-success text-white fs-6 px-2 py-1" style = "background-color: rgba(79, 214, 25, 0.8) !important;" >
                                 <i class="fas fa-check me-1"></i>Đã chấp nhận
                             </span>
                         }
                         else if (appointment.TrangThai == "Rejected")
                         {
-                            <span class="badge bg-danger text-white fs-6 px-2 py-1">
+                            <span class="badge bg-danger text-white fs-6 px-2 py-1" style = "background-color: rgba(219, 102, 67, 0.8) !important;" >
                                 <i class="fas fa-times me-1"></i>Đã từ chối
                             </span>
                         }
@@ -258,6 +258,7 @@
     }
     
     .appointment-card .badge {
+        margin-left: 5px;
         background-color: rgba(255, 255, 255, 0.8) !important;
         backdrop-filter: blur(10px);
     }
