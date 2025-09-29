@@ -319,7 +319,22 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         {
             public string Password { get; set; }
         }
+        public async Task<IActionResult> ExportPdf(int id)
+            {
+                QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+                var hopDong = await _context.HopDongs
+                    .Include(h => h.KhachThue)
+                    .Include(h => h.PhongTro)
+                        .ThenInclude(pt => pt.ToaNha)
+                            .ThenInclude(tn => tn.ChuTro)
+                    .FirstOrDefaultAsync(h => h.MaHopDong == id);
 
+                if (hopDong == null)
+                    return NotFound();
+
+                var pdfBytes = HopDongPdfGenerator.Generate(hopDong);
+                return File(pdfBytes, "application/pdf", $"HopDong_{hopDong.MaHopDong}.pdf");
+            }
 
 
     }
