@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "Chat với chủ trọ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="chatPopup" class="position-fixed bottom-0 end-0 m-4" style="z-index:9999; display:none;">
+    <div class="toast show align-items-center text-bg-primary border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">
+                <span id="popupMsg">Bạn có tin nhắn mới từ chủ trọ!</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" id="closePopup"></button>
+        </div>
+    </div>
+</div>
+<div class="card position-fixed bottom-0 end-0 m-4 d-none" id="chatCard" style="width: 350px; z-index:10000;">
+    <div class="card-header bg-primary text-white">
+        <span id="chatWith">Chủ trọ</span>
+        <button type="button" class="btn-close float-end" aria-label="Close" id="closeChat"></button>
+    </div>
+    <div class="card-body" id="chatMessages" style="height:300px; overflow-y:auto; background:#f8f9fa;"></div>
+    <div class="card-footer">
+        <form id="chatForm" class="d-flex gap-2">
+            <input type="text" id="messageInput" class="form-control" placeholder="Nhập tin nhắn..." autocomplete="off" />
+            <button type="submit" class="btn btn-primary" id="sendBtn">Gửi</button>
+        </form>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    let connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+    let chatCard = document.getElementById('chatCard');
+    let chatMessages = document.getElementById('chatMessages');
+    let messageInput = document.getElementById('messageInput');
+    let sendBtn = document.getElementById('sendBtn');
+    let chatPopup = document.getElementById('chatPopup');
+    let closePopup = document.getElementById('closePopup');
+    let closeChat = document.getElementById('closeChat');
+    let popupMsg = document.getElementById('popupMsg');
+    let landlordId = '@ViewBag.LandlordId';
+
+    connection.start().catch(err => console.error(err.toString()));
+
+    // Nhận tin nhắn từ chủ trọ
+    connection.on("ReceiveMessage", function(senderId, message, isGroup) {
+        // Nếu chatCard đang ẩn thì hiện popup
+        if (chatCard.classList.contains('d-none')) {
+            chatPopup.style.display = 'block';
+            popupMsg.textContent = 'Bạn có tin nhắn mới từ chủ trọ!';
+        }
+        // Hiển thị tin nhắn trong khung chat nếu đang mở
+        const div = document.createElement('div');
+        div.className = 'mb-2';
+        div.innerHTML = `<span class='fw-bold text-primary'>Chủ trọ:</span> ${message}`;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+    // Khi ấn vào popup thì mở khung chat
+    chatPopup.addEventListener('click', function() {
+        chatCard.classList.remove('d-none');
+        chatPopup.style.display = 'none';
+        loadChatHistory();
+    });
+    closePopup.addEventListener('click', function(e) {
+        chatPopup.style.display = 'none';
+        e.stopPropagation();
+    });
+    closeChat.addEventListener('click', function() {
+        chatCard.classList.add('d-none');
+    });
+    // Gửi tin nhắn cho chủ trọ
+    document.getElementById('chatForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const msg = messageInput.value.trim();
+        if (!msg) return;
+        connection.invoke("SendPrivateMessage", landlordId, msg);
+        const div = document.createElement('div');
+        div.className = 'mb-2 text-end';
+        div.innerHTML = `<span class='fw-bold text-success'>Bạn:</span> ${msg}`;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        messageInput.value = '';
+    });
+    // Hàm load lịch sử chat
+    function loadChatHistory() {
+        fetch('/Identity/Chat/GetChatHistory?userId=' + landlordId)
+            .then(res => res.json())
+            .then(data => {
+                chatMessages.innerHTML = '';
+                data.forEach(m => {
+                    const div = document.createElement('div');
+                    if (m.senderId === landlordId) {
+                        div.className = 'mb-2';
+                        div.innerHTML = `<span class='fw-bold text-primary'>Chủ trọ:</span> ${m.content}`;
+                    } else {
+                        div.className = 'mb-2 text-end';
+                        div.innerHTML = `<span class='fw-bold text-success'>Bạn:</span> ${m.content}`;
+                    }
+                    chatMessages.appendChild(div);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+    }
+</script>
+@* Đã di chuyển sang Views/Phongtrocuatoi/IndexChat.cshtml *@

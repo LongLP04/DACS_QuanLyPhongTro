@@ -1,0 +1,104 @@
+@model IEnumerable<DACS_QuanLyPhongTro.Models.ChuTro>
+@{
+    ViewData["Title"] = "Chat với chủ trọ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Chat với chủ trọ</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="list-group" id="userList">
+                @foreach (var user in Model)
+                {
+                    <button type="button" class="list-group-item list-group-item-action" data-userid="@user.ApplicationUserId">
+                        <i class="fas fa-user-tie me-2"></i>@user.HoTen
+                    </button>
+                }
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <span id="chatWith">Chọn chủ trọ để bắt đầu chat</span>
+                </div>
+                <div class="card-body" id="chatMessages" style="height:350px; overflow-y:auto; background:#f8f9fa;"></div>
+                <div class="card-footer">
+                    <form id="chatForm" class="d-flex gap-2">
+                        <input type="text" id="messageInput" class="form-control" placeholder="Nhập tin nhắn..." autocomplete="off" disabled />
+                        <button type="submit" class="btn btn-primary" disabled id="sendBtn">Gửi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        let connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+        let selectedUserId = null;
+        const userList = document.getElementById('userList');
+        const chatWith = document.getElementById('chatWith');
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        // Kết nối SignalR
+        connection.start().then(() => {
+            console.log("Đã kết nối SignalR");
+        }).catch(err => console.error(err.toString()));
+
+        // Nhận tin nhắn
+        connection.on("ReceiveMessage", function(senderId, message) {
+            const div = document.createElement('div');
+            div.className = 'mb-2';
+            div.innerHTML = `<span class='fw-bold'>${senderId === selectedUserId ? 'Chủ trọ' : 'Bạn'}:</span> ${message}`;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+
+        // Chọn chủ trọ để chat
+        userList.addEventListener('click', function(e) {
+            const btn = e.target.closest('button[data-userid]');
+            if (!btn) return;
+
+            selectedUserId = btn.getAttribute('data-userid');
+            chatWith.textContent = 'Chat với ' + btn.textContent.trim();
+            messageInput.disabled = false;
+            sendBtn.disabled = false;
+            loadChatHistory();
+        });
+
+        // Hàm load lịch sử chat
+        function loadChatHistory() {
+            if (!selectedUserId) return;
+            fetch('/Phongtrocuatoi/GetChatHistory?userId=' + selectedUserId)
+                .then(res => res.json())
+                .then(data => {
+                    chatMessages.innerHTML = '';
+                    data.forEach(m => {
+                        const div = document.createElement('div');
+                        if (m.senderId === selectedUserId) {
+                            div.innerHTML = `<span class='fw-bold'>Chủ trọ:</span> ${m.content}`;
+                        } else {
+                            div.className = 'text-end';
+                            div.innerHTML = `<span class='fw-bold'>Bạn:</span> ${m.content}`;
+                        }
+                        chatMessages.appendChild(div);
+                    });
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                });
+        }
+
+        // Gửi tin nhắn
+        document.getElementById('chatForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const msg = messageInput.value.trim();
+            if (!msg || !selectedUserId) return;
+            connection.invoke("SendPrivateMessage", selectedUserId, msg);
+            messageInput.value = '';
+        });
+    </script>
+}

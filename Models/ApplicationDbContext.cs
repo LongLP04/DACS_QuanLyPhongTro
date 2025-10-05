@@ -26,6 +26,7 @@ namespace DACS_QuanLyPhongTro.Models
         public DbSet<PhieuHienTrangNhanPhong> PhieuHienTrangNhanPhongs { get; set; } = null!;
         public DbSet<LichHen> LichHen { get; set; } 
         public DbSet<Notification> Notifications { get; set; } 
+        public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -94,7 +95,7 @@ namespace DACS_QuanLyPhongTro.Models
             modelBuilder.Entity<PhongTro>()
                 .Property(p => p.DienTich)
                 .HasColumnType("decimal(15,2)");
-            modelBuilder.Entity<ChiSoDienNuoc>()    
+            modelBuilder.Entity<ChiSoDienNuoc>()
                 .Property(c => c.ChiSoDienCu)
                 .HasColumnType("decimal(10,2)");
             modelBuilder.Entity<ChiSoDienNuoc>()

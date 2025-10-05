@@ -53,6 +53,9 @@ else
             <a asp-controller="PhieuHienTrang" asp-action="XemPhieu" class="btn btn-info btn-lg shadow">
                 <i class="fas fa-clipboard-check mr-2"></i> Xác nhận hiện trạng
             </a>
+            <a asp-controller="Phongtrocuatoi" asp-action="IndexChat" class="btn btn-info btn-lg shadow">
+                <i class="fas fa-comments mr-2"></i> Chat với chủ trọ
+            </a>
         </div>
 
         <!-- Thông tin chi tiết -->
@@ -232,3 +235,103 @@ else
         menu.classList.toggle('show');
     });
 </script>
+
+@if (Model?.ToaNha?.ChuTro?.ApplicationUserId != null)
+{
+    <div id="chatPopup" class="position-fixed bottom-0 end-0 m-4" style="position:fixed !important; z-index:2147483647 !important; display:none; border: 3px solid red !important; background: yellow !important; color: black !important; padding: 16px; min-width: 300px; min-height: 60px; font-size: 20px; font-weight: bold;">
+        <div class="toast show align-items-center text-bg-primary border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <span id="popupMsg">Bạn có tin nhắn mới từ chủ trọ!</span>
+    <div style="margin-top:8px;">[DEBUG] Đây là popup chat!</div>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" id="closePopup"></button>
+            </div>
+        </div>
+    </div>
+    <div class="card position-fixed bottom-0 end-0 m-4 d-none" id="chatCard" style="width: 350px; z-index:10000;">
+        <div class="card-header bg-primary text-white">
+            <span id="chatWith">Chủ trọ</span>
+            <button type="button" class="btn-close float-end" aria-label="Close" id="closeChat"></button>
+        </div>
+        <div class="card-body" id="chatMessages" style="height:300px; overflow-y:auto; background:#f8f9fa;"></div>
+        <div class="card-footer">
+            <form id="chatForm" class="d-flex gap-2">
+                <input type="text" id="messageInput" class="form-control" placeholder="Nhập tin nhắn..." autocomplete="off" />
+                <button type="submit" class="btn btn-primary" id="sendBtn">Gửi</button>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatCard = document.getElementById('chatCard');
+            const chatMessages = document.getElementById('chatMessages');
+            const messageInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const chatPopup = document.getElementById('chatPopup');
+            const closePopup = document.getElementById('closePopup');
+            const closeChat = document.getElementById('closeChat');
+            const popupMsg = document.getElementById('popupMsg');
+            const landlordId = '@Model.ToaNha.ChuTro.ApplicationUserId';
+
+            if (!window.signalR) {
+                console.error('SignalR library not loaded!');
+                return;
+            }
+            const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+
+            connection.start().then(() => {
+                console.log('[SignalR] Connected');
+            }).catch(err => {
+                console.error('[SignalR] Connection error:', err);
+            });
+
+            // Nhận tin nhắn từ chủ trọ
+            connection.on("ReceiveMessage", function(senderId, message, isGroup) {
+                console.log('[SignalR] ReceiveMessage:', senderId, message, isGroup);
+                console.log('[SignalR] chatCard d-none:', chatCard.classList.contains('d-none'));
+                // Nếu chatCard đang ẩn thì hiện popup
+                if (chatCard.classList.contains('d-none')) {
+                    chatPopup.style.display = 'block';
+                    popupMsg.textContent = 'Bạn có tin nhắn mới từ chủ trọ!';
+                    console.log('[SignalR] Hiện popup!');
+                }
+                // Hiển thị tin nhắn trong khung chat nếu đang mở
+                const div = document.createElement('div');
+                div.className = 'mb-2';
+                div.innerHTML = `<span class='fw-bold text-primary'>Chủ trọ:</span> ${message}`;
+                chatMessages.appendChild(div);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+
+            // Khi ấn vào popup thì mở khung chat
+            chatPopup.addEventListener('click', function() {
+                chatCard.classList.remove('d-none');
+                chatPopup.style.display = 'none';
+            });
+            closePopup.addEventListener('click', function(e) {
+                chatPopup.style.display = 'none';
+                e.stopPropagation();
+            });
+            closeChat.addEventListener('click', function() {
+                chatCard.classList.add('d-none');
+            });
+            // Gửi tin nhắn cho chủ trọ
+            document.getElementById('chatForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const msg = messageInput.value.trim();
+                if (!msg) return;
+                connection.invoke("SendPrivateMessage", landlordId, msg).catch(err => {
+                    console.error('[SignalR] Send error:', err);
+                });
+                const div = document.createElement('div');
+                div.className = 'mb-2 text-end';
+                div.innerHTML = `<span class='fw-bold text-success'>Bạn:</span> ${msg}`;
+                chatMessages.appendChild(div);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                messageInput.value = '';
+            });
+        });
+    </script>
+}

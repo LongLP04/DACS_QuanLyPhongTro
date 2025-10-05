@@ -1,3 +1,5 @@
+using DACS_QuanLyPhongTro.Hubs;
+
 using DACS_QuanLyPhongTro.Models;
 using DACS_QuanLyPhongTro.Models.Repositories;
 using DACS_QuanLyPhongTro.Services;
@@ -6,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSignalR();
+// Đăng ký CustomUserIdProvider cho SignalR
+builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, DACS_QuanLyPhongTro.CustomUserIdProvider>();
 // Bật Session
 builder.Services.AddSession(options =>
 {
@@ -56,5 +61,8 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Map SignalR hub
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();
