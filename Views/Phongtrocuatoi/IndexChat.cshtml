@@ -53,8 +53,12 @@
         // Nhận tin nhắn
         connection.on("ReceiveMessage", function(senderId, message) {
             const div = document.createElement('div');
-            div.className = 'mb-2';
-            div.innerHTML = `<span class='fw-bold'>${senderId === selectedUserId ? 'Chủ trọ' : 'Bạn'}:</span> ${message}`;
+            div.className = 'chat-line';
+            if (senderId === selectedUserId) {
+                div.innerHTML = `<div class='message them'><strong>Chủ trọ:</strong> ${message}</div>`;
+            } else {
+                div.innerHTML = `<div class='message you'><strong>Bạn:</strong> ${message}</div>`;
+            }
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         });
@@ -80,11 +84,11 @@
                     chatMessages.innerHTML = '';
                     data.forEach(m => {
                         const div = document.createElement('div');
+                        div.className = 'chat-line';
                         if (m.senderId === selectedUserId) {
-                            div.innerHTML = `<span class='fw-bold'>Chủ trọ:</span> ${m.content}`;
+                            div.innerHTML = `<div class='message them'><strong>Chủ trọ:</strong> ${m.content}</div>`;
                         } else {
-                            div.className = 'text-end';
-                            div.innerHTML = `<span class='fw-bold'>Bạn:</span> ${m.content}`;
+                            div.innerHTML = `<div class='message you'><strong>Bạn:</strong> ${m.content}</div>`;
                         }
                         chatMessages.appendChild(div);
                     });
@@ -102,3 +106,30 @@
         });
     </script>
 }
+<style>
+    .message {
+        max-width: 70%;
+        padding: 8px 12px;
+        border-radius: 16px;
+        margin-bottom: 6px;
+        display: inline-block;
+        word-wrap: break-word;
+    }
+    .message.you {
+        background-color: #007bff;
+        color: white;
+        align-self: flex-end;
+        border-bottom-right-radius: 4px;
+    }
+    .message.them {
+        background-color: #e9ecef;
+        color: #212529;
+        align-self: flex-start;
+        border-bottom-left-radius: 4px;
+    }
+    .chat-line {
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+

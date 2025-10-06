@@ -43,7 +43,33 @@ namespace DACS_QuanLyPhongTro.Controllers
             return View("IndexChat", chuTroList);
         }
 
-    
+        [HttpGet]
+    public async Task<IActionResult> GetChatHistory(string userId)
+    {
+        if (string.IsNullOrEmpty(userId))
+            return BadRequest("Thiếu userId.");
+
+        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (currentUserId == null)
+            return Unauthorized("Chưa đăng nhập.");
+
+        var messages = await _context.Messages
+            .Where(m =>
+                (m.SenderId == currentUserId && m.ReceiverId == userId) ||
+                (m.SenderId == userId && m.ReceiverId == currentUserId))
+            .OrderBy(m => m.Timestamp)
+            .Select(m => new
+            {
+                senderId = m.SenderId,
+                receiverId = m.ReceiverId,
+                content = m.Content,
+                timestamp = m.Timestamp.ToString("dd/MM/yyyy HH:mm")
+            })
+            .ToListAsync();
+
+        return Json(messages);
+    }
+
         private readonly ApplicationDbContext _context;
 
         public PhongtrocuatoiController(ApplicationDbContext context)

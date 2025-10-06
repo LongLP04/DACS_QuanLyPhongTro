@@ -1,30 +1,42 @@
 @model IEnumerable<DACS_QuanLyPhongTro.Models.KhachThue>
+
 @{
     ViewData["Title"] = "Chat với khách thuê";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
+
 <div class="container py-4">
     <h2 class="mb-4">Chat với khách thuê</h2>
     <div class="row">
+        <!-- Danh sách khách thuê -->
         <div class="col-md-4">
             <div class="list-group" id="userList">
                 @foreach (var user in Model)
                 {
-                    <button type="button" class="list-group-item list-group-item-action" data-userid="@user.ApplicationUserId">
+                    <button type="button" class="list-group-item list-group-item-action"
+                            data-userid="@user.ApplicationUserId"
+                            data-hotenkhach="@user.HoTen">
                         <i class="fas fa-user me-2"></i>@user.HoTen
                     </button>
                 }
             </div>
         </div>
+
+        <!-- Khung chat -->
         <div class="col-md-8">
-            <div class="card">
+            <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <span id="chatWith">Chọn khách thuê để bắt đầu chat</span>
                 </div>
-                <div class="card-body" id="chatMessages" style="height:350px; overflow-y:auto; background:#f8f9fa;"></div>
+
+                <div class="card-body d-flex flex-column" id="chatMessages"
+                     style="height:400px; overflow-y:auto; background:#f8f9fa; padding:12px;">
+                </div>
+
                 <div class="card-footer">
                     <form id="chatForm" class="d-flex gap-2">
-                        <input type="text" id="messageInput" class="form-control" placeholder="Nhập tin nhắn..." autocomplete="off" disabled />
+                        <input type="text" id="messageInput" class="form-control"
+                               placeholder="Nhập tin nhắn..." autocomplete="off" disabled />
                         <button type="submit" class="btn btn-primary" disabled id="sendBtn">Gửi</button>
                     </form>
                 </div>
@@ -32,71 +44,104 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
     <script>
         let connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
         let selectedUserId = null;
+        let selectedUserName = "";
+
         const userList = document.getElementById('userList');
         const chatWith = document.getElementById('chatWith');
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
+
         // Kết nối SignalR
-        messageInput.disabled = true;
-        sendBtn.disabled = true;
         connection.start().then(() => {
-            // Cho phép nhập và gửi khi đã kết nối
-            if (selectedUserId) {
-                messageInput.disabled = false;
-                sendBtn.disabled = false;
-            }
-        }).catch(err => {
-            messageInput.disabled = true;
-            sendBtn.disabled = true;
-            console.error(err.toString());
-        });
+            console.log("✅ Đã kết nối SignalR");
+        }).catch(err => console.error(err.toString()));
+
         // Nhận tin nhắn
-        connection.on("ReceiveMessage", function(senderId, message, isGroup) {
+        connection.on("ReceiveMessage", function (senderId, message) {
+            if (!selectedUserId) return;
+
             const div = document.createElement('div');
-            div.className = 'mb-2';
-            div.innerHTML = `<span class='fw-bold'>${senderId === selectedUserId ? 'Khách' : 'Bạn'}:</span> ${message}`;
+            div.className = 'chat-line';
+
+            // Nếu là khách thuê đang chat gửi đến
+            if (senderId === selectedUserId) {
+                div.innerHTML = `
+                    <div class='message them'>
+                        <strong>${selectedUserName}:</strong> ${message}
+                    </div>`;
+            } else {
+                // Tin mình (chủ trọ) gửi
+                div.innerHTML = `
+                    <div class='message you'>
+                        <strong>Tôi:</strong> ${message}
+                    </div>`;
+            }
+
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         });
-        // Chọn khách thuê để chat
-        userList.addEventListener('click', function(e) {
-            if (e.target.closest('button[data-userid]')) {
-                selectedUserId = e.target.closest('button').getAttribute('data-userid');
-                chatWith.textContent = 'Chat với khách thuê';
-                messageInput.disabled = false;
-                sendBtn.disabled = false;
-                loadChatHistory();
-            }
+
+        // Khi chọn khách thuê
+        userList.addEventListener('click', function (e) {
+            const btn = e.target.closest('button[data-userid]');
+            if (!btn) return;
+
+            selectedUserId = btn.getAttribute('data-userid');
+            selectedUserName = btn.getAttribute('data-hotenkhach');
+            chatWith.textContent = 'Chat với ' + selectedUserName;
+
+            messageInput.disabled = false;
+            sendBtn.disabled = false;
+
+            loadChatHistory();
         });
-        // Hàm load lịch sử chat
+
+        // Load lịch sử chat
         function loadChatHistory() {
             if (!selectedUserId) return;
+
             fetch('/ChuTroArea/Chat/GetChatHistory?userId=' + selectedUserId)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error("Không thể tải lịch sử chat");
+                    return res.json();
+                })
                 .then(data => {
                     chatMessages.innerHTML = '';
                     data.forEach(m => {
                         const div = document.createElement('div');
+                        div.className = 'chat-line';
+
                         if (m.senderId === selectedUserId) {
-                            div.className = 'mb-2';
-                            div.innerHTML = `<span class='fw-bold'>Khách:</span> ${m.content}`;
+                            // Tin nhắn của khách thuê
+                            div.innerHTML = `
+                                <div class='message them'>
+                                    <strong>${selectedUserName}:</strong> ${m.content}
+                                </div>`;
                         } else {
-                            div.className = 'mb-2 text-end';
-                            div.innerHTML = `<span class='fw-bold'>Bạn:</span> ${m.content}`;
+                            // Tin nhắn của chủ trọ
+                            div.innerHTML = `
+                                <div class='message you'>
+                                    <strong>Tôi:</strong> ${m.content}
+                                </div>`;
                         }
+
                         chatMessages.appendChild(div);
                     });
                     chatMessages.scrollTop = chatMessages.scrollHeight;
-                });
+                })
+                .catch(err => console.error(err));
         }
+
         // Gửi tin nhắn
-        document.getElementById('chatForm').addEventListener('submit', function(e) {
+        document.getElementById('chatForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const msg = messageInput.value.trim();
             if (!msg || !selectedUserId || connection.state !== 'Connected') return;
@@ -104,4 +149,41 @@
             messageInput.value = '';
         });
     </script>
+
+    <style>
+        #chatMessages {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-line {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 8px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            display: inline-block;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .message.you {
+            align-self: flex-end;
+            background-color: #007bff;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.them {
+            align-self: flex-start;
+            background-color: #e9ecef;
+            color: #212529;
+            border-bottom-left-radius: 4px;
+        }
+    </style>
 }
