@@ -1,5 +1,4 @@
 using DACS_QuanLyPhongTro.Hubs;
-
 using DACS_QuanLyPhongTro.Models;
 using DACS_QuanLyPhongTro.Models.Repositories;
 using DACS_QuanLyPhongTro.Services;
@@ -34,6 +33,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.AddScoped<IPhongTroRepository, EFPhongTroRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+//Connect VNPay API
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 var app = builder.Build();
 
@@ -44,6 +45,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -29,7 +29,16 @@
                             <img src="@Url.Content("~/images/" + pt.TenPhuongThuc + ".png")" alt="@pt.TenPhuongThuc" class="payment-method-img" />
                             <p>@pt.TenPhuongThuc</p>
                         </div>
+                        
+                        <form method="post" action="@Url.Action("CreatePaymentUrlVnpay", "Payment")" style="display:inline">
+                                <input type="hidden" name="invoiceId" value="@Model.MaHoaDon" />
+                                <button type="submit" class="btn btn-info btn-sm btn-hover-effect rounded-pill px-3 shadow-sm ms-2">
+                                    Thanh toán VNPay
+                                </button>
+                            </form>
+                        
                     }
+                    
                 </div>
             </div>
 
