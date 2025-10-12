@@ -1,74 +1,82 @@
 🏠 TroquanhtaWebsite
 
-Hệ thống Quản lý Phòng trọ giúp chủ trọ và khách thuê dễ dàng quản lý, vận hành, và thanh toán phòng trọ theo cách hiện đại – minh bạch – tiện lợi.
+Một hệ thống web giúp chủ trọ và khách thuê quản lý, vận hành, và thanh toán phòng trọ theo cách hiện đại – minh bạch – tiện lợi.
+Dự án được xây dựng phục vụ cho môn DACS&DACN – HUTECH.
 
-🔑 Tính năng chính
-1. Quản lý phòng trọ
+🚀 Tính năng chính
 
-Thêm, sửa, xóa thông tin phòng trọ và trạng thái (trống / đã thuê).
+🛏️ Quản lý phòng trọ
 
-Quản lý hình ảnh, tiện ích, và giá thuê chi tiết cho từng phòng.
+  Thêm, sửa, xóa thông tin phòng và trạng thái (trống / đã thuê)
+  
+  Quản lý hình ảnh, tiện ích và giá thuê từng phòng
 
-2. Quản lý hợp đồng & khách thuê
+📄 Quản lý hợp đồng & khách thuê
 
-Tạo, xác nhận, và lưu trữ hợp đồng thuê phòng.
+  Tạo, xác nhận, lưu trữ hợp đồng thuê
+  
+  Theo dõi thông tin khách thuê, lịch sử và trạng thái hợp đồng
 
-Quản lý thông tin khách thuê, lịch sử thuê, và trạng thái hợp đồng.
+💰 Quản lý hóa đơn & thanh toán
 
-3. Quản lý hóa đơn & thanh toán
+  Tự động tạo hóa đơn định kỳ (tiền phòng, điện, nước, dịch vụ)
+  
+  Hỗ trợ VNPay và tiền mặt
+  
+  Cập nhật trạng thái & hiển thị lịch sử thanh toán minh bạch
 
-Tự động tạo hóa đơn định kỳ gồm: tiền phòng, điện, nước, dịch vụ.
+📊 Lịch sử giao dịch & xác nhận
 
-Hỗ trợ thanh toán trực tuyến (VNPay) hoặc tiền mặt.
+  Lưu trữ chi tiết lịch sử thanh toán của từng khách thuê
+  
+  Hiển thị trạng thái xác nhận bởi chủ trọ
 
-Cập nhật trạng thái hóa đơn, hiển thị lịch sử thanh toán minh bạch.
+📢 Quản lý sự cố & thông báo
 
-4. Lịch sử giao dịch & xác nhận
+  Gửi và xử lý yêu cầu sự cố phòng trọ
+  
+  Tự động thông báo nhắc thanh toán, lịch hẹn và xác nhận hợp đồng
 
-Lưu trữ toàn bộ lịch sử thanh toán cho từng khách thuê.
+👥 Phân quyền người dùng
 
-Hiển thị trạng thái xác nhận giao dịch bởi chủ trọ.
+  Hai vai trò: Chủ trọ, Khách thuê
+  
+  Giao diện dashboard riêng cho từng loại người dùng
 
-5. Quản lý sự cố & thông báo
+💻 Giao diện hiện đại, thân thiện
 
-Gửi và xử lý yêu cầu sự cố từ khách thuê.
+  Thiết kế responsive, hoạt động tốt trên mọi thiết bị
+  
+  Tối ưu trải nghiệm người dùng với bố cục rõ ràng
 
-Hệ thống tự động gửi thông báo nhắc nhở thanh toán và xác nhận hợp đồng.
+🧰 Công nghệ sử dụng
 
-6. Tích hợp VNPay
+  Ngôn ngữ: C# 
+  
+  Framework: .NET / Flask 
+  
+  Database: SQL Server / MySQL
+  
+  Thanh toán: VNPay Sandbox API
+  
+  Frontend: HTML, CSS, JavaScript (Bootstrap)
 
-Thanh toán hóa đơn trực tuyến qua VNPay, cập nhật trạng thái tự động.
+🏗️ Cấu trúc thư mục (ví dụ)
+  ├── /src
+  │   ├── /models
+  │   ├── /controllers
+  │   ├── /views
+  │   └── /static
+  ├── /database
+  │   └── phongtro_db.sql
+  └── README.md
 
-Ghi nhận đầy đủ lịch sử giao dịch từ cả hai hình thức: tiền mặt & VNPay.
+⚙️ Cách chạy dự án
 
-7. Phân quyền người dùng
-
-Ba nhóm người dùng: Chủ trọ, Khách thuê, và Quản trị viên.
-
-Giao diện và chức năng riêng biệt cho từng vai trò.
-
-8. Giao diện hiện đại & thân thiện
-
-Thiết kế responsive, dễ sử dụng trên mọi thiết bị.
-
-Tối ưu trải nghiệm người dùng với bố cục rõ ràng và thao tác trực quan.
-
-🧭 Hướng dẫn sử dụng
-
-Đăng nhập bằng tài khoản tương ứng với vai trò.
-
-Quản lý phòng, hợp đồng, hóa đơn, và sự cố theo quyền hạn.
-
-Thực hiện thanh toán hóa đơn bằng VNPay hoặc tiền mặt.
-
-Theo dõi lịch sử giao dịch, xác nhận hợp đồng, và nhận thông báo hệ thống.
-
-⚙️ Công nghệ sử dụng (gợi ý thêm nếu bạn muốn hiển thị trên GitHub)
-
-Frontend: HTML, CSS, JavaScript
-
-Backend: PHP / C# / Python (tùy ngôn ngữ bạn dùng)
-
-Database: MySQL / SQL Server
-
-Payment Gateway: VNPay Sandbox
+  Clone repo về máy
+  
+  Cấu hình kết nối database trong file cấu hình
+  
+  Cài đặt dependencies cần thiết
+  
+  Chạy dự án và truy cập trình duyệt tại http://localhost:xxxx
