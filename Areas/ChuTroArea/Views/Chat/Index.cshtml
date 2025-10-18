@@ -104,6 +104,21 @@
             loadChatHistory();
         });
 
+        // Nếu server đã cung cấp SelectedUserId/SelectedUserName, auto chọn
+        (function autoSelectFromServer() {
+            const preUserId = '@(ViewData["SelectedUserId"] ?? "")';
+            const preUserName = '@(ViewData["SelectedUserName"] ?? "")';
+            if (!preUserId) return;
+            const btn = userList.querySelector(`button[data-userid="${preUserId}"]`);
+            if (btn) {
+                btn.click();
+            } else if (preUserName) {
+                // nếu không tìm thấy bởi id, thử tìm theo tên
+                const btnByName = Array.from(userList.querySelectorAll('button[data-hotenkhach]')).find(b => b.getAttribute('data-hotenkhach') === preUserName);
+                if (btnByName) btnByName.click();
+            }
+        })();
+
         // Load lịch sử chat
         function loadChatHistory() {
             if (!selectedUserId) return;

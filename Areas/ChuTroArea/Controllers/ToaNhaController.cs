@@ -29,6 +29,81 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             _logger = logger;
         }
 
+        // GET: ChuTroArea/ToaNha/RoomsByBuilding/5
+        public async Task<IActionResult> RoomsByBuilding(int id)
+        {
+            var maChuTro = await GetMaChuTroAsync();
+            if (maChuTro == null)
+            {
+                _logger.LogWarning("Unauthorized access attempt to RoomsByBuilding. MaChuTro null.");
+                return Unauthorized();
+            }
+
+            var toaNha = await _context.ToaNhas
+                .Include(t => t.PhongTros)
+                .FirstOrDefaultAsync(t => t.MaToaNha == id && t.MaChuTro == maChuTro.Value);
+
+            if (toaNha == null)
+            {
+                _logger.LogWarning("RoomsByBuilding: ToaNha not found or does not belong to current ChuTro. Id={Id}, MaChuTro={MaChuTro}", id, maChuTro);
+                return NotFound();
+            }
+
+            var vm = new DACS_QuanLyPhongTro.Models.ViewModels.RoomsByBuildingViewModel
+            {
+                MaToaNha = toaNha.MaToaNha,
+                TenToaNha = toaNha.TenToaNha,
+                DiaChi = toaNha.DiaChi
+            };
+
+            var grouped = new Dictionary<int, List<DACS_QuanLyPhongTro.Models.ViewModels.PhongTroSummary>>();
+
+            var roomsOrdered = toaNha.PhongTros.OrderByDescending(p => p.Tang).ToList();
+            foreach (var p in roomsOrdered)
+            {
+                // find related entities
+                var latestHopDong = await _context.HopDongs
+                    .Where(h => h.MaPhong == p.MaPhong)
+                    .OrderByDescending(h => h.NgayKetThuc)
+                    .FirstOrDefaultAsync();
+
+                var latestChiSo = await _context.ChiSoDienNuocs
+                    .Where(c => c.MaPhong == p.MaPhong)
+                    .OrderByDescending(c => c.NgayGhi)
+                    .FirstOrDefaultAsync();
+
+                DACS_QuanLyPhongTro.Models.HoaDon? latestHoaDon = null;
+                if (latestChiSo != null)
+                {
+                    latestHoaDon = await _context.HoaDons
+                        .Where(hd => hd.MaChiSo == latestChiSo.MaChiSo)
+                        .OrderByDescending(hd => hd.NgayLap)
+                        .FirstOrDefaultAsync();
+                }
+
+                var summary = new DACS_QuanLyPhongTro.Models.ViewModels.PhongTroSummary
+                {
+                    MaPhong = p.MaPhong,
+                    SoPhong = p.SoPhong,
+                    GiaThue = p.GiaThue,
+                    TrangThai = p.TrangThai,
+                    Hinhanh = p.Hinhanh,
+                    KhachThueName = p.KhachThue != null ? p.KhachThue.HoTen : string.Empty,
+                    KhachThueApplicationUserId = p.KhachThue != null ? p.KhachThue.ApplicationUserId : null,
+                    MaHopDong = latestHopDong?.MaHopDong,
+                    LatestChiSoId = latestChiSo?.MaChiSo,
+                    LatestHoaDonId = latestHoaDon?.MaHoaDon
+                };
+
+                if (!grouped.ContainsKey(p.Tang)) grouped[p.Tang] = new List<DACS_QuanLyPhongTro.Models.ViewModels.PhongTroSummary>();
+                grouped[p.Tang].Add(summary);
+            }
+
+            vm.Floors = grouped;
+
+            return View("RoomsByBuilding", vm);
+        }
+
         [HttpPost]
         public async Task<IActionResult> VerifyPassword([FromBody] PasswordVerificationModel model)
         {
@@ -40,6 +115,10 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                     return Json(new { success = false, message = "Người dùng không hợp lệ." });
                 }
 
+                if (string.IsNullOrEmpty(model?.Password))
+                {
+                    return Json(new { success = false, message = "Password is required." });
+                }
                 var result = await _userManager.CheckPasswordAsync(user, model.Password);
                 if (result)
                 {
@@ -83,7 +162,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         {
             string hoTen = "Chủ trọ";
 
-            if (User.Identity.IsAuthenticated)
+            if (User != null && User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var email = User.FindFirstValue(ClaimTypes.Email);
                 if (!string.IsNullOrEmpty(email))
@@ -219,7 +298,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
                 ModelState.AddModelError(string.Empty, "Đã xảy ra lỗi khi cập nhật tòa nhà.");
             }
@@ -306,6 +385,6 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
     public class PasswordVerificationModel
     {
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 }

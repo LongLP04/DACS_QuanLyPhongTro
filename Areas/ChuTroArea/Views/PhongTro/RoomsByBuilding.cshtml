@@ -1,0 +1,36 @@
+@model DACS_QuanLyPhongTro.Models.ViewModels.RoomsByBuildingViewModel
+@{
+    ViewData["Title"] = "Phòng trọ theo tòa nhà";
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>@Model.TenToaNha</h2>
+    <p><strong>Địa chỉ:</strong> @Model.DiaChi</p>
+
+    @if (Model.Floors == null || !Model.Floors.Any())
+    {
+        <div class="alert alert-info">Không có phòng nào trong tòa nhà này.</div>
+    }
+    else
+    {
+        foreach (var floor in Model.Floors.OrderByDescending(k => k.Key))
+        {
+            <div class="card mb-3">
+                <div class="card-header bg-secondary text-white">Tầng @floor.Key</div>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach (var room in floor.Value)
+                        {
+                            <div class="col-md-3 mb-3">
+                                @await Html.PartialAsync("~/Views/Shared/_RoomCard.cshtml", room)
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách phòng</a>
+</div>

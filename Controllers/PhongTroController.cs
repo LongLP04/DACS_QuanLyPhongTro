@@ -89,6 +89,8 @@ namespace DACS_QuanLyPhongTro.Controllers
             }
             return View(phongTro);
         }
+
+        // RoomsByBuilding moved to ChuTroArea ToaNhaController to enforce owner scoping
         [Authorize(Roles = "KhachThue")]
         [HttpPost]
         public async Task<IActionResult> BookAppointment([FromBody] AppointmentRequest request)

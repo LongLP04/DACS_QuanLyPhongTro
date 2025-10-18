@@ -1,0 +1,78 @@
+@model dynamic
+@{
+    // Use dynamic model so partial can be reused for PhongTro and PhongTroSummary
+    var currentArea = (string?)ViewContext.RouteData.Values["area"];
+    var areaRoute = string.IsNullOrEmpty(currentArea) ? null : currentArea;
+    int? maPhong = null;
+    string soPhong = "";
+    decimal giaThue = 0;
+    string trangThai = "";
+    string hinhanh = null;
+    string khachThueName = string.Empty;
+
+    try { maPhong = (int?)Model.MaPhong; } catch { }
+    try { soPhong = (string?)Model.SoPhong ?? string.Empty; } catch { }
+    try { giaThue = (decimal?)(Model.GiaThue) ?? 0m; } catch { }
+    try { trangThai = (string?)Model.TrangThai ?? string.Empty; } catch { }
+    try { hinhanh = (string?)Model.Hinhanh; } catch { }
+    try { khachThueName = (string?)(Model.KhachThueName ?? Model.KhachThue?.HoTen ?? Model.KhachThue?.Hoten) ?? string.Empty; } catch { }
+    var trimmedStatus = (trangThai ?? string.Empty).Trim();
+    var isEmptyStatus = string.IsNullOrEmpty(trimmedStatus) || string.Equals(trimmedStatus, "Trống", System.StringComparison.OrdinalIgnoreCase);
+    var isRented = !isEmptyStatus;
+
+    int? maHopDong = null;
+    int? latestChiSoId = null;
+    int? latestHoaDonId = null;
+    try { maHopDong = (int?)Model.MaHopDong; } catch { }
+    try { latestChiSoId = (int?)Model.LatestChiSoId; } catch { }
+    try { latestHoaDonId = (int?)Model.LatestHoaDonId; } catch { }
+
+    var detailsUrl = Url.Action("Details", "PhongTro", new { id = maPhong, area = areaRoute });
+    var imgSrc = string.IsNullOrEmpty(hinhanh) ? Url.Content("~/img/default-product.jpg") : Url.Content("~/" + hinhanh);
+}
+
+<div class="card h-100 room-card">
+    <div class="row g-0 align-items-stretch">
+        <div class="col-8">
+            <img src="@imgSrc" class="img-fluid w-100" alt="Ảnh phòng" style="height:160px;object-fit:cover;" />
+            <div class="p-3 d-flex flex-column h-100">
+                <h6 class="card-title mb-1">Số phòng : @soPhong</h6>
+                <p class="mb-1 text-muted">@giaThue.ToString("N0") VND/tháng</p>
+                <p class="mb-2 small">Trạng thái hiện tại : @trangThai</p>
+                @if (!string.IsNullOrEmpty(khachThueName) && isRented)
+                {
+                    <p class="mb-2 small text-primary">Người thuê: <strong>@khachThueName</strong></p>
+                }
+                
+            </div>
+        </div>
+        <div class="col-4 d-flex flex-column p-3">
+            <!-- Vertical button stack aligned from top to bottom -->
+            <div class="d-flex flex-column align-items-end w-100" style="gap:0.5rem;">
+                <div class="mt-auto">
+                    <a href="@detailsUrl" class="btn btn-sm btn-outline-primary" style="min-width:100px" >Chi tiết</a>
+                </div>
+                @if (!isRented)
+                {
+                    <!-- Nếu trống: chỉ hiển thị nút Hợp đồng (tạo) -->
+                    <a class="btn btn-sm btn-outline-warning" style="min-width:100px;" href="@Url.Action("Create", "HopDong", new { area = "ChuTroArea", maPhong = maPhong })">Hợp đồng</a>
+                }
+                else
+                {
+                    <!-- Nếu đã thuê: hiển thị tên khách thuê (nếu có) và các nút hành động -->
+                    <!-- Tenant name already displayed in the left column -->
+
+                    string? hoaDonUrl = latestHoaDonId != null ? Url.Action("Details", "HoaDon", new { area = "ChuTroArea", id = latestHoaDonId.Value }) : Url.Action("Create", "HoaDon", new { area = "ChuTroArea", maPhong = maPhong ?? 0 });
+                    string? hopDongUrl = maHopDong != null ? Url.Action("Details", "HopDong", new { area = "ChuTroArea", id = maHopDong.Value }) : Url.Action("Index", "HopDong", new { area = "ChuTroArea" });
+                    string? chiSoUrl = latestChiSoId != null ? Url.Action("Details", "ChiSoDienNuoc", new { area = "ChuTroArea", id = latestChiSoId.Value }) : Url.Action("Create", "ChiSoDienNuoc", new { area = "ChuTroArea", maPhong = maPhong ?? 0 });
+                    string? phieuDichVuUrl = Url.Action("Index", "PhieuDichVu", new { area = "ChuTroArea", maPhong = maPhong ?? 0 });
+                    <a class="btn btn-sm btn-outline-success" style="min-width:100px;" href="@hoaDonUrl" title="Ghi hóa đơn">Hóa đơn</a>
+                    <a class="btn btn-sm btn-outline-dark" style="min-width:100px;" href="@hopDongUrl" title="Hợp đồng">Hợp đồng</a>
+                    <a class="btn btn-sm btn-outline-dark" style="min-width:100px;" href="@chiSoUrl" title="Chỉ số điện nước">Chỉ số</a>
+                    <a class="btn btn-sm btn-outline-info" style="min-width:100px;" href="@phieuDichVuUrl" title="Đăng ký dịch vụ">Dịch vụ</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+                    <!-- Vertical button stack aligned from top to bottom -->

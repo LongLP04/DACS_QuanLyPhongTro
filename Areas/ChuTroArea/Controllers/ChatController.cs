@@ -22,7 +22,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         }
 
         // GET: ChuTroArea/Chat
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? userId = null, string? hotenkhach = null)
         {
             var user = await _userManager.GetUserAsync(User);
             // Lấy danh sách khách thuê thuộc các phòng trọ mà chủ trọ này sở hữu
@@ -35,6 +35,10 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 .Select(p => p.KhachThue)
                 .Distinct()
                 .ToListAsync();
+
+            ViewData["SelectedUserId"] = userId;
+            ViewData["SelectedUserName"] = hotenkhach;
+
             return View(khachThueList);
         }
 
