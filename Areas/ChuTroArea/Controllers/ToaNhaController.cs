@@ -41,6 +41,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             var toaNha = await _context.ToaNhas
                 .Include(t => t.PhongTros)
+                    .ThenInclude(p => p.KhachThue)
                 .FirstOrDefaultAsync(t => t.MaToaNha == id && t.MaChuTro == maChuTro.Value);
 
             if (toaNha == null)
@@ -58,28 +59,49 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             var grouped = new Dictionary<int, List<DACS_QuanLyPhongTro.Models.ViewModels.PhongTroSummary>>();
 
+            // materialize rooms and ids
             var roomsOrdered = toaNha.PhongTros.OrderByDescending(p => p.Tang).ToList();
+            var roomIds = roomsOrdered.Select(r => r.MaPhong).ToList();
+            var roomIdsNullable = roomIds.Select(i => (int?)i).ToList();
+
+            // Prefetch latest hopdong per room
+            var latestHopDongs = await _context.HopDongs
+                .Where(h => roomIdsNullable.Contains(h.MaPhong))
+                .GroupBy(h => h.MaPhong)
+                .Select(g => g.OrderByDescending(h => h.NgayKetThuc).FirstOrDefault())
+                .ToListAsync();
+
+            // Prefetch latest chi so per room
+            var latestChiSos = await _context.ChiSoDienNuocs
+                .Where(c => roomIdsNullable.Contains(c.MaPhong))
+                .GroupBy(c => c.MaPhong)
+                .Select(g => g.OrderByDescending(c => c.NgayGhi).FirstOrDefault())
+                .ToListAsync();
+
+            // Prefetch latest hoa don per room via chi so
+            var latestHoaDons = await _context.HoaDons
+                .Where(hd => hd.ChiSoDienNuoc != null && roomIdsNullable.Contains(hd.ChiSoDienNuoc.MaPhong))
+                .GroupBy(hd => hd.ChiSoDienNuoc.MaPhong)
+                .Select(g => g.OrderByDescending(hd => hd.NgayLap).FirstOrDefault())
+                .ToListAsync();
+
+            var hopDongByRoom = latestHopDongs
+                .Where(x => x != null && x.MaPhong.HasValue)
+                .ToDictionary(x => x!.MaPhong!.Value, x => x!);
+
+            var chiSoByRoom = latestChiSos
+                .Where(x => x != null)
+                .ToDictionary(x => x!.MaPhong, x => x!);
+
+            var hoaDonByRoom = latestHoaDons
+                .Where(x => x != null && x!.ChiSoDienNuoc != null)
+                .ToDictionary(x => x!.ChiSoDienNuoc!.MaPhong, x => x!);
+
             foreach (var p in roomsOrdered)
             {
-                // find related entities
-                var latestHopDong = await _context.HopDongs
-                    .Where(h => h.MaPhong == p.MaPhong)
-                    .OrderByDescending(h => h.NgayKetThuc)
-                    .FirstOrDefaultAsync();
-
-                var latestChiSo = await _context.ChiSoDienNuocs
-                    .Where(c => c.MaPhong == p.MaPhong)
-                    .OrderByDescending(c => c.NgayGhi)
-                    .FirstOrDefaultAsync();
-
-                DACS_QuanLyPhongTro.Models.HoaDon? latestHoaDon = null;
-                if (latestChiSo != null)
-                {
-                    latestHoaDon = await _context.HoaDons
-                        .Where(hd => hd.MaChiSo == latestChiSo.MaChiSo)
-                        .OrderByDescending(hd => hd.NgayLap)
-                        .FirstOrDefaultAsync();
-                }
+                hopDongByRoom.TryGetValue(p.MaPhong, out var latestHopDong);
+                chiSoByRoom.TryGetValue(p.MaPhong, out var latestChiSo);
+                hoaDonByRoom.TryGetValue(p.MaPhong, out var latestHoaDon);
 
                 var summary = new DACS_QuanLyPhongTro.Models.ViewModels.PhongTroSummary
                 {

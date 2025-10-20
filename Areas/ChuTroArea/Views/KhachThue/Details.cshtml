@@ -1,0 +1,159 @@
+@model DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers.KhachThueController.KhachThueDetailsViewModel
+
+@{
+    Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+}
+
+<div class="content-header px-2 px-md-3 pt-1 pb-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-area="ChuTroArea" asp-controller="KhachThue" asp-action="Index" class="btn btn-secondary btn-sm">Quay lại</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <h5 class="h3 fw-bold text-primary mb-2">Thông tin khách thuê</h5>
+                <dl class="row">
+                    <dt class="col-sm-4">Họ tên</dt>
+                    <dd class="col-sm-8">@Model.HoTen</dd>
+
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4">Điện thoại</dt>
+                    <dd class="col-sm-8">@Model.SoDienThoai</dd>
+
+                    <dt class="col-sm-4">CCCD</dt>
+                    <dd class="col-sm-8">@Model.CCCD</dd>
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <h5 class="h3 fw-bold text-primary mb-2">Thông tin phòng</h5>
+                @if(Model.Phong != null)
+                {
+                    <dl class="row">
+                        <dt class="col-sm-4">Số phòng</dt>
+                        <dd class="col-sm-8">@Model.Phong.SoPhong</dd>
+
+                        <dt class="col-sm-4">Tầng</dt>
+                        <dd class="col-sm-8">@Model.Phong.Tang</dd>
+
+                        <dt class="col-sm-4">Tòa nhà</dt>
+                        <dd class="col-sm-8">@Model.Phong.TenToaNha</dd>
+
+                        <dt class="col-sm-4">Địa chỉ</dt>
+                        <dd class="col-sm-8">@Model.Phong.DiaChi</dd>
+                    </dl>
+                }
+                else
+                {
+                    <p class="text-muted">Chưa gán phòng.</p>
+                }
+            </div>
+        </div>
+
+        <hr />
+
+        
+
+        <div class="card mb-4">
+            <div class="card-header bg-white border-0 px-0">
+                <h5 class="h4 fw-bold text-primary mb-2">Hợp đồng</h5>
+            </div>
+            <div class="card-body px-0">
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr><th>Mã</th><th>Ngày Lập</th><th>Ngày bắt đầu</th><th>Ngày kết thúc</th><th>Trạng thái</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var h in Model.HopDongs)
+                        {
+                            <tr>
+                                <td>@h.MaHopDong</td>
+                                <td>@h.NgayLap.ToString("dd/MM/yyyy")</td>
+                                <td>@h.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                                <td>@h.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+                                <td>@h.TrangThai</td>
+                                <td><a class="btn btn-sm btn-primary" asp-area="ChuTroArea" asp-controller="HopDong" asp-action="Details" asp-route-id="@h.MaHopDong">Xem</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-white border-0 px-0">
+                <h5 class="h4 fw-bold text-primary mb-2">Phiếu dịch vụ</h5>
+            </div>
+            <div class="card-body px-0">
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr><th>Mã</th><th>Ngày đăng ký</th><th>Trạng thái</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var d in Model.PhieuDichVus)
+                        {
+                            <tr>
+                                <td>@d.MaDangKyDichVu</td>
+                                <td>@d.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                                <td>@d.TrangThai</td>
+                                <td><a class="btn btn-sm btn-info" asp-area="ChuTroArea" asp-controller="PhieuDichVu" asp-action="Details" asp-route-id="@d.MaDangKyDichVu">Xem</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-white border-0 px-0">
+                <h5 class="h4 fw-bold text-primary mb-2">Hóa đơn</h5>
+            </div>
+            <div class="card-body px-0">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="h5 fw-bold text-danger mb-2">Chưa thanh toán</h6>
+                        <table class="table table-sm mb-0">
+                            <thead><tr><th>Mã</th><th>Ngày lập</th><th>Tổng tiền</th><th></th></tr></thead>
+                            <tbody>
+                                @foreach(var hd in Model.HoaDons.Where(x=> x.TrangThai != "Đã thanh toán"))
+                                {
+                                    <tr>
+                                        <td>@hd.MaHoaDon</td>
+                                        <td>@hd.NgayLap.ToString("dd/MM/yyyy")</td>
+                                        <td>@hd.TongTien.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</td>
+                                        <td><a class="btn btn-sm btn-warning" asp-area="ChuTroArea" asp-controller="HoaDon" asp-action="Details" asp-route-id="@hd.MaHoaDon">Xem</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="h5 fw-bold text-primary mb-2">Đã thanh toán</h6>
+                        <table class="table table-sm mb-0">
+                            <thead><tr><th>Mã</th><th>Ngày lập</th><th>Tổng tiền</th><th></th></tr></thead>
+                            <tbody>
+                                @foreach(var hd in Model.HoaDons.Where(x=> x.TrangThai == "Đã thanh toán"))
+                                {
+                                    <tr>
+                                        <td>@hd.MaHoaDon</td>
+                                        <td>@hd.NgayLap.ToString("dd/MM/yyyy")</td>
+                                        <td>@hd.TongTien.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</td>
+                                        <td><a class="btn btn-sm btn-secondary" asp-area="ChuTroArea" asp-controller="HoaDon" asp-action="Details" asp-route-id="@hd.MaHoaDon">Xem</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
