@@ -144,17 +144,26 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
         // Action xử lý khi người dùng submit form
         [HttpPost]
-        public IActionResult Create(HoaDon hoaDon)
+        public IActionResult Create(HoaDon hoaDon, string? BillingMonth)
         {
-            // Tìm thông tin chỉ số điện nước
+            // parse billing month (format yyyy-MM from <input type=month>)
+            DateTime periodStart = DateTime.Now;
+            DateTime periodEnd = DateTime.Now;
+            if (!string.IsNullOrEmpty(BillingMonth) && DateTime.TryParse(BillingMonth + "-01", out var parsed))
+            {
+                periodStart = new DateTime(parsed.Year, parsed.Month, 1);
+                periodEnd = periodStart.AddMonths(1).AddTicks(-1);
+            }
+
+            // Tìm chỉ số của phòng trong tháng hóa đơn
             var chiSoDienNuoc = _context.ChiSoDienNuocs
-                .Where(c => c.MaPhong == hoaDon.MaPhong)
+                .Where(c => c.MaPhong == hoaDon.MaPhong && c.NgayGhi >= periodStart && c.NgayGhi <= periodEnd)
                 .OrderByDescending(c => c.NgayGhi)
                 .FirstOrDefault();
 
             if (chiSoDienNuoc == null)
             {
-                ModelState.AddModelError("", "Không tìm thấy chỉ số điện nước cho phòng này.");
+                ModelState.AddModelError("", "Không tìm thấy chỉ số điện nước cho phòng này trong tháng đã chọn.");
                 ViewBag.PhongTros = new SelectList(_context.PhongTros, "MaPhong", "SoPhong");
                 return View(hoaDon);
             }
@@ -164,54 +173,49 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             // Tìm thông tin phòng và khách thuê
             var phong = _context.PhongTros
-                .Include(p => p.KhachThue) // Giả sử PhongTro có navigation property đến KhachThue
+                .Include(p => p.KhachThue)
                 .FirstOrDefault(p => p.MaPhong == hoaDon.MaPhong);
 
-            if (phong == null) { 
-                    ModelState.AddModelError("", "Phòng không tồn tại.");
-                    ViewBag.PhongTros = new SelectList(_context.PhongTros, "MaPhong", "SoPhong");
-                    return View(hoaDon);
-        }
-
-        // Kiểm tra xem phòng có khách thuê không
-        var khachThue = _context.KhachThues
-            .FirstOrDefault(k => k.MaKhachThue == phong.MaKhachThue); // Giả sử PhongTro có MaKhachThue
-
-                if (khachThue == null)
-                {
-                    ModelState.AddModelError("", "Phòng này chưa có khách thuê.");
-                    ViewBag.PhongTros = new SelectList(_context.PhongTros, "MaPhong", "SoPhong");
-                    return View(hoaDon);
-                }
-
-                // Gán MaKhachThue
-                hoaDon.MaKhachThue = khachThue.MaKhachThue;
-
-                        // ✅ Tính tiền dịch vụ chính xác
-                        var phieuDichVus = _context.PhieuDangKyDichVus
-                            .Where(p => p.MaKhachThue == khachThue.MaKhachThue && p.TrangThai == "Đã xác nhận")
-                            .Include(p => p.ChiTietPhieuDangKyDichVus)
-                            .ToList();
-
-                        decimal tongTienDichVu = phieuDichVus
-                            .SelectMany(p => p.ChiTietPhieuDangKyDichVus)
-                            .Sum(ct => ct.TongTienDichVu);
-
-                        hoaDon.TienDichVu = tongTienDichVu;
-                        // Tính toán hóa đơn
-                        hoaDon.TienDien = chiSoDienNuoc.SoDienTieuThu* chiSoDienNuoc.DonGiaDien;
-                hoaDon.TienNuoc = chiSoDienNuoc.SoNuocTieuThu* chiSoDienNuoc.DonGiaNuoc;
-                hoaDon.TienPhong = phong.GiaThue;
-                hoaDon.TongTien = hoaDon.TienDien + hoaDon.TienNuoc + hoaDon.TienPhong + hoaDon.TienDichVu;
-                hoaDon.NgayLap = DateTime.Now;
-                        hoaDon.TrangThai = "Chưa thanh toán";
-
-                        // Lưu hóa đơn
-                        _context.HoaDons.Add(hoaDon);
-                _context.SaveChanges();
-
-                return RedirectToAction("Index");
+            if (phong == null)
+            {
+                ModelState.AddModelError("", "Phòng không tồn tại.");
+                ViewBag.PhongTros = new SelectList(_context.PhongTros, "MaPhong", "SoPhong");
+                return View(hoaDon);
             }
+
+            var khachThue = _context.KhachThues.FirstOrDefault(k => k.MaKhachThue == phong.MaKhachThue);
+            if (khachThue == null)
+            {
+                ModelState.AddModelError("", "Phòng này chưa có khách thuê.");
+                ViewBag.PhongTros = new SelectList(_context.PhongTros, "MaPhong", "SoPhong");
+                return View(hoaDon);
+            }
+
+            hoaDon.MaKhachThue = khachThue.MaKhachThue;
+
+            // Lấy phiếu dịch vụ đã xác nhận có overlap với tháng hóa đơn
+            var phieuDichVus = _context.PhieuDangKyDichVus
+                .Where(p => p.MaKhachThue == khachThue.MaKhachThue && p.TrangThai == "Đã xác nhận"
+                            && p.NgayBatDau <= periodEnd && p.NgayKetThuc >= periodStart)
+                .Include(p => p.ChiTietPhieuDangKyDichVus)
+                .ToList();
+
+            decimal tongTienDichVu = phieuDichVus.SelectMany(p => p.ChiTietPhieuDangKyDichVus).Sum(ct => ct.TongTienDichVu);
+            hoaDon.TienDichVu = tongTienDichVu;
+
+            // Tính toán hóa đơn
+            hoaDon.TienDien = chiSoDienNuoc.SoDienTieuThu * chiSoDienNuoc.DonGiaDien;
+            hoaDon.TienNuoc = chiSoDienNuoc.SoNuocTieuThu * chiSoDienNuoc.DonGiaNuoc;
+            hoaDon.TienPhong = phong.GiaThue;
+            hoaDon.TongTien = hoaDon.TienDien + hoaDon.TienNuoc + hoaDon.TienPhong + hoaDon.TienDichVu;
+            hoaDon.NgayLap = DateTime.Now;
+            hoaDon.TrangThai = "Chưa thanh toán";
+
+            _context.HoaDons.Add(hoaDon);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
 
         public async Task<IActionResult> XacNhanThanhToan(int id)
         {

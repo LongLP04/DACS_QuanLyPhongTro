@@ -104,11 +104,11 @@ else
         @foreach (var phieu in Model)
         {
             var phongContext = Context.RequestServices.GetService(typeof(DACS_QuanLyPhongTro.Models.ApplicationDbContext)) as DACS_QuanLyPhongTro.Models.ApplicationDbContext;
-            var maPhong = phongContext.HopDongs.FirstOrDefault(h => h.MaKhachThue == phieu.MaKhachThue)?.MaPhong ?? 0;
+            var soPhong = phongContext.HopDongs.FirstOrDefault(h => h.MaKhachThue == phieu.MaKhachThue)?.PhongTro.SoPhong;
             var totalAmount = phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu);
             <div class="col-12 col-sm-6 col-lg-4 col-xl-3 phieudichvu-item" 
                  data-name="@phieu.KhachThue.HoTen" 
-                 data-room="@maPhong" 
+                 data-room="@soPhong" 
                  data-date="@phieu.NgayBatDau.ToString("yyyy-MM-dd")"
                  data-revenue="@totalAmount">
                 <div class="card shadow-sm border-0 h-100 phieudichvu-card">
@@ -126,7 +126,7 @@ else
                         
                         <div class="mb-2">
                             <div class="text-muted fs-6">
-                                <i class="fas fa-door-open me-1"></i>Phòng: <span class="fw-bold">@maPhong</span>
+                                <i class="fas fa-door-open me-1"></i>Phòng: <span class="fw-bold">@soPhong</span>
                             </div>
                         </div>
                         
