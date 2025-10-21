@@ -41,8 +41,9 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 _context = context;
             }
 
-        // GET: Danh sách chỉ số điện nước
-        public async Task<IActionResult> Index()
+    // GET: Danh sách chỉ số điện nước
+    // viewMode: "all" shows all readings; "latest" shows latest reading per room (with fake record if none)
+    public async Task<IActionResult> Index(string viewMode = "all")
         {
             string hoTen = "Chủ trọ";
 
@@ -78,35 +79,52 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 .Where(p => p.TrangThai == "Đã Thuê")
                 .ToList();
 
-            // Lấy danh sách chỉ số điện nước
-            var chiSoDienNuocs = await _context.ChiSoDienNuocs
-                .Include(c => c.PhongTro)
-                .Where(c => phongTrosDaThue.Select(p => p.MaPhong).Contains(c.MaPhong))
-                .ToListAsync();
+            var phongIds = phongTrosDaThue.Select(p => p.MaPhong).ToList();
 
-            // Tạo danh sách hiển thị: Nếu phòng chưa có chỉ số điện nước, tạo bản ghi giả
-            var displayList = new List<ChiSoDienNuoc>();
-            foreach (var phong in phongTrosDaThue)
+            ViewBag.ViewMode = viewMode ?? "all";
+
+            if (viewMode == "latest")
             {
-                var chiSo = chiSoDienNuocs.FirstOrDefault(c => c.MaPhong == phong.MaPhong);
-                if (chiSo != null)
+                var allChiSo = await _context.ChiSoDienNuocs
+                    .Include(c => c.PhongTro)
+                    .Where(c => phongIds.Contains(c.MaPhong))
+                    .ToListAsync();
+
+                var latestPerRoom = allChiSo
+                    .GroupBy(c => c.MaPhong)
+                    .Select(g => g.OrderByDescending(x => x.NgayGhi).First())
+                    .ToList();
+
+                var result = new List<ChiSoDienNuoc>();
+                foreach (var phong in phongTrosDaThue)
                 {
-                    displayList.Add(chiSo);
-                }
-                else
-                {
-                    // Tạo bản ghi giả nếu không có chỉ số điện nước
-                    displayList.Add(new ChiSoDienNuoc
+                    var chiSo = latestPerRoom.FirstOrDefault(c => c.MaPhong == phong.MaPhong);
+                    if (chiSo != null)
                     {
-                        MaChiSo = 0, // Đặt MaChiSo = 0 để đánh dấu bản ghi giả
-                        PhongTro = phong,
-                        MaPhong = phong.MaPhong,
-                        NgayGhi = DateTime.MinValue,
-                    });
+                        result.Add(chiSo);
+                    }
+                    else
+                    {
+                        result.Add(new ChiSoDienNuoc
+                        {
+                            MaChiSo = 0,
+                            PhongTro = phong,
+                            MaPhong = phong.MaPhong,
+                            NgayGhi = DateTime.MinValue,
+                        });
+                    }
                 }
+
+                return View(result);
             }
 
-            return View(displayList);
+            var chiSoDienNuocs = await _context.ChiSoDienNuocs
+                .Include(c => c.PhongTro)
+                .Where(c => phongIds.Contains(c.MaPhong))
+                .OrderByDescending(c => c.NgayGhi)
+                .ToListAsync();
+
+            return View(chiSoDienNuocs);
         }
 
         // GET: Ghi chỉ số điện nước
@@ -142,7 +160,16 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         // POST: Ghi chỉ số điện nước
         [HttpPost]
         [ValidateAntiForgeryToken]
+        // Backwards-compatible overload (reads ReadingMonth from form if caller posts without it)
         public async Task<IActionResult> Create(ChiSoDienNuoc chiSoDienNuoc)
+        {
+            var readingMonth = Request.Form["ReadingMonth"].FirstOrDefault();
+            return await Create(chiSoDienNuoc, readingMonth);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ChiSoDienNuoc chiSoDienNuoc, string? ReadingMonth)
         {
             var currentChuTroEmail = User.Identity.Name;
             var currentChuTro = await _context.ChuTros
@@ -211,7 +238,27 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             try
             {
-                chiSoDienNuoc.NgayGhi = DateTime.Now;
+                // parse reading month if provided
+                DateTime monthStart = DateTime.Now;
+                DateTime monthEnd = DateTime.Now;
+                if (!string.IsNullOrEmpty(ReadingMonth) && DateTime.TryParse(ReadingMonth + "-01", out var parsed))
+                {
+                    monthStart = new DateTime(parsed.Year, parsed.Month, 1);
+                    monthEnd = monthStart.AddMonths(1).AddTicks(-1);
+                }
+
+                // check duplicate for same MaPhong in the same month
+                var exists = await _context.ChiSoDienNuocs
+                    .AnyAsync(c => c.MaPhong == chiSoDienNuoc.MaPhong && c.NgayGhi >= monthStart && c.NgayGhi <= monthEnd);
+
+                if (exists)
+                {
+                    ModelState.AddModelError("", "Đã tồn tại chỉ số cho phòng này trong tháng đã chọn. Vui lòng chỉnh sửa bản ghi hiện có.");
+                    return View(chiSoDienNuoc);
+                }
+
+                // Set NgayGhi to the end of the selected month to mark the reading's billing month
+                chiSoDienNuoc.NgayGhi = monthEnd;
                 _context.ChiSoDienNuocs.Add(chiSoDienNuoc);
                 await _context.SaveChangesAsync();
                 TempData["ThongBao"] = "Chỉ số điện nước đã được ghi thành công.";
