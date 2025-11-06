@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using DACS_QuanLyPhongTro.Models;
 
@@ -122,6 +123,29 @@ namespace DACS_QuanLyPhongTro.Areas.Identity.Pages.Account
                     if (roles.Contains("ChuTro"))
                     {
                         return RedirectToAction("Index", "Home", new { area = "ChuTroArea" });
+                    }
+
+                    // If user is a tenant (KhachThue), try to detect if they have a confirmed contract
+                    if (roles.Contains("KhachThue"))
+                    {
+                        // Resolve a scoped service to check contracts (ApplicationDbContext)
+                        var db = HttpContext.RequestServices.GetService(typeof(ApplicationDbContext)) as ApplicationDbContext;
+                        if (db != null && user != null)
+                        {
+                            var khachThue = await db.KhachThues.FirstOrDefaultAsync(k => k.ApplicationUserId == user.Id);
+                            if (khachThue != null)
+                            {
+                                var hopDong = await db.HopDongs
+                                    .Where(h => h.MaKhachThue == khachThue.MaKhachThue && h.TrangThai == "Đã Xác Nhận")
+                                    .FirstOrDefaultAsync();
+
+                                if (hopDong != null)
+                                {
+                                    // Redirect tenants with active confirmed contract to their room page
+                                    return RedirectToAction("Index", "Phongtrocuatoi");
+                                }
+                            }
+                        }
                     }
 
                     return LocalRedirect(returnUrl);

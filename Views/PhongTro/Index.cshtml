@@ -104,7 +104,29 @@
                 @foreach (var product in Model)
                 {
                     <div class="col-lg-4 col-md-6 col-sm-6 pb-4 d-flex">
-                        @await Html.PartialAsync("~/Views/Shared/_RoomCard.cshtml", product)
+                         <div class="product-item bg-light shadow-sm rounded d-flex flex-column">
+                            <div class="product-img position-relative overflow-hidden">
+                                <img class="img-fluid w-100"
+                                     src="@(string.IsNullOrEmpty(product.Hinhanh) ? Url.Content("~/img/default-product.jpg") : Url.Content("~/" + product.Hinhanh))"
+                                     alt="@product.SoPhong" />
+
+                                <div class="product-action">
+                                    <a class="btn btn-outline-dark btn-square" href="javascript:void(0)" data-toggle="modal" data-target="#appointmentModal">
+                                        <i class="fa fa-calendar"></i>
+                                    </a>
+                                    <a class="btn btn-outline-dark btn-square" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })">
+                                        <i class="fa fa-search"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="text-center py-4 product-info flex-grow-1 d-flex flex-column justify-content-center">
+                                <a class="h6 text-decoration-none text-truncate" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })"> Phòng @product.SoPhong</a>
+                                <div class="d-flex align-items-center justify-content-center mt-2 flex-column">
+                                    <h5>@product.GiaThue.ToString("#,##0 VNĐ")</h5>
+                                    <span class="badge badge-pill badge-info mt-2" style="font-size: 0.9rem;">@product.TrangThai</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 }
             </div>
