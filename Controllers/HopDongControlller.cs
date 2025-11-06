@@ -16,7 +16,7 @@ namespace DACS_QuanLyPhongTro.Controllers
         }
         // GET: Xem chi tiết hợp đồng
         [HttpGet]
-        [Authorize(Roles = "KhachThue")]
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -51,7 +51,9 @@ namespace DACS_QuanLyPhongTro.Controllers
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Lấy ApplicationUserId từ Claim
             if (currentUserId == null)
             {
-                return Forbid("Bạn chưa đăng nhập.");
+                // If no user id is present, prompt for authentication rather than passing a message as an auth scheme
+                TempData["ErrorMessage"] = "Bạn chưa đăng nhập.";
+                return Challenge();
             }
 
             // Tìm Khách Thuê theo ApplicationUserId
@@ -94,7 +96,8 @@ namespace DACS_QuanLyPhongTro.Controllers
             var currentUserEmail = User.FindFirst(ClaimTypes.Email)?.Value;
             if (currentUserEmail != hopDong.KhachThue?.Email)
             {
-                return Forbid("Bạn không có quyền xác nhận hợp đồng này.");
+                TempData["ErrorMessage"] = "Bạn không có quyền xác nhận hợp đồng này.";
+                return Forbid();
             }
 
             if (dongY)

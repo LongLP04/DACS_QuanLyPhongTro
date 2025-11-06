@@ -14,7 +14,7 @@ namespace DACS_QuanLyPhongTro.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
-                return Forbid("Bạn chưa đăng nhập.");
+                return Challenge();
 
             var khachThue = await _context.KhachThues
                 .FirstOrDefaultAsync(k => k.ApplicationUserId == userId);
@@ -127,6 +127,8 @@ namespace DACS_QuanLyPhongTro.Controllers
             if (hopDong == null)
                 return View(null);
 
+            // truyền MaHopDong cho view để link tới Details hợp đồng đúng
+            ViewBag.MaHopDong = hopDong.MaHopDong;
             return View(hopDong.PhongTro);
         }
 

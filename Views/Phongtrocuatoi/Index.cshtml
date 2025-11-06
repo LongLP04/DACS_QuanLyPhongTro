@@ -37,7 +37,7 @@ else
             @* <a asp-controller="Notifications" asp-action="Index" class="btn btn-info btn-lg shadow"> *@
             @*     <i class="fas fa-bell mr-2"></i> Thông báo lịch hẹn *@
             @* </a> *@
-            <a asp-controller="HopDong" asp-action="Details" asp-route-id="@Model.MaPhong" class="btn btn-warning btn-lg shadow">
+            <a asp-controller="HopDong" asp-action="Details" asp-route-id="@ViewBag.MaHopDong" class="btn btn-warning btn-lg shadow">
                 <i class="fas fa-file-signature mr-2"></i> Hợp đồng của tôi
             </a>
 
