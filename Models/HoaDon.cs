@@ -19,20 +19,22 @@ namespace DACS_QuanLyPhongTro.Models
         [Required]
         public int MaPhong { get; set; }  // Mã phòng trong HoaDon
         [ForeignKey("MaPhong")]
-        public PhongTro PhongTro { get; set; }  // Quan hệ với Phòng
+        public PhongTro? PhongTro { get; set; }  // Quan hệ với Phòng
 
         // Khóa ngoại liên kết với Chỉ Số Điện Nước
         [Required]
         public int MaChiSo { get; set; }
         [ForeignKey("MaChiSo")]
-        public ChiSoDienNuoc ChiSoDienNuoc { get; set; }
+        public ChiSoDienNuoc? ChiSoDienNuoc { get; set; }
 
         [Required]
         public int MaKhachThue { get; set; }
         [ForeignKey("MaKhachThue")]
-        public KhachThue KhachThue { get; set; }
+        public KhachThue? KhachThue { get; set; }
 
         public ICollection<PhieuThanhToan> PhieuThanhToans { get; set; } = new List<PhieuThanhToan>();
+
+        // public bool ReminderSent { get; set; } = false;
     }
 }
 

@@ -4,6 +4,14 @@
     ViewData["Title"] = "Chat với khách thuê";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
+@if (ViewData["SelectedUserId"] != null)
+{
+    <style>
+        #userList { display: none; }
+        .col-md-8 { flex: 0 0 100%; max-width: 100%; }
+    </style>
+}
+
 
 <div class="container py-4">
     <h2 class="mb-4">Chat với khách thuê</h2>

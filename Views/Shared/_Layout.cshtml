@@ -41,6 +41,7 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="~/css/style.css?v=127" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="~/css/footer.css" rel="stylesheet">
 
 </head>
 <body>
@@ -163,7 +164,6 @@
                             <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Thông báo lịch hẹn</a>
                             <a asp-controller="PhieuThanhToan" asp-action="Index" asp-route-categoryId="2" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Thanh toán hóa đơn</a>
                             <a asp-controller="Phongtrocuatoi" asp-action="Index" asp-route-categoryId="3" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Phòng trọ của tôi</a>
-                            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="4" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Liên hệ</a>
                         </div>
                     </nav>
                 </div>
@@ -184,7 +184,7 @@
                         @{
                             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                             bool hasRental = false;
-                            if (User.Identity.IsAuthenticated && userId != null)
+                            if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(userId))
                             {
                                 hasRental = await userService.HasActiveRentalAsync(userId);
                             }
@@ -401,6 +401,40 @@
                 transform: scale(1.05);
                 border-radius: 10px 10px 0 0;
             }
+
+            /* --- Footer --- */
+            .footer {
+                display: none; /* Ẩn footer theo mặc định */
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(10px);
+                padding: 10px 0;
+                text-align: center;
+                z-index: 1000;
+                transition: transform 0.3s ease;
+            }
+
+            .footer-content {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 0 15px;
+                font-size: 14px;
+                color: #333;
+            }
+
+            /* Khi cuộn xuống: hiện footer */
+            body.scrolled .footer {
+                display: block;
+                transform: translateY(0);
+            }
+
+            /* Khi cuộn lên: ẩn footer */
+            body:not(.scrolled) .footer {
+                transform: translateY(100%);
+            }
         </style>
 
         @RenderBody()
@@ -444,6 +478,13 @@
         contactBtn.classList.add('fixed');
     } else {
         contactBtn.classList.remove('fixed');
+    }
+
+    const footer = document.querySelector('.footer');
+    if (window.scrollY > 100) {
+        document.body.classList.add('scrolled');
+    } else {
+        document.body.classList.remove('scrolled');
     }
 });
 </script>

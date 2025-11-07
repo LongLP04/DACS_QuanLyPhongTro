@@ -1,0 +1,28 @@
+/* Sticky Footer */
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    transition: transform 0.3s ease;
+    transform: translateY(100%); /* Hidden by default */
+}
+
+.footer.visible {
+    transform: translateY(0); /* Slide up when visible */
+}
+
+/* Footer content styling */
+.footer-content {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* JavaScript-triggered visibility */
+body.scrolled .footer {
+    transform: translateY(0);
+}
