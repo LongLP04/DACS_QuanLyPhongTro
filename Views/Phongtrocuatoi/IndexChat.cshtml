@@ -4,132 +4,224 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container py-4">
-    <h2 class="mb-4">Chat với chủ trọ</h2>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="list-group" id="userList">
-                @foreach (var user in Model)
-                {
-                    <button type="button" class="list-group-item list-group-item-action" data-userid="@user.ApplicationUserId">
-                        <i class="fas fa-user-tie me-2"></i>@user.HoTen
-                    </button>
-                }
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <span id="chatWith">Chọn chủ trọ để bắt đầu chat</span>
+<section class="chat-page section">
+    <div class="container-fluid px-xl-5 py-5">
+        <div class="chat-wrapper bg-white rounded-4 shadow-sm mx-auto" style="max-width: 1200px;">
+            <div class="row g-0">
+                <!-- DANH SÁCH CHỦ TRỌ -->
+                <div class="col-md-4 border-end">
+                    <div class="p-3 bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0 text-success">
+                            <i class="bi bi-people me-2"></i>Chủ trọ
+                        </h5>
+                        <input type="text" id="searchLandlord" class="form-control form-control-sm"
+                               placeholder="Tìm kiếm..." style="width: 130px; border-radius: 30px;">
+                    </div>
+
+                    <div class="list-group list-group-flush landlord-list" id="userList" style="max-height: 450px; overflow-y:auto;">
+                        @foreach (var user in Model)
+                        {
+                            <button type="button" class="list-group-item list-group-item-action py-3 px-3 d-flex align-items-center gap-2"
+                                    data-userid="@user.ApplicationUserId">
+                                <div class="avatar-circle bg-success text-white d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-semibold">@user.HoTen</div>
+                                    <small class="text-muted">@user.SoDienThoai</small>
+                                </div>
+                            </button>
+                        }
+                    </div>
                 </div>
-                <div class="card-body" id="chatMessages" style="height:350px; overflow-y:auto; background:#f8f9fa;"></div>
-                <div class="card-footer">
-                    <form id="chatForm" class="d-flex gap-2">
-                        <input type="text" id="messageInput" class="form-control" placeholder="Nhập tin nhắn..." autocomplete="off" disabled />
-                        <button type="submit" class="btn btn-primary" disabled id="sendBtn">Gửi</button>
-                    </form>
+
+                <!-- KHUNG CHAT -->
+                <div class="col-md-8">
+                    <div class="card border-0 h-100">
+                        <div class="card-header bg-success text-white d-flex align-items-center">
+                            <i class="fas fa-comments me-2"></i>
+                            <span id="chatWith">Chọn chủ trọ để bắt đầu chat</span>
+                        </div>
+
+                        <div class="card-body chat-body" id="chatMessages"></div>
+
+                        <div class="card-footer bg-light">
+                            <form id="chatForm" class="d-flex gap-2">
+                                <input type="text" id="messageInput" class="form-control rounded-pill"
+                                       placeholder="Nhập tin nhắn..." autocomplete="off" disabled />
+                                <button type="submit" class="btn btn-success rounded-pill px-4" disabled id="sendBtn">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-    <script>
-        let connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
-        let selectedUserId = null;
-        const userList = document.getElementById('userList');
-        const chatWith = document.getElementById('chatWith');
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    let connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+    let selectedUserId = null;
+    const userList = document.getElementById('userList');
+    const chatWith = document.getElementById('chatWith');
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
 
-        // Kết nối SignalR
-        connection.start().then(() => {
-            console.log("Đã kết nối SignalR");
-        }).catch(err => console.error(err.toString()));
+    // 🚀 Kết nối SignalR
+    connection.start().then(() => console.log("✅ SignalR connected"))
+        .catch(err => console.error(err.toString()));
 
-        // Nhận tin nhắn
-        connection.on("ReceiveMessage", function(senderId, message) {
-            const div = document.createElement('div');
-            div.className = 'chat-line';
-            if (senderId === selectedUserId) {
-                div.innerHTML = `<div class='message them'><strong>Chủ trọ:</strong> ${message}</div>`;
-            } else {
-                div.innerHTML = `<div class='message you'><strong>Bạn:</strong> ${message}</div>`;
-            }
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+    // 📩 Nhận tin nhắn
+    connection.on("ReceiveMessage", function (senderId, message) {
+        const div = document.createElement('div');
+        div.className = senderId === selectedUserId ? 'chat-message left' : 'chat-message right';
+        div.innerHTML = `
+            <div class="bubble ${senderId === selectedUserId ? 'them' : 'you'}">
+                ${escapeHTML(message)}
+                <div class="msg-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+            </div>`;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+    // 🔍 Tìm kiếm chủ trọ
+    document.getElementById('searchLandlord').addEventListener('input', e => {
+        const keyword = e.target.value.toLowerCase();
+        document.querySelectorAll('.landlord-list button').forEach(btn => {
+            const name = btn.innerText.toLowerCase();
+            btn.style.display = name.includes(keyword) ? 'flex' : 'none';
         });
+    });
 
-        // Chọn chủ trọ để chat
-        userList.addEventListener('click', function(e) {
-            const btn = e.target.closest('button[data-userid]');
-            if (!btn) return;
+    // 🧑 Chọn chủ trọ để chat
+    userList.addEventListener('click', function (e) {
+        const btn = e.target.closest('button[data-userid]');
+        if (!btn) return;
 
-            selectedUserId = btn.getAttribute('data-userid');
-            chatWith.textContent = 'Chat với ' + btn.textContent.trim();
-            messageInput.disabled = false;
-            sendBtn.disabled = false;
-            loadChatHistory();
-        });
+        selectedUserId = btn.getAttribute('data-userid');
+        chatWith.textContent = 'Đang chat với ' + btn.innerText.trim();
+        messageInput.disabled = false;
+        sendBtn.disabled = false;
+        loadChatHistory();
+    });
 
-        // Hàm load lịch sử chat
-        function loadChatHistory() {
-            if (!selectedUserId) return;
-            fetch('/Phongtrocuatoi/GetChatHistory?userId=' + selectedUserId)
-                .then(res => res.json())
-                .then(data => {
-                    chatMessages.innerHTML = '';
-                    data.forEach(m => {
-                        const div = document.createElement('div');
-                        div.className = 'chat-line';
-                        if (m.senderId === selectedUserId) {
-                            div.innerHTML = `<div class='message them'><strong>Chủ trọ:</strong> ${m.content}</div>`;
-                        } else {
-                            div.innerHTML = `<div class='message you'><strong>Bạn:</strong> ${m.content}</div>`;
-                        }
-                        chatMessages.appendChild(div);
-                    });
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
+    // 🕓 Lịch sử chat
+    function loadChatHistory() {
+        if (!selectedUserId) return;
+        fetch('/Phongtrocuatoi/GetChatHistory?userId=' + selectedUserId)
+            .then(res => res.json())
+            .then(data => {
+                chatMessages.innerHTML = '';
+                data.forEach(m => {
+                    const div = document.createElement('div');
+                    div.className = m.senderId === selectedUserId ? 'chat-message left' : 'chat-message right';
+                    div.innerHTML = `
+                        <div class="bubble ${m.senderId === selectedUserId ? 'them' : 'you'}">
+                            ${escapeHTML(m.content)}
+                            <div class="msg-time">${m.timestamp}</div>
+                        </div>`;
+                    chatMessages.appendChild(div);
                 });
-        }
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+    }
 
-        // Gửi tin nhắn
-        document.getElementById('chatForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const msg = messageInput.value.trim();
-            if (!msg || !selectedUserId) return;
-            connection.invoke("SendPrivateMessage", selectedUserId, msg);
-            messageInput.value = '';
-        });
-    </script>
+    // ✉️ Gửi tin nhắn
+    document.getElementById('chatForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const msg = messageInput.value.trim();
+        if (!msg || !selectedUserId) return;
+        connection.invoke("SendPrivateMessage", selectedUserId, msg);
+        messageInput.value = '';
+    });
+
+    // Ngăn chèn HTML
+    function escapeHTML(str) {
+        return str.replace(/[&<>"']/g, m => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[m]));
+    }
+</script>
 }
-<style>
-    .message {
-        max-width: 70%;
-        padding: 8px 12px;
-        border-radius: 16px;
-        margin-bottom: 6px;
-        display: inline-block;
-        word-wrap: break-word;
-    }
-    .message.you {
-        background-color: #007bff;
-        color: white;
-        align-self: flex-end;
-        border-bottom-right-radius: 4px;
-    }
-    .message.them {
-        background-color: #e9ecef;
-        color: #212529;
-        align-self: flex-start;
-        border-bottom-left-radius: 4px;
-    }
-    .chat-line {
-        display: flex;
-        flex-direction: column;
-    }
-</style>
 
+<style>
+/* ===== PAGE & CARD ===== */
+.chat-page { margin-top: 15px; margin-bottom: 15px; }
+.chat-wrapper { border-radius: 16px; overflow: hidden; }
+.card-header { font-weight: 600; font-size: 1rem; }
+
+/* ===== DANH SÁCH CHỦ TRỌ ===== */
+.landlord-list button {
+    border: none;
+    border-bottom: 1px solid #f1f1f1;
+    transition: background 0.3s;
+}
+.landlord-list button:hover, .landlord-list button.active {
+    background: #e8fff1;
+    color: #1ec36e;
+    font-weight: 600;
+}
+.avatar-circle {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    font-size: 16px;
+}
+
+/* ===== KHUNG CHAT ===== */
+.chat-body {
+    background-color: #f8f9fa;
+    padding: 20px;
+    height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== TIN NHẮN ===== */
+.chat-message { display: flex; margin-bottom: 10px; }
+.chat-message.left { justify-content: flex-start; }
+.chat-message.right { justify-content: flex-end; }
+
+.bubble {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.bubble.them {
+    background-color: #e9ecef;
+    color: #212529;
+    border-bottom-left-radius: 4px;
+}
+.bubble.you {
+    background-color: #1ec36e;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+.msg-time {
+    font-size: 0.75rem;
+    color: #999;
+    text-align: right;
+    margin-top: 4px;
+}
+
+/* ===== FORM CHAT ===== */
+#messageInput:disabled { background-color: #f1f1f1; }
+
+/* Scrollbar nhỏ đẹp */
+.chat-body::-webkit-scrollbar {
+    width: 8px;
+}
+.chat-body::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 10px;
+}
+</style>

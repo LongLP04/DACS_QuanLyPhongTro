@@ -10,131 +10,213 @@
     return;
 }
 
-<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
-    <div class="row">
-        <!-- Ảnh phòng -->
-        <div class="col-lg-9 mb-4 d-flex justify-content-center align-items-center">
-            <img src="@(!string.IsNullOrEmpty(Model.Hinhanh) ? Url.Content("~/" + Model.Hinhanh) : Url.Content("~/img/default-product.jpg"))"
-                 alt="Hình ảnh phòng @Model.SoPhong"
-                 style="width: 1011px; max-height: 512px; object-fit: cover; border-radius: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
-        </div>
-
-        <!-- Thông tin phòng -->
-        <div class="col-lg-3 d-flex flex-column justify-content-between">
-            <div>
-                <h2 class="mb-4 text-primary font-weight-bold">Phòng @Model.SoPhong</h2>
-
-                <p><strong>Giá thuê:</strong> <span class="text-danger font-weight-bold">@Model.GiaThue.ToString("#,##0 VNĐ")</span></p>
-                <p><strong>Diện tích:</strong> @Model.DienTich m²</p>
-                <p><strong>Tầng:</strong> @(Model.Tang.ToString() ?? "Không rõ")</p>
-                <p><strong>Trạng thái:</strong> <span class="badge badge-info p-2">@Model.TrangThai</span></p>
-                <p><strong>Mô tả:</strong> @Model.MoTa</p>
-
-                <hr />
-
-                <p><strong>Thuộc tòa nhà:</strong> @Model.ToaNha?.TenToaNha</p>
-                <p><strong>Địa chỉ tòa nhà :</strong> @Model.ToaNha?.DiaChi</p>
-
-                <!-- Link đơn giản tới Google Maps với tọa độ -->
-                @if (!string.IsNullOrEmpty(Model.ToaNha?.ViTri))
-                {
-                    <a href="https://www.google.com/maps/search/?api=1&query=@Model.ToaNha.ViTri" target="_blank" class="btn btn-info btn-md rounded-pill d-flex align-items-center px-3 py-1">
-                        <i class="fas fa-map-marker-alt mr-2"></i> Xem vị trí trên Google Maps
-                    </a>
-                }
-
-                @if (Model.ToaNha?.ChuTro != null)
-                {
-                    <p><strong>Chủ trọ:</strong> @Model.ToaNha.ChuTro.HoTen</p>
-                    <p><strong>Số điện thoại:</strong> @Model.ToaNha.ChuTro.SoDienThoai</p>
-                }
+<section class="room-detail-section">
+    <div class="container room-detail-wrapper">
+        <div class="row g-4 align-items-start">
+            <!-- Ảnh phòng -->
+            <div class="col-lg-8">
+                <div class="room-image-wrapper">
+                    <img src="@(!string.IsNullOrEmpty(Model.Hinhanh) ? Url.Content("~/" + Model.Hinhanh) : Url.Content("~/img/default-product.jpg"))"
+                         alt="Hình ảnh phòng @Model.SoPhong" class="room-main-img" />
+                </div>
             </div>
 
-            <div class="mt-4 d-flex gap-2 flex-wrap align-items-center">
-                <a asp-controller="PhongTro" asp-action="Index" class="btn btn-secondary btn-md rounded-pill d-flex align-items-center px-3 py-1">
-                    <i class="fas fa-arrow-left mr-2"></i> Quay lại danh sách
-                </a>
-                <button type="button"
-                        id="btnDatLichHen"
-                        class="btn btn-primary btn-md rounded-pill d-flex align-items-center px-3 py-1"
-                        data-toggle="modal" data-target="#appointmentModal"
-                @(Model.TrangThai == "Đã Thuê" ? "disabled title='Phòng đã được thuê, không thể đặt lịch.'" : "")>
-                    <i class="fas fa-calendar-alt mr-2"></i> Đặt lịch hẹn
-                </button>
+            <!-- Thông tin phòng -->
+            <div class="col-lg-4">
+                <div class="room-info-card shadow-sm rounded-4 p-4">
+                    <h2 class="text-primary fw-bold mb-3">Phòng @Model.SoPhong</h2>
+                    <ul class="list-unstyled mb-4 room-info-list">
+                        <li><strong>Giá thuê:</strong> <span class="text-success fw-bold">@Model.GiaThue.ToString("#,##0 VNĐ")</span></li>
+                        <li><strong>Diện tích:</strong> @Model.DienTich m²</li>
+                        <li><strong>Tầng:</strong> @(Model.Tang.ToString() ?? "Không rõ")</li>
+                        <li><strong>Trạng thái:</strong> <span class="badge bg-info text-white px-3 py-2">@Model.TrangThai</span></li>
+                        <li><strong>Mô tả:</strong> @Model.MoTa</li>
+                    </ul>
 
+                    <hr class="my-3" />
 
+                    <ul class="list-unstyled room-info-list mb-4">
+                        <li><strong>Thuộc tòa nhà:</strong> @Model.ToaNha?.TenToaNha</li>
+                        <li><strong>Địa chỉ:</strong> @Model.ToaNha?.DiaChi</li>
+                        @if (!string.IsNullOrEmpty(Model.ToaNha?.ViTri))
+                        {
+                            <li>
+                                <a href="https://www.google.com/maps/search/?api=1&query=@Model.ToaNha.ViTri"
+                                   target="_blank" class="btn btn-outline-success btn-sm rounded-pill mt-2">
+                                    <i class="fas fa-map-marker-alt me-1"></i> Xem vị trí trên bản đồ
+                                </a>
+                            </li>
+                        }
+                        @if (Model.ToaNha?.ChuTro != null)
+                        {
+                            <li><strong>Chủ trọ:</strong> @Model.ToaNha.ChuTro.HoTen</li>
+                            <li><strong>SĐT:</strong> @Model.ToaNha.ChuTro.SoDienThoai</li>
+                        }
+                    </ul>
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a asp-controller="PhongTro" asp-action="Index"
+                           class="btn btn-outline-secondary rounded-pill px-3 py-2">
+                            <i class="fas fa-arrow-left me-2"></i> Quay lại danh sách
+                        </a>
+
+                        <button type="button"
+                                id="btnDatLichHen"
+                                class="btn btn-success rounded-pill px-3 py-2"
+                                data-bs-toggle="modal" data-bs-target="#appointmentModal"
+                                @(Model.TrangThai == "Đã Thuê" ? "disabled title='Phòng đã được thuê, không thể đặt lịch.'" : "")>
+                            <i class="fas fa-calendar-alt me-2"></i> Đặt lịch hẹn
+                        </button>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Modal Đặt lịch hẹn -->
-<div class="modal fade" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content rounded shadow-sm">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="appointmentModalLabel">Đặt lịch hẹn xem phòng @Model.SoPhong</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+<!-- Modal đặt lịch hẹn -->
+<div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header bg-success text-white rounded-top-4">
+                <h5 class="modal-title fw-semibold"><i class="fas fa-calendar-check me-2"></i>Đặt lịch xem phòng @Model.SoPhong</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <form id="appointmentForm" novalidate>
-                    <div class="form-group">
-                        <label for="appointmentDate">Ngày hẹn</label>
-                        <input type="date" class="form-control" id="appointmentDate" required />
+                    <div class="mb-3">
+                        <label for="appointmentDate" class="form-label fw-semibold">Ngày hẹn</label>
+                        <input type="date" class="form-control" id="appointmentDate" required>
                     </div>
-                    <div class="form-group">
-                        <label for="appointmentTime">Giờ hẹn</label>
-                        <input type="time" class="form-control" id="appointmentTime" required />
+                    <div class="mb-3">
+                        <label for="appointmentTime" class="form-label fw-semibold">Giờ hẹn</label>
+                        <input type="time" class="form-control" id="appointmentTime" required>
                     </div>
-                    <div class="form-group">
-                        <label for="note">Ghi chú (tùy chọn)</label>
-                        <textarea class="form-control" id="note" rows="3"></textarea>
+                    <div class="mb-3">
+                        <label for="note" class="form-label fw-semibold">Ghi chú</label>
+                        <textarea class="form-control" id="note" rows="3" placeholder="Thêm ghi chú (tùy chọn)..."></textarea>
                     </div>
                     <input type="hidden" id="phongTroId" value="@Model.MaPhong" />
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary btn-sm" onclick="submitAppointment()">Xác nhận</button>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-success rounded-pill px-4" onclick="submitAppointment()">Xác nhận</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- === CSS CHUYÊN NGHIỆP === -->
+<style>
+    .room-detail-section {
+        margin-top: 100px;
+        margin-bottom: 80px;
+    }
+
+    .room-detail-wrapper {
+        max-width: 1300px;
+        background: #fff;
+        border-radius: 16px;
+        padding: 40px 35px;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .room-image-wrapper {
+        overflow: hidden;
+        border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .room-main-img {
+        width: 100%;
+        height: 520px;
+        object-fit: cover;
+        border-radius: 16px;
+        transition: transform 0.5s ease;
+    }
+
+    .room-image-wrapper:hover .room-main-img {
+        transform: scale(1.04);
+    }
+
+    /* --- Thông tin phòng --- */
+    .room-info-card {
+        background: #fafafa;
+        border-radius: 16px;
+        border: 1px solid #eee;
+    }
+
+    .room-info-list li {
+        padding: 6px 0;
+        font-size: 0.95rem;
+        color: #333;
+    }
+
+    /* --- Badge và nút --- */
+    .badge.bg-info {
+        background-color: #17a2b8 !important;
+    }
+
+    .btn-success {
+        background-color: #1ec36e;
+        border: none;
+        transition: all 0.3s;
+    }
+
+    .btn-success:hover {
+        background-color: #17a65b;
+        box-shadow: 0 4px 15px rgba(23, 166, 91, 0.3);
+    }
+
+    .btn-outline-success {
+        border-color: #1ec36e;
+        color: #1ec36e;
+        transition: all 0.3s;
+    }
+
+    .btn-outline-success:hover {
+        background-color: #1ec36e;
+        color: white;
+    }
+
+    .btn-outline-secondary {
+        border-color: #999;
+        color: #555;
+        transition: all 0.3s;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #999;
+        color: white;
+    }
+
+    /* Modal tùy chỉnh */
+    .modal-content {
+        font-family: "Poppins", sans-serif;
+    }
+
+    .modal-header.bg-success {
+        background-color: #1ec36e !important;
+    }
+
+    .form-control:focus {
+        border-color: #1ec36e;
+        box-shadow: 0 0 0 0.2rem rgba(30, 195, 110, 0.25);
+    }
+
+    @@media (max-width: 992px) {
+        .room-main-img {
+            height: 400px;
+        }
+    }
+</style>
+
+<!-- === SCRIPT LOGIC GIỮ NGUYÊN === -->
 @section Scripts {
     <script>
-           
-        function initMap() {
-            var geocoder = new google.maps.Geocoder();
-
-            var viTri = '@(Model.ToaNha?.ViTri ?? "")';
-            if (viTri) {
-                var latlngStr = viTri.split(',');
-                if (latlngStr.length === 2) {
-                    var lat = parseFloat(latlngStr[0]);
-                    var lng = parseFloat(latlngStr[1]);
-                    var latlng = { lat: lat, lng: lng };
-
-                    geocoder.geocode({ location: latlng }, function (results, status) {
-                        if (status === 'OK') {
-                            if (results[0]) {
-                                document.getElementById('reverseAddress').textContent = results[0].formatted_address;
-                            } else {
-                                document.getElementById('reverseAddress').textContent = "Không tìm thấy địa chỉ";
-                            }
-                        } else {
-                            document.getElementById('reverseAddress').textContent = "Lỗi khi lấy địa chỉ: " + status;
-                        }
-                    });
-                } else {
-                    document.getElementById('reverseAddress').textContent = "Tọa độ không hợp lệ";
-                }
-            } else {
-                document.getElementById('reverseAddress').textContent = "Không có tọa độ";
-            }
-        }
         function submitAppointment() {
             var date = document.getElementById("appointmentDate").value;
             var time = document.getElementById("appointmentTime").value;
@@ -160,7 +242,7 @@
             .then(data => {
                 if (data.success) {
                     alert("Đặt lịch hẹn thành công! Bạn sẽ được thông báo khi chủ nhà xác nhận.");
-                    $('#appointmentModal').modal('hide'); // Đóng modal nếu bạn dùng Bootstrap + jQuery
+                    $('#appointmentModal').modal('hide');
                 } else {
                     alert("Lỗi: " + data.message);
                 }
@@ -171,38 +253,4 @@
             });
         }
     </script>
-
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKjse9i60p-i4Ld99JfraTgjMsoMBGjX4&callback=initMap" async defer></script>
 }
-
-
-<style>
-    .badge-info {
-        background-color: #17a2b8;
-        color: white;
-        padding: 0.35em 0.75em;
-        border-radius: 50rem;
-        font-size: 0.9rem;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: #fff;
-        transition: background-color 0.3s ease;
-    }
-
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #545b62;
-            color: #fff;
-        }
-
-    .btn-primary {
-        transition: background-color 0.3s ease;
-    }
-
-        .btn-primary:hover {
-            background-color: #004085;
-        }
-</style>

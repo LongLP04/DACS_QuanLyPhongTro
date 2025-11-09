@@ -3,32 +3,36 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.9);">
-    <div class="alert alert-warning text-center fs-5" style="color: #856404; border:none;">
-        Hiện tại bạn chưa có phiếu hiện trạng nào được tạo.
+<section class="status-empty section">
+    <div class="container-fluid px-xl-5 py-5">
+        <div class="empty-wrapper bg-white rounded-4 shadow-sm p-5 mx-auto text-center" style="max-width: 700px;">
+            <i class="bi bi-exclamation-triangle-fill text-warning mb-3" style="font-size: 3rem;"></i>
+            <h4 class="fw-bold text-dark mb-2">Hiện tại bạn chưa có phiếu hiện trạng nào được tạo</h4>
+            <p class="text-muted mb-4">Phiếu sẽ được hiển thị khi bạn nhận phòng và xác nhận với chủ trọ.</p>
+            <a asp-controller="Phongtrocuatoi" asp-action="Index"
+               class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                <i class="bi bi-arrow-left-circle me-2"></i> Quay về phòng trọ của tôi
+            </a>
+        </div>
     </div>
-
-    <div class="mt-5 text-center">
-        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
-            <i class="fas fa-arrow-left mr-2"></i> Quay về Phòng trọ của tôi
-        </a>
-    </div>
-</div>
+</section>
 
 <style>
-    .btn-hover-effect {
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 50rem !important;
-    }
-
-        .btn-hover-effect:hover {
-            background-color: #75c98e !important;
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
-        }
-
-        .btn-hover-effect:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
-        }
+.empty-wrapper {
+    border: 1.4px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+.empty-wrapper:hover {
+    border-color: #1ec36e;
+    box-shadow: 0 8px 20px rgba(30,195,110,0.15);
+}
+.btn-success {
+    background-color: #1ec36e;
+    border: none;
+}
+.btn-success:hover {
+    background-color: #17a75c;
+    transform: scale(1.05);
+    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
+}
 </style>

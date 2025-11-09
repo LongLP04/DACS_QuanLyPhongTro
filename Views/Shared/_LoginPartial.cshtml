@@ -1,55 +1,44 @@
 ﻿@using Microsoft.AspNetCore.Identity
-
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 
-
-
-
-<div class="btn-group">
+<div class="dropdown">
     @{
-        // Prefer ChuTroHoTen when present (set by area controllers), otherwise fall back to identity username
         var displayName = ViewData["ChuTroHoTen"] as string;
         if (string.IsNullOrEmpty(displayName))
         {
             displayName = UserManager.GetUserName(User) ?? User?.Identity?.Name ?? "Tài khoản";
         }
     }
-    <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
-        <i class="fas fa-user"></i> @displayName
+
+    <button class="btn btn-sm btn-light dropdown-toggle"
+            type="button"
+            id="accountDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        <i class="fas fa-user me-1"></i> @displayName
     </button>
-    <div class="dropdown-menu dropdown-menu-right">
+
+    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="accountDropdown">
         @if (SignInManager.IsSignedIn(User))
         {
-            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
-                Xin chào, @UserManager.GetUserName(User)
-            </a>
-            <form class="dropdown-item p-0" asp-area="Identity" asp-page="/Account/Logout"
-                  asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
-                <button type="submit" class="btn btn-link text-left w-100">Đăng xuất</button>
-            </form>
+            <li><h6 class="dropdown-header text-success fw-bold">Xin chào, @UserManager.GetUserName(User)</h6></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <form asp-area="Identity"
+                      asp-page="/Account/Logout"
+                      asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
+                      method="post" class="m-0">
+                    <button type="submit" class="dropdown-item text-danger">
+                        <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+                    </button>
+                </form>
+            </li>
         }
         else
         {
-            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
-            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a>
+            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login"><i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập</a></li>
+            <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register"><i class="bi bi-person-plus me-2"></i> Đăng ký</a></li>
         }
-    </div>
+    </ul>
 </div>
-<style>
-    .dropdown-menu {
-        position: absolute; /* Đảm bảo dropdown hiển thị đúng vị trí */
-        z-index: 3000 !important; /* Đặt z-index cao để nổi trên navbar */
-        background-color: #fff; /* Nền trắng để dễ nhìn */
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Bóng mờ tạo nổi bật */
-        border-radius: 8px; /* Bo tròn các góc */
-        min-width: 10rem; /* Chiều rộng tối thiểu */
-    }
-
-    /* Nếu dropdown nằm bên phải, căn chỉnh đúng */
-    .dropdown-menu-right {
-        right: 0;
-        left: auto;
-    }
-
-</style>

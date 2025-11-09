@@ -5,86 +5,123 @@
     var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
 }
 
-<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.85);">
+<section class="history-page section">
+    <div class="container-fluid px-xl-5 py-5">
+        <div class="history-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
 
-    <h3 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-        @ViewData["Title"]
-    </h3>
+            <div class="text-center mb-4">
+                <h2 class="fw-bold" style="color: #1ec36e;">Lịch sử thanh toán</h2>
+                <p class="text-muted">Theo dõi các giao dịch thanh toán của bạn</p>
+            </div>
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info text-center fs-5">
-            Bạn chưa có giao dịch nào.
+            @if (!Model.Any())
+            {
+                <div class="alert alert-light text-center border rounded-4 py-4 shadow-sm">
+                    <i class="bi bi-receipt-cutoff text-success me-2"></i>Bạn chưa có giao dịch nào.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle shadow-sm rounded-4 overflow-hidden history-table">
+                        <thead class="text-white">
+                            <tr>
+                                <th>Phòng</th>
+                                <th>Ngày thanh toán</th>
+                                <th>Phương thức</th>
+                                <th>Số tiền</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ptt in Model)
+                            {
+                                <tr>
+                                    <td><strong>@ptt.HoaDon?.PhongTro?.SoPhong</strong></td>
+                                    <td>@ptt.NgayThanhToan.ToString("dd/MM/yyyy")</td>
+                                    <td>@ptt.PhuongThucThanhToan?.TenPhuongThuc</td>
+                                    <td class="text-danger fw-semibold">@ptt.SoTienThanhToan.ToString("C0", vnd)</td>
+                                    <td>
+                                        @if (ptt.HoaDon?.TrangThai == "Chờ xác nhận")
+                                        {
+                                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">
+                                                <i class="bi bi-hourglass-split me-1"></i> Chờ xác nhận
+                                            </span>
+                                        }
+                                        else if (ptt.HoaDon?.TrangThai == "Đã thanh toán")
+                                        {
+                                            <span class="badge bg-success text-white px-3 py-2 rounded-pill">
+                                                <i class="bi bi-check2-circle me-1"></i> Đã xác nhận
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary text-white px-3 py-2 rounded-pill">
+                                                @ptt.HoaDon?.TrangThai
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            <div class="text-center mt-5">
+                <a asp-controller="PhieuThanhToan" asp-action="Index"
+                   class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                    <i class="bi bi-arrow-left-circle me-2"></i> Quay về hóa đơn thanh toán
+                </a>
+            </div>
         </div>
-    }
-    else
-    {
-        <div class="table-responsive shadow-sm rounded">
-            <table class="table table-striped table-bordered mb-0" style="background-color: white; border-radius: 15px; overflow: hidden;">
-                <thead class="thead">
-                    <tr>
-                        <th>Phòng</th>
-                        <th>Ngày thanh toán</th>
-                        <th>Phương thức</th>
-                        <th>Số tiền</th>
-                        <th>Ghi chú</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var ptt in Model)
-                    {
-                        <tr>
-                            <td>@ptt.HoaDon?.PhongTro?.SoPhong</td>
-                            <td>@ptt.NgayThanhToan.ToString("dd/MM/yyyy")</td>
-                            <td>@ptt.PhuongThucThanhToan?.TenPhuongThuc</td>
-                            <td>@ptt.SoTienThanhToan.ToString("C0", vnd)</td>
-                            <td>
-                                @if (ptt.HoaDon?.TrangThai == "Chờ xác nhận")
-                                {
-                                    <span class="text-warning font-weight-bold">Đang chờ xác nhận</span>
-                                }
-                                else if (ptt.HoaDon?.TrangThai == "Đã thanh toán")
-                                {
-                                    <span class="text-success">Giao dịch đã được xác nhận bởi chủ trọ của bạn</span>
-                                }
-                                else
-                                {
-                                    <span>@ptt.HoaDon?.TrangThai</span>  @* Hoặc thông báo khác nếu muốn *@
-                                }
-                            </td>
-
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    <div class="mt-5 text-center">
-        <a asp-controller="PhieuThanhToan" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
-            <i class="fas fa-arrow-left mr-2"></i> Quay về hóa đơn thanh toán
-        </a>
     </div>
-</div>
+</section>
 
 <style>
-    thead.thead {
-        background-color: #a0522d !important;
-        color: white;
-    }
+.history-page { margin-top: 10px; margin-bottom: 10px; }
 
-    .btn-hover-effect {
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 50rem !important;
-    }
+/* === BẢNG === */
+.history-table {
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    background-color: #fff;
+}
+.history-table thead {
+    background-color: #1ec36e;
+}
+.history-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    padding: 14px;
+}
+.history-table td {
+    color: #333;
+    padding: 12px;
+}
+.history-table tr:hover td {
+    background-color: #e8fff1;
+    transition: background-color 0.3s ease;
+}
 
-        .btn-hover-effect:hover {
-            background-color: #75c98e !important;
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
-        }
-
-        .btn-hover-effect:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
-        }
+/* === CARD & NÚT === */
+.history-wrapper {
+    border: 1.4px solid #dcdcdc;
+    transition: all 0.3s ease;
+}
+.history-wrapper:hover {
+    border-color: #1ec36e;
+    box-shadow: 0 8px 20px rgba(30,195,110,0.15);
+}
+.btn-success {
+    background-color: #1ec36e;
+    border: none;
+}
+.btn-success:hover {
+    background-color: #17a75c;
+    transform: scale(1.05);
+    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
+}
 </style>

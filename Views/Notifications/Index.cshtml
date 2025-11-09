@@ -1,77 +1,102 @@
 ﻿@model List<DACS_QuanLyPhongTro.Models.Notification>
+
 @{
     ViewData["Title"] = "Thông báo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5 p-4" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
-    <h2 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-        Thông báo của bạn
-    </h2>
+<section class="notifications-page section">
+    <div class="container-fluid px-xl-5 py-5">
+        <div class="notifications-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-warning text-center fs-5 rounded shadow-sm" style="color: #856404; border:none; background-color:#fff8dc;">
-            Hiện không có thông báo nào.
-        </div>
-    }
-    else
-    {
-        <ul class="list-group shadow-sm rounded">
-            @foreach (var notification in Model)
+            <!-- Tiêu đề -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold" style="color: #1ec36e;">Thông báo của bạn</h2>
+                <p class="text-muted">Xem các cập nhật mới nhất từ hệ thống Trọ Quanh Ta</p>
+            </div>
+
+            <!-- Nếu không có thông báo -->
+            @if (Model == null || !Model.Any())
             {
-                <li class="list-group-item d-flex justify-content-between align-items-center"
-                    style="
-                        border-left: 6px solid @(notification.IsRead ? "transparent" : "#f4a261");
-                        color: @(notification.IsRead ? "#6c584c" : "#4a3c2f");
-                        font-weight: @(notification.IsRead ? "400" : "600");
-                        cursor: default;
-                                ">
-                    <span>@notification.Message</span>
-                    <small class="text-nowrap" style="font-size: 0.85rem; color: #7a6a53;">
-                        @notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")
-                    </small>
-                </li>
+                <div class="alert alert-light border-0 text-center py-4 rounded-4 shadow-sm" style="background-color: #f9f9f9;">
+                    <i class="bi bi-bell-slash fs-3 text-secondary mb-2 d-block"></i>
+                    <span class="fs-5 text-muted">Hiện tại bạn chưa có thông báo nào.</span>
+                </div>
             }
-        </ul>
-    }
+            else
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var notification in Model.OrderByDescending(n => n.CreatedAt))
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-start py-3 px-3 rounded-3 mb-2 border-0 shadow-sm"
+                            style="
+                                background-color: @(notification.IsRead ? "#f9f9f9" : "#e8fff1");
+                                border-left: 6px solid @(notification.IsRead ? "#ccc" : "#1ec36e");
+                                color: @(notification.IsRead ? "#555" : "#222");
+                                font-weight: @(notification.IsRead ? "400" : "600");
+                                ">
+                            <div class="me-3">
+                                <i class="bi @(notification.IsRead ? "bi-bell" : "bi-bell-fill") me-2 text-success"></i>
+                                @notification.Message
+                            </div>
+                            <small class="text-muted text-nowrap">@notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                        </li>
+                    }
+                </ul>
+            }
 
-    <div class="mt-5 text-center">
-        <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
-            <i class="fas fa-arrow-left mr-2"></i> Quay về trang chủ
-        </a>
+            <!-- Nút quay lại -->
+            <div class="text-center mt-4">
+                <a asp-controller="Home" asp-action="Index"
+                   class="btn btn-success rounded-pill px-4 py-2 shadow-sm btn-hover">
+                    <i class="bi bi-arrow-left-circle me-2"></i> Quay lại trang chủ
+                </a>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
+<!-- ===== STYLE ===== -->
 <style>
-    .btn-hover-effect {
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 50rem !important; /* bo tròn dạng pill */
+    /* Căn toàn trang có khoảng cách với header cố định */
+    .notifications-page {
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
-        .btn-hover-effect:hover {
-            background-color: #75c98e !important; /* màu xanh đậm hơn khi hover */
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
-        }
-
-        .btn-hover-effect:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
-        }
-
-    /* Bo tròn, bóng nhẹ cho list */
-    .list-group {
-        border-radius: 1.5rem;
-        overflow: hidden;
-        background-color: #fff9e6;
-    }
-
+    /* Danh sách thông báo */
     .list-group-item {
-        transition: background-color 0.2s ease;
+        background: #fff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+        cursor: default;
     }
 
-        .list-group-item:hover {
-            background-color: #fff4d6;
-        }
+    .list-group-item:hover {
+        transform: translateY(-2px);
+        background: #f6fff8;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Nút quay lại */
+    .btn-hover {
+        transition: all 0.3s ease;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    .btn-hover:hover {
+        background-color: #159957;
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(21, 153, 87, 0.25);
+    }
+
+    .btn-hover:active {
+        transform: scale(0.96);
+        box-shadow: 0 3px 8px rgba(21, 153, 87, 0.25);
+    }
+
+    /* Icon */
+    .bi-bell-fill {
+        font-size: 1.1rem;
+    }
 </style>

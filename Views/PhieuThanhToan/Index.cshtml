@@ -4,81 +4,111 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.85);">
+<section class="bill-page section">
+    <div class="container-fluid px-xl-5 py-5">
+        <div class="bill-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
+            
+            <div class="text-center mb-4">
+                <h2 class="fw-bold" style="color: #1ec36e;">Hóa đơn cần thanh toán</h2>
+                <p class="text-muted">Danh sách các hóa đơn thuê phòng đang chờ bạn thanh toán</p>
+            </div>
 
-    <h3 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-        @ViewData["Title"]
-    </h3>
+            <div class="text-end mb-3">
+                <a href="@Url.Action("LichSuThanhToan", "PhieuThanhToan")"
+                   class="btn btn-warning rounded-pill fw-semibold px-4 shadow-sm btn-hover">
+                    <i class="bi bi-clock-history me-2"></i> Lịch sử thanh toán
+                </a>
+            </div>
 
-    <div class="mb-3 text-end">
-        <a href="@Url.Action("LichSuThanhToan", "PhieuThanhToan")" class="btn btn-warning btn-hover-effect rounded-pill px-4 shadow-sm">
-            Lịch sử thanh toán
-        </a>
-    </div>
+            @if (!Model.Any())
+            {
+                <div class="alert alert-light text-center border rounded-4 py-4 shadow-sm">
+                    <i class="bi bi-info-circle text-success me-2"></i>Không có hóa đơn nào cần thanh toán.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle shadow-sm rounded-4 overflow-hidden bill-table">
+                        <thead class="text-white">
+                            <tr>
+                                <th>Phòng</th>
+                                <th>Ngày lập</th>
+                                <th>Tổng tiền</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><strong>@item.PhongTro.SoPhong</strong></td>
+                                    <td>@item.NgayLap.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-danger fw-semibold">@item.TongTien.ToString("N0") VND</td>
+                                    <td>
+                                        <a href="@Url.Action("ThanhToan", new { id = item.MaHoaDon })"
+                                           class="btn btn-success btn-sm rounded-pill px-3 shadow-sm">
+                                            <i class="bi bi-credit-card me-1"></i> Thanh toán
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info text-center fs-5">
-            Không có hóa đơn nào cần thanh toán.
+            <div class="text-center mt-5">
+                <a asp-controller="Phongtrocuatoi" asp-action="Index"
+                   class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                    <i class="bi bi-arrow-left-circle me-2"></i> Quay lại phòng trọ của tôi
+                </a>
+            </div>
         </div>
-    }
-    else
-    {
-        <div class="table-responsive shadow-sm rounded">
-            <table class="table table-bordered mb-0" style="background-color: white; border-radius: 15px; overflow: hidden;">
-                <thead>
-                    <tr>
-                        <th>Phòng</th>
-                        <th>Ngày lập</th>
-                        <th>Tổng tiền</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.PhongTro.SoPhong</td>
-                            <td>@item.NgayLap.ToString("dd/MM/yyyy")</td>
-                            <td>@item.TongTien.ToString("N0") VND</td>
-                            <td>
-                                <a href="@Url.Action("ThanhToan", new { id = item.MaHoaDon })" class="btn btn-success btn-sm btn-hover-effect rounded-pill px-3 shadow-sm">
-                                    Thanh toán
-                                </a>
-                                
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
-    <div class="mt-5 text-center">
-        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
-            <i class="fas fa-arrow-left mr-2"></i> Quay về Phòng trọ của tôi
-        </a>
     </div>
-</div>
+</section>
 
 <style>
-    thead {
-        background-color: #a0522d;
-        color: white;
-    }
+.bill-page { margin-top: 10px; margin-bottom: 10px; }
 
-    .btn-hover-effect {
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 50rem !important; /* bo tròn dạng pill */
-    }
+/* === BẢNG HÓA ĐƠN === */
+.bill-table {
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    overflow: hidden;
+    background-color: #fff;
+}
+.bill-table thead {
+    background-color: #1ec36e;
+}
+.bill-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    padding: 14px;
+}
+.bill-table td {
+    color: #333;
+    padding: 12px;
+}
+.bill-table tr:hover td {
+    background-color: #e8fff1;
+    transition: background-color 0.3s ease;
+}
 
-        .btn-hover-effect:hover {
-            background-color: #75c98e !important; /* màu xanh đậm hơn khi hover */
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
-        }
-
-        .btn-hover-effect:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
-        }
+/* === NÚT === */
+.btn-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 14px rgba(255, 193, 7, 0.3);
+}
+.btn-success {
+    background-color: #1ec36e;
+    border: none;
+}
+.btn-success:hover {
+    background-color: #17a75c;
+    transform: scale(1.05);
+    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
+}
 </style>

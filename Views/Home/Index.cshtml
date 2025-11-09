@@ -1,433 +1,499 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trọ Quanh Ta";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@{
-    ViewData["Title"] = "Trọ quanh ta";
-}
+
 @if (TempData["ThongBao"] != null)
 {
-    <div class="alert alert-success" id="thongBao">
+    <div class="alert alert-success text-center mt-3" id="thongBao">
         @TempData["ThongBao"]
     </div>
 }
-<!-- Carousel Start -->
-<div class="container-fluid p-0 mb-0" style="padding: 0; margin: 0;">
-    <div class="row" style="margin: 0; padding: 0;">
-        <div class="col-lg-8" style="padding: 0; margin: 0;">
-            <div id="header-carousel" class="carousel slide carousel-fade mb-0" data-ride="carousel" style="height: 430px;">
-                <ol class="carousel-indicators">
-                    <li data-target="#header-carousel" data-slide-to="0" class="active"></li>
-                    <li data-target="#header-carousel" data-slide-to="1"></li>
-                    <li data-target="#header-carousel" data-slide-to="2"></li>
-                </ol>
-                <div class="carousel-inner" style="height: 100%;">
-                    <div class="carousel-item position-relative active" style="height: 430px;">
-                        <img class="position-absolute w-100 h-100" src="images/poster_1.jpg" style="object-fit: cover; top: 0; left: 0; margin: 0; padding: 0;">
-                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                            <div class="p-3" style="max-width: 700px;">
-                                <h1 class="display-4 carousel-title mb-3 animate__animated animate__fadeInDown">Trẻ Trung</h1>
-                                <p class="mx-md-5 px-5 carousel-text animate__animated animate__bounceIn">Phòng trọ hiện đại, phù hợp với xu hướng giới trẻ✨</p>
-                                <a asp-controller="PhongTro" asp-action="Index" class="btn carousel-button py-2 px-4 mt-3 animate__animated animate__fadeInUp">Tham khảo ngay</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-item position-relative" style="height: 430px;">
-                        <img class="position-absolute w-100 h-100" src="images/poster_2.jpg" style="object-fit: cover; top: 0; left: 0; margin: 0; padding: 0;">
-                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                            <div class="p-3" style="max-width: 700px;">
-                                <h1 class="display-4 carousel-title mb-3 animate__animated animate__fadeInDown">Năng Động</h1>
-                                <p class="mx-md-5 px-5 carousel-text animate__animated animate__bounceIn">Phòng trọ có quy định giờ giấc và có thể linh hoạt xoay giờ theo nhu cầu khách thuê⚡</p>
-                                <a asp-controller="PhongTro" asp-action="Index" class="btn carousel-button py-2 px-4 mt-3 animate__animated animate__fadeInUp">Tham khảo ngay</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-item position-relative" style="height: 430px;">
-                        <img class="position-absolute w-100 h-100" src="images/poster.jpg" style="object-fit: cover; top: 0; left: 0; margin: 0; padding: 0;">
-                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                            <div class="p-3" style="max-width: 700px;">
-                                <h1 class="display-4 carousel-title mb-3 animate__animated animate__fadeInDown">Sáng Tạo</h1>
-                                <p class="mx-md-5 px-5 carousel-text animate__animated animate__bounceIn">Phá cách với sự sáng tạo và mang phong cách của riêng bạn🎨🔥</p>
-                                <a asp-controller="PhongTro" asp-action="Index" class="btn carousel-button py-2 px-4 mt-3 animate__animated animate__fadeInUp">Tham khảo ngay</a>
-                            </div>
-                        </div>
-                    </div>
+
+<!-- ======= Hero Section ======= -->
+<section id="hero" class="hero section dark-background">
+    <div class="hero-wrapper">
+    <div id="hero-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
+        <div class="carousel-item active">
+            <img src="~/images/poster_1.jpg" class="d-block w-100" alt="">
+            <div class="carousel-container">
+                <div data-aos="fade-up">
+                    <h2>Trẻ Trung</h2>
+                    <p>Phòng trọ hiện đại, phù hợp với xu hướng giới trẻ ✨</p>
+                    <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
                 </div>
             </div>
         </div>
 
-        @* Giảm giá *@
-        <div class="col-lg-4" style="padding: 0; margin: 0;">
-            <div class="product-offer mb-0" style="height: 215px; position: relative; overflow: hidden;">
-                <img class="img-fluid w-100 h-100" src="images/tro_5.jpg" alt="Giảm giá 1" style="object-fit: cover; position: absolute; top: 0; left: 0; margin: 0; padding: 0;">
-                <div class="offer-text" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                    <h6 class="offer-subtitle text-uppercase">Phòng trọ mới</h6>
-                    <h3 class="offer-title mb-3">Giá cả hợp lý</h3>
-                    <a asp-controller="PhongTro" asp-action="Index" class="btn offer-button">Tham khảo ngay</a>
+        <div class="carousel-item">
+            <img src="~/images/poster_2.jpg" class="d-block w-100" alt="">
+            <div class="carousel-container">
+                <div data-aos="fade-up">
+                    <h2>Năng Động</h2>
+                    <p>Phòng trọ có giờ giấc linh hoạt, phù hợp cho người đi làm ⚡</p>
+                    <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
                 </div>
             </div>
-            <div class="product-offer mb-0" style="height: 215px; position: relative; overflow: hidden;">
-                <img class="img-fluid w-100 h-100" src="images/tro_7.jpg" alt="Giảm giá 2" style="object-fit: cover; position: absolute; top: 0; left: 0; margin: 0; padding: 0;">
-                <div class="offer-text" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                    <h6 class="offer-subtitle text-uppercase">Save 20%</h6>
-                    <h3 class="offer-title mb-3">Special Offer</h3>
-                    <a asp-controller="PhongTro" asp-action="Index" class="btn offer-button">Tham khảo ngay</a>
+        </div>
+
+        <div class="carousel-item">
+            <img src="~/images/poster.jpg" class="d-block w-100" alt="">
+            <div class="carousel-container">
+                <div data-aos="fade-up">
+                    <h2>Sáng Tạo</h2>
+                    <p>Phá cách với phong cách riêng, độc đáo và ấn tượng 🎨</p>
+                    <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
+                </div>
+            </div>
+        </div>
+
+        <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bi bi-chevron-left"></span>
+        </a>
+        <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon bi bi-chevron-right"></span>
+        </a>
+
+        <ol class="carousel-indicators"></ol>
+    </div>
+</section><!-- /Hero Section -->
+<!-- ======= Featured Offers Section ======= -->
+<section id="featured" class="services section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Phòng trọ nổi bật</h2>
+        <p>Những lựa chọn được yêu thích nhất</p>
+    </div>
+
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-6" data-aos="fade-right">
+                <div class="product-offer position-relative overflow-hidden">
+                    <img src="~/images/tro_4.jpg" class="img-fluid w-100" alt="">
+                    <div class="offer-text d-flex flex-column justify-content-center align-items-center text-center">
+                        <h6 class="text-white text-uppercase">Save 20%</h6>
+                        <h3 class="text-white mb-3">Special Offer</h3>
+                        <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6" data-aos="fade-left">
+                <div class="product-offer position-relative overflow-hidden">
+                    <img src="~/images/tro_3.jpg" class="img-fluid w-100" alt="">
+                    <div class="offer-text d-flex flex-column justify-content-center align-items-center text-center">
+                        <h6 class="text-white text-uppercase">Save 15%</h6>
+                        <h3 class="text-white mb-3">Hot Deal</h3>
+                        <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-md-6" data-aos="fade-right" data-aos-delay="100">
+                <div class="product-offer position-relative overflow-hidden">
+                    <img src="~/images/7092611c-1a21-4455-bbf5-17ccfb842185.jpg" class="img-fluid w-100" alt="Phòng trọ gần trung tâm">
+                    <div class="offer-text d-flex flex-column justify-content-center align-items-center text-center">
+                        <h6 class="text-white text-uppercase">Căn hộ cao cấp</h6>
+                        <h3 class="text-white mb-3">Thiết kế ấn tượng</h3>
+                        <a asp-controller="PhongTro" asp-action="Index" asp-route-searchTerm="trung tâm"
+                           class="btn-get-started">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-md-6" data-aos="fade-left" data-aos-delay="200">
+                <div class="product-offer position-relative overflow-hidden">
+                    <img src="~/images/1638eb0e-5f06-4d9e-bc85-d5b218407812.jpg" class="img-fluid w-100" alt="Phòng trọ giá rẻ">
+                    <div class="offer-text d-flex flex-column justify-content-center align-items-center text-center">
+                        <h6 class="text-white text-uppercase">Chỉ từ 1.5 triệu</h6>
+                        <h3 class="text-white mb-3">Phòng trọ giá rẻ – tiện nghi</h3>
+                        <a asp-controller="PhongTro" asp-action="Index" asp-route-maxPrice="1500000"
+                           class="btn-get-started">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section><!-- /Featured Offers Section -->
+
+<!-- ======= Room Category Section ======= -->
+<section id="categories" class="services section light-background">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Phân loại phòng trọ</h2>
+        <p>Chọn loại phòng phù hợp với nhu cầu của bạn</p>
+    </div>
+
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up">
+                <div class="service-item position-relative text-center">
+                    <img src="~/images/trotruyenthong.jpg" class="category-img" alt="Trọ truyền thống">
+                    <h4>Trọ truyền thống</h4>
+                    <p>Giá hợp lý, chỉ từ 2 triệu đồng.</p>
+                    <a asp-controller="PhongTro" asp-action="Index" asp-route-maxPrice="2000000" class="btn btn-primary">Xem ngay</a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="service-item position-relative text-center">
+                    <img src="~/images/trocaocap.jpg" class="category-img" alt="Trọ cao cấp">
+                    <h4>Trọ cao cấp</h4>
+                    <p>Không gian hiện đại, tiện nghi, giá từ 4 triệu đồng.</p>
+                    <a asp-controller="PhongTro" asp-action="Index" asp-route-minPrice="4000000" class="btn btn-primary">Xem ngay</a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="service-item position-relative text-center">
+                    <img src="~/images/canhomini.webp" class="category-img" alt="Căn hộ Mini">
+                    <h4>Căn hộ Mini</h4>
+                    <p>Thiết kế phá cách, trung tâm Quận 1.</p>
+                    <a asp-controller="PhongTro" asp-action="Index" asp-route-searchTerm="Quận 1" class="btn btn-primary">Xem ngay</a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="service-item position-relative text-center">
+                    <img src="~/images/trogiadinh.jpeg" class="category-img" alt="Trọ gia đình">
+                    <h4>Trọ gia đình</h4>
+                    <p>Không gian rộng rãi, phù hợp cho gia đình.</p>
+                    <a asp-controller="PhongTro" asp-action="Index" asp-route-minArea="40" asp-route-maxArea="60" class="btn btn-primary">Xem ngay</a>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section><!-- /Room Category -->
+<!-- ======= Features Section ======= -->
+<section id="features" class="features section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Tiêu chí của chúng tôi</h2>
+        <p>Những lý do bạn nên chọn Trọ Quanh Ta</p>
+    </div>
+
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="service-item text-center">
+                    <div class="icon"><i class="bi bi-house-door"></i></div>
+                    <h4>Phòng trọ chất lượng</h4>
+                    <p>Đầy đủ tiện nghi, an toàn và sạch sẽ.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="service-item text-center">
+                    <div class="icon"><i class="bi bi-eye"></i></div>
+                    <h4>Xem phòng trực tiếp</h4>
+                    <p>Trải nghiệm thực tế trước khi thuê.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="service-item text-center">
+                    <div class="icon"><i class="bi bi-tag"></i></div>
+                    <h4>Giá cả hợp lý</h4>
+                    <p>Phù hợp với mọi đối tượng sinh viên và người đi làm.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="service-item text-center">
+                    <div class="icon"><i class="bi bi-headset"></i></div>
+                    <h4>Hỗ trợ 24/7</h4>
+                    <p>Đội ngũ tư vấn, hỗ trợ khách thuê mọi lúc.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section><!-- /Features Section -->
+
+
+
 
 <style>
-    .carousel-button, .offer-button {
-        background-color: #f39c12 !important; /* Màu cam của navbar */
-        border-color: #f39c12 !important;
-        color: white !important;
+    /* === HEADER CỐ ĐỊNH === */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background-color: #fff !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* --- ĐẨY HERO XUỐNG DƯỚI HEADER --- */
+#hero {
+    margin-top: 50px; /* đúng bằng chiều cao header */
+}
+
+/* === HERO === */
+#hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent !important;
+    margin-bottom: 80px;
+}
+
+#hero .hero-wrapper {
+    width: 90%;
+    max-width: 1300px;
+    height: 650px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    position: relative;
+    z-index: 1;
+}
+
+#hero #hero-carousel {
+    height: 100%;
+}
+
+#hero .carousel-inner,
+#hero .carousel-item {
+    height: 100%;
+}
+
+#hero .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+/* Overlay giúp chữ rõ hơn */
+#hero .carousel-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1;
+}
+
+/* Text trong hero */
+#hero .carousel-container {
+    position: absolute;
+    top: 43%; /* chỉnh lên xuống vị trí text */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #fff;
+    z-index: 10;
+}
+
+#hero .carousel-container h2 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+    margin-bottom: 12px;
+}
+
+#hero .carousel-container p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+}
+
+#hero .btn-get-started {
+    background-color: #00b871;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+}
+
+#hero .btn-get-started:hover {
+    background-color: #00945d;
+    transform: scale(1.05);
+}
+
+/* === PHÒNG TRỌ NỔI BẬT === */
+.product-offer {
+    height: 350px;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.product-offer:hover img {
+    transform: scale(1.05);
+}
+
+.product-offer img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-offer .offer-text {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    transition: background 0.3s ease;
+}
+
+.product-offer:hover .offer-text {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* === PHÂN LOẠI PHÒNG === */
+.category-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 15px;
+}
+
+#categories .service-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px 20px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#categories .service-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* nút Xem ngay ở cuối mỗi card */
+#categories .btn {
+    align-self: center;
+    margin-top: auto;
+}
+
+/* === TIÊU ĐỀ MỖI PHẦN === */
+.section {
+    padding: 50px 0;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #eee;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.section-title h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #0d2a4d;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title h2::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 3px;
+    background: linear-gradient(90deg, #1ec36e, #22b87a);
+    border-radius: 2px;
+}
+
+.section-title p {
+    color: #666;
+    font-size: 1rem;
+    margin-top: 15px;
+}
+
+/* === NÚT CHUNG === */
+.btn-primary, .btn-get-started {
+    background-color: #1ec36e !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 500;
+    border-radius: 25px !important;
+    padding: 8px 22px !important;
+    box-shadow: 0 3px 10px rgba(30, 195, 110, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-get-started:hover {
+    background-color: #159957 !important;
+    box-shadow: 0 6px 20px rgba(30, 195, 110, 0.4);
+    transform: translateY(-3px);
+}
+
+/* === RESPONSIVE === */
+@@media (max-width: 768px) {
+    #hero .hero-wrapper {
+        height: 400px;
     }
 
-        .carousel-button:hover, .offer-button:hover {
-            background-color: #d35400 !important; /* Cam đậm hơ n khi hover */
-            border-color: #d35400 !important;
-            color: white !important;
-        }
-
-    .carousel-title, .offer-title {
-        color: white !important; /* Cam đậm */
+    #hero .carousel-container h2 {
+        font-size: 1.8rem;
     }
 
-    .carousel-text, .offer-subtitle {
-        color: white !important; /* Xanh biển */
+    #hero .carousel-container p {
+        font-size: 1rem;
     }
+
+    .product-offer {
+        height: 280px;
+        margin-bottom: 20px;
+    }
+}
+/* === TIÊU CHÍ CỦA CHÚNG TÔI (features section) === */
+#features .service-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px 20px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+#features .service-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+#features .icon {
+    font-size: 32px;
+    color: #1ec36e;
+    margin-bottom: 15px;
+}
+
+
 </style>
-<!-- Carousel End -->
-<!-- Tiêu chí Start -->
-<div class="container-fluid p-0 mb-0 pt-2">
-    <div class="row px-xl-5 pb-3">
-        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-            <div class="d-flex align-items-center feature-box mb-4" style="padding: 30px;">
-                <i class="fas fa-home feature-icon fa-2x mr-3"></i>
-                <h5 class="font-weight-semi-bold m-0 feature-text">Phòng trọ chất lượng</h5>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-            <div class="d-flex align-items-center feature-box mb-4" style="padding: 30px;">
-                <i class="fas fa-eye feature-icon fa-2x mr-3"></i>
-                <h5 class="font-weight-semi-bold m-0 feature-text">Xem phòng trực tiếp</h5>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-            <div class="d-flex align-items-center feature-box mb-4" style="padding: 30px;">
-                <i class="fas fa-tags feature-icon fa-2x mr-3"></i>
-                <h5 class="font-weight-semi-bold m-0 feature-text">Giá cả hợp lý</h5>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-            <div class="d-flex align-items-center feature-box mb-4" style="padding: 30px;">
-                <i class="fas fa-headset feature-icon fa-2x mr-3"></i>
-                <h5 class="font-weight-semi-bold m-0 feature-text">Hỗ trợ 24/7</h5>
-            </div>
-        </div>
-    </div>
 
-    <style>
-        .feature-box {
-            background-color: #ffe0b2 !important; /* Nền cam nhạt */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 10px;
-        }
 
-            .feature-box:hover {
-                transform: translateY(-8px); /* Nâng lên một chút khi hover */
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-                cursor: pointer;
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var thongBao = document.getElementById("thongBao");
+            if (thongBao) {
+                setTimeout(() => {
+                    thongBao.style.transition = "opacity 0.5s";
+                    thongBao.style.opacity = "0";
+                    setTimeout(() => thongBao.remove(), 500);
+                }, 4000);
             }
-
-        .feature-icon {
-            color: #e67e22 !important; /* Icon cam đậm */
-            transition: color 0.3s ease;
-        }
-
-        .feature-box:hover .feature-icon {
-            color: #d35400 !important; /* Cam đậm hơn khi hover */
-        }
-
-        .feature-text {
-            color: #0e168a !important; /* Chữ xanh biển */
-            font-weight: bold; /* Chữ đậm */
-            transition: color 0.3s ease;
-        }
-
-        .feature-box:hover .feature-text {
-            color: #0056b3 !important; /* Xanh đậm hơn khi hover */
-        }
-
-        .section-title span {
-            color: #0e168a; /* Màu xanh biển đậm */
-        }
-    </style>
-
-    <!-- Tiêu chí End -->
-    <!-- Phân loại sản phẩm Start -->
-    <!-- Sản phẩm nổi bật Start -->
-    <style>
-        .product-img {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            transition: transform 0.4s ease;
-        }
-
-            .product-img img {
-                width: 100% !important;
-                height: 100% !important;
-                object-fit: cover;
-                transition: transform 0.4s ease;
-            }
-
-        .card:hover .product-img img {
-            transform: scale(1.1) !important;
-        }
-
-        .card {
-            transition: box-shadow 0.3s ease;
-        }
-
-            .card:hover {
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
-            }
-
-        .btn-custom.btn-sm {
-            background-color: #f39c12 !important; /* Màu cam của navbar */
-            border-color: #f39c12 !important;
-            color: white !important;
-            transition: background-color 0.3s ease, transform 0.2s ease !important;
-        }
-
-            .btn-custom.btn-sm:hover {
-                background-color: #d35400 !important; /* Cam đậm hơn khi hover */
-                border-color: #d35400 !important;
-                transform: scale(1.05) !important;
-            }
-
-        .card-title {
-            color: #e67e22 !important; /* Cam đậm */
-        }
-
-        .card-text {
-            color: #007bff !important; /* Xanh biển */
-        }
-    </style>
-
-    <div class="container-fluid pt-3">
-        <style>
-            .card {
-                border-radius: 12px !important; /* Bo tròn nhẹ góc */
-                overflow: hidden; /* Đảm bảo hình ảnh không tràn ra ngoài */
-                display: flex;
-                flex-direction: column;
-                height: 100%;
-            }
-
-            .product-img {
-                height: 250px;
-                overflow: hidden;
-            }
-
-                .product-img img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-
-            .card-body {
-                background-color: #f9d5a0;
-                flex-grow: 1;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                padding: 1rem 1rem 1.5rem 1rem;
-            }
-
-            .section-title span {
-                background-color: transparent !important; /* Không có màu nền */
-                color: #0e168a !important; /* Xanh biển đậm, như feature-text */
-                padding-right: 12px; /* Giữ padding như bg-secondary */
-            }
-
-            .card-title {
-                font-weight: 600;
-                font-size: 1.25rem;
-            }
-
-            .card-text {
-                flex-grow: 1;
-                margin-top: 0.5rem;
-                font-size: 0.95rem;
-                color: #444;
-            }
-
-            .btn-custom {
-                align-self: center;
-                margin-top: 1rem;
-                background-color: #0e168a;
-                color: white;
-                border-radius: 20px;
-                padding: 6px 20px;
-                font-size: 0.9rem;
-                border: none;
-                transition: background-color 0.3s ease;
-                text-decoration: none;
-                display: inline-block;
-            }
-
-                .btn-custom:hover {
-                    background-color: #061044;
-                    color: #fff;
-                    text-decoration: none;
-                }
-        </style>
-
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-            <span class="pr-3">Phân loại phòng trọ</span>
-        </h2>
-        <div class="row px-xl-5">
-            <!-- Phòng trọ 1 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1 d-flex">
-                <div class="card border-0 mb-4 w-100">
-                    <div class="product-img">
-                        <img src="images/trotruyenthong.jpg" alt="Phòng trọ sinh viên">
-                    </div>
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Trọ truyền thống</h5>
-                        <p class="card-text">Giá cả hợp lý, chỉ từ 2 triệu đồng </p>
-                        <a asp-controller="PhongTro" asp-action="Index" asp-route-maxPrice="2000000" class="btn btn-custom btn-sm">Tham khảo ngay</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Phòng trọ 2 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1 d-flex">
-                <div class="card border-0 mb-4 w-100">
-                    <div class="product-img">
-                        <img src="images/trocaocap.jpg" alt="Phòng trọ cao cấp">
-                    </div>
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Trọ cao cấp</h5>
-                        <p class="card-text">Không gian linh hoạt, thuận tiện cho người đi làm với vị trí trung tâm và an ninh đảm bảo, giá từ 4 triệu đồng.</p>
-                        <a asp-controller="PhongTro" asp-action="Index" asp-route-minPrice="4000000" class="btn btn-custom btn-sm">Tham khảo ngay</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Phòng trọ 3 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1 d-flex">
-                <div class="card border-0 mb-4 w-100">
-                    <div class="product-img">
-                        <img src="images/canhomini.webp" alt="Trọ cao cấp Quận 1">
-                    </div>
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Căn hộ Mini</h5>
-                        <p class="card-text">Thiết kế phá cách, nằm ở trung tâm Quận 1.</p>
-                        <a asp-controller="PhongTro" asp-action="Index" asp-route-searchTerm="Quận 1" class="btn btn-custom btn-sm">Tham khảo ngay</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Phòng trọ 4 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1 d-flex">
-                <div class="card border-0 mb-4 w-100">
-                    <div class="product-img">
-                        <img src="images/trogiadinh.jpeg" alt="Phòng trọ gia đình">
-                    </div>
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Trọ gia đình</h5>
-                        <p class="card-text">Không gian rộng rãi, diện tích từ 40.00 - 60.00 m², phù hợp cho sinh hoạt gia đình.</p>
-                        <a asp-controller="PhongTro" asp-action="Index" asp-route-minArea="40" asp-route-maxArea="60" class="btn btn-custom btn-sm">Tham khảo ngay</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sản phẩm nổi bật End -->
-    <!-- Phân loại sản phẩm End -->
-    <!-- Sản phẩm giảm giá nổi bật Start -->
-    
-    <div class="container-fluid pt-2">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-            <span class="bg-secondary pr-3">Phòng trọ nổi bật</span>
-        </h2>
-    </div>
-    <div class="container-fluid pt-2 pb-3" style="padding: 0; margin: 0;">
-        <div class="row" style="margin: 0; padding: 0; width: 100%; height: 300px;">
-            <div class="col-md-6" style="padding: 0; margin: 0; width: 50%; height: 100%;">
-                <div class="product-offer mb-30" style="height: 100%; width: 100%; position: relative; overflow: hidden; margin: 0; padding: 0;">
-                    <img class="img-fluid" src="images/tro_4.jpg" alt="" style="width: 100% !important; height: 100% !important; object-fit: cover; position: absolute; top: 0; left: 0; margin: 0; padding: 0;">
-                    <div class="offer-text" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 0; padding: 0;">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-custom btn-sm">Tham khảo ngay</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6" style="padding: 0; margin: 0; width: 50%; height: 100%;">
-                <div class="product-offer mb-30" style="height: 100%; width: 100%; position: relative; overflow: hidden; margin: 0; padding: 0;">
-                    <img class="img-fluid" src="images/tro_3.jpg" alt="" style="width: 100% !important; height: 100% !important; object-fit: cover; position: absolute; top: 0; left: 0; margin: 0; padding: 0;">
-                    <div class="offer-text" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 0; padding: 0;">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a asp-controller="PhongTro" asp-action="Index" class="btn btn-custom btn-sm ">Tham khảo ngay</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Giảm giá nổi bật End -->
-    <!-- Sản phẩm gần đây Start -->
-    <div class="container-fluid pt-5 pb-3">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-            <span class="bg-secondary pr-3">Sản phẩm gần đây</span>
-        </h2>
-    </div>
-    <!-- Sản phẩm gần đây End -->
-    <!-- Vendor Start -->
-    <style>
-        .vendor-carousel .bg-light {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 120px;
-        }
-
-        .vendor-carousel img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover;
-        }
-
-    </style>
-
-    <div class="container-fluid py-5">
-        <div class="row px-xl-5">
-        </div>
-    </div>
-    <!-- Vendor End -->
-    @section Scripts {
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var thongBao = document.getElementById("thongBao");
-                if (thongBao) {
-                    setTimeout(function () {
-                        thongBao.style.transition = "opacity 0.5s ease-out";
-                        thongBao.style.opacity = "0";
-                        setTimeout(function () {
-                            thongBao.style.display = "none";
-                        }, 500);
-                    }, 5000);
-                }
-            });
-        </script>
-    }
+        });
+    </script>
+}

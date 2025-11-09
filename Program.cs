@@ -54,6 +54,17 @@ app.UseRouting();
 app.UseSession(); // Cho phép sử dụng Session
 
 app.UseAuthentication();
+app.Use(async (context, next) =>
+{
+    var returnUrl = context.Request.Query["ReturnUrl"].ToString();
+    if (!string.IsNullOrEmpty(returnUrl) && returnUrl.Contains("/Identity"))
+    {
+        context.Response.Redirect("/");
+        return;
+    }
+    await next();
+});
+
 app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllerRoute(

@@ -5,116 +5,121 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.85);">
+<section class="payment-page section">
+    <div class="container-fluid px-xl-5 py-5">
+        <div class="payment-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 900px;">
 
-    <h3 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-        @ViewData["Title"]
-    </h3>
+            <!-- Tiêu đề -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold" style="color: #1ec36e;">Thanh toán hóa đơn</h2>
+                <p class="text-muted">Vui lòng kiểm tra thông tin và chọn phương thức thanh toán</p>
+            </div>
 
-    <div class="card shadow-sm rounded">
-        <div class="card-body">
-            <!-- Thông tin chi tiết hóa đơn -->
-            <p><strong>Phòng:</strong> @Model.PhongTro.SoPhong</p>
-            <p><strong>Ngày lập:</strong> @Model.NgayLap.ToString("dd/MM/yyyy")</p>
-            <p><strong>Tổng tiền:</strong> @Model.TongTien.ToString("N0") VND</p>
-            <p><strong>Trạng thái:</strong> @Model.TrangThai</p>
-
-            <!-- Phương thức thanh toán -->
-            <div class="payment-method-container">
-                <h5>Phương thức thanh toán</h5>
-                <div class="payment-method-options">
-                    @foreach (var pt in ViewBag.PhuongThuc as List<DACS_QuanLyPhongTro.Models.PhuongThucThanhToan>)
-                    {
-                        <div class="payment-method" style="cursor: pointer;" onclick="selectPaymentMethod(@pt.MaPhuongThuc, '@pt.TenPhuongThuc')">
-                            <img src="@Url.Content("~/images/" + pt.TenPhuongThuc + ".png")" alt="@pt.TenPhuongThuc" class="payment-method-img" />
-                            <p>@pt.TenPhuongThuc</p>
-                        </div>
-                        
-                        <form method="post" action="@Url.Action("CreatePaymentUrlVnpay", "Payment")" style="display:inline">
-                                <input type="hidden" name="invoiceId" value="@Model.MaHoaDon" />
-                                <button type="submit" class="btn btn-info btn-sm btn-hover-effect rounded-pill px-3 shadow-sm ms-2">
-                                    Thanh toán VNPay
-                                </button>
-                            </form>
-                        
-                    }
-                    
+            <!-- Chi tiết hóa đơn -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body">
+                    <p><strong>Phòng:</strong> @Model.PhongTro.SoPhong</p>
+                    <p><strong>Ngày lập:</strong> @Model.NgayLap.ToString("dd/MM/yyyy")</p>
+                    <p><strong>Tổng tiền:</strong> <span class="text-danger fw-bold">@Model.TongTien.ToString("N0") VNĐ</span></p>
+                    <p><strong>Trạng thái:</strong>
+                        @if (@Model.TrangThai == "Chưa thanh toán")
+                        {
+                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Chưa thanh toán</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success text-white px-3 py-2 rounded-pill">Đã thanh toán</span>
+                        }
+                    </p>
                 </div>
             </div>
 
+            <!-- Phương thức thanh toán -->
+            <div class="payment-method-container mb-4">
+                <h5 class="fw-bold text-success mb-3">
+                    <i class="bi bi-credit-card me-2"></i>Chọn phương thức thanh toán
+                </h5>
+
+                <div class="payment-method-options">
+                    @foreach (var pt in ViewBag.PhuongThuc as List<DACS_QuanLyPhongTro.Models.PhuongThucThanhToan>)
+                    {
+                        <div class="payment-method text-center" onclick="selectPaymentMethod(@pt.MaPhuongThuc, '@pt.TenPhuongThuc')">
+                            <img src="@Url.Content("~/images/" + pt.TenPhuongThuc + ".png")" alt="@pt.TenPhuongThuc" class="payment-method-img mb-2" />
+                            <span class="fw-semibold">@pt.TenPhuongThuc</span>
+                        </div>
+
+                        @* Nút riêng cho VNPay *@
+                        @if (pt.TenPhuongThuc.ToLower().Contains("vnpay"))
+                        {
+                            <form method="post" action="@Url.Action("CreatePaymentUrlVnpay", "Payment")" class="d-inline">
+                                <input type="hidden" name="invoiceId" value="@Model.MaHoaDon" />
+                                <button type="submit" class="btn btn-info btn-sm rounded-pill shadow-sm ms-2">
+                                    <i class="bi bi-wallet2 me-1"></i> Thanh toán VNPay
+                                </button>
+                            </form>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Form xác nhận -->
             <form method="post" asp-action="XacNhanThanhToan" asp-route-id="@Model.MaHoaDon">
                 <input type="hidden" name="maPhuongThuc" id="selectedPaymentMethod" />
-
-                <!-- Hiển thị hộp xác nhận khi chọn phương thức thanh toán -->
-                <div id="confirmation" style="display:none;">
-                    <p id="confirmationMessage"></p>
-                    <button type="submit" class="btn btn-success btn-hover-effect rounded-pill px-4 shadow-sm">
-                        Xác nhận thanh toán
+                <div id="confirmation" class="confirmation-box text-center mt-4" style="display:none;">
+                    <p id="confirmationMessage" class="text-dark mb-3"></p>
+                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-semibold me-2">
+                        <i class="bi bi-check-circle me-1"></i> Xác nhận thanh toán
                     </button>
-                    <button type="button" class="btn btn-secondary btn-hover-effect rounded-pill px-4 shadow-sm" onclick="cancelPayment()">
-                        Hủy
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm" onclick="cancelPayment()">
+                        <i class="bi bi-x-circle me-1"></i> Hủy
                     </button>
                 </div>
             </form>
         </div>
     </div>
-
-</div>
+</section>
 
 <style>
-    .payment-method-container {
-        margin-top: 20px;
-    }
-
-    .payment-method-options {
-        display: flex;
-        justify-content: flex-start;
-        margin-top: 10px;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .payment-method {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 120px;
-        text-align: center;
-        margin: 10px 0;
-        cursor: pointer;
-        border-radius: 15px;
-        padding: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
-        background-color: #fff;
-    }
-
-        .payment-method:hover {
-            box-shadow: 0 6px 15px rgba(0, 86, 179, 0.3);
-            transform: translateY(-5px);
-        }
-
-    .payment-method-img {
-        width: 80px;
-        height: 80px;
-        object-fit: contain;
-    }
-
-    .btn-hover-effect {
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 50rem !important;
-    }
-
-        .btn-hover-effect:hover {
-            background-color: #75c98e !important;
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
-        }
-
-        .btn-hover-effect:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
-        }
+.payment-method-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.payment-method {
+    width: 130px;
+    padding: 15px;
+    background-color: #fff;
+    border: 2px solid #e8e8e8;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.payment-method:hover {
+    border-color: #1ec36e;
+    box-shadow: 0 6px 15px rgba(30,195,110,0.25);
+    transform: translateY(-3px);
+}
+.payment-method-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+}
+.confirmation-box {
+    background-color: #f9fdfb;
+    border: 1px solid #c8ebd6;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(30,195,110,0.1);
+}
+.btn-success {
+    background-color: #1ec36e;
+    border: none;
+}
+.btn-success:hover {
+    background-color: #17a75c;
+    transform: scale(1.05);
+    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
+}
 </style>
 
 @section Scripts {
@@ -125,8 +130,10 @@
             selectedMethodId = methodId;
             document.getElementById("selectedPaymentMethod").value = selectedMethodId;
 
-            document.getElementById("confirmationMessage").innerText = "Bạn có chắc chắn muốn thanh toán bằng phương thức " + methodName + " không?";
-            document.getElementById("confirmation").style.display = 'block';
+            const box = document.getElementById("confirmation");
+            const msg = document.getElementById("confirmationMessage");
+            msg.textContent = `Bạn có chắc chắn muốn thanh toán bằng ${methodName}?`;
+            box.style.display = 'block';
         }
 
         function cancelPayment() {

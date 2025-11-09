@@ -5,347 +5,312 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid">
-    <div class="row px-xl-5">
-        <!-- Shop Sidebar Start -->
-        <div class="col-lg-3 col-md-4">
-            <div class="mb-3">
-                <a href="@Url.Action("TimPhongGanToi", "PhongTro")" class="btn btn-highlighted w-100 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-map-marker-alt me-2"></i> Tìm trọ gần tôi
-                </a>
-            </div>
+<!-- ======= Danh sách phòng trọ ======= -->
+<section class="room-list section">
+    <div class="container-fluid px-xl-5">
 
-            <style>
-                .btn-highlighted {
-                    background-color: #ff6f00; /* màu cam nổi bật */
-                    color: white;
-                    font-weight: 700;
-                    font-size: 1.15rem;
-                    padding: 12px 0;
-                    border-radius: 30px;
-                    box-shadow: 0 4px 12px rgba(255, 111, 0, 0.6);
-                    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-                    border: none;
-                    text-align: center;
-                    text-decoration: none;
-                }
+        <!-- ==== THANH BỘ LỌC NGANG ==== -->
+        <div class="filter-toolbar bg-white shadow-sm rounded-3 p-3 mb-2 d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <!-- Nút Tìm trọ gần tôi -->
+            <a href="@Url.Action("TimPhongGanToi", "PhongTro")"
+               class="btn btn-highlighted d-flex align-items-center justify-content-center">
+                <i class="fas fa-map-marker-alt me-2"></i> Tìm trọ gần tôi
+            </a>
 
-                    .btn-highlighted:hover, .btn-highlighted:focus {
-                        background-color: #e65100; /* cam đậm hơn khi hover */
-                        box-shadow: 0 6px 18px rgba(230, 81, 0, 0.8);
-                        color: white;
-                        text-decoration: none;
-                    }
-
-                    .btn-highlighted i {
-                        font-size: 1.3rem;
-                    }
-            </style>
-
-
-            <!-- Price Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">LỌC THEO GIÁ</span></h5>
-            <div class="bg-light p-4 mb-30">
-                <form id="filterForm">
-                    <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
-                        <input type="radio" class="custom-control-input price-filter" checked id="price-all" name="price" value="">
-                        <label class="custom-control-label" for="price-all">Tất cả</label>
-                        <span class="badge border font-weight-normal">@ViewBag.TotalProducts</span>
-                    </div>
+            <!-- Lọc theo giá -->
+            <div class="filter-group d-flex align-items-center gap-2">
+                <label class="fw-semibold text-dark">Giá:</label>
+                <select id="priceSelect" class="form-select filter-select">
+                    <option value="">Tất cả</option>
                     @foreach (var range in ViewBag.PriceRanges)
                     {
                         var rangeText = range.Range.Max != null
-                        ? $"{range.Range.Min:N0} - {range.Range.Max:N0} VNĐ"
-                        : $"Trên {range.Range.Min:N0} VNĐ";
-                        <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
-                            <input type="radio" class="custom-control-input price-filter"
-                                   id="price-@range.Range.Min"
-                                   name="price"
-                                   value="@range.Range.Min-@range.Range.Max">
-                            <label class="custom-control-label" for="price-@range.Range.Min">@rangeText</label>
-                            <span class="badge border font-weight-normal">@range.Count</span>
-                        </div>
+                            ? $"{range.Range.Min:N0} - {range.Range.Max:N0} VNĐ"
+                            : $"Trên {range.Range.Min:N0} VNĐ";
+                        <option value="@range.Range.Min-@range.Range.Max">@rangeText</option>
                     }
-                </form>
+                </select>
             </div>
-            <!-- Price End -->
-            <!-- Area Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">LỌC THEO DIỆN TÍCH</span></h5>
-            <div class="bg-light p-4 mb-30">
-                <form id="filterFormArea">
-                    <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
-                        <input type="radio" class="custom-control-input area-filter" checked id="area-all" name="area" value="">
-                        <label class="custom-control-label" for="area-all">Tất cả</label>
-                        <span class="badge border font-weight-normal">@ViewBag.TotalProducts</span>
-                    </div>
+
+            <!-- Lọc theo diện tích -->
+            <div class="filter-group d-flex align-items-center gap-2">
+                <label class="fw-semibold text-dark">Diện tích:</label>
+                <select id="areaSelect" class="form-select filter-select">
+                    <option value="">Tất cả</option>
                     @foreach (var range in ViewBag.AreaRanges)
                     {
                         var rangeText = range.Range.Max != null
-                        ? $"{range.Range.Min:N2} - {range.Range.Max:N2} m²"
-                        : $"Trên {range.Range.Min:N2} m²";
-                        <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
-                            <input type="radio" class="custom-control-input area-filter"
-                                   id="area-@range.Range.Min"
-                                   name="area"
-                                   value="@range.Range.Min-@range.Range.Max">
-                            <label class="custom-control-label" for="area-@range.Range.Min">@rangeText</label>
-                            <span class="badge border font-weight-normal">@range.Count</span>
-                        </div>
+                            ? $"{range.Range.Min:N0} - {range.Range.Max:N0} m²"
+                            : $"Trên {range.Range.Min:N0} m²";
+                        <option value="@range.Range.Min-@range.Range.Max">@rangeText</option>
                     }
-                </form>
+                </select>
             </div>
-            <!-- Area End -->
-            <!-- Đã bỏ phần Lọc theo Địa chỉ ở đây -->
         </div>
-        <!-- Shop Sidebar End -->
-        <!-- Shop Product Start -->
-        <div class="col-lg-9 col-md-8">
-            <div class="row pb-3 product-row">
-                @foreach (var product in Model)
-                {
-                    <div class="col-lg-4 col-md-6 col-sm-6 pb-4 d-flex">
-                         <div class="product-item bg-light shadow-sm rounded d-flex flex-column">
-                            <div class="product-img position-relative overflow-hidden">
-                                <img class="img-fluid w-100"
-                                     src="@(string.IsNullOrEmpty(product.Hinhanh) ? Url.Content("~/img/default-product.jpg") : Url.Content("~/" + product.Hinhanh))"
-                                     alt="@product.SoPhong" />
 
-                                <div class="product-action">
-                                    <a class="btn btn-outline-dark btn-square" href="javascript:void(0)" data-toggle="modal" data-target="#appointmentModal">
-                                        <i class="fa fa-calendar"></i>
-                                    </a>
-                                    <a class="btn btn-outline-dark btn-square" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })">
-                                        <i class="fa fa-search"></i>
-                                    </a>
-                                </div>
+        <!-- ==== DANH SÁCH PHÒNG ==== -->
+        <div class="row g-4 justify-content-center product-row">
+            @foreach (var product in Model)
+            {
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="@(string.IsNullOrEmpty(product.Hinhanh) ? Url.Content("~/img/default-product.jpg") : Url.Content("~/" + product.Hinhanh))"
+                                 alt="@product.SoPhong" />
+                            <div class="product-action">
+                                <a class="btn-action" href="javascript:void(0)" data-toggle="modal" data-target="#appointmentModal">
+                                    <i class="fa fa-calendar"></i>
+                                </a>
+                                <a class="btn-action" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })">
+                                    <i class="fa fa-search"></i>
+                                </a>
                             </div>
-                            <div class="text-center py-4 product-info flex-grow-1 d-flex flex-column justify-content-center">
-                                <a class="h6 text-decoration-none text-truncate" href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })"> Phòng @product.SoPhong</a>
-                                <div class="d-flex align-items-center justify-content-center mt-2 flex-column">
-                                    <h5>@product.GiaThue.ToString("#,##0 VNĐ")</h5>
-                                    <span class="badge badge-pill badge-info mt-2" style="font-size: 0.9rem;">@product.TrangThai</span>
-                                </div>
+                        </div>
+
+                        <div class="product-body text-center">
+                            <a href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })"
+                               class="room-title">Phòng @product.SoPhong</a>
+                            <div class="price-status">
+                                <h5>@product.GiaThue.ToString("#,##0 VNĐ")</h5>
+                                <span class="badge badge-status mt-2">@product.TrangThai</span>
                             </div>
                         </div>
                     </div>
-                }
-            </div>
+                </div>
+            }
         </div>
-        <!-- Shop Product End -->
     </div>
-</div>
+</section>
 
+<!-- ======= STYLE ======= -->
 <style>
-    .container-fluid > .row.px-xl-5 {
-        margin-top: 1rem; /* cách navbar */
-    }
+/* === ĐẨY XUỐNG DƯỚI HEADER === */
+.room-list {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 
-    /* Container flex setup cho product-row */
-    .product-row {
-        display: flex;
-        flex-wrap: wrap;
-        margin-left: -15px;
-        margin-right: -15px;
-    }
+/* === Container giới hạn chiều rộng === */
+.container-fluid {
+    max-width: 1300px;
+    margin: 0 auto;
+}
 
-        /* Padding đồng đều cho cột sản phẩm */
-        .product-row > div[class*='col-'] {
-            padding-left: 15px;
-            padding-right: 15px;
-            margin-bottom: 1.5rem;
-            display: flex;
-        }
+/* === Thanh lọc ngang === */
+.filter-toolbar {
+    border: 1px solid #eee;
+}
 
-    /* Khung sản phẩm */
-    .product-item {
-        background-color: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        width: 100%;
-        height: 100%;
-        transition: box-shadow 0.3s ease;
-    }
+.filter-select {
+    min-width: 200px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    transition: border 0.2s;
+}
 
-        .product-item:hover {
-            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-        }
+.filter-select:focus {
+    border-color: #1ec36e;
+    box-shadow: 0 0 0 0.2rem rgba(30, 195, 110, 0.2);
+}
 
-    /* Ảnh sản phẩm */
+/* === Nút tìm trọ gần tôi === */
+.btn-highlighted {
+    background-color: #23cf3a;
+    color: #fff;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 25px;
+    box-shadow: 0 3px 8px rgba(255, 111, 0, 0.4);
+    transition: all 0.3s;
+}
+
+.btn-highlighted:hover {
+    background-color: #e65100;
+    box-shadow: 0 5px 15px rgba(230, 81, 0, 0.6);
+    color: #fff;
+}
+
+/* === CARD PHÒNG TRỌ === */
+.product-row {
+    margin-top: 5px;
+}
+
+/* --- Card bố cục giống trang chủ --- */
+.product-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* --- Ảnh sản phẩm --- */
+.product-img {
+    position: relative;
+    width: 100%;
+    height: 230px;
+    overflow: hidden;
+}
+
+.product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.08);
+}
+
+/* --- Overlay --- */
+.product-action {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-action {
+    opacity: 1;
+}
+
+.btn-action {
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #333;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 6px;
+    font-size: 17px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+    background: #1ec36e;
+    color: #fff;
+    border-color: #1ec36e;
+}
+
+/* --- Nội dung trong card --- */
+.product-body {
+    padding: 1.1rem;
+    text-align: center;
+}
+
+.room-title {
+    font-weight: 600;
+    color: #0d2a4d;
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+    display: block;
+    text-decoration: none;
+    transition: color 0.25s;
+}
+
+.room-title:hover {
+    color: #1ec36e;
+}
+
+.price-status h5 {
+    color: #e67e22;
+    font-weight: 700;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.badge-status {
+    background-color: #17a2b8;
+    color: #fff;
+    border-radius: 30px;
+    padding: 0.35em 0.75em;
+    font-size: 0.85rem;
+}
+
+/* === RESPONSIVE === */
+@@media (max-width: 1200px) {
     .product-img {
-        position: relative;
-        width: 100%;
-        padding-top: 75%; /* tỉ lệ 4:3 */
-        overflow: hidden;
+        height: 210px;
     }
+}
 
-        .product-img img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-        }
-
-        .product-img:hover img {
-            transform: scale(1.05);
-        }
-
-    /* Phần thông tin sản phẩm */
-    .product-info {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 1.5rem;
+@@media (max-width: 992px) {
+    .col-lg-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
     }
-
-        .product-info a {
-            font-weight: 600;
-            color: #333;
-            font-size: 1.1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .product-info h5 {
-            color: #e67e22;
-            margin-top: 0.5rem;
-        }
-
-    /* Badge trạng thái */
-    .badge-info {
-        background-color: #17a2b8;
-        color: white;
-        padding: 0.35em 0.75em;
-        border-radius: 10rem;
+    .product-img {
+        height: 200px;
     }
+}
 
-    /* Nút thao tác trên ảnh */
-    .product-action {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        background: rgba(255, 255, 255, 0.7);
-        transition: opacity 0.3s ease;
+@@media (max-width: 768px) {
+    .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
     }
-
-    .product-item:hover .product-action {
-        opacity: 1;
+    .product-img {
+        height: 180px;
     }
+}
 
-    .product-action a {
-        display: inline-block;
-        width: 40px;
-        height: 40px;
-        margin: 0 5px;
-        padding: 7px 0;
-        text-align: center;
-        border-radius: 0;
-        color: #333;
-        font-size: 18px;
-        background: #fff;
-        border: 1px solid #ddd;
-        transition: background-color 0.3s ease;
-    }
-
-        .product-action a:hover {
-            background-color: #e67e22;
-            color: white;
-            border-color: #e67e22;
-        }
-
-    /* Responsive */
-    @@media (max-width: 991px) {
-        .product-row > div[class*='col-'] {
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-
-        .product-info a {
-            font-size: 1rem;
-        }
-    }
 </style>
 
+<!-- ======= SCRIPT LỌC GIỮ NGUYÊN LOGIC ======= -->
 <script>
-    // Script xử lý lọc sản phẩm
     document.addEventListener('DOMContentLoaded', function() {
-        $('.price-filter, .area-filter').change(function() {
-            if ($(this).attr('id').endsWith('-all')) {
-                if ($(this).prop('checked')) {
-                    $(`.${$(this).attr('class').split(' ')[1]}:not([id$=all])`).prop('checked', false);
-                }
-            } else {
-                $(`#${$(this).attr('class').split(' ')[1].replace('filter', 'all')}`).prop('checked', false);
-            }
-
-            var selectedPrices = getSelectedValues('price-filter');
-            var selectedAreas = getSelectedValues('area-filter');
-
-            if (selectedPrices.length === 0) $('#price-all').prop('checked', true);
-            if (selectedAreas.length === 0) $('#area-all').prop('checked', true);
-
-            var url = new URL(window.location.href);
+        // Khi thay đổi giá hoặc diện tích
+        $('#priceSelect, #areaSelect').change(function () {
+            const url = new URL(window.location.href);
             url.searchParams.delete('minPrice');
             url.searchParams.delete('maxPrice');
             url.searchParams.delete('minArea');
             url.searchParams.delete('maxArea');
 
-            if (!$('#price-all').prop('checked') && selectedPrices.length > 0) {
-                var priceRange = selectedPrices[0].split('-');
-                url.searchParams.set('minPrice', priceRange[0]);
-                if (priceRange[1] !== 'null') {
-                    url.searchParams.set('maxPrice', priceRange[1]);
-                }
+            const priceVal = $('#priceSelect').val();
+            const areaVal = $('#areaSelect').val();
+
+            if (priceVal) {
+                const [minP, maxP] = priceVal.split('-');
+                url.searchParams.set('minPrice', minP);
+                if (maxP !== 'null') url.searchParams.set('maxPrice', maxP);
             }
 
-            if (!$('#area-all').prop('checked') && selectedAreas.length > 0) {
-                var areaRange = selectedAreas[0].split('-');
-                url.searchParams.set('minArea', areaRange[0]);
-                if (areaRange[1] !== 'null') {
-                    url.searchParams.set('maxArea', areaRange[1]);
-                }
+            if (areaVal) {
+                const [minA, maxA] = areaVal.split('-');
+                url.searchParams.set('minArea', minA);
+                if (maxA !== 'null') url.searchParams.set('maxArea', maxA);
             }
 
             window.location.href = url.toString();
         });
 
-        function getSelectedValues(className) {
-            var values = [];
-            $('.' + className + ':checked').not('[id$=all]').each(function() {
-                values.push($(this).val());
-            });
-            return values;
-        }
-
-        var urlParams = new URLSearchParams(window.location.search);
-
+        // Đặt lại trạng thái selected khi reload
+        const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('minPrice')) {
-            $('#price-all').prop('checked', false);
-            var min = urlParams.get('minPrice');
-            var max = urlParams.get('maxPrice') || 'null';
-            $(`input[value="${min}-${max}"]`).prop('checked', true);
+            const min = urlParams.get('minPrice');
+            const max = urlParams.get('maxPrice') || 'null';
+            $(`#priceSelect option[value="${min}-${max}"]`).prop('selected', true);
         }
-
         if (urlParams.has('minArea')) {
-            $('#area-all').prop('checked', false);
-            var min = urlParams.get('minArea');
-            var max = urlParams.get('maxArea') || 'null';
-            $(`input[value="${min}-${max}"]`).prop('checked', true);
+            const min = urlParams.get('minArea');
+            const max = urlParams.get('maxArea') || 'null';
+            $(`#areaSelect option[value="${min}-${max}"]`).prop('selected', true);
         }
     });
 </script>

@@ -1,123 +1,201 @@
 ﻿@model List<DACS_QuanLyPhongTro.Models.PhieuDangKyDichVu>
 @{
-    ViewData["Title"] = "Danh sách phiếu đăng ký dịch vụ";
+    ViewData["Title"] = "Lịch sử đăng ký dịch vụ";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
-    <h2 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-        Lịch sử đăng ký dịch vụ
-    </h2>
+<section class="service-history-page section">
+    <div class="container-fluid px-xl-5 py-5">
+        <div class="service-history-wrapper bg-white rounded-4 shadow-sm mx-auto" style="max-width: 1250px;">
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info text-center fs-5">
-            Bạn chưa đăng ký dịch vụ nào.
-        </div>
-    }
-    else
-    {
-        <div class="row">
-            @foreach (var phieu in Model)
+            <!-- Tiêu đề -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold" style="color: #1ec36e;">Lịch sử đăng ký dịch vụ</h2>
+                <p class="text-muted">Các phiếu đăng ký dịch vụ mà bạn đã thực hiện</p>
+            </div>
+
+            @if (!Model.Any())
             {
-                <div class="col-md-6 col-lg-4 d-flex">
-                    <div class="card mb-4 border-secondary shadow-sm rounded service-card flex-fill">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">
-                                Phiếu đăng ký #@phieu.MaDangKyDichVu
-                            </h5>
-
-                            <p class="mb-1"><strong>Ngày bắt đầu:</strong> @phieu.NgayBatDau.ToString("dd/MM/yyyy")</p>
-                            <p class="mb-1"><strong>Ngày kết thúc:</strong> @phieu.NgayKetThuc.ToString("dd/MM/yyyy")</p>
-
-                            <p class="mb-1">
-                                <strong>Trạng thái:</strong>
-                                @if (phieu.TrangThai == "Đã xác nhận")
-                                {
-                                    <span class="badge bg-success text-white">@phieu.TrangThai</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-warning text-dark">@phieu.TrangThai</span>
-                                }
-                            </p>
-
-                            <ul class="list-group mt-3 rounded overflow-auto detail-list">
-                                @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
-                                {
-                                    <li class="list-group-item d-flex justify-content-between align-items-center rounded detail-item">
-                                        <div>
-                                            <strong>@ct.DichVu?.TenDichVu</strong> - Số lượng: @ct.SoLuong
-                                        </div>
-                                        <span class="text-danger font-weight-bold">@ct.TongTienDichVu.ToString("N0") VND</span>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
+                <div class="alert alert-light border text-center py-4 rounded-4 shadow-sm">
+                    <i class="bi bi-info-circle text-success fs-4 d-block mb-2"></i>
+                    <span class="fs-5 text-secondary">Bạn chưa đăng ký dịch vụ nào.</span>
                 </div>
             }
-        </div>
-    }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var phieu in Model)
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card shadow-sm border-0 rounded-4 service-card h-100">
+                                <div class="card-body d-flex flex-column">
+                                    <!-- Header -->
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <h5 class="fw-bold text-success mb-0">
+                                            <i class="bi bi-receipt-cutoff me-2"></i>Phiếu #@phieu.MaDangKyDichVu
+                                        </h5>
+                                        @if (phieu.TrangThai == "Đã xác nhận")
+                                        {
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">
+                                                <i class="bi bi-check-circle me-1"></i>@phieu.TrangThai
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning-subtle text-dark border border-warning-subtle rounded-pill px-3 py-2">
+                                                <i class="bi bi-hourglass-split me-1"></i>@phieu.TrangThai
+                                            </span>
+                                        }
+                                    </div>
 
-    <div class="text-center mt-5 mb-5">
-        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-warning btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
-            <i class="fas fa-arrow-left mr-2"></i> Quay về Phòng trọ của tôi
-        </a>
+                                    <!-- Ngày -->
+                                    <div class="small text-muted mb-2">
+                                        <i class="bi bi-calendar-event me-1"></i>
+                                        Bắt đầu: <strong>@phieu.NgayBatDau.ToString("dd/MM/yyyy")</strong><br />
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                        Kết thúc: <strong>@phieu.NgayKetThuc.ToString("dd/MM/yyyy")</strong>
+                                    </div>
+
+                                    <!-- Chi tiết dịch vụ -->
+                                    <ul class="list-group mt-3 mb-3 service-detail-list">
+                                        @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
+                                        {
+                                            <li class="list-group-item border-0 d-flex justify-content-between align-items-center service-detail-item">
+                                                <div class="text-start">
+                                                    <strong class="text-dark">@ct.DichVu?.TenDichVu</strong><br />
+                                                    <small class="text-muted">Số lượng: @ct.SoLuong</small>
+                                                </div>
+                                                <span class="fw-semibold text-danger">@ct.TongTienDichVu.ToString("N0") VND</span>
+                                            </li>
+                                        }
+                                    </ul>
+
+                                    <div class="mt-auto text-end">
+                                        <span class="fw-bold text-secondary small">Tổng: </span>
+                                        <span class="fw-bold text-danger fs-5">
+                                            @phieu.ChiTietPhieuDangKyDichVus.Sum(x => x.TongTienDichVu).ToString("N0") VND
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- Nút quay lại -->
+            <div class="text-center mt-5">
+                <a asp-controller="Phongtrocuatoi" asp-action="Index"
+                   class="btn btn-outline-success rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                    <i class="bi bi-arrow-left-circle me-2"></i> Quay lại phòng trọ của tôi
+                </a>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
 <style>
-    h2 {
-        color: #a0522d !important;
-        font-weight: 700 !important;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-    }
+/* === PAGE === */
+.service-history-page {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 
+/* === CARD === */
+.service-card {
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+}
+
+/* === DANH SÁCH DỊCH VỤ === */
+.service-detail-list {
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #f8faf9;
+    border-radius: 12px;
+    padding: 6px 0;
+}
+.service-detail-item {
+    border-radius: 12px;
+    background: #fff;
+    margin: 4px 10px;
+    padding: 10px 14px;
+    transition: background 0.2s ease;
+}
+.service-detail-item:hover {
+    background: #e8fff1;
+}
+
+/* === SCROLLBAR NHỎ ĐẸP === */
+.service-detail-list::-webkit-scrollbar {
+    width: 6px;
+}
+.service-detail-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 8px;
+}
+
+/* === BADGE MÀU MỚI === */
+.bg-success-subtle {
+    background-color: #e8fff1 !important;
+}
+.bg-warning-subtle {
+    background-color: #fff8e1 !important;
+}
+
+/* === RESPONSIVE === */
+@@media (max-width: 768px) {
     .service-card {
-        border-radius: 1rem !important; /* bo tròn card lớn */
-        overflow: hidden;
-        transition: all 0.3s ease;
+        margin-bottom: 20px;
     }
+}
+/* === CARD VIỀN RÕ HƠN === */
+.service-card {
+    border-radius: 16px;
+    border: 2px solid #d9d9d9; /* Viền sáng rõ hơn */
+    transition: all 0.3s ease;
+    cursor: default;
+    background-color: #fff;
+}
+.service-card:hover {
+    transform: translateY(-5px);
+    border-color: #1ec36e; /* Khi hover: viền xanh lá nhấn mạnh */
+    box-shadow: 0 8px 20px rgba(30, 195, 110, 0.15);
+}
 
-        .service-card:hover {
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-            transform: translateY(-4px);
-        }
+/* === DANH SÁCH DỊCH VỤ CON VIỀN NHẸ === */
+.service-detail-list {
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #fdfdfd;
+    border-radius: 12px;
+    border: 1px solid #dcdcdc; /* Viền nhẹ bao ngoài list */
+    padding: 6px 0;
+}
+.service-detail-item {
+    border-radius: 10px;
+    border: 1px solid #e1e1e1; /* Viền cho từng dòng */
+    background: #fff;
+    margin: 6px 10px;
+    padding: 10px 14px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+.service-detail-item:hover {
+    background: #e8fff1;
+    border-color: #1ec36e; /* Khi hover: viền xanh lá */
+}
 
-    .btn-hover-effect {
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 50rem !important;
-    }
+/* === BADGE & CARD HEADER GIỮ NGUYÊN === */
+.bg-success-subtle {
+    background-color: #e8fff1 !important;
+}
+.bg-warning-subtle {
+    background-color: #fff6e5 !important;
+}
 
-        .btn-hover-effect:hover {
-            background-color: #e0a800 !important;
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(224, 168, 0, 0.5);
-        }
-
-        .btn-hover-effect:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 8px rgba(224, 168, 0, 0.3);
-        }
-
-    ul.detail-list {
-        max-height: 150px;
-        overflow-y: auto;
-        background-color: white;
-        padding: 0.5rem;
-        border-radius: 1rem !important; /* bo tròn bảng */
-    }
-
-        ul.detail-list li.detail-item {
-            border-radius: 1rem !important; /* bo tròn từng dòng */
-            margin-bottom: 0.4rem;
-            background-color: #fafafa;
-            padding: 0.75rem 1rem;
-        }
-
-            ul.detail-list li.detail-item:last-child {
-                margin-bottom: 0;
-            }
 </style>
-

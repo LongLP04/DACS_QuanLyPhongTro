@@ -1,74 +1,139 @@
 ﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.HopDong>
+
 @{
-    ViewData["Title"] = "Xác Nhận Hợp Đồng";
+    ViewData["Title"] = "Hợp đồng chờ xác nhận";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5" style="max-width: 1630px; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
-    <h2 class="mb-4 text-center" style="color: #a0522d; font-weight: 700; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-        Hợp đồng chờ xác nhận
-    </h2>
+<section class="contract-page section">
+    <div class="container-fluid px-xl-5 py-5">
+        <div class="contract-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-warning text-center fs-5" style="color: #856404; border:none;">
-            Hiện không có hợp đồng nào chờ xác nhận.
-        </div>
-    }
-    else
-    {
-        <ul class="list-group shadow-sm rounded">
-            @foreach (var hopDong in Model)
+            <!-- Tiêu đề -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold" style="color: #1ec36e;">Hợp đồng chờ xác nhận</h2>
+                <p class="text-muted">Xem và xác nhận các hợp đồng thuê trọ đang chờ phản hồi của bạn</p>
+            </div>
+
+            <!-- Nếu không có hợp đồng -->
+            @if (!Model.Any())
             {
-                <li class="list-group-item d-flex justify-content-between align-items-center"
-                    style="
-                        border-left: 6px solid @(hopDong.TrangThai == "Đã Xác Nhận" ? "transparent" : "#f4a261");
-                        color: @(hopDong.TrangThai == "Đã Xác Nhận" ? "#6c584c" : "#4a3c2f");
-                        font-weight: @(hopDong.TrangThai == "Đã Xác Nhận" ? "400" : "600");
-                        cursor: default;
-                            ">
-                    <div>
-                        <strong>Mã hợp đồng:</strong> @hopDong.MaHopDong<br />
-                        <strong>Phòng:</strong> @hopDong.PhongTro?.SoPhong <br />
-                        <strong>Trạng thái:</strong> @hopDong.TrangThai
-                    </div>
-
-                    <form asp-controller="HopDong" asp-action="XacNhan" method="post" class="d-flex gap-2">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="maHopDong" value="@hopDong.MaHopDong" />
-                        <button type="submit" name="dongY" value="true" class="btn btn-success btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
-                            <i class="fas fa-check mr-2"></i> Xác nhận
-                        </button>
-                        <button type="submit" name="dongY" value="false" class="btn btn-danger btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
-                            <i class="fas fa-times mr-2"></i> Từ chối
-                        </button>
-                    </form>
-                </li>
+                <div class="alert alert-light border-0 text-center py-4 rounded-4 shadow-sm" style="background-color: #f9f9f9;">
+                    <i class="bi bi-file-earmark-excel fs-3 text-secondary mb-2 d-block"></i>
+                    <span class="fs-5 text-muted">Hiện không có hợp đồng nào chờ xác nhận.</span>
+                </div>
             }
-        </ul>
-    }
+            else
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var hopDong in Model)
+                    {
+                        <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center py-3 px-3 rounded-3 mb-2 border-0 shadow-sm"
+                            style="
+                                background-color: @(hopDong.TrangThai == "Đã Xác Nhận" ? "#f9f9f9" : "#e8fff1");
+                                border-left: 6px solid @(hopDong.TrangThai == "Đã Xác Nhận" ? "#ccc" : "#1ec36e");
+                                color: @(hopDong.TrangThai == "Đã Xác Nhận" ? "#555" : "#222");
+                                font-weight: @(hopDong.TrangThai == "Đã Xác Nhận" ? "400" : "600");
+                            ">
+                            <div class="contract-info mb-3 mb-md-0">
+                                <p><i class="bi bi-file-earmark-text me-2 text-success"></i><strong>Mã hợp đồng:</strong> @hopDong.MaHopDong</p>
+                                <p><i class="bi bi-door-open me-2 text-success"></i><strong>Phòng:</strong> @hopDong.PhongTro?.SoPhong</p>
+                                <p><i class="bi bi-info-circle me-2 text-success"></i><strong>Trạng thái:</strong>
+                                    <span class="badge @(hopDong.TrangThai == "Đã Xác Nhận" ? "bg-success" : "bg-warning text-dark")">
+                                        @hopDong.TrangThai
+                                    </span>
+                                </p>
+                            </div>
 
-    <div class="mt-5 text-center">
-        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-hover-effect">
-            <i class="fas fa-arrow-left mr-2"></i> Quay về Phòng trọ của tôi
-        </a>
+                            <form asp-controller="HopDong" asp-action="XacNhan" method="post" class="d-flex gap-2 justify-content-end flex-wrap">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="maHopDong" value="@hopDong.MaHopDong" />
+                                <button type="submit" name="dongY" value="true" class="btn btn-success rounded-pill px-4 py-2 btn-hover">
+                                    <i class="bi bi-check-circle me-2"></i> Xác nhận
+                                </button>
+                                <button type="submit" name="dongY" value="false" class="btn btn-danger rounded-pill px-4 py-2 btn-hover">
+                                    <i class="bi bi-x-circle me-2"></i> Từ chối
+                                </button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            }
+
+            <!-- Nút quay lại -->
+            <div class="text-center mt-4">
+                <a asp-controller="Phongtrocuatoi" asp-action="Index"
+                   class="btn btn-success rounded-pill px-4 py-2 shadow-sm btn-hover">
+                    <i class="bi bi-arrow-left-circle me-2"></i> Quay về phòng trọ của tôi
+                </a>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
+<!-- ===== STYLE ===== -->
 <style>
-    .btn-hover-effect {
-        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 50rem !important; /* bo tròn dạng pill */
+    /* Căn toàn trang có khoảng cách với header cố định */
+    .contract-page {
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
-        .btn-hover-effect:hover {
-            background-color: #75c98e !important; /* màu xanh đậm hơn khi hover */
-            transform: scale(1.05);
-            box-shadow: 0 8px 16px rgba(0, 86, 179, 0.4);
+    /* Card bao ngoài */
+    .contract-wrapper {
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    /* Danh sách hợp đồng */
+    .list-group-item {
+        background: #fff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        transform: translateY(-2px);
+        background: #f6fff8;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .contract-info p {
+        margin: 0.25rem 0;
+        font-size: 1rem;
+    }
+
+    /* Nút hành động */
+    .btn-hover {
+        transition: all 0.3s ease;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    .btn-hover:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px rgba(21, 153, 87, 0.25);
+    }
+
+    .btn-hover:active {
+        transform: scale(0.96);
+        box-shadow: 0 3px 8px rgba(21, 153, 87, 0.25);
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .list-group-item {
+            flex-direction: column;
+            align-items: flex-start;
         }
 
-        .btn-hover-effect:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        .contract-info {
+            margin-bottom: 15px;
         }
+
+        .btn-hover {
+            width: 100%;
+        }
+    }
 </style>

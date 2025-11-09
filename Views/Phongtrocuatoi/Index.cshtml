@@ -6,87 +6,194 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
+<section class="my-room-page section">
+    <div class="container-fluid px-xl-5 py-2">
+        <div class="room-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1250px;">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold" style="color: #1ec36e;">Phòng trọ của tôi</h2>
+                <p class="text-muted">Thông tin phòng bạn đang thuê và các chức năng liên quan</p>
+            </div>
+
+            @if (Model == null)
+            {
+                <div class="alert alert-info text-center fs-5 py-4 rounded-4 shadow-sm" style="background-color: #f8f9fa;">
+                    <i class="bi bi-house-door text-success me-2"></i> Bạn chưa thuê phòng trọ nào.
+                </div>
+            }
+            else
+            {
+                <div class="row gx-4 gy-4 align-items-start mb-4">
+                    <!-- Hình ảnh phòng -->
+                    <div class="col-12 col-md-7">
+                        <div class="img-card overflow-hidden rounded-4 shadow-sm">
+                            <img src="@Url.Content("~/" + (string.IsNullOrEmpty(Model.Hinhanh) ? "img/default-product.jpg" : Model.Hinhanh))"
+                                 alt="Hình phòng trọ"
+                                 class="img-fluid w-100"
+                                 style="max-height: 450px; object-fit: cover;" />
+                        </div>
+                    </div>
+
+                    <!-- Thông tin phòng -->
+                    <div class="col-12 col-md-5">
+                        <div class="room-details-card p-4 rounded-4 shadow-sm bg-light">
+                            <h4 class="fw-bold text-primary mb-3">Phòng @Model.SoPhong</h4>
+
+                            <div class="room-info-row"><strong>Giá thuê:</strong> <span class="text-danger fw-bold">@Model.GiaThue.ToString("#,##0 VNĐ")</span></div>
+                            <div class="room-info-row"><strong>Diện tích:</strong> <span>@Model.DienTich m²</span></div>
+                            <div class="room-info-row"><strong>Tầng:</strong> <span>@Model.Tang</span></div>
+
+                            <hr class="my-3" />
+
+                            <div class="room-info-row"><strong>Tòa nhà:</strong> <span>@Model.ToaNha?.TenToaNha</span></div>
+                            <div class="room-info-row"><strong>Địa chỉ:</strong> <span>@Model.ToaNha?.DiaChi</span></div>
+
+                            @if (Model.ToaNha?.ChuTro != null)
+                            {
+                                <div class="room-info-row"><strong>Chủ trọ:</strong> <span>@Model.ToaNha.ChuTro.HoTen</span></div>
+                                <div class="room-info-row"><strong>SĐT:</strong> <span>@Model.ToaNha.ChuTro.SoDienThoai</span></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chức năng -->
+                <div class="mt-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold text-dark mb-0">
+                            <i class="bi bi-tools me-2 text-success"></i>Chức năng
+                        </h5>
+                        <div class="position-relative">
+                            <input type="text" id="searchAction" class="form-control form-control-sm ps-4"
+                                placeholder="🔍 Tìm chức năng..." style="border-radius: 50px; width: 250px;">
+                        </div>
+                    </div>
+
+                    <div id="actionGrid" class="btn-action-grid">
+                        <a href="@Url.Action("DangKy", "DichVu")" class="btn btn-success action-btn">
+                            <i class="fas fa-clipboard-list me-2"></i> Đăng ký dịch vụ
+                        </a>
+                        <a asp-controller="DichVu" asp-action="DanhSachDangKy" class="btn btn-primary action-btn">
+                            <i class="fas fa-file-alt me-2"></i> Xem phiếu đăng ký
+                        </a>
+                        <a asp-controller="HopDong" asp-action="Details" asp-route-id="@ViewBag.MaHopDong" class="btn btn-warning text-white action-btn">
+                            <i class="fas fa-file-signature me-2"></i> Hợp đồng
+                        </a>
+                        <a asp-controller="ChiSoDienNuoc" asp-action="Index" class="btn btn-dark action-btn">
+                            <i class="fas fa-tachometer-alt me-2"></i> Chỉ số điện nước
+                        </a>
+                        <a asp-controller="PhieuThanhToan" asp-action="Index" class="btn btn-secondary action-btn">
+                            <i class="fas fa-file-invoice-dollar me-2"></i> Hóa đơn
+                        </a>
+                        <a asp-controller="PhieuHienTrang" asp-action="XemPhieu" class="btn btn-info action-btn">
+                            <i class="fas fa-clipboard-check me-2"></i> Xác nhận hiện trạng
+                        </a>
+                        <a asp-controller="Phongtrocuatoi" asp-action="IndexChat" class="btn btn-primary text-white action-btn">
+                            <i class="fas fa-comments me-2"></i> Chat với chủ trọ
+                        </a>
+                        <a asp-controller="SuCo" asp-action="Index" class="btn btn-danger action-btn">
+                            <i class="fas fa-exclamation-triangle me-2"></i> Báo sự cố
+                        </a>
+                    </div>
+                </div>
+
+
+                <!-- 🔹 ICON CHAT NỔI GÓC PHẢI -->
+<div id="chatContainer">
+    <button id="floatingChatBtn" title="Mở chat">
+        <i class="fas fa-comments"></i>
+        <span id="chatBadge" class="chat-badge d-none">0</span>
+    </button>
+</div>
+
+<!-- 🔹 POPUP THÔNG BÁO TIN NHẮN MỚI -->
+<div id="chatPopup" class="chat-popup">
+    <div class="toast-body position-relative">
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-2" id="closePopup"></button>
+        <div class="d-flex justify-content-between align-items-center mb-2 pe-4">
+            <span class="fw-bold text-dark">
+                <i class="fas fa-envelope-open-text me-2 text-success"></i>
+                <strong style="font-size: 1.3rem;">Tin nhắn mới</strong>
+            </span>
+        </div>
+        <p id="popupMsg" class="mb-3 text-secondary small"></p>
+        <div class="d-flex justify-content-end gap-2">
+            <button id="viewChatBtn" class="btn btn-sm btn-success">
+                <i class="fas fa-comments me-1"></i> Mở trang chat
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 🔹 KHUNG CHAT NHỎ -->
+<div class="card chat-card d-none" id="chatCard">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <span id="chatWith">Chủ trọ: @Model.ToaNha.ChuTro.HoTen</span>
+        <div class="d-flex align-items-center gap-2">
+            <button id="openFullChat" class="btn btn-light btn-sm text-success fw-bold" title="Mở trang chat đầy đủ">
+                <i class="fas fa-external-link-alt"></i>
+            </button>
+            <button type="button" class="btn-close" id="closeChat"></button>
+        </div>
+    </div>
+    <div class="card-body" id="chatMessages" style="overflow-y: auto; height: 280px;"></div>
+    <div class="card-footer">
+        <form id="chatForm" class="d-flex gap-2">
+            <input type="text" id="messageInput" class="form-control" placeholder="Nhập tin nhắn..." autocomplete="off" />
+            <button type="submit" class="btn btn-success">Gửi</button>
+        </form>
+    </div>
+</div>
+
+            }
+        </div>
+    </div>
+</section>
+
 <style>
-    .btn-action-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 12px;
+    /* === PAGE WRAPPER === */
+    .my-room-page {
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
-    .btn-action-grid a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-        padding: 12px;
-        border-radius: 10px;
-        font-weight: 500;
-        color: #fff;
-        transition: 0.3s;
-        text-decoration: none;
-        text-align: center;
-    }
-
-    .btn-action-grid a i {
-        margin-right: 10px;
-        font-size: 18px;
-    }
-
-    .btn-action-grid a:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.08);
-    }
-
-    /* * GIỮ NGUYÊN: Các màu nút chính (Flat) */
-    .btn-success { background-color: #28a745; }
-    .btn-primary { background-color: #007bff; }
-    .btn-warning { background-color: #f39c12; }
-    .btn-dark { background-color: #343a40; }
-    .btn-secondary { background-color: #6c757d; }
-    .btn-danger { background-color: #e74c3c; }
-    .btn-info { background-color: #17a2b8; }
-
-    .room-details-card {
-        background-color: #f8f9fa;
-        padding: 25px;
-        border-radius: 12px;
-        border: 1px solid #e9ecef;
-    }
-
+    /* === THÔNG TIN PHÒNG === */
     .room-info-row {
-        margin-bottom: 12px;
-        font-size: 17px;
+        margin-bottom: 8px;
+        font-size: 16px;
     }
-
     .room-info-row strong {
         color: #444;
         min-width: 90px;
         display: inline-block;
     }
 
-    .room-info-row span {
-        color: #555;
+    /* === LƯỚI NÚT CHỨC NĂNG === */
+    .btn-action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin-top: 10px;
+    }
+    .btn-action-grid .btn {
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.25s ease;
+        padding: 10px 0;
+    }
+    .btn-action-grid .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(30, 195, 110, 0.25);
     }
 
-    /* ============================================== */
-    /* ==== CSS CHO CHAT (Giữ nguyên) ==== */
-    /* ============================================== */
+    /* === ICON CHAT TRÒN GÓC PHẢI === */
     #chatContainer {
         position: fixed;
         bottom: 25px;
         right: 25px;
-        width: 60px;
-        height: 60px;
         z-index: 2147483000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        pointer-events: none;
     }
     #floatingChatBtn {
-        position: relative;
-        pointer-events: all;
-        background-color: #007bff;
+        background-color: #1ec36e;
         color: white;
         border: none;
         border-radius: 50%;
@@ -95,19 +202,25 @@
         font-size: 28px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         cursor: pointer;
-        z-index: 2147483000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        will-change: transform;
+        transition: transform 0.3s ease;
     }
     #floatingChatBtn:hover {
         transform: scale(1.1);
     }
+
+    /* 🔴 Khi có tin nhắn mới → nhấp nháy đỏ */
+    #floatingChatBtn.chat-alert {
+        animation: chatBlink 1.2s infinite alternate, chatShake 0.5s ease-in-out infinite;
+    }
     @@keyframes chatBlink {
-        0%, 100% { background-color: #007bff; box-shadow: 0 0 10px rgba(0,123,255,0.8); }
-        50% { background-color: #ff4757; box-shadow: 0 0 25px rgba(255,71,87,0.9); }
+        0%, 100% {
+            background-color: #1ec36e;
+            box-shadow: 0 0 10px rgba(30,195,110,0.8);
+        }
+        50% {
+            background-color: #ff4757;
+            box-shadow: 0 0 25px rgba(255,71,87,0.9);
+        }
     }
     @@keyframes chatShake {
         0%,100% { transform: translate(0,0); }
@@ -115,10 +228,9 @@
         50% { transform: translate(2px,-2px); }
         75% { transform: translate(-2px,-3px); }
     }
-    #floatingChatBtn.chat-alert {
-        animation: chatBlink 1.2s infinite alternate, chatShake 0.5s ease-in-out infinite;
-    }
-    #floatingChatBtn .chat-badge {
+
+    /* === BADGE SỐ TIN NHẮN === */
+    .chat-badge {
         position: absolute;
         top: 6px;
         right: 6px;
@@ -132,13 +244,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 0 6px rgba(0,0,0,0.4);
     }
+
+    /* === POPUP NHỎ === */
     .chat-popup {
         position: fixed;
         bottom: 110px;
         right: 25px;
-        width: 340px;
+        width: 330px;
         background: #fff;
         border: 1px solid #ddd;
         border-radius: 12px;
@@ -147,7 +260,7 @@
         opacity: 0;
         transform: translateY(30px);
         pointer-events: none;
-        transition: all 0.7s ease;
+        transition: all 0.5s ease;
         z-index: 2147483647;
     }
     .chat-popup.show {
@@ -155,13 +268,9 @@
         transform: translateY(0);
         pointer-events: all;
     }
-    .popup-time {
-        font-size: 0.8rem;
-        color: #888;
-        margin-top: 4px;
-    }
-    #chatCard {
-        height: 400px;
+
+    /* === KHUNG CHAT NHỎ === */
+    .chat-card {
         position: fixed;
         bottom: 100px;
         right: 25px;
@@ -172,10 +281,8 @@
         display: flex;
         flex-direction: column;
     }
-    #chatCard .card-body {
-        flex: 1 1 auto;
-        overflow-y: auto;
-    }
+
+    /* === BÓNG HỘI THOẠI === */
     .message-row {
         display: flex;
         margin-bottom: 12px;
@@ -189,7 +296,6 @@
         border-radius: 18px;
         font-size: 0.95rem;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        position: relative;
         word-wrap: break-word;
     }
     .message-left {
@@ -198,7 +304,7 @@
         border-bottom-left-radius: 4px;
     }
     .message-right {
-        background-color: #007bff;
+        background-color: #1ec36e;
         color: white;
         border-bottom-right-radius: 4px;
     }
@@ -206,290 +312,149 @@
         font-size: 0.75rem;
         color: #888;
         margin-top: 4px;
+        text-align: right;
     }
     .message-right .message-time {
         color: #e0e0e0;
     }
+    /* --- Đặt lại vị trí hai nút góc phải --- */
+    #scroll-top {
+        bottom: 25px !important;
+        right: 90px !important; /* đẩy sang trái một chút để không bị trùng */
+        z-index: 2147482999 !important; /* thấp hơn icon chat một cấp */
+    }
+
+    #chatContainer {
+        bottom: 25px !important;
+        right: 25px !important; /* giữ nguyên vị trí chat */
+        z-index: 2147483000 !important;
+    }
+    .btn-action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+}
+
+.btn-action-grid .btn {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 18px;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: left;
+}
+
+.btn-action-grid .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+#searchAction {
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+#searchAction:focus {
+    border-color: #1ec36e;
+    box-shadow: 0 0 6px rgba(30,195,110,0.3);
+}
+
 </style>
 
-@if (Model == null)
-{
-    <div class="alert alert-info text-center mt-5">
-        Bạn chưa thuê phòng trọ nào.
-    </div>
-}
-else
-{
-    <div class="container py-5">
-        <h2 class="fw-bold mb-4 text-dark text-center">Phòng trọ của tôi</h2>
 
-        <div class="row gx-4 gx-lg-5 align-items-start">
 
-            <div class="col-12 col-md-7 mb-4 mb-md-0">
-                <div class="img-card overflow-hidden rounded-4 shadow-sm">
-                    <img src="@Url.Content("~/" + (string.IsNullOrEmpty(Model.Hinhanh) ? "img/default-product.jpg" : Model.Hinhanh))"
-                         alt="Hình phòng trọ"
-                         class="img-fluid w-100"
-                         style="max-height: 450px; object-fit: cover;" />
-                </div>
-            </div>
-
-            <div class="col-12 col-md-5">
-                <div class="room-details-card">
-                    <h4 class="text-primary mb-3 fw-bold">Phòng @Model.SoPhong</h4>
-
-                    <div class="room-info-row">
-                        <strong>Giá thuê:</strong>
-                        <span class="text-danger fs-5 fw-bold">@Model.GiaThue.ToString("#,##0 VNĐ")</span>
-                    </div>
-                    <div class="room-info-row"><strong>Diện tích:</strong> <span>@Model.DienTich m²</span></div>
-                    <div class="room-info-row"><strong>Tầng:</strong> <span>@Model.Tang</span></div>
-
-                    <hr class="my-3" />
-
-                    <div class="room-info-row"><strong>Tòa nhà:</strong> <span>@Model.ToaNha?.TenToaNha</span></div>
-                    <div class="room-info-row"><strong>Địa chỉ:</strong> <span>@Model.ToaNha?.DiaChi</span></div>
-
-                    @if (Model.ToaNha?.ChuTro != null)
-                    {
-                        <div class="room-info-row"><strong>Chủ trọ:</strong> <span>@Model.ToaNha.ChuTro.HoTen</span></div>
-                        <div class="room-info-row"><strong>SĐT:</strong> <span>@Model.ToaNha.ChuTro.SoDienThoai</span></div>
-                    }
-                </div>
-
-                </div>
-        </div>
-        
-        <div class="row mt-5">
-            <div class="col-12">
-                <h3 class="h5 fw-bold mb-3">Chức năng</h3>
-
-                <div class="btn-action-grid">
-                    <a href="@Url.Action("DangKy", "DichVu")" class="btn btn-success action-btn">
-                        <i class="fas fa-clipboard-list me-2"></i> Đăng ký dịch vụ
-                    </a>
-                    <a asp-controller="DichVu" asp-action="DanhSachDangKy" class="btn btn-primary action-btn">
-                        <i class="fas fa-file-alt me-2"></i> Xem phiếu đăng ký
-                    </a>
-                    <a asp-controller="HopDong" asp-action="Details" asp-route-id="@ViewBag.MaHopDong" class="btn btn-warning action-btn">
-                        <i class="fas fa-file-signature me-2"></i> Hợp đồng
-                    </a>
-                    <a asp-controller="ChiSoDienNuoc" asp-action="Index" class="btn btn-dark action-btn">
-                        <i class="fas fa-tachometer-alt me-2"></i> Chỉ số điện nước
-                    </a>
-                    <a asp-controller="PhieuThanhToan" asp-action="Index" class="btn btn-secondary action-btn">
-                        <i class="fas fa-file-invoice-dollar me-2"></i> Hóa đơn
-                    </a>
-                    <a asp-controller="PhieuHienTrang" asp-action="XemPhieu" class="btn btn-info action-btn">
-                        <i class="fas fa-clipboard-check me-2"></i> Xác nhận hiện trạng
-                    </a>
-                    <a asp-controller="Phongtrocuatoi" asp-action="IndexChat" class="btn btn-primary action-btn text-white">
-                        <i class="fas fa-comments me-2"></i> Chat với chủ trọ
-                    </a>
-                    <a asp-controller="SuCo" asp-action="Index" class="btn btn-danger action-btn">
-                        <i class="fas fa-exclamation-triangle me-2"></i> Báo sự cố
-                    </a>
-                </div>
-            </div>
-        </div>
-
-    </div> <div id="chatContainer">
-        <button id="floatingChatBtn" title="Mở chat">
-            <i class="fas fa-comments"></i>
-            <span id="chatBadge" class="chat-badge d-none">0</span>
-        </button>
-    </div>
-
-    <div id="chatPopup" class="chat-popup">
-        <div class="toast-body position-relative">
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" id="closePopup"></button>
-            <div class="d-flex justify-content-between align-items-center mb-2 pe-4">
-                <span class="fw-bold text-dark">
-                    <i class="fas fa-envelope-open-text me-2 text-primary"></i>
-                    <strong style="font-size: 1.4rem;">Tin nhắn mới</strong>
-                </span>
-            </div>
-            <p id="popupMsg" class="mb-3 text-secondary small"></p>
-            <div class="d-flex justify-content-end gap-2">
-                <button id="viewChatBtn" class="btn btn-sm btn-primary">
-                    <i class="fas fa-comments me-1"></i> Mở trang chat
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div class="card chat-card d-none" id="chatCard">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <span id="chatWith">Chủ trọ: @Model.ToaNha.ChuTro.HoTen</span>
-            <div class="d-flex align-items-center gap-2">
-                <button id="openFullChat" class="btn btn-light btn-sm text-primary fw-bold" title="Mở trang chat đầy đủ">
-                    <i class="fas fa-external-link-alt"></i>
-                </button>
-                <button type="button" class="btn-close" id="closeChat"></button>
-            </div>
-        </div>
-        <div class="card-body" id="chatMessages" style="overflow-y: auto; height: 280px;">
-        </div>
-        <div class="card-footer">
-            <form id="chatForm" class="d-flex gap-2">
-                <input type="text" id="messageInput" class="form-control" placeholder="Nhập tin nhắn..." autocomplete="off" />
-                <button type="submit" class="btn btn-primary">Gửi</button>
-            </form>
-        </div>
-    </div>
-
-} 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("searchAction");
+    const buttons = document.querySelectorAll("#actionGrid .action-btn");
 
-    <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        // Chỉ chạy JS chat nếu các phần tử HTML tồn tại (tức là Model != null)
-        const chatCard = document.getElementById('chatCard');
-        if (!chatCard) return;
-
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const chatPopup = document.getElementById('chatPopup');
-        const floatingChatBtn = document.getElementById('floatingChatBtn');
-        const closePopup = document.getElementById('closePopup');
-        const closeChat = document.getElementById('closeChat');
-        const viewChatBtn = document.getElementById('viewChatBtn');
-        const openFullChat = document.getElementById('openFullChat');
-
-        // Lấy thông tin từ Model
-        const landlordId = '@Model.ToaNha.ChuTro.ApplicationUserId';
-        const landlordName = '@(Model.ToaNha.ChuTro.HoTen)';
-        const currentUserId = '@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value';
-
-        // 🚀 Kết nối SignalR
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chathub")
-            .withAutomaticReconnect() // Tự động kết nối lại
-            .build();
-
-        try {
-            await connection.start();
-            console.log("SignalR Connected.");
-        } catch (err) {
-            console.error(err);
-        }
-
-        // === HÀM TRỢ GIÚP ===
-        function appendMessage(message, isSender) {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            const msgRow = document.createElement('div');
-
-            if (isSender) {
-                // Tin nhắn của tôi (bên phải)
-                msgRow.className = 'message-row right';
-                msgRow.innerHTML = `
-                    <div class="message-bubble message-right">
-                        ${escapeHTML(message)}
-                        <div class="message-time">${timeStr}</div>
-                    </div>
-                `;
-            } else {
-                // Tin nhắn của chủ trọ (bên trái)
-                msgRow.className = 'message-row';
-                msgRow.innerHTML = `
-                    <div class="message-bubble message-left">
-                        ${escapeHTML(message)}
-                        <div class="message-time">${timeStr}</div>
-                    </div>
-                `;
-            }
-            chatMessages.appendChild(msgRow);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Chống XSS
-        function escapeHTML(str) {
-            return str.replace(/[&<>"']/g, function(m) {
-                return {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#39;'
-                }[m];
-            });
-        }
-
-
-        // 📩 Nhận tin nhắn
-        connection.on("ReceiveMessage", (senderId, message) => {
-            // Chỉ xử lý tin nhắn từ chủ trọ
-            if (senderId !== landlordId) return;
-
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            // 1. Hiển thị popup nếu khung chat đang đóng
-            if (chatCard.classList.contains('d-none')) {
-                const popupMsg = document.getElementById('popupMsg');
-                popupMsg.innerHTML = `
-                    <strong>Bạn có tin nhắn mới từ ${landlordName}:</strong><br>
-                    <span class="text-dark fw-bold">"${escapeHTML(message)}"</span>
-                    <div class="popup-time">${timeStr}</div>
-                `;
-                chatPopup.classList.add('show');
-
-                // 🔥 Hiệu ứng nhấp nháy cho icon chat
-                floatingChatBtn.classList.add('chat-alert');
-
-                // Tự động tắt popup sau 8 giây
-                setTimeout(() => {
-                    chatPopup.classList.remove('show');
-                }, 8000);
-            }
-
-            // 2. Thêm tin nhắn vào khung chat (dùng hàm mới)
-            appendMessage(message, false); // false = không phải người gửi (là chủ trọ)
+    searchInput.addEventListener("input", () => {
+        const keyword = searchInput.value.toLowerCase().trim();
+        buttons.forEach(btn => {
+            const text = btn.innerText.toLowerCase();
+            btn.style.display = text.includes(keyword) ? "flex" : "none";
         });
-
-
-        // ✉️ Gửi tin nhắn
-        document.getElementById('chatForm').addEventListener('submit', e => {
-            e.preventDefault();
-            const msg = messageInput.value.trim();
-            if (!msg) return;
-
-            // Gửi lên Hub
-            connection.invoke("SendPrivateMessage", landlordId, msg)
-                .catch(err => console.error(err.toString()));
-
-            // Thêm vào giao diện (dùng hàm mới)
-            appendMessage(msg, true); // true = là người gửi (là tôi)
-
-            messageInput.value = '';
-            messageInput.focus();
-        });
-
-        // === CÁC NÚT ĐIỀU KHIỂN ===
-
-        // Mở khung chat từ nút nổi
-        floatingChatBtn.addEventListener('click', () => {
-            chatCard.classList.remove('d-none');
-            chatPopup.classList.remove('show'); // Tắt popup nếu đang mở
-            floatingChatBtn.classList.remove('chat-alert'); // Tắt hiệu ứng
-            messageInput.focus();
-        });
-
-        // Đóng popup
-        closePopup.addEventListener('click', () => chatPopup.classList.remove('show'));
-
-        // Đóng khung chat
-        closeChat.addEventListener('click', () => chatCard.classList.add('d-none'));
-
-        // Mở trang chat đầy đủ (từ popup)
-        viewChatBtn.addEventListener('click', () => window.location.href = '@Url.Action("IndexChat","Phongtrocuatoi")');
-
-        // Mở trang chat đầy đủ (từ khung chat nhỏ)
-        openFullChat.addEventListener('click', () => window.location.href = '@Url.Action("IndexChat","Phongtrocuatoi")');
-
     });
-    </script>
+});
+document.addEventListener('DOMContentLoaded', async () => {
+    const chatCard = document.getElementById('chatCard');
+    if (!chatCard) return;
+
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const chatPopup = document.getElementById('chatPopup');
+    const floatingChatBtn = document.getElementById('floatingChatBtn');
+    const closePopup = document.getElementById('closePopup');
+    const closeChat = document.getElementById('closeChat');
+    const viewChatBtn = document.getElementById('viewChatBtn');
+    const openFullChat = document.getElementById('openFullChat');
+
+    const landlordId = '@Model.ToaNha.ChuTro.ApplicationUserId';
+    const landlordName = '@(Model.ToaNha.ChuTro.HoTen)';
+    const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").withAutomaticReconnect().build();
+
+    try { await connection.start(); console.log("✅ SignalR connected"); } 
+    catch (err) { console.error("❌", err); }
+
+    // 🔸 Thêm tin nhắn vào UI
+    function appendMessage(message, isSender) {
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const div = document.createElement('div');
+        div.className = isSender ? 'message-row right' : 'message-row';
+        div.innerHTML = `
+            <div class="message-bubble ${isSender ? 'message-right' : 'message-left'}">
+                ${escapeHTML(message)}
+                <div class="message-time">${time}</div>
+            </div>`;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function escapeHTML(str) {
+        return str.replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+    }
+
+    // 📩 Khi nhận tin nhắn
+    connection.on("ReceiveMessage", (senderId, message) => {
+        if (senderId !== landlordId) return;
+
+        // Nếu khung chat đang đóng → hiện popup + hiệu ứng
+        if (chatCard.classList.contains('d-none')) {
+            const popupMsg = document.getElementById('popupMsg');
+            popupMsg.innerHTML = `
+                <strong>Bạn có tin nhắn mới từ ${landlordName}:</strong><br>
+                <span class="text-dark fw-bold">"${escapeHTML(message)}"</span>
+                <div class="popup-time">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
+            chatPopup.classList.add('show');
+            floatingChatBtn.classList.add('chat-alert');
+            setTimeout(() => chatPopup.classList.remove('show'), 8000);
+        }
+        appendMessage(message, false);
+    });
+
+    // ✉️ Gửi tin nhắn
+    document.getElementById('chatForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const msg = messageInput.value.trim();
+        if (!msg) return;
+        connection.invoke("SendPrivateMessage", landlordId, msg);
+        appendMessage(msg, true);
+        messageInput.value = '';
+        messageInput.focus();
+    });
+
+    // 🔘 Sự kiện giao diện
+    floatingChatBtn.addEventListener('click', () => {
+        chatCard.classList.remove('d-none');
+        chatPopup.classList.remove('show');
+        floatingChatBtn.classList.remove('chat-alert');
+    });
+    closeChat.addEventListener('click', () => chatCard.classList.add('d-none'));
+    closePopup.addEventListener('click', () => chatPopup.classList.remove('show'));
+    viewChatBtn.addEventListener('click', () => window.location.href = '@Url.Action("IndexChat","Phongtrocuatoi")');
+    openFullChat.addEventListener('click', () => window.location.href = '@Url.Action("IndexChat","Phongtrocuatoi")');
+});
+</script>
 }
