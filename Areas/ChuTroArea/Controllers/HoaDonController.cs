@@ -155,6 +155,27 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 periodEnd = periodStart.AddMonths(1).AddTicks(-1);
             }
 
+            // KIỂM TRA: Đã tồn tại hóa đơn của phòng này trong tháng này chưa?
+            // Điều kiện: cùng phòng + tháng/năm của chỉ số (hoặc ngày lập hóa đơn nếu đã có chuẩn hóa)
+            var existedBill = _context.HoaDons
+                .Include(h => h.ChiSoDienNuoc)
+                .ThenInclude(c => c.PhongTro)
+                .Any(h => h.ChiSoDienNuoc.PhongTro.MaPhong == hoaDon.MaPhong
+                          && h.ChiSoDienNuoc.NgayGhi >= periodStart
+                          && h.ChiSoDienNuoc.NgayGhi <= periodEnd);
+            if (existedBill)
+            {
+                ModelState.AddModelError("", "Hóa đơn tháng này cho phòng đã được tạo. Vui lòng không tạo trùng.");
+                var phongTrosReload = _context.ChuTros
+                    .Where(c => c.Email == User.Identity.Name)
+                    .SelectMany(c => c.ToaNhas)
+                    .SelectMany(t => t.PhongTros)
+                    .Where(p => p.TrangThai == "Đã Thuê")
+                    .ToList();
+                ViewBag.PhongTros = new SelectList(phongTrosReload, "MaPhong", "SoPhong");
+                return View(hoaDon);
+            }
+
             // Tìm chỉ số của phòng trong tháng hóa đơn
             var chiSoDienNuoc = _context.ChiSoDienNuocs
                 .Where(c => c.MaPhong == hoaDon.MaPhong && c.NgayGhi >= periodStart && c.NgayGhi <= periodEnd)
@@ -193,10 +214,12 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             hoaDon.MaKhachThue = khachThue.MaKhachThue;
 
-            // Lấy phiếu dịch vụ đã xác nhận có overlap với tháng hóa đơn
+            // Lấy TẤT CẢ phiếu dịch vụ đã xác nhận thuộc THÁNG hóa đơn (cho phép nhiều phiếu trong tháng)
             var phieuDichVus = _context.PhieuDangKyDichVus
-                .Where(p => p.MaKhachThue == khachThue.MaKhachThue && p.TrangThai == "Đã xác nhận"
-                            && p.NgayBatDau <= periodEnd && p.NgayKetThuc >= periodStart)
+                .Where(p => p.MaKhachThue == khachThue.MaKhachThue
+                            && p.TrangThai == "Đã xác nhận"
+                            && p.NgayBatDau >= periodStart
+                            && p.NgayBatDau <= periodEnd)
                 .Include(p => p.ChiTietPhieuDangKyDichVus)
                 .ToList();
 

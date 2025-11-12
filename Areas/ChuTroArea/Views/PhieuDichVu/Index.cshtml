@@ -25,6 +25,15 @@
         @TempData["SuccessMessage"]
     </div>
 }
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (TempData["ThongBao"] != null)
+{
+    <div class="alert alert-success">@TempData["ThongBao"]</div>
+}
 
 <div class="content-header px-2 px-md-3 pt-1 pb-0">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">

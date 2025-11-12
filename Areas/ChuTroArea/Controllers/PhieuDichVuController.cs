@@ -1,4 +1,4 @@
-﻿using DACS_QuanLyPhongTro.Models;
+﻿    using DACS_QuanLyPhongTro.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -118,7 +118,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             return View(phieuDangKy);
         }
 
-        // POST: Xác nhận phiếu
+        // POST: Xác nhận phiếu (cho phép nhiều phiếu trong cùng tháng)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> XacNhan(int id)
@@ -129,6 +129,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             if (phieu == null)
                 return NotFound();
 
+            // Không chặn trùng tháng nữa – theo yêu cầu: một tháng có thể có nhiều phiếu
             phieu.TrangThai = "Đã xác nhận";
             _context.Update(phieu);
             await _context.SaveChangesAsync();

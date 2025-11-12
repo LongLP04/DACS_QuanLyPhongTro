@@ -127,8 +127,9 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             return View(chiSoDienNuocs);
         }
 
-        // GET: Ghi chỉ số điện nước
-        public async Task<IActionResult> Create()
+    // GET: Ghi chỉ số điện nước
+    [HttpGet]
+    public async Task<IActionResult> Create()
         {
             var currentChuTroEmail = User.Identity.Name;
             var currentChuTro = await _context.ChuTros
@@ -157,15 +158,10 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             return View();
         }
 
-        // POST: Ghi chỉ số điện nước
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        // Backwards-compatible overload (reads ReadingMonth from form if caller posts without it)
-        public async Task<IActionResult> Create(ChiSoDienNuoc chiSoDienNuoc)
-        {
-            var readingMonth = Request.Form["ReadingMonth"].FirstOrDefault();
-            return await Create(chiSoDienNuoc, readingMonth);
-        }
+        // // POST: Ghi chỉ số điện nước
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> Create(ChiSoDienNuoc chiSoDienNuoc, string? ReadingMonth)
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -238,7 +234,11 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
             try
             {
-                // parse reading month if provided
+                // parse reading month if provided (fallback: đọc từ form nếu tham số trống)
+                if (string.IsNullOrWhiteSpace(ReadingMonth))
+                {
+                    ReadingMonth = Request.Form["ReadingMonth"].FirstOrDefault();
+                }
                 DateTime monthStart = DateTime.Now;
                 DateTime monthEnd = DateTime.Now;
                 if (!string.IsNullOrEmpty(ReadingMonth) && DateTime.TryParse(ReadingMonth + "-01", out var parsed))
@@ -452,10 +452,25 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 return Forbid("Bạn không có quyền xóa thông tin này.");
             }
 
-            _context.ChiSoDienNuocs.Remove(chiSoDienNuoc);
-            await _context.SaveChangesAsync();
+            // Chặn xóa nếu đã có hóa đơn tham chiếu
+            bool daCoHoaDon = await _context.HoaDons.AnyAsync(hd => hd.MaChiSo == chiSoDienNuoc.MaChiSo);
+            if (daCoHoaDon)
+            {
+                TempData["Error"] = "Không thể xóa chỉ số vì đã được dùng để lập hóa đơn. Vui lòng xóa hóa đơn liên quan trước.";
+                return RedirectToAction(nameof(Index));
+            }
 
-            TempData["ThongBao"] = "Chỉ số điện nước đã được xóa thành công.";
+            try
+            {
+                _context.ChiSoDienNuocs.Remove(chiSoDienNuoc);
+                await _context.SaveChangesAsync();
+                TempData["ThongBao"] = "Chỉ số điện nước đã được xóa thành công.";
+            }
+            catch (DbUpdateException)
+            {
+                TempData["Error"] = "Không thể xóa chỉ số do ràng buộc dữ liệu. Hãy đảm bảo không có hóa đơn hoặc bản ghi khác đang tham chiếu.";
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

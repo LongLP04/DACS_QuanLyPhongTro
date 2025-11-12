@@ -468,8 +468,8 @@ h6 {
 }
 
 #mainNavbar .navbar-brand {
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
     letter-spacing: 0.3px;
 }
 
@@ -1809,6 +1809,7 @@ section,
 
 .navbar-brand {
     margin-right: auto !important; /* ép logo về trái */
+    font-size: large;
 }
 
 .navbar-collapse {
