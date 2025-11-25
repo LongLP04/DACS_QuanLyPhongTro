@@ -127,8 +127,54 @@ namespace DACS_QuanLyPhongTro.Controllers
             if (hopDong == null)
                 return View(null);
 
-            // truyền MaHopDong cho view để link tới Details hợp đồng đúng
+            // Lấy dữ liệu thực
+            var startOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            var startOfNextMonth = startOfMonth.AddMonths(1);
+
+            var hoaDonChuaThanhToan = await _context.HoaDons
+                .CountAsync(h => h.MaPhong == hopDong.PhongTro.MaPhong && h.TrangThai == "Chưa Thanh Toán");
+
+            var dichVuDaSuDung = await _context.PhieuDangKyDichVus
+                .CountAsync(p =>
+                    p.MaKhachThue == khachThue.MaKhachThue &&
+                    p.TrangThai == "Đã xác nhận" &&
+                    p.NgayBatDau >= startOfMonth &&
+                    p.NgayBatDau < startOfNextMonth);
+
+            var thongBaoMoiNhat = await _context.Notifications
+                .Where(t => t.MaKhachThue == khachThue.MaKhachThue)
+                .OrderByDescending(t => t.CreatedAt)
+                .Select(t => t.Message)
+                .FirstOrDefaultAsync();
+
+            var thangTieuThu = await _context.ChiSoDienNuocs
+                .Where(c => c.MaPhong == hopDong.PhongTro.MaPhong)
+                .OrderBy(c => c.NgayGhi)
+                .Select(c => c.NgayGhi.ToString("MM/yyyy"))
+                .ToListAsync();
+
+            var dienTieuThu = await _context.ChiSoDienNuocs
+                .Where(c => c.MaPhong == hopDong.PhongTro.MaPhong)
+                .OrderBy(c => c.NgayGhi)
+                .Select(c => (int)c.SoDienTieuThu)
+                .ToListAsync();
+
+            var nuocTieuThu = await _context.ChiSoDienNuocs
+                .Where(c => c.MaPhong == hopDong.PhongTro.MaPhong)
+                .OrderBy(c => c.NgayGhi)
+                .Select(c => (int)c.SoNuocTieuThu)
+                .ToListAsync();
+
+            // Truyền dữ liệu trực tiếp vào View
+            ViewBag.HoaDonChuaThanhToan = hoaDonChuaThanhToan;
+            ViewBag.DichVuDaSuDung = dichVuDaSuDung;
+            ViewBag.ThongBaoMoiNhat = thongBaoMoiNhat ?? "Không có thông báo mới";
+            ViewBag.ThangTieuThu = thangTieuThu;
+            ViewBag.DienTieuThu = dienTieuThu;
+            ViewBag.NuocTieuThu = nuocTieuThu;
             ViewBag.MaHopDong = hopDong.MaHopDong;
+
+            // Truyền model PhongTro vào View
             return View(hopDong.PhongTro);
         }
 
