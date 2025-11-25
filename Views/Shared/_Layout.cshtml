@@ -38,11 +38,165 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
-  <style>
-        header, .navbar, .btn-group {
-            overflow: visible !important;
-            z-index: 9999 !important;
-        }
+    <style>
+      :root {
+        --primary: #1ec36e;
+        --primary-dark: #169a55;
+        --accent: #17a2ff;
+        --text-dark: #1c1e21;
+        --muted: #8f9bb3;
+        --surface: #ffffff;
+        --surface-alt: #f4f7fb;
+      }
+
+      body {
+        font-family: "Poppins", "Roboto", sans-serif;
+        background: var(--surface-alt);
+        color: var(--text-dark);
+      }
+
+      header, .navbar, .btn-group {
+        overflow: visible !important;
+        z-index: 9999 !important;
+      }
+
+      #mainNavbar {
+        border-bottom: 1px solid rgba(18, 38, 63, 0.08);
+        background: rgba(255, 255, 255, 0.98) !important;
+        transition: box-shadow 0.2s ease, background 0.2s ease;
+      }
+
+      #mainNavbar.scrolled {
+        box-shadow: 0 8px 24px rgba(18, 38, 63, 0.08);
+        background: #ffffff !important;
+      }
+
+      #mainNavbar .navbar-brand {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.55rem;
+        padding: 0.4rem 1.2rem;
+        border-radius: 14px;
+        background: linear-gradient(120deg, #ffffff, #effdf5);
+        box-shadow: 0 10px 20px rgba(30, 195, 110, 0.15);
+        font-family: "Raleway", "Poppins", sans-serif;
+        text-transform: none;
+        letter-spacing: 0;
+        line-height: 1.1;
+      }
+
+      #mainNavbar .brand-mark,
+      #mainNavbar .brand-text {
+        line-height: 1;
+      }
+
+      #mainNavbar .brand-mark {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: var(--primary);
+        letter-spacing: 1.2px;
+      }
+
+      #mainNavbar .brand-text {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: var(--text-dark);
+        letter-spacing: 1.2px;
+        margin-bottom: -0.05rem;
+      }
+
+      .navbar-nav .nav-link {
+        position: relative;
+        padding: 0.75rem 0.5rem;
+        color: var(--text-dark);
+        transition: color 0.2s ease;
+      }
+
+      .navbar-nav .nav-link:hover,
+      .navbar-nav .nav-link.active {
+        color: var(--primary);
+      }
+
+      .navbar-nav .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 0;
+        height: 3px;
+        background: var(--primary);
+        border-radius: 999px;
+        transition: width 0.2s ease;
+      }
+
+      .navbar-nav .nav-link:hover::after,
+      .navbar-nav .nav-link.active::after {
+        width: 60%;
+      }
+
+      .btn-group .dropdown-toggle {
+        border-radius: 999px;
+        border: 1px solid rgba(18, 38, 63, 0.15);
+        padding: 0.4rem 0.9rem;
+        transition: border-color 0.2s ease;
+        color: var(--text-dark);
+      }
+
+      .btn-group .dropdown-toggle:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      main.main {
+        min-height: 70vh;
+        padding-top: 10px;
+      }
+
+      footer.footer {
+        background: #06142e;
+        color: #d6e4ff;
+        padding: 60px 0 40px;
+      }
+
+      footer .icon {
+        color: var(--primary);
+        background: rgba(30, 195, 110, 0.12);
+        border-radius: 12px;
+        padding: 12px;
+        margin-right: 12px;
+      }
+
+      footer h4 {
+        color: #ffffff;
+        margin-bottom: 12px;
+        font-weight: 600;
+      }
+
+      footer .social-links a {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        transition: all 0.2s ease;
+      }
+
+      footer .social-links a:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+      }
+
+      #scroll-top {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 12px 24px rgba(30, 195, 110, 0.3);
+      }
+        
     </style>
 </head>
 
@@ -53,9 +207,9 @@
     <div class="container-xl d-flex align-items-center justify-content-between">
 
         <!-- LOGO (trái) -->
-        <a class="navbar-brand fw-bold fs-4 d-flex align-items-center me-auto" asp-controller="Home" asp-action="Index">
-            <span class="text-success">Trọ</span>
-            <span class="text-dark ms-1">Quanh Ta</span>
+        <a class="navbar-brand fw-bold me-auto" asp-controller="Home" asp-action="Index">
+          <span class="brand-mark">Trọ</span>
+          <span class="brand-text ">Quanh Ta</span>
         </a>
 
         <!-- TOGGLE (mobile) -->
@@ -123,7 +277,7 @@
                 {
                     
                     <li class="nav-item mx-2">
-                        <a asp-controller="PhongTroCuaToi" asp-action="Index" class="nav-link">Phòng trọ của tôi</a>
+                        <a asp-controller="PhongTroCuaToi" asp-action="Index" class="nav-link">Phòng trọ của tôi </a>
                     </li>
                 } 
 
