@@ -5,50 +5,44 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- ======= Danh sách phòng trọ ======= -->
 <section class="room-list section">
     <div class="container-fluid px-xl-5">
 
-        <!-- ==== THANH BỘ LỌC NGANG ==== -->
         <div class="filter-toolbar bg-white shadow-sm rounded-3 p-3 mb-2 d-flex flex-wrap align-items-center justify-content-between gap-3">
-            <!-- Nút Tìm trọ gần tôi -->
             <a href="@Url.Action("TimPhongGanToi", "PhongTro")"
                class="btn btn-highlighted d-flex align-items-center justify-content-center">
                 <i class="fas fa-map-marker-alt me-2"></i> Tìm trọ gần tôi
             </a>
 
-            <!-- Lọc theo giá -->
             <div class="filter-group d-flex align-items-center gap-2">
-                <label class="fw-semibold text-dark">Giá:</label>
+                <label class="fw-semibold text-dark label-filter">Giá:</label>
                 <select id="priceSelect" class="form-select filter-select">
                     <option value="">Tất cả</option>
                     @foreach (var range in ViewBag.PriceRanges)
                     {
                         var rangeText = range.Range.Max != null
-                            ? $"{range.Range.Min:N0} - {range.Range.Max:N0} VNĐ"
-                            : $"Trên {range.Range.Min:N0} VNĐ";
+                        ? $"{range.Range.Min:N0} - {range.Range.Max:N0} VNĐ"
+                        : $"Trên {range.Range.Min:N0} VNĐ";
                         <option value="@range.Range.Min-@range.Range.Max">@rangeText</option>
                     }
                 </select>
             </div>
 
-            <!-- Lọc theo diện tích -->
             <div class="filter-group d-flex align-items-center gap-2">
-                <label class="fw-semibold text-dark">Diện tích:</label>
+                <label class="fw-semibold text-dark label-filter">Diện tích:</label>
                 <select id="areaSelect" class="form-select filter-select">
                     <option value="">Tất cả</option>
                     @foreach (var range in ViewBag.AreaRanges)
                     {
                         var rangeText = range.Range.Max != null
-                            ? $"{range.Range.Min:N0} - {range.Range.Max:N0} m²"
-                            : $"Trên {range.Range.Min:N0} m²";
+                        ? $"{range.Range.Min:N0} - {range.Range.Max:N0} m²"
+                        : $"Trên {range.Range.Min:N0} m²";
                         <option value="@range.Range.Min-@range.Range.Max">@rangeText</option>
                     }
                 </select>
             </div>
         </div>
 
-        <!-- ==== DANH SÁCH PHÒNG ==== -->
         <div class="row g-4 justify-content-center product-row">
             @foreach (var product in Model)
             {
@@ -67,10 +61,12 @@
                             </div>
                         </div>
 
-                        <div class="product-body text-center">
-                            <a href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })"
-                               class="room-title">Phòng @product.SoPhong</a>
-                            <div class="price-status">
+                        <div class="product-body text-center d-flex flex-column justify-content-between">
+                            <div>
+                                <a href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })"
+                                   class="room-title">Phòng @product.SoPhong</a>
+                            </div>
+                            <div class="price-status mt-auto">
                                 <h5>@product.GiaThue.ToString("#,##0 VNĐ")</h5>
                                 <span class="badge badge-status mt-2">@product.TrangThai</span>
                             </div>
@@ -82,196 +78,215 @@
     </div>
 </section>
 
-<!-- ======= STYLE ======= -->
 <style>
-/* === ĐẨY XUỐNG DƯỚI HEADER === */
-.room-list {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
+    :root {
+        /* Định nghĩa lại màu sắc để các style bên dưới sử dụng */
+        --primary: #a8d5e2; /* xanh dương nhạt chính */
+        --primary-dark: #94c8db;
+        --accent: #c7ceea; /* tím nhạt */
+        --text-dark: #2d3748;
+    }
 
-/* === Container giới hạn chiều rộng === */
-.container-fluid {
-    max-width: 1300px;
-    margin: 0 auto;
-}
+    /* === FONT SIZE ADJUSTMENTS === */
+    .label-filter {
+        font-size: 1em; /* Giữ 18px */
+    }
 
-/* === Thanh lọc ngang === */
-.filter-toolbar {
-    border: 1px solid #eee;
-}
+    /* === ĐẨY XUỐNG DƯỚI HEADER === */
+    .room-list {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
 
-.filter-select {
-    min-width: 200px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    padding: 6px 10px;
-    transition: border 0.2s;
-}
+    /* === Container giới hạn chiều rộng === */
+    .container-fluid {
+        max-width: 1300px;
+        margin: 0 auto;
+    }
 
-.filter-select:focus {
-    border-color: #1ec36e;
-    box-shadow: 0 0 0 0.2rem rgba(30, 195, 110, 0.2);
-}
+    /* === Thanh lọc ngang === */
+    .filter-toolbar {
+        border: 1px solid var(--primary); /* Đổi màu viền sang Primary */
+    }
 
-/* === Nút tìm trọ gần tôi === */
-.btn-highlighted {
-    background-color: #23cf3a;
-    color: #fff;
-    font-weight: 700;
-    padding: 10px 18px;
-    border-radius: 25px;
-    box-shadow: 0 3px 8px rgba(255, 111, 0, 0.4);
-    transition: all 0.3s;
-}
+    .filter-select {
+        min-width: 200px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        padding: 6px 10px;
+        transition: border 0.2s;
+        font-size: 0.95em; /* Tinh chỉnh cỡ chữ cho dropdown */
+    }
 
-.btn-highlighted:hover {
-    background-color: #e65100;
-    box-shadow: 0 5px 15px rgba(230, 81, 0, 0.6);
-    color: #fff;
-}
+        .filter-select:focus {
+            border-color: var(--primary); /* Đổi màu focus sang Primary */
+            box-shadow: 0 0 0 0.2rem rgba(168, 213, 226, 0.5); /* Box shadow màu Primary với độ trong suốt */
+        }
 
-/* === CARD PHÒNG TRỌ === */
-.product-row {
-    margin-top: 5px;
-}
+    /* === Nút tìm trọ gần tôi (btn-highlighted) === */
+    .btn-highlighted {
+        background-color: var(--primary); /* Đổi nền sang Primary */
+        color: var(--text-dark); /* Chữ tối để dễ đọc */
+        font-weight: 700;
+        padding: 10px 18px;
+        border-radius: 25px;
+        /* Giữ hiệu ứng nổi bật (shadow), đổi màu shadow sang Primary/Accent */
+        box-shadow: 0 3px 8px rgba(168, 213, 226, 0.4);
+        transition: all 0.3s;
+    }
 
-/* --- Card bố cục giống trang chủ --- */
-.product-card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
-}
+        .btn-highlighted:hover {
+            background-color: var(--primary-dark); /* Hover tối hơn chút */
+            box-shadow: 0 5px 15px rgba(168, 213, 226, 0.6);
+            color: var(--text-dark); /* Giữ màu chữ */
+        }
 
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-}
+    /* === CARD PHÒNG TRỌ === */
+    .product-row {
+        margin-top: 5px;
+    }
 
-/* --- Ảnh sản phẩm --- */
-.product-img {
-    position: relative;
-    width: 100%;
-    height: 230px;
-    overflow: hidden;
-}
+    /* Thiết lập Flexbox cho Card để căn chỉnh nội dung */
+    .product-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        display: flex; /* Kích hoạt flexbox */
+        flex-direction: column; /* Xếp dọc các phần tử */
+    }
 
-.product-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
+        .product-card:hover {
+            transform: translateY(-5px);
+            /* Box shadow nổi bật màu xanh dương nhạt */
+            box-shadow: 0 10px 25px rgba(168, 213, 226, 0.4);
+        }
 
-.product-card:hover img {
-    transform: scale(1.08);
-}
-
-/* --- Overlay --- */
-.product-action {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.8);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.product-card:hover .product-action {
-    opacity: 1;
-}
-
-.btn-action {
-    background: #fff;
-    border: 1px solid #ddd;
-    color: #333;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 6px;
-    font-size: 17px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-}
-
-.btn-action:hover {
-    background: #1ec36e;
-    color: #fff;
-    border-color: #1ec36e;
-}
-
-/* --- Nội dung trong card --- */
-.product-body {
-    padding: 1.1rem;
-    text-align: center;
-}
-
-.room-title {
-    font-weight: 600;
-    color: #0d2a4d;
-    font-size: 1.05rem;
-    margin-bottom: 6px;
-    display: block;
-    text-decoration: none;
-    transition: color 0.25s;
-}
-
-.room-title:hover {
-    color: #1ec36e;
-}
-
-.price-status h5 {
-    color: #e67e22;
-    font-weight: 700;
-    margin-bottom: 5px;
-    font-size: 1rem;
-}
-
-.badge-status {
-    background-color: #17a2b8;
-    color: #fff;
-    border-radius: 30px;
-    padding: 0.35em 0.75em;
-    font-size: 0.85rem;
-}
-
-/* === RESPONSIVE === */
-@@media (max-width: 1200px) {
+    /* --- Ảnh sản phẩm --- */
     .product-img {
-        height: 210px;
+        position: relative;
+        width: 100%;
+        height: 230px;
+        overflow: hidden;
     }
-}
 
-@@media (max-width: 992px) {
-    .col-lg-4 {
-        flex: 0 0 50%;
-        max-width: 50%;
-    }
-    .product-img {
-        height: 200px;
-    }
-}
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
 
-@@media (max-width: 768px) {
-    .col-md-6 {
-        flex: 0 0 100%;
-        max-width: 100%;
+    .product-card:hover img {
+        transform: scale(1.08);
     }
-    .product-img {
-        height: 180px;
-    }
-}
 
+    /* --- Overlay --- */
+    .product-action {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.8);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .product-card:hover .product-action {
+        opacity: 1;
+    }
+
+    .btn-action {
+        background: #fff;
+        border: 1px solid #ddd;
+        color: var(--text-dark); /* Màu icon mặc định tối */
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 6px;
+        font-size: 17px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-action:hover {
+            background: var(--primary); /* Đổi hover sang Primary */
+            color: #fff; /* Chữ trắng khi hover */
+            border-color: var(--primary);
+        }
+
+    /* --- Nội dung trong card (Body) --- */
+    .product-body {
+        padding: 1.1rem;
+        text-align: center;
+        flex-grow: 1; /* Quan trọng: Đảm bảo body chiếm hết không gian còn lại */
+        /* d-flex flex-column justify-content-between được thêm vào HTML để căn chỉnh nội dung */
+    }
+
+    .room-title {
+        font-weight: 600;
+        color: var(--text-dark); /* Màu chữ tối */
+        font-size: 1.05em; /* Tăng nhẹ cỡ chữ so với base font 18px */
+        margin-bottom: 6px;
+        display: block;
+        text-decoration: none;
+        transition: color 0.25s;
+    }
+
+        .room-title:hover {
+            color: var(--primary); /* Đổi hover sang Primary */
+        }
+
+    .price-status h5 {
+        color: var(--primary-dark); /* Giá tiền màu xanh đậm hơn */
+        font-weight: 700;
+        margin-bottom: 5px;
+        font-size: 1em; /* Kích thước tương đối */
+    }
+
+    .badge-status {
+        background-color: var(--primary); /* Đổi màu badge sang Primary */
+        color: var(--text-dark); /* Chữ tối để dễ đọc */
+        border-radius: 30px;
+        padding: 0.35em 0.75em;
+        font-size: 0.8em; /* Kích thước tương đối nhỏ hơn */
+    }
+
+    /* === RESPONSIVE === */
+    @@media (max-width: 1200px) {
+        .product-img {
+            height: 210px;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .col-lg-4 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+
+        .product-img {
+            height: 200px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .product-img {
+            height: 180px;
+        }
+    }
 </style>
 
-<!-- ======= SCRIPT LỌC GIỮ NGUYÊN LOGIC ======= -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Khi thay đổi giá hoặc diện tích

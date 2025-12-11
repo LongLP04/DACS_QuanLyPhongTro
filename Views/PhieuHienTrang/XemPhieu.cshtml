@@ -7,33 +7,31 @@
 
 <section class="status-page section">
     <div class="container-fluid px-xl-5 py-5">
-        <div class="status-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
+        <div class="status-wrapper bg-white rounded-5 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
             <div class="text-center mb-4">
-                <h2 class="fw-bold" style="color: #1ec36e;">Phiếu hiện trạng khi nhận phòng</h2>
+                <h2 class="fw-bold text-primary-color">Phiếu hiện trạng khi nhận phòng</h2>
                 <p class="text-muted">Vui lòng kiểm tra kỹ các thông tin bên dưới và xác nhận tình trạng</p>
             </div>
 
-            <!-- Thông tin phiếu -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 mb-4 status-info-card">
                 <div class="card-body">
                     <p class="mb-2"><strong>Ngày nhận phòng:</strong> @Model.NgayNhanPhong.ToString("dd/MM/yyyy")</p>
                     <p class="mb-2"><strong>Ghi chú:</strong> @Model.GhiChu</p>
                     <p class="mb-0 fw-semibold">
                         <strong>Tình trạng:</strong>
-                        <span class="badge @(Model.TinhTrang == "Đã xác nhận" ? "bg-success" : "bg-warning text-dark") px-3 py-2">
+                        <span class="badge @(Model.TinhTrang == "Đã xác nhận" ? "badge-confirmed" : "badge-pending") px-3 py-2">
                             @Model.TinhTrang
                         </span>
                     </p>
                 </div>
             </div>
 
-            <!-- Danh sách vật dụng -->
-            <h5 class="fw-bold text-success mb-3">
+            <h5 class="fw-bold text-primary-color mb-3">
                 <i class="bi bi-box-seam me-2"></i>Danh sách vật dụng trong phòng
             </h5>
             <div class="table-responsive shadow-sm rounded-4 overflow-hidden mb-4">
-                <table class="table table-hover align-middle text-center mb-0">
-                    <thead class="text-white">
+                <table class="table table-hover align-middle text-center mb-0 status-table">
+                    <thead class="text-dark">
                         <tr>
                             <th>Tên vật dụng</th>
                             <th>Tình trạng</th>
@@ -44,29 +42,28 @@
                         {
                             <tr>
                                 <td class="fw-semibold">@item.TenVatDung</td>
-                                <td class="@(item.TinhTrang.Contains("Tốt") ? "text-success" : "text-warning") fw-semibold">@item.TinhTrang</td>
+                                <td class="@(item.TinhTrang.Contains("Tốt") ? "text-primary-color-strong" : "text-warning-pastel") fw-semibold">@item.TinhTrang</td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
 
-            <!-- Xác nhận -->
             @if (Model.TinhTrang == "Chưa xác nhận")
             {
                 <form asp-action="XacNhan" method="post" class="text-center">
                     <input type="hidden" name="maPhieu" value="@Model.MaPhieuHienTrang" />
-                    <button type="submit" class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold me-2">
+                    <button type="submit" class="btn btn-primary-filled rounded-pill px-4 py-2 shadow-sm fw-semibold me-2 btn-hover-scale">
                         <i class="bi bi-check-circle me-1"></i> Tôi xác nhận hiện trạng
                     </button>
-                    <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 shadow-sm">
+                    <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-outline-muted rounded-pill px-4 py-2 shadow-sm">
                         <i class="bi bi-arrow-left-circle me-1"></i> Quay lại
                     </a>
                 </form>
             }
             else
             {
-                <div class="alert alert-success mt-4 text-center rounded-4 shadow-sm py-3 fw-semibold">
+                <div class="alert alert-success mt-4 text-center rounded-4 shadow-sm py-3 fw-semibold alert-primary-style">
                     <i class="bi bi-check2-circle me-2"></i> Bạn đã xác nhận phiếu này.
                 </div>
             }
@@ -75,51 +72,120 @@
 </section>
 
 <style>
-/* === PAGE === */
-.status-page { margin-top: 10px; margin-bottom: 10px; }
+    :root {
+        --primary: #a8d5e2;
+        --primary-dark: #94c8db;
+        --accent: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+        --surface-alt: #f8faff;
+        --muted: #64748b;
+        --warning-pastel: #ff9999; /* Đỏ/Cam nhạt cho Cần Sửa */
+    }
 
-/* === BẢNG === */
-table thead {
-    background-color: #1ec36e;
-}
-table th {
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.4px;
-    padding: 14px;
-}
-table td {
-    padding: 12px;
-    color: #333;
-}
-table tr:hover td {
-    background-color: #e8fff1;
-    transition: background-color 0.25s ease;
-}
+    /* Lớp hỗ trợ màu */
+    .text-primary-color {
+        color: var(--primary) !important;
+    }
 
-/* === CARD === */
-.status-wrapper {
-    border: 1.4px solid #dcdcdc;
-    transition: all 0.3s ease;
-}
-.status-wrapper:hover {
-    border-color: #1ec36e;
-    box-shadow: 0 8px 20px rgba(30,195,110,0.15);
-}
+    .text-primary-color-strong {
+        color: var(--primary-dark) !important;
+    }
 
-/* === BUTTONS === */
-.btn-success {
-    background-color: #1ec36e;
-    border: none;
-}
-.btn-success:hover {
-    background-color: #17a75c;
-    transform: scale(1.05);
-    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
-}
-.btn-outline-secondary:hover {
-    background-color: #eee;
-    transform: scale(1.03);
-}
+    .text-warning-pastel {
+        color: var(--warning-pastel) !important;
+    }
+
+    .btn-primary-filled {
+        background-color: var(--primary);
+        color: var(--text-dark);
+        border: none;
+    }
+
+    .alert-primary-style {
+        background-color: var(--primary) !important;
+        color: var(--text-dark) !important;
+        border-color: var(--primary) !important;
+    }
+
+    .btn-outline-muted {
+        border-color: var(--muted);
+        color: var(--muted);
+        transition: all 0.3s;
+    }
+
+        .btn-outline-muted:hover {
+            background-color: var(--muted);
+            color: white;
+        }
+
+    /* === PAGE === */
+    .status-page {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /* === CARD WRAPPER === */
+    .status-wrapper {
+        border: 1.4px solid var(--surface-alt);
+        border-radius: 1.5rem !important; /* Bo góc lớn hơn */
+        transition: all 0.3s ease;
+    }
+
+        .status-wrapper:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(168, 213, 226, 0.4);
+        }
+
+    .status-info-card {
+        border: 1px solid var(--primary) !important;
+        background-color: var(--surface-alt) !important;
+    }
+
+    /* === BADGE TRẠNG THÁI === */
+    /* Đã xác nhận (trước là bg-success) -> Primary Color */
+    .badge-confirmed {
+        background-color: var(--primary) !important;
+        color: var(--text-dark) !important;
+    }
+    /* Chưa xác nhận (trước là bg-warning) -> Accent Color (tím nhạt) */
+    .badge-pending {
+        background-color: var(--accent) !important;
+        color: var(--text-dark) !important;
+    }
+
+    /* === BẢNG === */
+    .status-table thead {
+        background-color: var(--primary-dark); /* Nền thead đậm hơn Primary */
+    }
+
+    .status-table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.4px;
+        padding: 14px;
+        color: var(--text-dark); /* Chữ tối */
+    }
+
+    .status-table td {
+        padding: 12px;
+        color: #333;
+    }
+
+    .status-table tr:hover td {
+        background-color: var(--surface-alt);
+        transition: background-color 0.25s ease;
+    }
+
+    /* === BUTTONS === */
+    .btn-primary-filled:hover {
+        background-color: var(--primary-dark);
+        transform: scale(1.05);
+        box-shadow: 0 8px 14px rgba(168, 213, 226, 0.5);
+    }
+
+    .btn-hover-scale:hover {
+        transform: scale(1.05);
+    }
 </style>

@@ -7,36 +7,34 @@
 
 <section class="payment-page section">
     <div class="container-fluid px-xl-5 py-5">
-        <div class="payment-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 900px;">
+        <div class="payment-wrapper bg-white rounded-5 shadow-sm p-4 mx-auto" style="max-width: 900px;">
 
-            <!-- Tiêu đề -->
             <div class="text-center mb-4">
-                <h2 class="fw-bold" style="color: #1ec36e;">Thanh toán hóa đơn</h2>
+                <h2 class="fw-bold text-primary-color">Thanh toán hóa đơn</h2>
                 <p class="text-muted">Vui lòng kiểm tra thông tin và chọn phương thức thanh toán</p>
             </div>
 
-            <!-- Chi tiết hóa đơn -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 payment-detail-card mb-4">
                 <div class="card-body">
                     <p><strong>Phòng:</strong> @Model.PhongTro.SoPhong</p>
                     <p><strong>Ngày lập:</strong> @Model.NgayLap.ToString("dd/MM/yyyy")</p>
                     <p><strong>Tổng tiền:</strong> <span class="text-danger fw-bold">@Model.TongTien.ToString("N0") VNĐ</span></p>
-                    <p><strong>Trạng thái:</strong>
+                    <p>
+                        <strong>Trạng thái:</strong>
                         @if (@Model.TrangThai == "Chưa thanh toán")
                         {
-                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Chưa thanh toán</span>
+                            <span class="badge badge-pending px-3 py-2 rounded-pill">Chưa thanh toán</span>
                         }
                         else
                         {
-                            <span class="badge bg-success text-white px-3 py-2 rounded-pill">Đã thanh toán</span>
+                            <span class="badge badge-confirmed px-3 py-2 rounded-pill">Đã thanh toán</span>
                         }
                     </p>
                 </div>
             </div>
 
-            <!-- Phương thức thanh toán -->
             <div class="payment-method-container mb-4">
-                <h5 class="fw-bold text-success mb-3">
+                <h5 class="fw-bold text-primary-color">
                     <i class="bi bi-credit-card me-2"></i>Chọn phương thức thanh toán
                 </h5>
 
@@ -53,7 +51,7 @@
                         {
                             <form method="post" action="@Url.Action("CreatePaymentUrlVnpay", "Payment")" class="d-inline">
                                 <input type="hidden" name="invoiceId" value="@Model.MaHoaDon" />
-                                <button type="submit" class="btn btn-info btn-sm rounded-pill shadow-sm ms-2">
+                                <button type="submit" class="btn btn-primary-filled btn-sm rounded-pill shadow-sm ms-2 btn-vnpay-custom">
                                     <i class="bi bi-wallet2 me-1"></i> Thanh toán VNPay
                                 </button>
                             </form>
@@ -62,15 +60,14 @@
                 </div>
             </div>
 
-            <!-- Form xác nhận -->
             <form method="post" asp-action="XacNhanThanhToan" asp-route-id="@Model.MaHoaDon">
                 <input type="hidden" name="maPhuongThuc" id="selectedPaymentMethod" />
                 <div id="confirmation" class="confirmation-box text-center mt-4" style="display:none;">
                     <p id="confirmationMessage" class="text-dark mb-3"></p>
-                    <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm fw-semibold me-2">
+                    <button type="submit" class="btn btn-primary-filled rounded-pill px-4 shadow-sm fw-semibold me-2">
                         <i class="bi bi-check-circle me-1"></i> Xác nhận thanh toán
                     </button>
-                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm" onclick="cancelPayment()">
+                    <button type="button" class="btn btn-outline-muted rounded-pill px-4 shadow-sm" onclick="cancelPayment()">
                         <i class="bi bi-x-circle me-1"></i> Hủy
                     </button>
                 </div>
@@ -80,46 +77,114 @@
 </section>
 
 <style>
-.payment-method-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-.payment-method {
-    width: 130px;
-    padding: 15px;
-    background-color: #fff;
-    border: 2px solid #e8e8e8;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-.payment-method:hover {
-    border-color: #1ec36e;
-    box-shadow: 0 6px 15px rgba(30,195,110,0.25);
-    transform: translateY(-3px);
-}
-.payment-method-img {
-    width: 70px;
-    height: 70px;
-    object-fit: contain;
-}
-.confirmation-box {
-    background-color: #f9fdfb;
-    border: 1px solid #c8ebd6;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(30,195,110,0.1);
-}
-.btn-success {
-    background-color: #1ec36e;
-    border: none;
-}
-.btn-success:hover {
-    background-color: #17a75c;
-    transform: scale(1.05);
-    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
-}
+    :root {
+        --primary: #a8d5e2;
+        --primary-dark: #94c8db;
+        --accent: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+        --surface-alt: #f8faff;
+        --muted: #64748b;
+    }
+
+    /* Lớp hỗ trợ màu */
+    .text-primary-color {
+        color: var(--primary) !important;
+    }
+
+    .btn-primary-filled {
+        background-color: var(--primary);
+        color: var(--text-dark);
+        border: none;
+    }
+
+    .btn-outline-muted {
+        border-color: var(--muted);
+        color: var(--muted);
+        transition: all 0.3s;
+    }
+
+        .btn-outline-muted:hover {
+            background-color: var(--muted);
+            color: white;
+        }
+
+    /* Badge */
+    .badge-confirmed {
+        background-color: var(--primary) !important;
+        color: var(--text-dark) !important;
+    }
+
+    .badge-pending {
+        background-color: var(--accent) !important;
+        color: var(--text-dark) !important;
+    }
+
+    .payment-wrapper {
+        border-radius: 1.5rem !important;
+        border: 1.5px solid var(--surface-alt);
+    }
+
+    .payment-detail-card {
+        border: 1px solid var(--primary-dark) !important;
+        background-color: var(--surface-alt) !important;
+    }
+
+
+    /* === PHƯƠNG THỨC THANH TOÁN === */
+    .payment-method-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .payment-method {
+        width: 130px;
+        padding: 15px;
+        background-color: var(--surface);
+        border: 2px solid var(--surface-alt);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .payment-method:hover, .payment-method.selected {
+            border-color: var(--primary);
+            box-shadow: 0 6px 15px rgba(168, 213, 226, 0.4);
+            transform: translateY(-3px);
+        }
+
+    .payment-method-img {
+        width: 70px;
+        height: 70px;
+        object-fit: contain;
+    }
+
+    /* === KHUNG XÁC NHẬN === */
+    .confirmation-box {
+        background-color: var(--surface-alt);
+        border: 1px solid var(--primary);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(168, 213, 226, 0.2);
+    }
+
+    /* === NÚT === */
+    .btn-primary-filled:hover {
+        background-color: var(--primary-dark);
+        transform: scale(1.03);
+        box-shadow: 0 8px 14px rgba(168, 213, 226, 0.5);
+    }
+    /* Custom button VNPay (trước là btn-info) */
+    .btn-vnpay-custom {
+        background-color: var(--primary-dark) !important;
+        color: var(--text-dark) !important;
+    }
+
+        .btn-vnpay-custom:hover {
+            background-color: var(--primary) !important;
+        }
+
 </style>
 
 @section Scripts {
@@ -127,6 +192,18 @@
         let selectedMethodId = null;
 
         function selectPaymentMethod(methodId, methodName) {
+            // Remove 'selected' class from all methods
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+                el.style.borderColor = 'var(--surface-alt)';
+            });
+
+            // Add 'selected' class to the clicked method
+            const clickedMethod = event.currentTarget;
+            clickedMethod.classList.add('selected');
+            clickedMethod.style.borderColor = 'var(--primary)';
+
+
             selectedMethodId = methodId;
             document.getElementById("selectedPaymentMethod").value = selectedMethodId;
 
@@ -139,6 +216,11 @@
         function cancelPayment() {
             selectedMethodId = null;
             document.getElementById("confirmation").style.display = 'none';
+            // Reset border color of selected item if cancelled
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+                el.style.borderColor = 'var(--surface-alt)';
+            });
         }
     </script>
 }

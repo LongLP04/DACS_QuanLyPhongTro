@@ -1,21 +1,88 @@
 ﻿@page
 @model LogoutModel
 @{
-    ViewData["Title"] = "Log out";
+    ViewData["Title"] = "Đăng xuất";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    @{
-        if (User.Identity?.IsAuthenticated ?? false)
-        {
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
-            </form>
-        }
-        else
-        {
-            <p>You have successfully logged out of the application.</p>
-        }
+<style>
+    /* Kế thừa biến màu từ _Layout */
+    :root {
+        --primary: #a8d5e2; /* xanh dương nhạt chính */
+        --primary-dark: #94c8db;
+        --accent: #c7ceea; /* tím nhạt */
+        --text-dark: #2d3748;
+        --muted: #64748b;
+        --surface: #ffffff;
     }
-</header>
+
+    /* Style container chung cho trang Logout */
+    .logout-container {
+        max-width: 500px;
+        margin: 100px auto 50px; /* Khoảng cách trên cùng */
+        padding: 40px;
+        text-align: center;
+        /* Thiết kế Lofi Pastel */
+        background-color: var(--surface);
+        border-radius: 2rem;
+        box-shadow: 0 15px 40px rgba(168, 213, 226, 0.5);
+        border: 2px solid var(--primary);
+    }
+
+        /* Tiêu đề */
+        .logout-container h1 {
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Nội dung thông báo */
+        .logout-container p {
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
+    /* Nút Đăng xuất xác nhận */
+    .btn-logout-lofi {
+        /* Áp dụng Gradient Lofi */
+        background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
+        border: none !important;
+        color: var(--text-dark) !important;
+        font-weight: 600 !important;
+        border-radius: 50px !important;
+        padding: 10px 25px !important;
+        box-shadow: 0 6px 15px rgba(168, 213, 226, 0.6);
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        display: inline-block; /* Quan trọng để áp dụng padding */
+    }
+
+        .btn-logout-lofi:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(168, 213, 226, 0.8);
+        }
+</style>
+
+<div class="logout-container">
+    <header>
+        <h1>@ViewData["Title"]</h1>
+        @{
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                <p>Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?</p>
+                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                    {{-- Nút Đăng xuất xác nhận --}}
+                    <button type="submit" class="nav-link btn btn-link btn-logout-lofi">Nhấn vào đây để Đăng xuất</button>
+                </form>
+            }
+            else
+            {
+                <p>Bạn đã đăng xuất thành công khỏi ứng dụng.</p>
+            }
+        }
+    </header>
+</div>
+
+@section Scripts {
+    @* Không cần partial validation script cho trang logout *@
+}

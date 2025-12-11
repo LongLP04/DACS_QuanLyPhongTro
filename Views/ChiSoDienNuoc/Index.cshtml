@@ -9,7 +9,7 @@
     <div class="container-fluid px-xl-5 py-5">
         <div class="electric-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1200px;">
             <div class="text-center mb-4">
-                <h2 class="fw-bold" style="color: #1ec36e;">Chi tiết chỉ số điện nước</h2>
+                <h2 class="fw-bold text-primary-color">Chi tiết chỉ số điện nước</h2>
                 <p class="text-muted">Theo dõi các chỉ số tiêu thụ điện và nước hàng tháng</p>
             </div>
 
@@ -33,7 +33,7 @@
                         {
                             <tr>
                                 <td colspan="9" class="text-muted py-4">
-                                    <i class="bi bi-info-circle text-success me-2"></i> Hiện chưa có dữ liệu chỉ số.
+                                    <i class="bi bi-info-circle text-primary-color me-2"></i> Hiện chưa có dữ liệu chỉ số.
                                 </td>
                             </tr>
                         }
@@ -60,7 +60,7 @@
 
             <div class="text-center mt-5">
                 <a asp-controller="Phongtrocuatoi" asp-action="Index"
-                   class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                   class="btn btn-primary-filled rounded-pill px-4 py-2 shadow-sm fw-semibold">
                     <i class="bi bi-arrow-left-circle me-2"></i> Quay lại phòng trọ của tôi
                 </a>
             </div>
@@ -69,66 +69,94 @@
 </section>
 
 <style>
-/* === PAGE === */
-.electric-water-page {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-/* === BẢNG === */
-.electric-table {
-    border-radius: 14px;
-    overflow: hidden;
-    background-color: #fff;
-    border: 1px solid #ddd;
-}
-.electric-table thead {
-    background-color: #1ec36e;
-}
-.electric-table th {
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 14px;
-}
-.electric-table td {
-    vertical-align: middle;
-    color: #333;
-    padding: 12px;
-    border-top: 1px solid #eee;
-}
-.electric-table tr:hover td {
-    background-color: #e8fff1;
-    transition: background-color 0.25s ease;
-}
-
-/* === CARD VIỀN RÕ & BÓNG NHẸ === */
-.electric-wrapper {
-    border: 1.4px solid #dcdcdc;
-    transition: all 0.3s ease;
-}
-.electric-wrapper:hover {
-    border-color: #1ec36e;
-    box-shadow: 0 8px 20px rgba(30,195,110,0.15);
-}
-
-/* === NÚT QUAY LẠI === */
-.btn-success {
-    background-color: #1ec36e;
-    border: none;
-}
-.btn-success:hover {
-    background-color: #17a75c;
-    transform: scale(1.05);
-    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
-}
-
-/* === RESPONSIVE === */
-@@media (max-width: 992px) {
-    .electric-table th, .electric-table td {
-        font-size: 0.9rem;
-        padding: 10px;
+    /* Định nghĩa lại biến màu để sử dụng trong CSS cục bộ */
+    :root {
+        --primary: #a8d5e2;
+        --primary-dark: #94c8db;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
     }
-}
+
+    /* Lớp hỗ trợ màu */
+    .text-primary-color {
+        color: var(--primary) !important;
+    }
+
+    .btn-primary-filled {
+        background-color: var(--primary);
+        color: var(--text-dark); /* Chữ tối */
+        border: none;
+        transition: all 0.3s;
+    }
+
+    /* === PAGE === */
+    .electric-water-page {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /* === BẢNG === */
+    .electric-table {
+        border-radius: 14px;
+        overflow: hidden;
+        background-color: var(--surface);
+        border: 1px solid #ddd;
+    }
+
+        .electric-table thead {
+            background-color: var(--primary); /* Đổi nền thead sang Primary */
+            color: var(--text-dark); /* Chữ tối trên nền Primary nhạt */
+        }
+
+        .electric-table th {
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 14px;
+        }
+
+        .electric-table td {
+            vertical-align: middle;
+            color: #333;
+            padding: 12px;
+            border-top: 1px solid #eee;
+        }
+
+        .electric-table tr:hover td {
+            background-color: #f8faff; /* Hover nền cực nhạt */
+            transition: background-color 0.25s ease;
+        }
+
+    /* === CARD VIỀN RÕ & BÓNG NHẸ === */
+    .electric-wrapper {
+        border: 1.4px solid var(--primary-dark); /* Viền màu xanh đậm hơn Primary */
+        transition: all 0.3s ease;
+    }
+
+        .electric-wrapper:hover {
+            border-color: var(--primary);
+            /* Đổ bóng màu Primary */
+            box-shadow: 0 8px 20px rgba(168, 213, 226, 0.4);
+        }
+
+    /* === NÚT QUAY LẠI (btn-success đổi thành btn-primary-filled) === */
+    .btn-primary-filled {
+        background-color: var(--primary-dark);
+        border: none;
+    }
+
+        .btn-primary-filled:hover {
+            background-color: var(--primary); /* Hover sáng hơn */
+            transform: scale(1.05);
+            box-shadow: 0 8px 14px rgba(168, 213, 226, 0.5);
+        }
+
+    /* === RESPONSIVE === */
+    @@media (max-width: 992px) {
+        .electric-table th, .electric-table td {
+            font-size: 0.9rem;
+            padding: 10px;
+        }
+    }
 </style>

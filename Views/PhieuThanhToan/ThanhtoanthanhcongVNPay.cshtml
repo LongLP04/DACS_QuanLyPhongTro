@@ -5,22 +5,22 @@
 
 <section class="vnpay-success-page section">
     <div class="container-fluid px-xl-5 py-5">
-        <div class="success-wrapper bg-white rounded-4 shadow-sm text-center p-5 mx-auto" style="max-width: 700px;">
+        <div class="success-wrapper bg-white rounded-5 shadow-sm text-center p-5 mx-auto" style="max-width: 700px;">
             <div class="mb-3">
-                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                <i class="bi bi-check-circle-fill text-primary-color" style="font-size: 4rem;"></i>
             </div>
-            <h2 class="fw-bold text-success mb-3">Thanh toán thành công!</h2>
+            <h2 class="fw-bold text-primary-color mb-3">Thanh toán thành công!</h2>
             <p class="text-muted fs-5 mb-4">
-                Cảm ơn bạn đã sử dụng dịch vụ thanh toán qua VNPay.  
+                Cảm ơn bạn đã sử dụng dịch vụ thanh toán qua VNPay.
                 Giao dịch của bạn đã được ghi nhận thành công.
             </p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
-                <a href="@Url.Action("LichSuThanhToan", "PhieuThanhToan")" 
-                   class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                <a href="@Url.Action("LichSuThanhToan", "PhieuThanhToan")"
+                   class="btn btn-primary-filled rounded-pill px-4 py-2 shadow-sm fw-semibold btn-hover-scale">
                     <i class="bi bi-receipt me-2"></i> Xem lịch sử giao dịch
                 </a>
-                <a href="@Url.Action("Index", "PhieuThanhToan")" 
-                   class="btn btn-outline-success rounded-pill px-4 py-2 fw-semibold">
+                <a href="@Url.Action("Index", "PhieuThanhToan")"
+                   class="btn btn-outline-primary-color rounded-pill px-4 py-2 fw-semibold btn-hover-scale">
                     <i class="bi bi-arrow-left-circle me-2"></i> Quay về hóa đơn
                 </a>
             </div>
@@ -29,30 +29,58 @@
 </section>
 
 <style>
-.success-wrapper {
-    border: 1.4px solid #dcdcdc;
-    transition: all 0.3s ease;
-}
-.success-wrapper:hover {
-    border-color: #1ec36e;
-    box-shadow: 0 8px 20px rgba(30,195,110,0.15);
-}
-.btn-success {
-    background-color: #1ec36e;
-    border: none;
-}
-.btn-success:hover {
-    background-color: #17a75c;
-    transform: scale(1.05);
-    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
-}
-.btn-outline-success {
-    border: 1.5px solid #1ec36e;
-    color: #1ec36e;
-}
-.btn-outline-success:hover {
-    background-color: #1ec36e;
-    color: white;
-    transform: scale(1.05);
-}
+    :root {
+        --primary: #a8d5e2;
+        --primary-dark: #94c8db;
+        --text-dark: #2d3748;
+        --surface-alt: #f8faff;
+    }
+
+    /* Lớp hỗ trợ màu */
+    .text-primary-color {
+        color: var(--primary) !important;
+    }
+
+    .btn-primary-filled {
+        background-color: var(--primary);
+        color: var(--text-dark);
+        border: none;
+    }
+
+    .btn-outline-primary-color {
+        border: 1.5px solid var(--primary);
+        color: var(--primary);
+    }
+
+    /* === CARD WRAPPER === */
+    .success-wrapper {
+        border: 1.4px solid var(--surface-alt);
+        border-radius: 1.5rem !important; /* Bo góc lớn hơn */
+        transition: all 0.3s ease;
+    }
+
+        .success-wrapper:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(168, 213, 226, 0.4); /* Primary Shadow */
+        }
+
+    /* === NÚT HÀNH ĐỘNG === */
+    .btn-hover-scale {
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    /* Nút Filled */
+    .btn-primary-filled:hover {
+        background-color: var(--primary-dark);
+        transform: scale(1.05);
+        box-shadow: 0 8px 14px rgba(168, 213, 226, 0.5);
+    }
+
+    /* Nút Outline */
+    .btn-outline-primary-color:hover {
+        background-color: var(--primary);
+        color: white;
+        transform: scale(1.05);
+    }
 </style>

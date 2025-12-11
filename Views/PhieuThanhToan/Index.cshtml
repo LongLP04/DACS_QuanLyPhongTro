@@ -6,31 +6,31 @@
 
 <section class="bill-page section">
     <div class="container-fluid px-xl-5 py-5">
-        <div class="bill-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
-            
+        <div class="bill-wrapper bg-white rounded-5 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
+
             <div class="text-center mb-4">
-                <h2 class="fw-bold" style="color: #1ec36e;">Hóa đơn cần thanh toán</h2>
+                <h2 class="fw-bold text-primary-color">Hóa đơn cần thanh toán</h2>
                 <p class="text-muted">Danh sách các hóa đơn thuê phòng đang chờ bạn thanh toán</p>
             </div>
 
             <div class="text-end mb-3">
                 <a href="@Url.Action("LichSuThanhToan", "PhieuThanhToan")"
-                   class="btn btn-warning rounded-pill fw-semibold px-4 shadow-sm btn-hover">
+                   class="btn btn-accent-filled rounded-pill fw-semibold px-4 shadow-sm btn-hover-scale">
                     <i class="bi bi-clock-history me-2"></i> Lịch sử thanh toán
                 </a>
             </div>
 
             @if (!Model.Any())
             {
-                <div class="alert alert-light text-center border rounded-4 py-4 shadow-sm">
-                    <i class="bi bi-info-circle text-success me-2"></i>Không có hóa đơn nào cần thanh toán.
+                <div class="alert alert-light text-center border rounded-4 py-4 shadow-sm alert-primary-style-empty">
+                    <i class="bi bi-info-circle text-primary-color me-2"></i>Không có hóa đơn nào cần thanh toán.
                 </div>
             }
             else
             {
                 <div class="table-responsive">
                     <table class="table table-hover align-middle shadow-sm rounded-4 overflow-hidden bill-table">
-                        <thead class="text-white">
+                        <thead class="text-dark">
                             <tr>
                                 <th>Phòng</th>
                                 <th>Ngày lập</th>
@@ -47,7 +47,7 @@
                                     <td class="text-danger fw-semibold">@item.TongTien.ToString("N0") VND</td>
                                     <td>
                                         <a href="@Url.Action("ThanhToan", new { id = item.MaHoaDon })"
-                                           class="btn btn-success btn-sm rounded-pill px-3 shadow-sm">
+                                           class="btn btn-primary-filled btn-sm rounded-pill px-3 shadow-sm btn-hover-scale">
                                             <i class="bi bi-credit-card me-1"></i> Thanh toán
                                         </a>
                                     </td>
@@ -60,7 +60,7 @@
 
             <div class="text-center mt-5">
                 <a asp-controller="Phongtrocuatoi" asp-action="Index"
-                   class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                   class="btn btn-primary-filled rounded-pill px-4 py-2 shadow-sm fw-semibold btn-hover-scale">
                     <i class="bi bi-arrow-left-circle me-2"></i> Quay lại phòng trọ của tôi
                 </a>
             </div>
@@ -69,46 +69,100 @@
 </section>
 
 <style>
-.bill-page { margin-top: 10px; margin-bottom: 10px; }
+    :root {
+        --primary: #a8d5e2;
+        --primary-dark: #94c8db;
+        --accent: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+        --surface-alt: #f8faff;
+        --muted: #64748b;
+    }
 
-/* === BẢNG HÓA ĐƠN === */
-.bill-table {
-    border: 1px solid #ddd;
-    border-radius: 14px;
-    overflow: hidden;
-    background-color: #fff;
-}
-.bill-table thead {
-    background-color: #1ec36e;
-}
-.bill-table th {
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-    padding: 14px;
-}
-.bill-table td {
-    color: #333;
-    padding: 12px;
-}
-.bill-table tr:hover td {
-    background-color: #e8fff1;
-    transition: background-color 0.3s ease;
-}
+    /* Lớp hỗ trợ màu */
+    .text-primary-color {
+        color: var(--primary) !important;
+    }
 
-/* === NÚT === */
-.btn-hover:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 14px rgba(255, 193, 7, 0.3);
-}
-.btn-success {
-    background-color: #1ec36e;
-    border: none;
-}
-.btn-success:hover {
-    background-color: #17a75c;
-    transform: scale(1.05);
-    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
-}
+    .btn-primary-filled {
+        background-color: var(--primary);
+        color: var(--text-dark);
+        border: none;
+    }
+
+    .btn-accent-filled {
+        background-color: var(--accent); /* Dùng màu tím nhạt Accent cho nút History */
+        color: var(--text-dark);
+        border: none;
+    }
+
+    .alert-primary-style-empty {
+        background-color: var(--surface-alt) !important;
+        border-color: var(--primary) !important;
+    }
+
+
+    .bill-page {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .bill-wrapper {
+        border-radius: 1.5rem !important;
+        border: 1.5px solid var(--surface-alt);
+    }
+
+    /* === BẢNG HÓA ĐƠN === */
+    .bill-table {
+        border: 1px solid var(--surface-alt);
+        border-radius: 14px;
+        overflow: hidden;
+        background-color: var(--surface);
+    }
+
+        .bill-table thead {
+            background-color: var(--primary-dark); /* Dùng màu xanh đậm hơn cho header */
+        }
+
+        .bill-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            padding: 14px;
+            color: var(--text-dark);
+        }
+
+        .bill-table td {
+            color: #333;
+            padding: 12px;
+        }
+
+        .bill-table tr:hover td {
+            background-color: var(--surface-alt);
+            transition: background-color 0.3s ease;
+        }
+
+    /* === NÚT === */
+    .btn-hover-scale {
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+        .btn-hover-scale:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 14px rgba(168, 213, 226, 0.5); /* Primary Shadow */
+        }
+
+    /* Hover cho nút History (Accent) */
+    .btn-accent-filled:hover {
+        background-color: var(--primary);
+        transform: scale(1.05);
+        box-shadow: 0 8px 14px rgba(168, 213, 226, 0.5);
+    }
+
+    /* Hover cho nút Primary */
+    .btn-primary-filled:hover {
+        background-color: var(--primary-dark);
+    }
 </style>
