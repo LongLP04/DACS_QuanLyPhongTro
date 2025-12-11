@@ -1,49 +1,129 @@
 ﻿@page
 @model LoginModel
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Đăng nhập";
 }
 
 <style>
-    .login-page{
-        margin-top: 100px; /* tạo khoảng cách giống các trang khác */
-        padding-bottom: 50px; /* thêm chút không gian dưới */
-    }
-    .form-label {
-        font-weight: 500;
-        margin-bottom: 4px;
-    }
-
-    .form-control {
-        height: 42px;
-        padding: 6px 12px;
-        font-size: 1rem;
+    /* Kế thừa biến màu từ _Layout */
+    :root {
+        --primary: #a8d5e2; /* xanh dương nhạt chính */
+        --primary-dark: #94c8db;
+        --accent: #c7ceea; /* tím nhạt */
+        --text-dark: #2d3748;
+        --muted: #64748b;
+        --surface: #ffffff;
+        --surface-alt: #f8faff;
+        /* Màu nền cho card */
+        --lofi-card-bg: #e0eafc;
     }
 
-    .btn-custom {
-        transition: background-color 0.3s ease, transform 0.2s ease;
+    /* Đảm bảo trang có khoảng cách trên cùng */
+    .login-page {
+        margin-top: 80px;
+        padding-bottom: 50px;
     }
 
-        .btn-custom:hover {
-            background-color: #0056b3 !important;
-            transform: scale(1.02);
+    /* Giao diện chính của Form Card (thay thế .card) */
+    .account-form-card {
+        background-color: var(--surface); /* Nền form trắng */
+        border-radius: 2rem;
+        box-shadow: 0 15px 40px rgba(168, 213, 226, 0.5);
+        padding: 40px 30px; /* Tăng padding */
+        border: 2px solid var(--primary); /* Viền pastel */
+        transition: transform 0.3s ease;
+    }
+
+        /* Tiêu đề */
+        .account-form-card h2 {
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 25px !important;
         }
 
-    .btn-outline-secondary:hover {
-        background-color: #f8f9fa;
-        transform: scale(1.02);
+    /* Label */
+    .form-label {
+        font-weight: 600;
+        color: var(--primary-dark);
+        margin-bottom: 6px;
     }
 
-    .card {
-        border-radius: 1rem;
+    /* Input fields */
+    .form-control {
+        height: 48px; /* Tăng chiều cao input */
+        padding: 10px 15px;
+        font-size: 1rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--surface-alt);
+        background-color: var(--surface-alt);
+        color: var(--text-dark);
+        transition: all 0.3s;
     }
+
+        .form-control:focus {
+            border-color: var(--primary-dark) !important;
+            box-shadow: 0 0 0 0.2rem rgba(148, 200, 219, 0.4) !important;
+            background-color: var(--surface);
+        }
+
+    /* Validation Summary */
+    .text-danger {
+        color: #e74c3c !important; /* Đảm bảo màu đỏ nổi bật */
+        font-size: 0.85rem;
+    }
+
+    /* Nút Đăng nhập chính */
+    .btn-submit-lofi {
+        background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 600 !important;
+        border-radius: 50px !important;
+        padding: 12px 30px !important;
+        box-shadow: 0 6px 15px rgba(168, 213, 226, 0.6);
+        transition: all 0.3s ease;
+    }
+
+        .btn-submit-lofi:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(168, 213, 226, 0.8);
+        }
+
+    /* Liên kết phụ (Quên mật khẩu, Đăng ký) */
+    .form-links a {
+        color: var(--primary-dark);
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+        .form-links a:hover {
+            color: var(--text-dark);
+            text-decoration: underline;
+        }
+
+    /* Nút đăng nhập ngoài (Google, Facebook) */
+    .btn-external-login {
+        border-radius: 1rem !important;
+        border: 1px solid var(--muted) !important;
+        color: var(--text-dark) !important;
+        background-color: var(--surface) !important;
+    }
+
+        .btn-external-login:hover {
+            background-color: var(--surface-alt) !important;
+            transform: translateY(-1px);
+        }
 </style>
 
 <div class="container mt-5 login-page">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow p-4">
-                <h2 class="text-center mb-4">Đăng nhập</h2>
+          
+            <div class="account-form-card">
+                <h2 class="text-center">Đăng nhập</h2>
                 <form id="account" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 
@@ -59,42 +139,38 @@
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
-                    <div class="form-check mb-3">
+                    <div class="form-check mb-4">
                         <input asp-for="Input.RememberMe" class="form-check-input" />
                         <label asp-for="Input.RememberMe" class="form-check-label">Ghi nhớ đăng nhập</label>
                     </div>
 
-                    <button id="login-submit" type="submit" class="btn btn-primary btn-custom w-100">Đăng nhập</button>
+                    <button id="login-submit" type="submit" class="btn btn-primary btn-submit-lofi w-100">Đăng nhập</button>
 
-                    <div class="text-center mt-3">
+                    <div class="text-center mt-3 form-links">
                         <a asp-page="./ForgotPassword">Quên mật khẩu?</a>
                     </div>
-                    <div class="text-center mt-2">
+                    <div class="text-center mt-2 form-links">
                         <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Chưa có tài khoản? Đăng ký</a>
                     </div>
-                    <div class="text-center mt-2">
+                    <div class="text-center mt-2 form-links">
                         <a asp-page="./ResendEmailConfirmation">Gửi lại email xác nhận</a>
                     </div>
                 </form>
 
                 @if (Model.ExternalLogins?.Count > 0)
                 {
-                    <hr />
-                    <div class="text-center mb-2">Hoặc đăng nhập bằng</div>
+                    <hr class="mt-4 mb-3" />
+                    <div class="text-center mb-3">Hoặc đăng nhập bằng</div>
                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                        <div class="d-flex justify-content-between flex-wrap gap-2">
+                        <div class="d-flex justify-content-between flex-column gap-3">
                             @foreach (var provider in Model.ExternalLogins)
                             {
-                                <button type="submit" class="btn btn-outline-secondary w-100" name="provider" value="@provider.Name" title="Log in using @provider.DisplayName">
+                                <button type="submit" class="btn btn-outline-secondary btn-external-login w-100" name="provider" value="@provider.Name" title="Log in using @provider.DisplayName">
                                     @provider.DisplayName
                                 </button>
                             }
                         </div>
                     </form>
-                }
-                else
-                {
-                    
                 }
             </div>
         </div>

@@ -1,109 +1,74 @@
-﻿@{
+﻿@model dynamic
+@{
     ViewData["Title"] = "Trọ Quanh Ta";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @if (TempData["ThongBao"] != null)
 {
-    <div class="alert alert-success text-center mt-3" id="thongBao">
+    <div class="alert text-center mt-3" id="thongBao" role="alert"
+         style="background-color: var(--primary); color: var(--text-dark); border-color: var(--primary-dark);">
         @TempData["ThongBao"]
     </div>
 }
 
-<!-- ======= Hero Section ======= -->
-<section id="hero" class="hero section dark-background">
-    <div class="hero-wrapper">
-    <div id="hero-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
-        <div class="carousel-item active">
-            <img src="~/images/poster_1.jpg" class="d-block w-100" alt="">
-            <div class="carousel-container">
-                <div data-aos="fade-up">
-                    <h2>Trẻ Trung</h2>
-                    <p>Phòng trọ hiện đại, phù hợp với xu hướng giới trẻ ✨</p>
-                    <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="carousel-item">
-            <img src="~/images/poster_2.jpg" class="d-block w-100" alt="">
-            <div class="carousel-container">
-                <div data-aos="fade-up">
-                    <h2>Năng Động</h2>
-                    <p>Phòng trọ có giờ giấc linh hoạt, phù hợp cho người đi làm ⚡</p>
-                    <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="carousel-item">
-            <img src="~/images/poster.jpg" class="d-block w-100" alt="">
-            <div class="carousel-container">
-                <div data-aos="fade-up">
-                    <h2>Sáng Tạo</h2>
-                    <p>Phá cách với phong cách riêng, độc đáo và ấn tượng 🎨</p>
-                    <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
-                </div>
-            </div>
-        </div>
-
-        <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon bi bi-chevron-left"></span>
-        </a>
-        <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
-            <span class="carousel-control-next-icon bi bi-chevron-right"></span>
-        </a>
-
-        <ol class="carousel-indicators"></ol>
-    </div>
-</section><!-- /Hero Section -->
-<!-- ======= Featured Offers Section ======= -->
 <section id="featured" class="services section">
     <div class="container section-title" data-aos="fade-up">
-        <h2>Phòng trọ nổi bật</h2>
-        <p>Những lựa chọn được yêu thích nhất</p>
+        <h2>Phòng trọ nổi bật ✨</h2>
+        <p>Những lựa chọn được yêu thích nhất, được chọn lọc bởi team Lofi</p>
     </div>
 
     <div class="container">
         <div class="row gy-4">
-            <div class="col-md-6" data-aos="fade-right">
-                <div class="product-offer position-relative overflow-hidden">
-                    <img src="~/images/tro_4.jpg" class="img-fluid w-100" alt="">
-                    <div class="offer-text d-flex flex-column justify-content-center align-items-center text-center">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-right" data-aos-delay="50">
+                <div class="product-offer feature-equal">
+                    <img src="https://i.pinimg.com/736x/7e/ea/25/7eea25a3818fd43c8466b24a9d910d24.jpg"
+                         alt="Special Offer" class="offer-img">
+
+                    <div class="offer-text offer-text-body">
+                        <h6 class="text-white text-uppercase">Ưu đãi độc quyền</h6>
+                        <h3 class="text-white mb-3">Save 20% ✨</h3>
                         <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6" data-aos="fade-left">
-                <div class="product-offer position-relative overflow-hidden">
-                    <img src="~/images/tro_3.jpg" class="img-fluid w-100" alt="">
-                    <div class="offer-text d-flex flex-column justify-content-center align-items-center text-center">
-                        <h6 class="text-white text-uppercase">Save 15%</h6>
-                        <h3 class="text-white mb-3">Hot Deal</h3>
-                        <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-md-6" data-aos="fade-right" data-aos-delay="100">
-                <div class="product-offer position-relative overflow-hidden">
-                    <img src="~/images/7092611c-1a21-4455-bbf5-17ccfb842185.jpg" class="img-fluid w-100" alt="Phòng trọ gần trung tâm">
-                    <div class="offer-text d-flex flex-column justify-content-center align-items-center text-center">
-                        <h6 class="text-white text-uppercase">Căn hộ cao cấp</h6>
-                        <h3 class="text-white mb-3">Thiết kế ấn tượng</h3>
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="150">
+                <div class="product-offer feature-equal">
+                    <img src="https://i.pinimg.com/736x/00/9c/aa/009caa356cdafcdd850e8c765581086c.jpg"
+                         alt="Căn hộ cao cấp" class="offer-img">
+
+                    <div class="offer-text offer-text-body">
+                        <h6 class="text-white text-uppercase">Căn hộ Mini</h6>
+                        <h3 class="text-white mb-3">Thiết kế ấn tượng 🎨</h3>
                         <a asp-controller="PhongTro" asp-action="Index" asp-route-searchTerm="trung tâm"
                            class="btn-get-started">Tham khảo ngay</a>
                     </div>
                 </div>
             </div>
-                        <div class="col-md-6" data-aos="fade-left" data-aos-delay="200">
-                <div class="product-offer position-relative overflow-hidden">
-                    <img src="~/images/1638eb0e-5f06-4d9e-bc85-d5b218407812.jpg" class="img-fluid w-100" alt="Phòng trọ giá rẻ">
-                    <div class="offer-text d-flex flex-column justify-content-center align-items-center text-center">
-                        <h6 class="text-white text-uppercase">Chỉ từ 1.5 triệu</h6>
-                        <h3 class="text-white mb-3">Phòng trọ giá rẻ – tiện nghi</h3>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-down" data-aos-delay="250">
+                <div class="product-offer feature-equal">
+                    <img src="https://i.pinimg.com/1200x/aa/7e/c2/aa7ec2d34dbf13dbb645844b1b401139.jpg"
+                         alt="Hot Deal" class="offer-img">
+
+                    <div class="offer-text offer-text-body">
+                        <h6 class="text-white text-uppercase">Deal nóng</h6>
+                        <h3 class="text-white mb-3">Giảm 15%</h3>
+                        <a asp-controller="PhongTro" asp-action="Index" class="btn-get-started">Tham khảo ngay</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-left" data-aos-delay="350">
+                <div class="product-offer feature-equal">
+                    <img src="https://i.pinimg.com/736x/c4/b0/6b/c4b06b55113622d33a9795e8e0ed6f7e.jpg"
+                         alt="Phòng trọ giá rẻ" class="offer-img">
+
+                    <div class="offer-text offer-text-body">
+                        <h6 class="text-white text-uppercase">Tiết kiệm</h6>
+                        <h3 class="text-white mb-3">Chỉ từ 1.5 triệu 💸</h3>
                         <a asp-controller="PhongTro" asp-action="Index" asp-route-maxPrice="1500000"
                            class="btn-get-started">Tham khảo ngay</a>
                     </div>
@@ -112,66 +77,100 @@
 
         </div>
     </div>
-</section><!-- /Featured Offers Section -->
+</section>
 
-<!-- ======= Room Category Section ======= -->
 <section id="categories" class="services section light-background">
     <div class="container section-title" data-aos="fade-up">
-        <h2>Phân loại phòng trọ</h2>
+        <h2>Phân loại phòng trọ 🏡</h2>
         <p>Chọn loại phòng phù hợp với nhu cầu của bạn</p>
     </div>
 
     <div class="container">
         <div class="row gy-4">
+
             <div class="col-lg-3 col-md-6" data-aos="fade-up">
-                <div class="service-item position-relative text-center">
-                    <img src="~/images/trotruyenthong.jpg" class="category-img" alt="Trọ truyền thống">
-                    <h4>Trọ truyền thống</h4>
-                    <p>Giá hợp lý, chỉ từ 2 triệu đồng.</p>
-                    <a asp-controller="PhongTro" asp-action="Index" asp-route-maxPrice="2000000" class="btn btn-primary">Xem ngay</a>
+                <div class="service-item lofi-card-category text-center">
+                    <img src="https://i.pinimg.com/736x/a8/9d/7b/a89d7b5c9a53835d78bd7de9dadb8aea.jpg"
+                         class="category-img" alt="Trọ truyền thống">
+
+                    <div class="card-content-body">
+                        <h4 class="category-title">Trọ truyền thống</h4>
+                        <p class="category-desc">Giá hợp lý, chỉ từ 2 triệu đồng.</p>
+                    </div>
+
+                    <div class="card-button-footer">
+                        <a asp-controller="PhongTro" asp-action="Index" asp-route-maxPrice="2000000"
+                           class="btn btn-primary">Xem ngay</a>
+                    </div>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="service-item position-relative text-center">
-                    <img src="~/images/trocaocap.jpg" class="category-img" alt="Trọ cao cấp">
-                    <h4>Trọ cao cấp</h4>
-                    <p>Không gian hiện đại, tiện nghi, giá từ 4 triệu đồng.</p>
-                    <a asp-controller="PhongTro" asp-action="Index" asp-route-minPrice="4000000" class="btn btn-primary">Xem ngay</a>
+                <div class="service-item lofi-card-category text-center">
+                    <img src="https://i.pinimg.com/1200x/0b/1a/00/0b1a00fd7eacdc51b572735242d4f690.jpg"
+                         class="category-img" alt="Trọ cao cấp">
+
+                    <div class="card-content-body">
+                        <h4 class="category-title">Trọ cao cấp</h4>
+                        <p class="category-desc">Không gian hiện đại, tiện nghi, giá từ 4 triệu đồng.</p>
+                    </div>
+
+                    <div class="card-button-footer">
+                        <a asp-controller="PhongTro" asp-action="Index" asp-route-minPrice="4000000"
+                           class="btn btn-primary">Xem ngay</a>
+                    </div>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="service-item position-relative text-center">
-                    <img src="~/images/canhomini.webp" class="category-img" alt="Căn hộ Mini">
-                    <h4>Căn hộ Mini</h4>
-                    <p>Thiết kế phá cách, trung tâm Quận 1.</p>
-                    <a asp-controller="PhongTro" asp-action="Index" asp-route-searchTerm="Quận 1" class="btn btn-primary">Xem ngay</a>
+                <div class="service-item lofi-card-category text-center">
+                    <img src="https://i.pinimg.com/736x/da/54/4c/da544cf5f49bb8d273b1b0979035fa13.jpg"
+                         class="category-img" alt="Căn hộ Mini">
+
+                    <div class="card-content-body">
+                        <h4 class="category-title">Căn hộ Mini</h4>
+                        <p class="category-desc">Thiết kế phá cách, trung tâm Quận 1.</p>
+                    </div>
+
+                    <div class="card-button-footer">
+                        <a asp-controller="PhongTro" asp-action="Index" asp-route-searchTerm="Quận 1"
+                           class="btn btn-primary">Xem ngay</a>
+                    </div>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="service-item position-relative text-center">
-                    <img src="~/images/trogiadinh.jpeg" class="category-img" alt="Trọ gia đình">
-                    <h4>Trọ gia đình</h4>
-                    <p>Không gian rộng rãi, phù hợp cho gia đình.</p>
-                    <a asp-controller="PhongTro" asp-action="Index" asp-route-minArea="40" asp-route-maxArea="60" class="btn btn-primary">Xem ngay</a>
+                <div class="service-item lofi-card-category text-center">
+                    <img src="https://i.pinimg.com/736x/52/01/3f/52013fad7fecccf02ba7bf957eb8ca4c.jpg"
+                         class="category-img" alt="Trọ gia đình">
+
+                    <div class="card-content-body">
+                        <h4 class="category-title">Trọ gia đình</h4>
+                        <p class="category-desc">Không gian rộng rãi, phù hợp cho gia đình.</p>
+                    </div>
+
+                    <div class="card-button-footer">
+                        <a asp-controller="PhongTro" asp-action="Index" asp-route-minArea="40" asp-route-maxArea="60"
+                           class="btn btn-primary">Xem ngay</a>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
-</section><!-- /Room Category -->
-<!-- ======= Features Section ======= -->
+</section>
+
 <section id="features" class="features section">
     <div class="container section-title" data-aos="fade-up">
-        <h2>Tiêu chí của chúng tôi</h2>
+        <h2>Tiêu chí của chúng tôi ♡</h2>
         <p>Những lý do bạn nên chọn Trọ Quanh Ta</p>
     </div>
 
     <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="row gy-4">
+
             <div class="col-lg-3 col-md-6">
-                <div class="service-item text-center">
+                <div class="service-item lofi-feature-card text-center">
                     <div class="icon"><i class="bi bi-house-door"></i></div>
                     <h4>Phòng trọ chất lượng</h4>
                     <p>Đầy đủ tiện nghi, an toàn và sạch sẽ.</p>
@@ -179,7 +178,7 @@
             </div>
 
             <div class="col-lg-3 col-md-6">
-                <div class="service-item text-center">
+                <div class="service-item lofi-feature-card text-center">
                     <div class="icon"><i class="bi bi-eye"></i></div>
                     <h4>Xem phòng trực tiếp</h4>
                     <p>Trải nghiệm thực tế trước khi thuê.</p>
@@ -187,7 +186,7 @@
             </div>
 
             <div class="col-lg-3 col-md-6">
-                <div class="service-item text-center">
+                <div class="service-item lofi-feature-card text-center">
                     <div class="icon"><i class="bi bi-tag"></i></div>
                     <h4>Giá cả hợp lý</h4>
                     <p>Phù hợp với mọi đối tượng sinh viên và người đi làm.</p>
@@ -195,305 +194,197 @@
             </div>
 
             <div class="col-lg-3 col-md-6">
-                <div class="service-item text-center">
+                <div class="service-item lofi-feature-card text-center">
                     <div class="icon"><i class="bi bi-headset"></i></div>
                     <h4>Hỗ trợ 24/7</h4>
                     <p>Đội ngũ tư vấn, hỗ trợ khách thuê mọi lúc.</p>
                 </div>
             </div>
+
         </div>
     </div>
-</section><!-- /Features Section -->
-
-
-
+</section>
 
 <style>
-    /* === HEADER CỐ ĐỊNH === */
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1050;
-    background-color: #fff !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-/* --- ĐẨY HERO XUỐNG DƯỚI HEADER --- */
-#hero {
-    margin-top: 50px; /* đúng bằng chiều cao header */
-}
-
-/* === HERO === */
-#hero {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: transparent !important;
-    margin-bottom: 80px;
-}
-
-#hero .hero-wrapper {
-    width: 90%;
-    max-width: 1300px;
-    height: 650px;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    position: relative;
-    z-index: 1;
-}
-
-#hero #hero-carousel {
-    height: 100%;
-}
-
-#hero .carousel-inner,
-#hero .carousel-item {
-    height: 100%;
-}
-
-#hero .carousel-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 16px;
-}
-
-/* Overlay giúp chữ rõ hơn */
-#hero .carousel-item::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    z-index: 1;
-}
-
-/* Text trong hero */
-#hero .carousel-container {
-    position: absolute;
-    top: 43%; /* chỉnh lên xuống vị trí text */
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    max-width: 700px;
-    text-align: center;
-    color: #fff;
-    z-index: 10;
-}
-
-#hero .carousel-container h2 {
-    font-size: 2.4rem;
-    font-weight: 800;
-    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
-    margin-bottom: 12px;
-}
-
-#hero .carousel-container p {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
-}
-
-#hero .btn-get-started {
-    background-color: #00b871;
-    color: #fff;
-    border: none;
-    border-radius: 30px;
-    padding: 10px 28px;
-    font-size: 1rem;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    transition: all 0.3s ease;
-}
-
-#hero .btn-get-started:hover {
-    background-color: #00945d;
-    transform: scale(1.05);
-}
-
-/* === PHÒNG TRỌ NỔI BẬT === */
-.product-offer {
-    height: 350px;
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.product-offer:hover img {
-    transform: scale(1.05);
-}
-
-.product-offer img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.product-offer .offer-text {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: #fff;
-    transition: background 0.3s ease;
-}
-
-.product-offer:hover .offer-text {
-    background: rgba(0, 0, 0, 0.6);
-}
-
-/* === PHÂN LOẠI PHÒNG === */
-.category-img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 10px 10px 0 0;
-    margin-bottom: 15px;
-}
-
-#categories .service-item {
-    background: #fff;
-    border-radius: 12px;
-    padding: 30px 20px;
-    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-#categories .service-item:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* nút Xem ngay ở cuối mỗi card */
-#categories .btn {
-    align-self: center;
-    margin-top: auto;
-}
-
-/* === TIÊU ĐỀ MỖI PHẦN === */
-.section {
-    padding: 50px 0;
-    margin-bottom: 40px;
-    border-bottom: 1px solid #eee;
-}
-
-.section-title {
-    text-align: center;
-    margin-bottom: 35px;
-}
-
-.section-title h2 {
-    font-size: 2rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: #0d2a4d;
-    position: relative;
-    display: inline-block;
-}
-
-.section-title h2::after {
-    content: "";
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70px;
-    height: 3px;
-    background: linear-gradient(90deg, #1ec36e, #22b87a);
-    border-radius: 2px;
-}
-
-.section-title p {
-    color: #666;
-    font-size: 1rem;
-    margin-top: 15px;
-}
-
-/* === NÚT CHUNG === */
-.btn-primary, .btn-get-started {
-    background-color: #1ec36e !important;
-    border: none !important;
-    color: #fff !important;
-    font-weight: 500;
-    border-radius: 25px !important;
-    padding: 8px 22px !important;
-    box-shadow: 0 3px 10px rgba(30, 195, 110, 0.3);
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover, .btn-get-started:hover {
-    background-color: #159957 !important;
-    box-shadow: 0 6px 20px rgba(30, 195, 110, 0.4);
-    transform: translateY(-3px);
-}
-
-/* === RESPONSIVE === */
-@@media (max-width: 768px) {
-    #hero .hero-wrapper {
-        height: 400px;
+    :root {
+        --primary: #a8d5e2;
+        --primary-dark: #94c8db;
+        --accent: #c7ceea;
+        --text-dark: #2d3748;
+        --muted: #64748b;
+        --surface: #ffffff;
+        --surface-alt: #f8faff;
     }
 
-    #hero .carousel-container h2 {
-        font-size: 1.8rem;
+    .section {
+        padding: 70px 0;
     }
 
-    #hero .carousel-container p {
-        font-size: 1rem;
+    .section-title h2 {
+        font-weight: 700;
+        color: var(--text-dark);
+        position: relative;
+        display: inline-block;
     }
 
+        .section-title h2::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+    .section-title p {
+        color: var(--muted);
+        font-size: 1.1em; /* Tinh chỉnh cỡ chữ mô tả */
+    }
+
+    .btn-primary,
+    .btn-get-started {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+        border: none !important;
+        color: var(--text-dark) !important;
+        font-weight: 600;
+        border-radius: 50px !important;
+        padding: 10px 28px !important;
+        box-shadow: 0 6px 20px rgba(168,213,226,0.4);
+        transition: all .3s;
+    }
+
+        .btn-primary:hover,
+        .btn-get-started:hover {
+            opacity: .9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(168,213,226,0.6);
+        }
+
+    /* === FEATURED ROOMS STYLING === */
     .product-offer {
-        height: 280px;
-        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+        border-radius: 2rem;
+        box-shadow: 0 8px 25px rgba(168,213,226,0.3);
+        transition: .3s;
+        height: 380px; /* TĂNG CHIỀU CAO CHO PHÒNG NỔI BẬT */
     }
-}
-/* === TIÊU CHÍ CỦA CHÚNG TÔI (features section) === */
-#features .service-item {
-    background: #fff;
-    border-radius: 12px;
-    padding: 30px 20px;
-    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-    text-align: center;
-}
 
-#features .service-item:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
+        .product-offer:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(168,213,226,0.7);
+        }
 
-#features .icon {
-    font-size: 32px;
-    color: #1ec36e;
-    margin-bottom: 15px;
-}
+    .offer-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: .5s;
+    }
 
+    .product-offer:hover .offer-img {
+        transform: scale(1.08);
+    }
 
+    .offer-text {
+        position: absolute;
+        inset: 0;
+        background: rgba(45,55,72,0.4);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        color: #fff;
+        transition: .3s;
+    }
+
+    .product-offer:hover .offer-text {
+        background: rgba(45,55,72,0.5);
+    }
+
+    .feature-equal {
+        height: 380px; /* Chiều cao cố định */
+    }
+
+    /* === CATEGORY CARD STYLING === */
+    .lofi-card-category {
+        background: var(--surface);
+        border-radius: 2rem;
+        box-shadow: 0 8px 30px rgba(199,206,234,.4);
+        border: 2px solid var(--surface-alt);
+        overflow: hidden;
+        transition: .4s;
+        height: 100%;
+        display: flex;
+        flex-direction: column; /* Quan trọng để căn chỉnh nút */
+    }
+
+        .lofi-card-category:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(168,213,226,.8);
+            border-color: var(--primary);
+        }
+
+    .category-img {
+        width: 100%;
+        height: 250px; /* TĂNG KÍCH THƯỚC HÌNH ẢNH */
+        object-fit: cover;
+        border-radius: 2rem 2rem 0 0;
+        transition: .5s;
+    }
+
+    .lofi-card-category:hover .category-img {
+        transform: scale(1.1);
+    }
+
+    .card-content-body {
+        flex-grow: 1; /* Cho phép nội dung mô tả mở rộng */
+        padding: 0 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .card-button-footer {
+        padding: 0 20px 20px 20px;
+        margin-top: auto; /* Đẩy footer chứa nút xuống đáy */
+    }
+
+    .category-title {
+        font-weight: 800;
+        color: var(--text-dark);
+        margin: 20px 0 8px;
+        font-size: 1.5rem;
+    }
+
+    .category-desc {
+        color: var(--muted);
+        padding-bottom: 5px;
+        font-size: 1em;
+    }
+
+    /* === FEATURE CARD STYLING (Tiêu chí) === */
+    .lofi-feature-card {
+        background: var(--surface);
+        border-radius: 1.5rem;
+        padding: 30px 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.05);
+        transition: .3s;
+    }
+
+        .lofi-feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(168,213,226,.4);
+        }
+
+        .lofi-feature-card .icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
 </style>
-
-
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var thongBao = document.getElementById("thongBao");
-            if (thongBao) {
-                setTimeout(() => {
-                    thongBao.style.transition = "opacity 0.5s";
-                    thongBao.style.opacity = "0";
-                    setTimeout(() => thongBao.remove(), 500);
-                }, 4000);
-            }
-        });
-    </script>
-}

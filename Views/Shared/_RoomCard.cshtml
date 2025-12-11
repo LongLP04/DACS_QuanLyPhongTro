@@ -31,48 +31,207 @@
     var imgSrc = string.IsNullOrEmpty(hinhanh) ? Url.Content("~/img/default-product.jpg") : Url.Content("~/" + hinhanh);
 }
 
-<div class="card h-100 room-card">
+<div class="card h-100 room-card lofi-card">
     <div class="row g-0 align-items-stretch">
         <div class="col-8">
-            <img src="@imgSrc" class="img-fluid w-100" alt="Ảnh phòng" style="height:160px;object-fit:cover;" />
+            <img src="@imgSrc" class="img-fluid w-100 room-image" alt="Ảnh phòng" />
             <div class="p-3 d-flex flex-column h-100">
-                <h6 class="card-title mb-1">Số phòng : @soPhong</h6>
-                <p class="mb-1 text-muted">@giaThue.ToString("N0") VND/tháng</p>
-                <p class="mb-2 small">Trạng thái hiện tại : @trangThai</p>
+                <h6 class="card-title mb-1 room-title">Số phòng : @soPhong</h6>
+                <p class="mb-1 room-price">@giaThue.ToString("N0") VND/tháng</p>
+                {{-- Dùng class 'text-lofi-success' mới cho trạng thái Trống --}}
+                <p class="mb-2 small room-status">Trạng thái hiện tại : <strong class="@(isRented ? "text-danger" : "text-lofi-success")">@trangThai</strong></p>
                 @if (!string.IsNullOrEmpty(khachThueName) && isRented)
                 {
-                    <p class="mb-2 small text-primary">Người thuê: <strong>@khachThueName</strong></p>
+                    <p class="mb-2 small room-tenant">Người thuê: <strong>@khachThueName</strong></p>
                 }
-                
             </div>
         </div>
         <div class="col-4 d-flex flex-column p-3">
-            <!-- Vertical button stack aligned from top to bottom -->
-            <div class="d-flex flex-column align-items-end w-100" style="gap:0.5rem;">
-                <div class="mt-auto">
-                    <a href="@detailsUrl" class="btn btn-sm btn-outline-primary" style="min-width:100px" >Chi tiết</a>
+            <div class="d-flex flex-column align-items-end w-100 button-stack">
+                <div class="mt-auto w-100">
+                    <a href="@detailsUrl" class="btn btn-sm lofi-btn-primary" style="min-width:100px">Chi tiết</a>
                 </div>
                 @if (!isRented)
                 {
-                    <!-- Nếu trống: chỉ hiển thị nút Hợp đồng (tạo) -->
-                    <a class="btn btn-sm btn-outline-warning" style="min-width:100px;" href="@Url.Action("Create", "HopDong", new { area = "ChuTroArea", maPhong = maPhong })">Hợp đồng</a>
+                    <a class="btn btn-sm lofi-btn-accent" style="min-width:100px;" href="@Url.Action("Create", "HopDong", new { area = "ChuTroArea", maPhong = maPhong })">Hợp đồng</a>
                 }
                 else
                 {
-                    <!-- Nếu đã thuê: hiển thị tên khách thuê (nếu có) và các nút hành động -->
-                    <!-- Tenant name already displayed in the left column -->
-
                     string? hoaDonUrl = latestHoaDonId != null ? Url.Action("Details", "HoaDon", new { area = "ChuTroArea", id = latestHoaDonId.Value }) : Url.Action("Create", "HoaDon", new { area = "ChuTroArea", maPhong = maPhong ?? 0 });
                     string? hopDongUrl = maHopDong != null ? Url.Action("Details", "HopDong", new { area = "ChuTroArea", id = maHopDong.Value }) : Url.Action("Index", "HopDong", new { area = "ChuTroArea" });
                     string? chiSoUrl = latestChiSoId != null ? Url.Action("Details", "ChiSoDienNuoc", new { area = "ChuTroArea", id = latestChiSoId.Value }) : Url.Action("Create", "ChiSoDienNuoc", new { area = "ChuTroArea", maPhong = maPhong ?? 0 });
                     string? phieuDichVuUrl = Url.Action("Index", "PhieuDichVu", new { area = "ChuTroArea", maPhong = maPhong ?? 0 });
-                    <a class="btn btn-sm btn-outline-success" style="min-width:100px;" href="@hoaDonUrl" title="Ghi hóa đơn">Hóa đơn</a>
-                    <a class="btn btn-sm btn-outline-dark" style="min-width:100px;" href="@hopDongUrl" title="Hợp đồng">Hợp đồng</a>
-                    <a class="btn btn-sm btn-outline-dark" style="min-width:100px;" href="@chiSoUrl" title="Chỉ số điện nước">Chỉ số</a>
-                    <a class="btn btn-sm btn-outline-info" style="min-width:100px;" href="@phieuDichVuUrl" title="Đăng ký dịch vụ">Dịch vụ</a>
+               
+                    <a class="btn btn-sm lofi-btn-primary-action" style="min-width:100px;" href="@hoaDonUrl" title="Ghi hóa đơn">Hóa đơn</a>
+                    <a class="btn btn-sm lofi-btn-dark" style="min-width:100px;" href="@hopDongUrl" title="Hợp đồng">Hợp đồng</a>
+                    <a class="btn btn-sm lofi-btn-dark" style="min-width:100px;" href="@chiSoUrl" title="Chỉ số điện nước">Chỉ số</a>
+                    <a class="btn btn-sm lofi-btn-info" style="min-width:100px;" href="@phieuDichVuUrl" title="Đăng ký dịch vụ">Dịch vụ</a>
                 }
             </div>
         </div>
     </div>
 </div>
-                    <!-- Vertical button stack aligned from top to bottom -->
+
+<style>
+    /* Kế thừa biến màu từ _Layout */
+    :root {
+        --primary: #a8d5e2; /* xanh dương nhạt chính */
+        --primary-dark: #94c8db;
+        --accent: #c7ceea; /* tím nhạt */
+        --text-dark: #2d3748;
+        --muted: #64748b;
+        --surface: #ffffff;
+        --surface-alt: #f8faff;
+        /* THAY THẾ MÀU XANH LÁ (SUCCESS) BẰNG MÀU XANH DƯƠNG PASTEL */
+        --lofi-success: var(--primary-dark); /* Dùng màu xanh dương đậm hơn */
+        --lofi-info: #a8e2e2;
+        --lofi-warning: #f7d5a8;
+    }
+
+    /* Class text cho trạng thái "Trống" */
+    .text-lofi-success {
+        color: var(--primary-dark) !important;
+        font-weight: 600;
+    }
+
+    /* === ROOM CARD STYLING (Lofi Card) === */
+    .lofi-card {
+        background-color: var(--surface);
+        border: none;
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 25px rgba(168, 213, 226, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+
+        .lofi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(168, 213, 226, 0.5);
+        }
+
+        .lofi-card .room-image {
+            height: 160px;
+            object-fit: cover;
+        }
+
+        /* Text */
+        .lofi-card .room-title {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .lofi-card .room-price {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-top: 0;
+            margin-bottom: 5px !important;
+        }
+
+        .lofi-card .room-status,
+        .lofi-card .room-tenant {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+            .lofi-card .room-tenant strong {
+                color: var(--primary-dark);
+            }
+
+        /* Button Stack */
+        .lofi-card .button-stack {
+            gap: 0.4rem !important;
+        }
+
+    /* === BUTTON STYLING (Lofi Buttons) === */
+    .btn.lofi-btn-primary,
+    .btn.lofi-btn-accent,
+    .btn.lofi-btn-success, /* Giữ lại để đảm bảo không lỗi nếu dùng nơi khác */
+    .btn.lofi-btn-dark,
+    .btn.lofi-btn-info,
+    .btn.lofi-btn-warning,
+    .btn.lofi-btn-primary-action {
+        font-weight: 500;
+        border-radius: 1rem;
+        padding: 0.4rem 0.8rem;
+        min-width: 100px;
+        transition: all 0.3s ease;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Chi tiết (Primary) - Màu xanh dương pastel chính */
+    .btn.lofi-btn-primary {
+        background-color: var(--primary);
+        color: var(--text-dark);
+        border: 1px solid var(--primary-dark);
+        box-shadow: 0 4px 8px rgba(168, 213, 226, 0.4);
+    }
+
+        .btn.lofi-btn-primary:hover {
+            background-color: var(--primary-dark);
+            color: var(--text-dark);
+            transform: translateY(-1px);
+        }
+
+    /* Hóa đơn (Primary Action) - Dùng Primary Dark hơn */
+    .btn.lofi-btn-primary-action {
+        background-color: var(--primary-dark);
+        color: var(--text-dark);
+        border: 1px solid var(--primary);
+        box-shadow: 0 4px 8px rgba(168, 213, 226, 0.4);
+    }
+
+        .btn.lofi-btn-primary-action:hover {
+            background-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+
+    /* Hợp đồng TẠO MỚI (Accent/Warning) */
+    .btn.lofi-btn-accent {
+        background-color: var(--accent);
+        color: var(--text-dark);
+        border: 1px solid #b7c0d9;
+        box-shadow: 0 4px 8px rgba(199, 206, 234, 0.4);
+    }
+
+        .btn.lofi-btn-accent:hover {
+            background-color: #b7c0d9;
+            transform: translateY(-1px);
+        }
+
+    /* Nút Success (nếu được dùng) */
+    .btn.lofi-btn-success {
+        /* Đảm bảo nó dùng màu Pastel nếu vẫn tồn tại */
+        background-color: var(--primary-dark);
+        color: var(--text-dark);
+        border: 1px solid var(--primary);
+    }
+
+
+    /* Hợp đồng, Chỉ số (Dark/Muted) */
+    .btn.lofi-btn-dark {
+        background-color: var(--surface-alt);
+        color: var(--text-dark);
+        border: 1px solid #e0e6f0;
+    }
+
+        .btn.lofi-btn-dark:hover {
+            background-color: #e0e6f0;
+            color: var(--text-dark);
+            transform: translateY(-1px);
+        }
+
+    /* Dịch vụ (Info) */
+    .btn.lofi-btn-info {
+        background-color: var(--lofi-info);
+        color: var(--text-dark);
+        border: 1px solid #94c4c4;
+    }
+
+        .btn.lofi-btn-info:hover {
+            background-color: #94c4c4;
+            transform: translateY(-1px);
+        }
+
+</style>

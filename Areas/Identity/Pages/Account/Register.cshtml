@@ -1,56 +1,131 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Đăng ký";
 }
 
 <style>
-    .form-label {
-        font-weight: 500;
-        margin-bottom: 4px;
+    /*
+         * KHỐI STYLE NÀY ĐƯỢC SAO CHÉP TỪ LOGIN.CSHTML
+         * để đảm bảo các rule căn chỉnh form và input được áp dụng đúng.
+         */
+    :root {
+        --primary: #a8d5e2;
+        --primary-dark: #94c8db;
+        --accent: #c7ceea;
+        --text-dark: #2d3748;
+        --muted: #64748b;
+        --surface: #ffffff;
+        --surface-alt: #f8faff;
     }
 
-    .form-control, .form-select {
-        height: 42px;
-        padding: 6px 12px;
-        font-size: 1rem;
+    .register-page {
+        margin-top: 80px;
+        padding-bottom: 50px;
     }
 
-    .btn-custom {
-        transition: background-color 0.3s ease, transform 0.2s ease;
+    /* Giao diện chính của Form Card */
+    .account-form-card {
+        background-color: var(--surface);
+        border-radius: 2rem;
+        box-shadow: 0 15px 40px rgba(168, 213, 226, 0.5);
+        padding: 40px 30px;
+        border: 2px solid var(--primary);
+        transition: transform 0.3s ease;
+        /* THÊM TỰ ĐỘNG CĂN GIỮA NẾU KHÔNG DÙNG COL-MD */
+        margin: 0 auto;
     }
 
-        .btn-custom:hover {
-            background-color: #0056b3 !important;
-            transform: scale(1.02);
+        .account-form-card h2 {
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 25px !important;
         }
 
-    .btn-outline-secondary:hover {
-        background-color: #f8f9fa;
-        transform: scale(1.02);
+    /* Label */
+    .form-label {
+        font-weight: 600;
+        color: var(--primary-dark);
+        margin-bottom: 6px;
     }
 
-    .form-group {
-        margin-bottom: 1rem;
+    /* Input và Select fields */
+    .form-control, .form-select {
+        height: 48px;
+        padding: 10px 15px;
+        font-size: 1rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--surface-alt);
+        background-color: var(--surface-alt);
+        color: var(--text-dark);
+        transition: all 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-dark) !important;
+            box-shadow: 0 0 0 0.2rem rgba(148, 200, 219, 0.4) !important;
+            background-color: var(--surface);
+        }
+
+    /* Nút Đăng ký chính */
+    .btn-submit-lofi {
+        background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 600 !important;
+        border-radius: 50px !important;
+        padding: 12px 30px !important;
+        box-shadow: 0 6px 15px rgba(168, 213, 226, 0.6);
+        transition: all 0.3s ease;
+    }
+
+        .btn-submit-lofi:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(168, 213, 226, 0.8);
+        }
+
+    /* Nút Đăng ký ngoài (External Login) */
+    .btn-external-login {
+        border-radius: 1rem !important;
+        border: 1px solid var(--muted) !important;
+        color: var(--text-dark) !important;
+        background-color: var(--surface) !important;
+        padding: 10px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .btn-external-login:hover {
+            background-color: var(--surface-alt) !important;
+            transform: translateY(-1px);
+        }
+
+    /* Validation Summary */
+    .text-danger {
+        color: #e74c3c !important;
+        font-size: 0.85rem;
     }
 </style>
 
-<div class="container mt-5">
+<div class="container mt-5 register-page">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow p-4 rounded-4">
-                <h2 class="text-center mb-4">Đăng ký tài khoản</h2>
-                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+   
+        <div class="col-md-7 col-lg-5">
 
-                    <div class="form-floating mb-3">
-                        <label asp-for="Input.HoTen">Họ tên</label>
-                        <input asp-for="Input.HoTen" class="form-control" placeholder="Họ tên" />
+            <div class="account-form-card">
+                <h2 class="text-center">Đăng ký tài khoản</h2>
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-4" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.HoTen" class="form-label">Họ tên</label>
+                        <input asp-for="Input.HoTen" class="form-control" placeholder="Nhập họ tên" />
                         <span asp-validation-for="Input.HoTen" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <label asp-for="Input.Gioitinh">Giới tính</label>
+                    <div class="mb-3">
+                        <label asp-for="Input.Gioitinh" class="form-label">Giới tính</label>
                         <select asp-for="Input.Gioitinh" class="form-select">
                             <option value="">-- Chọn giới tính --</option>
                             <option value="Nam">Nam</option>
@@ -60,56 +135,56 @@
                         <span asp-validation-for="Input.Gioitinh" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <label asp-for="Input.CCCD">CCCD</label>
-                        <input asp-for="Input.CCCD" class="form-control" placeholder="CCCD" />
+                    <div class="mb-3">
+                        <label asp-for="Input.CCCD" class="form-label">CCCD</label>
+                        <input asp-for="Input.CCCD" class="form-control" placeholder="Nhập số CCCD" />
                         <span asp-validation-for="Input.CCCD" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <label asp-for="Input.SoDienThoai">Số điện thoại</label>
-                        <input asp-for="Input.SoDienThoai" class="form-control" placeholder="Số điện thoại" />
+                    <div class="mb-3">
+                        <label asp-for="Input.SoDienThoai" class="form-label">Số điện thoại</label>
+                        <input asp-for="Input.SoDienThoai" class="form-control" placeholder="Nhập số điện thoại" />
                         <span asp-validation-for="Input.SoDienThoai" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <label asp-for="Input.Email">Email</label>
-                        <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="Email" />
+                    <div class="mb-3">
+                        <label asp-for="Input.Email" class="form-label">Email</label>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="Nhập Email" />
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <label asp-for="Input.Password">Mật khẩu</label>
-                        <input asp-for="Input.Password" type="password" class="form-control" autocomplete="new-password" placeholder="Mật khẩu" />
+                    <div class="mb-3">
+                        <label asp-for="Input.Password" class="form-label">Mật khẩu</label>
+                        <input asp-for="Input.Password" type="password" class="form-control" autocomplete="new-password" placeholder="Tạo mật khẩu" />
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <label asp-for="Input.ConfirmPassword">Xác nhận mật khẩu</label>
+                    <div class="mb-3">
+                        <label asp-for="Input.ConfirmPassword" class="form-label">Xác nhận mật khẩu</label>
                         <input asp-for="Input.ConfirmPassword" type="password" class="form-control" autocomplete="new-password" placeholder="Xác nhận mật khẩu" />
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
 
-                    <div class="form-floating mb-3">
-                        <label asp-for="Input.Role">Vai trò</label>
+                    <div class="mb-3">
+                        <label asp-for="Input.Role" class="form-label">Vai trò</label>
                         <select asp-for="Input.Role" asp-items="Model.Input.RoleList" class="form-select">
                             <option value="">Chọn vai trò</option>
                         </select>
                         <span asp-validation-for="Input.Role" class="text-danger"></span>
                     </div>
 
-                    <button id="registerSubmit" type="submit" class="btn btn-primary btn-custom w-100">Đăng ký</button>
+                    <button id="registerSubmit" type="submit" class="btn btn-primary btn-submit-lofi w-100 mt-3">Đăng ký</button>
                 </form>
 
                 @if (Model.ExternalLogins?.Count > 0)
                 {
-                    <hr />
-                    <div class="text-center mb-2">Hoặc đăng ký bằng</div>
+                    <hr class="mt-4 mb-3" />
+                    <div class="text-center mb-3">Hoặc đăng ký bằng</div>
                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex flex-column gap-3">
                             @foreach (var provider in Model.ExternalLogins)
                             {
-                                <button type="submit" class="btn btn-outline-secondary w-100 me-2" name="provider" value="@provider.Name">
+                                <button type="submit" class="btn btn-outline-secondary btn-external-login w-100" name="provider" value="@provider.Name" title="Log in using @provider.DisplayName">
                                     @provider.DisplayName
                                 </button>
                             }

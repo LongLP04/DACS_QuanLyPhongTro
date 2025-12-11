@@ -8,24 +8,23 @@
 
 <section class="my-room-page section">
     <div class="container-fluid px-xl-5 py-2">
-        <div class="room-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1250px;">
+        <div class="room-wrapper bg-white rounded-5 shadow-sm p-4 mx-auto" style="max-width: 1250px;">
             <div class="text-center mb-4">
-                <h2 class="fw-bold" style="color: #1ec36e;">Phòng trọ của tôi</h2>
+                <h2 class="fw-bold text-primary-color">Phòng trọ của tôi</h2>
                 <p class="text-muted">Thông tin phòng bạn đang thuê và các chức năng liên quan</p>
             </div>
 
             @if (Model == null)
             {
-                <div class="alert alert-info text-center fs-5 py-4 rounded-4 shadow-sm" style="background-color: #f8f9fa;">
-                    <i class="bi bi-house-door text-success me-2"></i> Bạn chưa thuê phòng trọ nào.
+                <div class="alert alert-info text-center fs-5 py-4 rounded-4 shadow-sm alert-primary-style-empty">
+                    <i class="bi bi-house-door text-primary-color me-2"></i> Bạn chưa thuê phòng trọ nào.
                 </div>
             }
             else
             {
                 <div class="row gx-4 gy-4 align-items-start mb-4">
-                    <!-- Hình ảnh phòng -->
                     <div class="col-12 col-md-7">
-                        <div class="img-card overflow-hidden rounded-4 shadow-sm">
+                        <div class="img-card overflow-hidden rounded-4 shadow-sm img-card-hover">
                             <img src="@Url.Content("~/" + (string.IsNullOrEmpty(Model.Hinhanh) ? "img/default-product.jpg" : Model.Hinhanh))"
                                  alt="Hình phòng trọ"
                                  class="img-fluid w-100"
@@ -33,10 +32,9 @@
                         </div>
                     </div>
 
-                    <!-- Thông tin phòng -->
                     <div class="col-12 col-md-5">
-                        <div class="room-details-card p-4 rounded-4 shadow-sm bg-light">
-                            <h4 class="fw-bold text-primary mb-3">Phòng @Model.SoPhong</h4>
+                        <div class="room-details-card p-4 rounded-4 shadow-sm bg-light-alt room-info-card">
+                            <h4 class="fw-bold text-primary-color mb-3">Phòng @Model.SoPhong</h4>
 
                             <div class="room-info-row"><strong>Giá thuê:</strong> <span class="text-danger fw-bold">@Model.GiaThue.ToString("#,##0 VNĐ")</span></div>
                             <div class="room-info-row"><strong>Diện tích:</strong> <span>@Model.DienTich m²</span></div>
@@ -56,497 +54,522 @@
                     </div>
                 </div>
 
-                <!-- Chức năng -->
                 <div class="mt-5">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold text-dark mb-0">
-                            <i class="bi bi-tools me-2 text-success"></i>Chức năng
+                            <i class="bi bi-tools me-2 text-primary-color"></i>Chức năng
                         </h5>
                         <div class="position-relative">
-                            <input type="text" id="searchAction" class="form-control form-control-sm ps-4"
-                                placeholder="🔍 Tìm chức năng..." style="border-radius: 50px; width: 250px;">
+                            <input type="text" id="searchAction" class="form-control form-control-sm ps-4 search-input-pastel"
+                                   placeholder="🔍 Tìm chức năng..." style="border-radius: 50px; width: 250px;">
                         </div>
                     </div>
 
                     <div id="actionGrid" class="btn-action-grid">
-                        <a href="@Url.Action("DangKy", "DichVu")" class="btn btn-success action-btn">
+                        <a href="@Url.Action("DangKy", "DichVu")" class="btn btn-primary-filled action-btn">
                             <i class="fas fa-clipboard-list me-2"></i> Đăng ký dịch vụ
                         </a>
-                        <a asp-controller="DichVu" asp-action="DanhSachDangKy" class="btn btn-primary action-btn">
+                        <a asp-controller="DichVu" asp-action="DanhSachDangKy" class="btn btn-primary-filled-dark action-btn">
                             <i class="fas fa-file-alt me-2"></i> Xem phiếu đăng ký
                         </a>
-                        <a asp-controller="HopDong" asp-action="Details" asp-route-id="@ViewBag.MaHopDong" class="btn btn-warning text-white action-btn">
+                        <a asp-controller="HopDong" asp-action="Details" asp-route-id="@ViewBag.MaHopDong" class="btn btn-accent-filled action-btn">
                             <i class="fas fa-file-signature me-2"></i> Hợp đồng
                         </a>
-                        <a asp-controller="ChiSoDienNuoc" asp-action="Index" class="btn btn-dark action-btn">
+                        <a asp-controller="ChiSoDienNuoc" asp-action="Index" class="btn btn-dark-pastel action-btn">
                             <i class="fas fa-tachometer-alt me-2"></i> Chỉ số điện nước
                         </a>
-                        <a asp-controller="PhieuThanhToan" asp-action="Index" class="btn btn-secondary action-btn">
+                        <a asp-controller="PhieuThanhToan" asp-action="Index" class="btn btn-muted-filled action-btn">
                             <i class="fas fa-file-invoice-dollar me-2"></i> Hóa đơn
                         </a>
-                        <a asp-controller="PhieuHienTrang" asp-action="XemPhieu" class="btn btn-info action-btn">
+                        <a asp-controller="PhieuHienTrang" asp-action="XemPhieu" class="btn btn-info-pastel action-btn">
                             <i class="fas fa-clipboard-check me-2"></i> Xác nhận hiện trạng
                         </a>
-                        <a asp-controller="Phongtrocuatoi" asp-action="IndexChat" class="btn btn-primary text-white action-btn">
+                        <a asp-controller="Phongtrocuatoi" asp-action="IndexChat" class="btn btn-primary-filled-dark action-btn">
                             <i class="fas fa-comments me-2"></i> Chat với chủ trọ
                         </a>
-                        <a asp-controller="SuCo" asp-action="Index" class="btn btn-danger action-btn">
+                        <a asp-controller="SuCo" asp-action="Index" class="btn btn-danger-pastel action-btn">
                             <i class="fas fa-exclamation-triangle me-2"></i> Báo sự cố
                         </a>
                     </div>
                 </div>
 
 
-                <!-- 🔹 ICON CHAT NỔI GÓC PHẢI -->
-<div id="chatContainer">
-    <button id="floatingChatBtn" title="Mở chat">
-        <i class="fas fa-comments"></i>
-        <span id="chatBadge" class="chat-badge d-none">0</span>
-    </button>
-</div>
-
-<!-- 🔹 POPUP THÔNG BÁO TIN NHẮN MỚI -->
-<div id="chatPopup" class="chat-popup">
-    <div class="toast-body position-relative">
-        <button type="button" class="btn-close position-absolute top-0 end-0 m-2" id="closePopup"></button>
-        <div class="d-flex justify-content-between align-items-center mb-2 pe-4">
-            <span class="fw-bold text-dark">
-                <i class="fas fa-envelope-open-text me-2 text-success"></i>
-                <strong style="font-size: 1.3rem;">Tin nhắn mới</strong>
-            </span>
-        </div>
-        <p id="popupMsg" class="mb-3 text-secondary small"></p>
-        <div class="d-flex justify-content-end gap-2">
-            <button id="viewChatBtn" class="btn btn-sm btn-success">
-                <i class="fas fa-comments me-1"></i> Mở trang chat
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- 🔹 KHUNG CHAT NHỎ -->
-<div class="card chat-card d-none" id="chatCard">
-    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-        <span id="chatWith">Chủ trọ: @(Model.ToaNha?.ChuTro?.HoTen ?? "Không xác định")</span>
-        <div class="d-flex align-items-center gap-2">
-            <button id="openFullChat" class="btn btn-light btn-sm text-success fw-bold" title="Mở trang chat đầy đủ">
-                <i class="fas fa-external-link-alt"></i>
-            </button>
-            <button type="button" class="btn-close" id="closeChat"></button>
-        </div>
-    </div>
-    <div class="card-body" id="chatMessages" style="overflow-y: auto; height: 280px;"></div>
-    <div class="card-footer">
-        <form id="chatForm" class="d-flex gap-2">
-            <input type="text" id="messageInput" class="form-control" placeholder="Nhập tin nhắn..." autocomplete="off" />
-            <button type="submit" class="btn btn-success">Gửi</button>
-        </form>
-    </div>
-</div>
-
-<!-- Phần Tổng quan (Dashboard) -->
-<div class="dashboard-section mt-5">
-    <h3 class="text-center fw-bold mb-4" style="color: #1ec36e;">Tổng quan</h3>
-
-    <div class="row">
-        <!-- Card: Tổng số hóa đơn chưa thanh toán -->
-        <div class="col-md-4">
-            <div class="card text-white bg-danger mb-3">
-                <div class="card-header">Hóa đơn chưa thanh toán</div>
-                <div class="card-body">
-                    <h5 class="card-title">@ViewBag.HoaDonChuaThanhToan</h5>
-                    <p class="card-text">Hóa đơn cần được thanh toán ngay.</p>
+                <div id="chatContainer">
+                    <button id="floatingChatBtn" title="Mở chat">
+                        <i class="fas fa-comments"></i>
+                        <span id="chatBadge" class="chat-badge d-none">0</span>
+                    </button>
                 </div>
-            </div>
-        </div>
 
-        <!-- Card: Lịch sử dịch vụ đã sử dụng -->
-        <div class="col-md-4">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-header">Dịch vụ đã sử dụng</div>
-                <div class="card-body">
-                    <h5 class="card-title">@ViewBag.DichVuDaSuDung</h5>
-                    <p class="card-text">Dịch vụ đã đăng ký trong tháng này.</p>
+                <div id="chatPopup" class="chat-popup">
+                    <div class="toast-body position-relative">
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-2" id="closePopup"></button>
+                        <div class="d-flex justify-content-between align-items-center mb-2 pe-4">
+                            <span class="fw-bold text-dark">
+                                <i class="fas fa-envelope-open-text me-2 text-primary-color"></i>
+                                <strong style="font-size: 1.3rem;">Tin nhắn mới</strong>
+                            </span>
+                        </div>
+                        <p id="popupMsg" class="mb-3 text-secondary small"></p>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button id="viewChatBtn" class="btn btn-sm btn-primary-filled">
+                                <i class="fas fa-comments me-1"></i> Mở trang chat
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Card: Tổng quan phòng trọ -->
-        <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Tổng quan phòng trọ</div>
-                <div class="card-body">
-                    <h5 class="card-title">Phòng @Model.SoPhong</h5>
-                    <p class="card-text">Giá thuê: @Model.GiaThue.ToString("#,##0 VNĐ")</p>
+                <div class="card chat-card d-none" id="chatCard">
+                    <div class="card-header bg-primary-dark text-dark d-flex justify-content-between align-items-center">
+                        <span id="chatWith">Chủ trọ: @(Model.ToaNha?.ChuTro?.HoTen ?? "Không xác định")</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <button id="openFullChat" class="btn btn-light btn-sm text-primary-color fw-bold" title="Mở trang chat đầy đủ">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                            <button type="button" class="btn-close" id="closeChat"></button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="chatMessages" style="overflow-y: auto; height: 280px;"></div>
+                    <div class="card-footer">
+                        <form id="chatForm" class="d-flex gap-2">
+                            <input type="text" id="messageInput" class="form-control" placeholder="Nhập tin nhắn..." autocomplete="off" />
+                            <button type="submit" class="btn btn-primary-filled-dark">Gửi</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Biểu đồ: Mức tiêu thụ điện/nước -->
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">Mức tiêu thụ điện/nước</div>
-                <div class="card-body">
-                    <canvas id="consumptionChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
+                <div class="dashboard-section mt-5">
+                    <h3 class="text-center fw-bold mb-4 text-primary-color">Tổng quan</h3>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card text-white bg-danger-pastel mb-3 dashboard-card">
+                                <div class="card-header">Hóa đơn chưa thanh toán</div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@ViewBag.HoaDonChuaThanhToan</h5>
+                                    <p class="card-text">Hóa đơn cần được thanh toán ngay.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card text-white bg-primary mb-3 dashboard-card">
+                                <div class="card-header">Dịch vụ đã sử dụng</div>
+                                <div class="card-body">
+                                    <h5 class="card-title">@ViewBag.DichVuDaSuDung</h5>
+                                    <p class="card-text">Dịch vụ đã đăng ký trong tháng này.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card text-white bg-accent-dark mb-3 dashboard-card">
+                                <div class="card-header">Tổng quan phòng trọ</div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Phòng @Model.SoPhong</h5>
+                                    <p class="card-text">Giá thuê: @Model.GiaThue.ToString("#,##0 VNĐ")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card dashboard-card">
+                                <div class="card-header">Mức tiêu thụ điện/nước</div>
+                                <div class="card-body">
+                                    <canvas id="consumptionChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
         </div>
     </div>
 </section>
 
 <style>
+    :root {
+        --primary: #a8d5e2;
+        --primary-dark: #94c8db;
+        --accent: #c7ceea;
+        --accent-dark: #b5c3e6;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+        --surface-alt: #f8faff;
+        --muted: #64748b;
+        --danger-pastel: #ff9999;
+        --danger-strong: #ff4757;
+        --info-pastel: #a8d5e2; /* Dùng primary cho info */
+        --dark-pastel: #64748b; /* Dùng muted cho dark */
+    }
+
+    /* Lớp hỗ trợ màu */
+    .text-primary-color {
+        color: var(--primary) !important;
+    }
+
+    .bg-primary {
+        background-color: var(--primary) !important;
+        color: var(--text-dark) !important;
+    }
+
+    .btn-primary-filled {
+        background-color: var(--primary);
+        color: var(--text-dark);
+        border: none;
+    }
+
+    .btn-primary-filled-dark {
+        background-color: var(--primary-dark);
+        color: var(--text-dark);
+        border: none;
+    }
+
+    .btn-accent-filled {
+        background-color: var(--accent);
+        color: var(--text-dark);
+        border: none;
+    }
+
+    .btn-muted-filled {
+        background-color: var(--muted);
+        color: var(--surface);
+        border: none;
+    }
+
+    .btn-danger-pastel {
+        background-color: var(--danger-pastel) !important;
+        color: var(--text-dark) !important;
+        border: none;
+    }
+
+    .btn-dark-pastel {
+        background-color: var(--dark-pastel) !important;
+        color: var(--surface) !important;
+        border: none;
+    }
+
+    .btn-info-pastel {
+        background-color: var(--info-pastel) !important;
+        color: var(--text-dark) !important;
+        border: none;
+    }
+
+
     /* === PAGE WRAPPER === */
     .my-room-page {
         margin-top: 10px;
         margin-bottom: 10px;
     }
 
+    .room-wrapper {
+        border-radius: 1.5rem !important;
+        border: 1.5px solid var(--surface-alt);
+    }
+
     /* === THÔNG TIN PHÒNG === */
     .room-info-row {
         margin-bottom: 8px;
         font-size: 16px;
-    }
-    .room-info-row strong {
-        color: #444;
-        min-width: 90px;
-        display: inline-block;
+        color: var(--text-dark);
     }
 
-    /* === LƯỚI NÚT CHỨC NĂNG === */
+        .room-info-row strong {
+            color: var(--muted);
+            min-width: 90px;
+            display: inline-block;
+        }
+
+    .room-details-card {
+        background-color: var(--surface-alt) !important;
+        border: 1px solid var(--primary);
+    }
+
+    .img-card-hover:hover {
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.5) !important;
+    }
+
+
+    /* === LƯỚI NÚT CHỨC NĂNG (Action Grid) === */
     .btn-action-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 16px;
         margin-top: 10px;
     }
-    .btn-action-grid .btn {
-        border-radius: 50px;
+
+        .btn-action-grid .btn {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 12px 18px;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            text-align: left;
+            display: flex; /* Đảm bảo icon và text thẳng hàng */
+            align-items: center;
+        }
+
+            .btn-action-grid .btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 14px rgba(168, 213, 226, 0.4);
+            }
+
+    .search-input-pastel:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 6px rgba(168, 213, 226, 0.5) !important;
+    }
+
+
+    /* === DASHBOARD CARDS === */
+    .dashboard-card {
+        border-radius: 1rem !important;
+    }
+
+    .bg-danger-pastel {
+        background-color: var(--danger-pastel) !important;
+        color: var(--text-dark) !important;
+    }
+
+    .bg-success {
+        background-color: var(--primary) !important;
+        color: var(--text-dark) !important;
+    }
+    /* Đổi success thành Primary */
+    .bg-accent-dark {
+        background-color: var(--accent-dark) !important;
+        color: var(--text-dark) !important;
+    }
+    /* Tông màu khác biệt */
+    .dashboard-card .card-header {
         font-weight: 600;
-        transition: all 0.25s ease;
-        padding: 10px 0;
-    }
-    .btn-action-grid .btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 12px rgba(30, 195, 110, 0.25);
+        border-bottom: 1px solid rgba(0,0,0,0.1);
     }
 
-    /* === ICON CHAT TRÒN GÓC PHẢI === */
-    #chatContainer {
-        position: fixed;
-        bottom: 25px;
-        right: 25px;
-        z-index: 2147483000;
+    .dashboard-card .card-body {
+        padding-top: 15px;
     }
+
+
+    /* === CHAT COMPONENTS === */
+    /* Nút nổi */
     #floatingChatBtn {
-        background-color: #1ec36e;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        font-size: 28px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        cursor: pointer;
-        transition: transform 0.3s ease;
-    }
-    #floatingChatBtn:hover {
-        transform: scale(1.1);
+        background-color: var(--primary-dark);
+        color: var(--text-dark);
+        border: 2px solid var(--primary);
+        box-shadow: 0 4px 12px rgba(168, 213, 226, 0.6);
     }
 
-    /* 🔴 Khi có tin nhắn mới → nhấp nháy đỏ */
-    #floatingChatBtn.chat-alert {
-        animation: chatBlink 1.2s infinite alternate, chatShake 0.5s ease-in-out infinite;
-    }
+        #floatingChatBtn:hover {
+            transform: scale(1.1);
+            background-color: var(--primary);
+        }
+
+    /* Animation */
     @@keyframes chatBlink {
         0%, 100% {
-            background-color: #1ec36e;
-            box-shadow: 0 0 10px rgba(30,195,110,0.8);
+            background-color: var(--primary-dark);
+            box-shadow: 0 0 10px rgba(168, 213, 226, 0.8);
         }
+
         50% {
-            background-color: #ff4757;
-            box-shadow: 0 0 25px rgba(255,71,87,0.9);
+            background-color: var(--danger-pastel);
+            box-shadow: 0 0 25px rgba(255,153,153,0.9);
         }
     }
-    @@keyframes chatShake {
-        0%,100% { transform: translate(0,0); }
-        25% { transform: translate(-2px,2px); }
-        50% { transform: translate(2px,-2px); }
-        75% { transform: translate(-2px,-3px); }
-    }
 
-    /* === BADGE SỐ TIN NHẮN === */
+    /* Badge */
     .chat-badge {
-        position: absolute;
-        top: 6px;
-        right: 6px;
-        background-color: #ff2e63;
-        color: #fff;
-        font-size: 0.75rem;
-        font-weight: bold;
-        border-radius: 50%;
-        width: 22px;
-        height: 22px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        background-color: var(--danger-strong);
     }
 
-    /* === POPUP NHỎ === */
+    /* Popup */
     .chat-popup {
-        position: fixed;
-        bottom: 110px;
-        right: 25px;
-        width: 330px;
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        box-shadow: 0 6px 25px rgba(0,0,0,0.25);
-        padding: 18px;
-        opacity: 0;
-        transform: translateY(30px);
-        pointer-events: none;
-        transition: all 0.5s ease;
-        z-index: 2147483647;
-    }
-    .chat-popup.show {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: all;
+        border: 1px solid var(--primary);
+        box-shadow: 0 6px 25px rgba(168, 213, 226, 0.4);
     }
 
-    /* === KHUNG CHAT NHỎ === */
+    .text-success {
+        color: var(--primary) !important;
+    }
+    /* Đổi icon trong popup */
+
+    /* Khung chat nhỏ */
     .chat-card {
-        position: fixed;
-        bottom: 100px;
-        right: 25px;
-        width: 380px;
-        border-radius: 12px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-        z-index: 2147483001;
-        display: flex;
-        flex-direction: column;
+        border-radius: 1rem !important;
     }
 
-    /* === BÓNG HỘI THOẠI === */
-    .message-row {
-        display: flex;
-        margin-bottom: 12px;
-    }
-    .message-row.right {
-        justify-content: flex-end;
-    }
-    .message-bubble {
-        max-width: 80%;
-        padding: 10px 14px;
-        border-radius: 18px;
-        font-size: 0.95rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        word-wrap: break-word;
-    }
-    .message-left {
-        background-color: #f1f1f1;
-        color: #333;
-        border-bottom-left-radius: 4px;
-    }
+        .chat-card .card-header {
+            background-color: var(--primary-dark) !important;
+            color: var(--text-dark) !important;
+        }
+
+        .chat-card .btn-light {
+            background-color: var(--surface) !important;
+        }
+
     .message-right {
-        background-color: #1ec36e;
-        color: white;
-        border-bottom-right-radius: 4px;
+        background-color: var(--primary-dark);
     }
-    .message-time {
-        font-size: 0.75rem;
-        color: #888;
-        margin-top: 4px;
-        text-align: right;
-    }
-    .message-right .message-time {
-        color: #e0e0e0;
-    }
-    /* --- Đặt lại vị trí hai nút góc phải --- */
+
+    /* Đặt lại vị trí hai nút góc phải */
     #scroll-top {
         bottom: 25px !important;
-        right: 90px !important; /* đẩy sang trái một chút để không bị trùng */
-        z-index: 2147482999 !important; /* thấp hơn icon chat một cấp */
+        right: 90px !important;
+        z-index: 2147482999 !important;
     }
 
     #chatContainer {
         bottom: 25px !important;
-        right: 25px !important; /* giữ nguyên vị trí chat */
+        right: 25px !important;
         z-index: 2147483000 !important;
     }
-    .btn-action-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 16px;
-}
-
-.btn-action-grid .btn {
-    border-radius: 12px;
-    font-weight: 600;
-    padding: 12px 18px;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    text-align: left;
-}
-
-.btn-action-grid .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-}
-
-#searchAction {
-    font-size: 0.9rem;
-    border: 1px solid #ccc;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-}
-#searchAction:focus {
-    border-color: #1ec36e;
-    box-shadow: 0 0 6px rgba(30,195,110,0.3);
-}
-
 </style>
 
 
-
 @section Scripts {
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.getElementById("searchAction");
-    const buttons = document.querySelectorAll("#actionGrid .action-btn");
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        // Logic tìm kiếm
+        document.addEventListener("DOMContentLoaded", () => {
+            const searchInput = document.getElementById("searchAction");
+            const buttons = document.querySelectorAll("#actionGrid .action-btn");
 
-    searchInput.addEventListener("input", () => {
-        const keyword = searchInput.value.toLowerCase().trim();
-        buttons.forEach(btn => {
-            const text = btn.innerText.toLowerCase();
-            btn.style.display = text.includes(keyword) ? "flex" : "none";
+            searchInput.addEventListener("input", () => {
+                const keyword = searchInput.value.toLowerCase().trim();
+                buttons.forEach(btn => {
+                    const text = btn.innerText.toLowerCase();
+                    btn.style.display = text.includes(keyword) ? "flex" : "none";
+                });
+            });
         });
-    });
-});
-document.addEventListener('DOMContentLoaded', async () => {
-    const chatCard = document.getElementById('chatCard');
-    if (!chatCard) return;
 
-    const chatMessages = document.getElementById('chatMessages');
-    const messageInput = document.getElementById('messageInput');
-    const chatPopup = document.getElementById('chatPopup');
-    const floatingChatBtn = document.getElementById('floatingChatBtn');
-    const closePopup = document.getElementById('closePopup');
-    const closeChat = document.getElementById('closeChat');
-    const viewChatBtn = document.getElementById('viewChatBtn');
-    const openFullChat = document.getElementById('openFullChat');
+        // Logic SignalR và Chat
+        document.addEventListener('DOMContentLoaded', async () => {
+            const chatCard = document.getElementById('chatCard');
+            if (!chatCard) return;
 
-    const landlordId = '@(Model?.ToaNha?.ChuTro != null ? Model.ToaNha.ChuTro.ApplicationUserId : "")';
-    const landlordName = '@(Model?.ToaNha?.ChuTro != null ? Model.ToaNha.ChuTro.HoTen : "Không xác định")';
-    const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").withAutomaticReconnect().build();
+            const chatMessages = document.getElementById('chatMessages');
+            const messageInput = document.getElementById('messageInput');
+            const chatPopup = document.getElementById('chatPopup');
+            const floatingChatBtn = document.getElementById('floatingChatBtn');
+            const closePopup = document.getElementById('closePopup');
+            const closeChat = document.getElementById('closeChat');
+            const viewChatBtn = document.getElementById('viewChatBtn');
+            const openFullChat = document.getElementById('openFullChat');
 
-    try { await connection.start(); console.log("✅ SignalR connected"); } 
-    catch (err) { console.error("❌", err); }
+            const landlordId = '@(Model?.ToaNha?.ChuTro != null ? Model.ToaNha.ChuTro.ApplicationUserId : "")';
+            const landlordName = '@(Model?.ToaNha?.ChuTro != null ? Model.ToaNha.ChuTro.HoTen : "Không xác định")';
+            const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").withAutomaticReconnect().build();
 
-    // 🔸 Thêm tin nhắn vào UI
-    function appendMessage(message, isSender) {
-        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const div = document.createElement('div');
-        div.className = isSender ? 'message-row right' : 'message-row';
-        div.innerHTML = `
-            <div class="message-bubble ${isSender ? 'message-right' : 'message-left'}">
-                ${escapeHTML(message)}
-                <div class="message-time">${time}</div>
-            </div>`;
-        chatMessages.appendChild(div);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+            try { await connection.start(); console.log("✅ SignalR connected"); }
+            catch (err) { console.error("❌", err); }
 
-    function escapeHTML(str) {
-        return str.replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
-    }
+            // 🔸 Thêm tin nhắn vào UI
+            function appendMessage(message, isSender) {
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const div = document.createElement('div');
+                div.className = isSender ? 'message-row right' : 'message-row';
+                div.innerHTML = `
+                    <div class="message-bubble ${isSender ? 'message-right' : 'message-left'}">
+                        ${escapeHTML(message)}
+                        <div class="message-time">${time}</div>
+                    </div>`;
+                chatMessages.appendChild(div);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
 
-    // 📩 Khi nhận tin nhắn
-    connection.on("ReceiveMessage", (senderId, message) => {
-        if (senderId !== landlordId) return;
+            function escapeHTML(str) {
+                return str.replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+            }
 
-        // Nếu khung chat đang đóng → hiện popup + hiệu ứng
-        if (chatCard.classList.contains('d-none')) {
-            const popupMsg = document.getElementById('popupMsg');
-            popupMsg.innerHTML = `
-                <strong>Bạn có tin nhắn mới từ ${landlordName}:</strong><br>
-                <span class="text-dark fw-bold">"${escapeHTML(message)}"</span>
-                <div class="popup-time">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
-            chatPopup.classList.add('show');
-            floatingChatBtn.classList.add('chat-alert');
-            setTimeout(() => chatPopup.classList.remove('show'), 8000);
-        }
-        appendMessage(message, false);
-    });
+            // 📩 Khi nhận tin nhắn
+            connection.on("ReceiveMessage", (senderId, message) => {
+                if (senderId !== landlordId) return;
 
-    // ✉️ Gửi tin nhắn
-    document.getElementById('chatForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const msg = messageInput.value.trim();
-        if (!msg) return;
-        connection.invoke("SendPrivateMessage", landlordId, msg);
-        appendMessage(msg, true);
-        messageInput.value = '';
-        messageInput.focus();
-    });
+                // Nếu khung chat đang đóng → hiện popup + hiệu ứng
+                if (chatCard.classList.contains('d-none')) {
+                    const popupMsg = document.getElementById('popupMsg');
+                    popupMsg.innerHTML = `
+                        <strong>Bạn có tin nhắn mới từ ${landlordName}:</strong><br>
+                        <span class="text-dark fw-bold">"${escapeHTML(message)}"</span>
+                        <div class="popup-time">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
+                    chatPopup.classList.add('show');
+                    floatingChatBtn.classList.add('chat-alert');
+                    setTimeout(() => chatPopup.classList.remove('show'), 8000);
+                }
+                appendMessage(message, false);
+            });
 
-    // 🔘 Sự kiện giao diện
-    floatingChatBtn.addEventListener('click', () => {
-        chatCard.classList.remove('d-none');
-        chatPopup.classList.remove('show');
-        floatingChatBtn.classList.remove('chat-alert');
-    });
-    closeChat.addEventListener('click', () => chatCard.classList.add('d-none'));
-    closePopup.addEventListener('click', () => chatPopup.classList.remove('show'));
-    viewChatBtn.addEventListener('click', () => window.location.href = '@Url.Action("IndexChat","Phongtrocuatoi")');
-    openFullChat.addEventListener('click', () => window.location.href = '@Url.Action("IndexChat","Phongtrocuatoi")');
-});
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const ctx = document.getElementById('consumptionChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: @Html.Raw(Json.Serialize(ViewBag.ThangTieuThu)),
-                datasets: [
-                    {
-                        label: 'Điện (kWh)',
-                        data: @Html.Raw(Json.Serialize(ViewBag.DienTieuThu)),
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        fill: true,
-                    },
-                    {
-                        label: 'Nước (m³)',
-                        data: @Html.Raw(Json.Serialize(ViewBag.NuocTieuThu)),
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        fill: true,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Mức tiêu thụ điện/nước theo tháng'
+            // ✉️ Gửi tin nhắn
+            document.getElementById('chatForm').addEventListener('submit', e => {
+                e.preventDefault();
+                const msg = messageInput.value.trim();
+                if (!msg) return;
+                connection.invoke("SendPrivateMessage", landlordId, msg);
+                appendMessage(msg, true);
+                messageInput.value = '';
+                messageInput.focus();
+            });
+
+            // 🔘 Sự kiện giao diện
+            floatingChatBtn.addEventListener('click', () => {
+                chatCard.classList.remove('d-none');
+                chatPopup.classList.remove('show');
+                floatingChatBtn.classList.remove('chat-alert');
+            });
+            closeChat.addEventListener('click', () => chatCard.classList.add('d-none'));
+            closePopup.addEventListener('click', () => chatPopup.classList.remove('show'));
+            viewChatBtn.addEventListener('click', () => window.location.href = '@Url.Action("IndexChat", "Phongtrocuatoi")');
+            openFullChat.addEventListener('click', () => window.location.href = '@Url.Action("IndexChat", "Phongtrocuatoi")');
+        });
+
+        // Logic Biểu đồ
+        document.addEventListener("DOMContentLoaded", () => {
+            const ctx = document.getElementById('consumptionChart').getContext('2d');
+
+            // Định nghĩa màu Primary và Accent cho Chart.js
+            const primaryColorRgba = 'rgba(168, 213, 226, 1)'; // --primary
+            const primaryColorBgRgba = 'rgba(168, 213, 226, 0.4)';
+            const accentColorRgba = 'rgba(199, 206, 234, 1)'; // --accent
+            const accentColorBgRgba = 'rgba(199, 206, 234, 0.4)';
+
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(ViewBag.ThangTieuThu)),
+                    datasets: [
+                        {
+                            label: 'Điện (kWh)',
+                            data: @Html.Raw(Json.Serialize(ViewBag.DienTieuThu)),
+                            borderColor: primaryColorRgba,
+                            backgroundColor: primaryColorBgRgba,
+                            fill: true,
+                        },
+                        {
+                            label: 'Nước (m³)',
+                            data: @Html.Raw(Json.Serialize(ViewBag.NuocTieuThu)),
+                            borderColor: accentColorRgba,
+                            backgroundColor: accentColorBgRgba,
+                            fill: true,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Mức tiêu thụ điện/nước theo tháng'
+                        }
                     }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 }

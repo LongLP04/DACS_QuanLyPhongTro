@@ -1,416 +1,479 @@
 @{
     Layout = null;
-}
+    // Lấy thông tin Controller và Action hiện tại
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 
+    // Kiểm tra nếu là trang chủ (Home/Index)
+    var isHomePage = currentController == "Home" && currentAction == "Index";
+}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Trọ quanh ta</title>
-  <meta name="description" content="">
-  <meta name="keywords" content="">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Trọ quanh ta</title>
+    <meta name="description" content="Tìm trọ dễ dàng, phong cách Lofi Chill.">
+    <meta name="keywords" content="phòng trọ, lofi, pastel, tìm trọ">
+    <link href="~/assets/img/images.ico" rel="icon">
+    <link href="~/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-  <!-- Favicons -->
-  <link href="~/assets/img/images.ico" rel="icon">
-  <link href="~/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
-  <!-- Vendor CSS Files -->
-  <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="~/assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="~/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="~/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="~/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <link href="~/assets/css/main.css" rel="stylesheet">
 
-  <!-- Main CSS File -->
-  <link href="~/assets/css/main.css" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: EstateAgency
-  * Template URL: https://bootstrapmade.com/real-estate-agency-bootstrap-template/
-  * Updated: Aug 09 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
     <style>
-      :root {
-        --primary: #1ec36e;
-        --primary-dark: #169a55;
-        --accent: #17a2ff;
-        --text-dark: #1c1e21;
-        --muted: #8f9bb3;
-        --surface: #ffffff;
-        --surface-alt: #f4f7fb;
-      }
-
-      body {
-        font-family: "Poppins", "Roboto", sans-serif;
-        background: var(--surface-alt);
-        color: var(--text-dark);
-      }
-
-      header, .navbar, .btn-group {
-        overflow: visible !important;
-        z-index: 9999 !important;
-      }
-
-      #mainNavbar {
-        border-bottom: 1px solid rgba(18, 38, 63, 0.08);
-        background: rgba(255, 255, 255, 0.98) !important;
-        transition: box-shadow 0.2s ease, background 0.2s ease;
-      }
-
-      #mainNavbar.scrolled {
-        box-shadow: 0 8px 24px rgba(18, 38, 63, 0.08);
-        background: #ffffff !important;
-      }
-
-      #mainNavbar .navbar-brand {
-        display: inline-flex;
-        align-items: baseline;
-        gap: 0.55rem;
-        padding: 0.4rem 1.2rem;
-        border-radius: 14px;
-        background: linear-gradient(120deg, #ffffff, #effdf5);
-        box-shadow: 0 10px 20px rgba(30, 195, 110, 0.15);
-        font-family: "Raleway", "Poppins", sans-serif;
-        text-transform: none;
-        letter-spacing: 0;
-        line-height: 1.1;
-      }
-
-      #mainNavbar .brand-mark,
-      #mainNavbar .brand-text {
-        line-height: 1;
-      }
-
-      #mainNavbar .brand-mark {
-        font-weight: 700;
-        font-size: 1.8rem;
-        color: var(--primary);
-        letter-spacing: 1.2px;
-      }
-
-      #mainNavbar .brand-text {
-        font-weight: 700;
-        font-size: 1.8rem;
-        color: var(--text-dark);
-        letter-spacing: 1.2px;
-        margin-bottom: -0.05rem;
-      }
-
-      .navbar-nav .nav-link {
-        position: relative;
-        padding: 0.75rem 0.5rem;
-        color: var(--text-dark);
-        transition: color 0.2s ease;
-      }
-
-      .navbar-nav .nav-link:hover,
-      .navbar-nav .nav-link.active {
-        color: var(--primary);
-      }
-
-      .navbar-nav .nav-link::after {
-        content: "";
-        position: absolute;
-        left: 50%;
-        bottom: 0;
-        transform: translateX(-50%);
-        width: 0;
-        height: 3px;
-        background: var(--primary);
-        border-radius: 999px;
-        transition: width 0.2s ease;
-      }
-
-      .navbar-nav .nav-link:hover::after,
-      .navbar-nav .nav-link.active::after {
-        width: 60%;
-      }
-
-      .btn-group .dropdown-toggle {
-        border-radius: 999px;
-        border: 1px solid rgba(18, 38, 63, 0.15);
-        padding: 0.4rem 0.9rem;
-        transition: border-color 0.2s ease;
-        color: var(--text-dark);
-      }
-
-      .btn-group .dropdown-toggle:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-      }
-
-      main.main {
-        min-height: 70vh;
-        padding-top: 10px;
-      }
-
-      footer.footer {
-        background: #06142e;
-        color: #d6e4ff;
-        padding: 60px 0 40px;
-      }
-
-      footer .icon {
-        color: var(--primary);
-        background: rgba(30, 195, 110, 0.12);
-        border-radius: 12px;
-        padding: 12px;
-        margin-right: 12px;
-      }
-
-      footer h4 {
-        color: #ffffff;
-        margin-bottom: 12px;
-        font-weight: 600;
-      }
-
-      footer .social-links a {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: #ffffff;
-        transition: all 0.2s ease;
-      }
-
-      footer .social-links a:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-        transform: translateY(-2px);
-      }
-
-      #scroll-top {
-        background: var(--primary);
-        color: #fff;
-        box-shadow: 0 12px 24px rgba(30, 195, 110, 0.3);
-      }
-        
-    </style>
-</head>
-
-<body class="index-page">
-
-  
-<header id="mainNavbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm py-2">
-    <div class="container-xl d-flex align-items-center justify-content-between">
-
-        <!-- LOGO (trái) -->
-        <a class="navbar-brand fw-bold me-auto" asp-controller="Home" asp-action="Index">
-          <span class="brand-mark">Trọ</span>
-          <span class="brand-text ">Quanh Ta</span>
-        </a>
-
-        <!-- TOGGLE (mobile) -->
-        <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        @inject DACS_QuanLyPhongTro.Services.IUserService userService
-        @{
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            bool hasRental = false;
-            if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(userId))
-            {
-                hasRental = await userService.HasActiveRentalAsync(userId);
-            }
+        :root {
+            /* === MÀU PASTEL LOFI MỚI - siêu chill === */
+            --primary: #a8d5e2; /* xanh dương nhạt chính */
+            --primary-dark: #94c8db;
+            --accent: #c7ceea; /* tím nhạt */
+            --text-dark: #2d3748;
+            --muted: #64748b;
+            --surface: #ffffff;
+            --surface-alt: #f8faff;
         }
 
-        <!-- MENU (phải) -->
-        <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
-            <ul class="navbar-nav align-items-center fw-semibold small text-dark ms-auto">
+        body {
+            /* FONT CHUNG VÀ CỠ CHỮ */
+            background: linear-gradient(135deg, #f0f4f8, #e0eafc, #f2e9f8);
+            background-attachment: fixed;
+            font-family: "Poppins", sans-serif;
+            font-size: 18px; /* TĂNG CỠ CHỮ CƠ BẢN LÊN 18PX (dễ đọc) */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-                <!-- Trang chủ -->
-                <li class="nav-item mx-2">
-                    <a asp-controller="Home" asp-action="Index"
-                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active text-success" : "")">
-                        Trang chủ
-                    </a>
-                </li>
+        /* Tinh chỉnh chữ nhỏ/muted để dễ đọc hơn (Tăng nhẹ size tương đối) */
+        .text-muted, .fst-italic {
+            font-size: 0.95em;
+        }
 
-                <!-- Phòng trọ -->
-                <li class="nav-item mx-2">
-                    <a asp-controller="PhongTro" asp-action="Index"
-                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PhongTro" ? "active text-success" : "")">
-                        Phòng trọ
-                    </a>
-                </li>
+        .small {
+            font-size: 0.85em;
+        }
 
-                <!-- Hiển thị tùy theo trạng thái đăng nhập -->
-                @if (!User.Identity.IsAuthenticated)
-                {
-                    <li class="nav-item mx-2">
-                        <span class="nav-link fst-italic text-muted">
-                            Hãy
-                            <a asp-area="Identity" asp-page="/Account/Register" class="text-success fw-bold">
-                                đăng ký
-                            </a> /
-                            <a asp-area="Identity" asp-page="/Account/Login" class="text-success fw-bold">
-                                đăng nhập
-                            </a> để xem thêm tiện ích
-                        </span>
-                    </li>
+
+        /* Đảm bảo Main mở rộng để đẩy Footer xuống */
+        .main {
+            flex-grow: 1;
+            padding-top: 75px;
+        }
+
+        /* Cần điều chỉnh padding-top của main nếu isHomePage = true */
+        body.home-page .main {
+            padding-top: 0;
+        }
+
+        /* --- 1. NAVBAR & LOGIN PARTIAL STYLING --- */
+        #mainNavbar {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+
+            #mainNavbar.scrolled {
+                background: #ffffff !important;
+                box-shadow: 0 8px 25px rgba(168,213,226,0.25);
+            }
+
+        .navbar-brand .brand-mark {
+            color: var(--primary);
+        }
+
+        .navbar-brand .brand-text {
+            color: var(--text-dark);
+        }
+
+        /* Active/Hover links */
+        .navbar-nav .nav-link:hover {
+            color: var(--primary-dark) !important;
+        }
+
+        /* Link đang active */
+        .navbar-nav .nav-link.active {
+            background-color: var(--primary);
+            color: var(--text-dark) !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .navbar-nav .nav-link::after {
+            background: var(--primary);
+        }
+
+        /* Link Đăng ký/Đăng nhập */
+        .nav-link.fst-italic a {
+            color: var(--primary) !important;
+            text-decoration: underline;
+        }
+
+            .nav-link.fst-italic a:hover {
+                color: var(--primary-dark) !important;
+            }
+
+        /* Badge thông báo (chấm tròn) */
+        .notification-badge-color {
+            background-color: var(--primary) !important;
+            border-color: var(--surface) !important;
+        }
+
+        /* Icon Nav bar (Hợp đồng, Thông báo) */
+        .navbar-nav .bi {
+            color: var(--text-dark) !important;
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover .bi {
+            color: var(--primary-dark) !important;
+        }
+
+
+        /* --- 2. HERO LOFI STYLING (HẠ THẤP VÀ GIỮ KÍCH THƯỚC ẢNH) --- */
+        .hero-lofi {
+            /* Tăng padding trên để đẩy tiêu đề xuống */
+            padding: 140px 0 100px;
+            text-align: center;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3, #f2e9f8);
+        }
+
+            .hero-lofi h1 {
+                /* FONT ĐỘC ĐÁO: Pacifico */
+                font-family: "Pacifico", cursive;
+                font-size: 4.5rem;
+                font-weight: 400;
+                color: var(--text-dark);
+                margin-bottom: 0.8rem; /* Giảm margin */
+            }
+
+                .hero-lofi h1 span {
+                    /* Gradient TÍM XANH LOFI - SỬ DỤNG MÀU PRIMARY DARK ĐỂ ĐẬM HƠN */
+                    background: linear-gradient(120deg, var(--accent), var(--primary-dark));
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    font-size: 1.1em;
                 }
-                @* else if (!hasRental)
-                {
-                    <li class="nav-item mx-2">
-                        <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1" class="nav-link">Thông báo lịch hẹn</a>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a asp-controller="HopDong" asp-action="XacNhan" class="nav-link">Xác nhận hợp đồng</a>
-                    </li>
-                }
-                *@
-                else if (hasRental)
-                {
-                    
-                    <li class="nav-item mx-2">
-                        <a asp-controller="PhongTroCuaToi" asp-action="Index" class="nav-link">Phòng trọ của tôi </a>
-                    </li>
-                } 
 
+            .hero-lofi p.lead {
+                font-size: 1.3rem;
+                margin-bottom: 0.5rem !important; /* GIẢM MARGIN BOTTOM CỦA MÔ TẢ */
+            }
+
+            .hero-lofi .btn-lg {
+                margin-bottom: 2rem; /* THÊM KHOẢNG CÁCH DƯỚI CHO NÚT */
+            }
+
+
+        /* --- 🌟 TINH CHỈNH KÍCH THƯỚC HÌNH ẢNH HERO (ĐÃ XÓA KHUNG VIỀN TRẮNG) --- */
+        .hero-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 200px 200px;
+            gap: 1.2rem;
+            max-width: 1200px;
+            margin: 0 auto 0; /* Xóa margin trên để kéo sát nút */
+            /* XÓA KHUNG BAO VÀ SHADOW */
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+            .hero-images > div {
+                overflow: hidden;
+                border-radius: 1.2rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                position: relative;
+                transition: transform 0.3s ease;
+            }
+
+            .hero-images .large {
+                grid-row: span 2;
+                grid-column: span 2;
+                border-radius: 1.5rem;
+            }
+
+            .hero-images > div:nth-child(2) {
+                border-radius: 1.5rem;
+            }
+
+            .hero-images > div:nth-child(3) {
+                border-radius: 1.5rem;
+            }
+
+            .hero-images > div:nth-child(4) {
+                border-radius: 1.5rem;
+            }
+
+            .hero-images > div:nth-child(5) {
+                border-radius: 1.5rem;
+            }
+
+
+            .hero-images img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 0;
+                transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+
+            /* Hiệu ứng hover cho hình ảnh (Bóng màu xanh dương nhạt) */
+            .hero-images > div:hover img {
+                transform: scale(1.05);
+            }
+
+            .hero-images > div:hover {
+                box-shadow: 0 5px 20px rgba(168, 213, 226, 0.9);
+                transform: translateY(-2px);
+            }
+
+        /* Styling cho nút chính (btn-primary) */
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--text-dark);
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+            font-weight: 600;
+        }
+
+            .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+                background-color: var(--primary-dark) !important;
+                border-color: var(--primary-dark) !important;
+                color: var(--text-dark) !important;
+                box-shadow: 0 4px 15px rgba(168,213,226,0.5) !important;
+            }
+
+
+        /* --- 3. FOOTER STYLING --- */
+        .footer {
+            background-color: var(--surface);
+            border-top: 1px solid var(--primary);
+            padding: 30px 0;
+            width: 100%;
+        }
+
+            .footer .icon {
+                color: var(--primary);
+                font-size: 1.8rem;
+                margin-right: 15px;
+            }
+
+            .footer h4 {
+                font-weight: 700;
+            }
+
+            .footer p {
+                font-size: 1em; /* Giữ nguyên cỡ chữ của body (18px) */
+            }
+
+
+            .footer .social-links a {
+                background: var(--surface-alt);
+                color: var(--muted);
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+                .footer .social-links a:hover {
+                    background: var(--primary);
+                    color: var(--surface);
+                }
+
+        /* Màu nút cuộn lên đầu trang */
+        #scroll-top {
+            background: var(--primary);
+        }
+
+            #scroll-top:hover {
+                background: var(--primary-dark);
+            }
+
+    </style>
+</head>
+<body class="@(isHomePage ? "index-page home-page" : "")">
+
+    <header id="mainNavbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm py-2">
+        <div class="container-xl d-flex align-items-center justify-content-between">
+            <a class="navbar-brand fw-bold me-auto" asp-controller="Home" asp-action="Index">
+                <span class="brand-mark">Trọ</span>
+                <span class="brand-text ">Quanh Ta</span>
+            </a>
+            <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            @inject DACS_QuanLyPhongTro.Services.IUserService userService
+            @{
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                bool hasRental = false;
+                if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(userId))
+                {
+                    hasRental = await userService.HasActiveRentalAsync(userId);
+                }
+            }
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+                <ul class="navbar-nav align-items-center fw-semibold small text-dark ms-auto">
+                    <li class="nav-item mx-2">
+                        <a asp-controller="Home" asp-action="Index"
+                           class="nav-link @(currentController == "Home" ? "active" : "")">
+                            Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a asp-controller="PhongTro" asp-action="Index"
+                           class="nav-link @(currentController == "PhongTro" ? "active" : "")">
+                            Phòng trọ
+                        </a>
+                    </li>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item mx-2">
+                            <span class="nav-link fst-italic text-muted">
+                                Hãy
+                                <a asp-area="Identity" asp-page="/Account/Register">
+                                    đăng ký
+                                </a> /
+                                <a asp-area="Identity" asp-page="/Account/Login">
+                                    đăng nhập
+                                </a> để xem thêm tiện ích
+                            </span>
+                        </li>
+                    }
+                    else if (hasRental)
+                    {
+                        <li class="nav-item mx-2">
+                            <a asp-controller="PhongTroCuaToi" asp-action="Index" class="nav-link">Phòng trọ của tôi </a>
+                        </li>
+                    }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item mx-2 position-relative">
+                            <a asp-controller="HopDong" asp-action="XacNhan"
+                               class="nav-link d-flex align-items-center justify-content-center p-0"
+                               title="Hợp đồng chờ xác nhận">
+                                <i class="bi bi-file-earmark-text fs-5 text-dark position-relative"></i>
+                                <span id="contractBadge"
+                                      class="position-absolute top-0 start-100 translate-middle p-1 border border-light rounded-circle d-none notification-badge-color"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item mx-2 position-relative">
+                            <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1"
+                               class="nav-link d-flex align-items-center justify-content-center p-0"
+                               title="Thông báo lịch hẹn">
+                                <i class="bi bi-bell fs-5 text-dark position-relative notification-icon"></i>
+                                <span id="notificationBadge"
+                                      class="position-absolute top-0 start-100 translate-middle p-1 border border-light rounded-circle d-none notification-badge-color"></span>
+                            </a>
+                        </li>
+                    }
+                </ul>
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <!-- ICON HỢP ĐỒNG -->
-                    <li class="nav-item mx-2 position-relative">
-                        <a asp-controller="HopDong" asp-action="XacNhan"
-                           class="nav-link d-flex align-items-center justify-content-center p-0"
-                           title="Hợp đồng chờ xác nhận">
-                            <i class="bi bi-file-earmark-text fs-5 text-dark position-relative"></i>
-                            <span id="contractBadge"
-                                  class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle d-none"></span>
-                        </a>
-                    </li>
-
-                    <!-- ICON THÔNG BÁO -->
-                    <li class="nav-item mx-2 position-relative">
-                        <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1"
-                           class="nav-link d-flex align-items-center justify-content-center p-0"
-                           title="Thông báo lịch hẹn">
-                            <i class="bi bi-bell fs-5 text-dark position-relative notification-icon"></i>
-                            <span id="notificationBadge"
-                                  class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle d-none"></span>
-                        </a>
-                    </li>
+                    <div class="btn-group ms-3 me-2">
+                        <partial name="_LoginPartial" />
+                    </div>
                 }
-            </ul>
+            </div>
+        </div>
+    </header>
 
-            <!-- Dropdown tài khoản (ngoài cùng bên phải) -->
-            @if (User.Identity.IsAuthenticated)
-            {
-                <div class="btn-group ms-3 me-2">
-                    <partial name="_LoginPartial" />
+    @* HIỂN THỊ HERO SECTION CHỈ TRÊN TRANG HOME/INDEX *@
+    @if (isHomePage)
+    {
+        <section class="hero-lofi">
+            <div class="container">
+                <h1>Tìm trọ thật dễ<br><span>Chỉ cần chill và chọn ♡</span></h1>
+                <p class="lead mb-4">Những căn trọ xinh xắn, giá mềm, chủ nhà dễ thương đang chờ bạn</p>
+                <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary btn-lg">Bắt đầu tìm trọ ngay</a>
+
+                <div class="hero-images">
+                    <div class="large"><img src="https://i.pinimg.com/736x/3f/ae/fe/3faefeaf542d08f9c01b8e60e2f5abb0.jpg" alt="Phòng lớn"></div>
+                    <div><img src="https://i.pinimg.com/1200x/e4/2d/10/e42d10a1857b3cb588e58aa3e01c3aef.jpg" alt="Ảnh nhỏ 1"></div>
+                    <div><img src="https://i.pinimg.com/736x/c7/86/99/c786992cc869423b6b92e1bbf7ab1235.jpg" alt="Ảnh nhỏ 2"></div>
+                    <div><img src="https://i.pinimg.com/1200x/23/98/3a/23983a26a13563d318a27143ffc7dd3d.jpg" alt="Ảnh nhỏ 3"></div>
+                    <div><img src="https://i.pinimg.com/736x/93/af/ed/93afed7192a35372d2085ac2bdebbf21.jpg" alt="Ảnh nhỏ 4"></div>
                 </div>
-            }
+            </div>
+        </section>
+    }
+
+    <main class="main">
+        @RenderBody()
+    </main>
+
+    <footer id="footer" class="footer light-background">
+        <div class="container">
+            <div class="row gy-3">
+                <div class="col-lg-3 col-md-6 d-flex">
+                    <i class="bi bi-geo-alt icon"></i>
+                    <div class="address">
+                        <h4>Address</h4>
+                        <p>188/10B Tô Ngọc Vân</p>
+                        <p>phường Linh Đông, thành phố Hồ Chí Minh</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 d-flex">
+                    <i class="bi bi-telephone icon"></i>
+                    <div>
+                        <h4>Contact</h4>
+                        <p>
+                            <strong>Phone:</strong> <span>+84 862 357 096</span><br>
+                            <strong>Email:</strong> <span>trami27012004@gmail.com</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 d-flex">
+                    <i class="bi bi-clock icon"></i>
+                    <div>
+                        <h4>Support hours</h4>
+                        <p>
+                            <strong>Mon-Sat:</strong> <span>11AM - 23PM</span><br>
+                            <strong>Sunday</strong>: <span>Closed</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4>Follow Us</h4>
+                    <div class="social-links d-flex">
+                        <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</header>
+    </footer>
 
-
-  <main class="main">
-
-    @RenderBody()
-
-  </main>
-
-  <footer id="footer" class="footer light-background">
-
-    <div class="container">
-      <div class="row gy-3">
-        <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-geo-alt icon"></i>
-          <div class="address">
-            <h4>Address</h4>
-            <p>188/10B Tô Ngọc Vân</p>
-            <p>phường Linh Đông, thành phố Hồ Chí Minh</p>
-            <p></p>
-          </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-telephone icon"></i>
-          <div>
-            <h4>Contact</h4>
-            <p>
-              <strong>Phone:</strong> <span>+84 862 357 096</span><br>
-              <strong>Email:</strong> <span>trami27012004@gmail.com</span><br>
-            </p>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-clock icon"></i>
-          <div>
-            <h4>Support hours</h4>
-            <p>
-              <strong>Mon-Sat:</strong> <span>11AM - 23PM</span><br>
-              <strong>Sunday</strong>: <span>Closed</span>
-            </p>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-          <h4>Follow Us</h4>
-          <div class="social-links d-flex">
-            <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
-            <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    
-
-  </footer>
-
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Preloader -->
-  <div id="preloader"></div>
-
-  <!-- Vendor JS Files -->
-  <script src="~/assets/vendor/php-email-form/validate.js"></script>
-  <script src="~/assets/vendor/aos/aos.js"></script>
-  <script src="~/assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="~/assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <!-- Bootstrap JS (bundle chứa Popper) -->
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
-  <!-- Main JS File -->
-  <script src="~/assets/js/main.js"></script>
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <div id="preloader"></div>
+    <script src="~/assets/vendor/php-email-form/validate.js"></script>
+    <script src="~/assets/vendor/aos/aos.js"></script>
+    <script src="~/assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/main.js"></script>
     @RenderSection("Scripts", required: false)
+
     <script>
-      document.addEventListener("scroll", () => {
-      const header = document.querySelector("#mainNavbar");
-      if (!header) return; // tránh lỗi
-      if (window.scrollY > 50) {
-        header.classList.add("scrolled");
-      } else {
-        header.classList.remove("scrolled");
-      }
-    });
-
+        document.addEventListener("scroll", () => {
+            const header = document.querySelector("#mainNavbar");
+            if (!header) return;
+            if (window.scrollY > 50) header.classList.add("scrolled");
+            else header.classList.remove("scrolled");
+        });
     </script>
-
 </body>
-
 </html>

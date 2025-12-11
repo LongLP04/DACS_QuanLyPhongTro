@@ -1,490 +1,443 @@
-﻿@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Authentication.Cookies
-@using Microsoft.AspNetCore.Identity
-@using DACS_QuanLyPhongTro.Models
+﻿@{
+    Layout = null;
+    // Lấy thông tin Controller và Action hiện tại
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 
-@* @inject IHttpContextAccessor HttpContextAccessor  *@
-@* @inject SignInManager<IdentityUser> SignInManager  *@
-@* @inject UserManager<ApplicationUser> UserManager *@
-
-
-@inject DACS_QuanLyPhongTro.Services.IUserService userService
-@inject ApplicationDbContext _context
+    // Kiểm tra nếu là trang chủ (Home/Index)
+    var isHomePage = currentController == "Home" && currentAction == "Index";
+}
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-    <me  name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
     <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Trọ quanh ta</title>
+    <meta name="description" content="Tìm trọ dễ dàng, phong cách Lofi Chill.">
+    <meta name="keywords" content="phòng trọ, lofi, pastel, tìm trọ">
+    <link href="~/assets/img/images.ico" rel="icon">
+    <link href="~/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-    @* @{ *@
-    @*     var isAuthenticated = HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated; *@
-    @* } *@
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
-    <!-- Favicon -->
-    <link href="images/images.ico" rel="icon">
+    <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
 
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="~/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <link href="~/assets/css/main.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="~/lib/animate/animate.min.css" rel="stylesheet">
-    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="~/css/style.css?v=127" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="~/css/footer.css" rel="stylesheet">
-
-</head>
-<body>
-
-    <div class="main-content" style="background-image: url('@Url.Content("~/images/backMoi.jpg")') !important; background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; min-height: 100vh;">
-        <!-- Topbar Start -->
-        <div class="container-fluid">
-
-            <div class="row align-items-center py-0 px-xl-5 d-none d-lg-flex">
-                <div class="col-lg-4">
-                    <a href="/" class="text-decoration-none d-block w-100">
-                        <img src="/images/mainlogo3.png" alt="Logo Trọ quanh ta"
-                             class="img-fluid logo-animate"
-                             style="max-width: 100%; height: auto; transition: transform 0.3s ease;"
-                             onmouseover="this.style.transform='scale(1.05)'"
-                             onmouseout="this.style.transform='scale(1)'">
-                    </a>
-                </div>
-
-                <style>
-                    .modal {
-                        z-index: 11000 !important;
-                    }
-
-                    .modal-backdrop {
-                        z-index: 10900 !important;
-                    @@keyframes logoBounce {
-                        0%
-
-                    {
-                        transform: scale(1);
-                        opacity: 0;
-                    }
-
-                    50% {
-                        transform: scale(1.1);
-                        opacity: 1;
-                    }
-
-                    100% {
-                        transform: scale(1);
-                        opacity: 1;
-                    }
-
-                    }
-
-                    .logo-animate {
-                        animation: logoBounce 1s ease forwards;
-                        /* animation chỉ chạy 1 lần khi load */
-                    }
-                </style>
-
-                <div class="col-lg-4 col-6 text-left">
-                    <form asp-controller="Phongtro" asp-action="Index" method="get">
-                        <div class="input-group">
-                            <input type="text" class="form-control search-input" name="searchTerm" placeholder="Tìm kiếm trọ theo tên đường/quận/thành phố,.." value="@Context.Request.Query["searchTerm"]">
-                            <div class="input-group-append">
-                                <button class="btn search-button" type="submit">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <style>
-                            .search-input {
-                                border-color: #e67e22 !important; /* Viền cam đậm */
-                                background-color: #fff; /* Nền trắng để dễ đọc */
-                                color: #333; /* Chữ tối để tương phản */
-                            }
-
-                                .search-input:focus {
-                                    border-color: #d35400 !important; /* Viền đậm hơn khi focus */
-                                    box-shadow: 0 0 0 0.2rem rgba(230, 126, 34, 0.25); /* Hiệu ứng focus */
-                                    background-color: #fff;
-                                    color: #333;
-                                }
-
-                            .search-button {
-                                background-color: #e67e22 !important; /* Nền cam đậm */
-                                border-color: #e67e22 !important; /* Viền cam đậm */
-                                color: white !important; /* Chữ/icon trắng */
-                            }
-
-                                .search-button:hover {
-                                    background-color: #d35400 !important; /* Cam đậm hơn khi hover */
-                                    border-color: #d35400 !important;
-                                    color: white !important;
-                                }
-                        </style>
-                    </form>
-                </div>
-                <div class="col-lg-4 col-6 text-right">
-                    <div class="btn-group" style="margin-right : 50px">
-                        <partial name="_LoginPartial" />
-                    </div>   
-                    <a href="#footer" class="btn btn-success back-to-contact" style="background-color: #e67e22; border-color: #e67e22;">Liên hệ</a>
-                </div>
-            </div>
-
-        </div>
-        <!-- Topbar End -->
-        <!-- Navbar Start -->
-        <div class="container-fluid p-0 mb-0" style="background-color: #f39c12; border-radius: 0 0 15px 15px; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.5);">
-            <div class="row px-xl-5">
-                <div class="col-lg-3 d-none d-lg-block position-relative" style="z-index: 1050;">
-                    <a class="btn d-flex align-items-center justify-content-between w-100"
-                       data-toggle="collapse" href="#navbar-vertical"
-                       style="background-color: #f39c12; color: white; height: 65px; padding: 0 30px; transition: all 0.3s ease; border-radius: 10px 10px 0 0; box-shadow: 0 4px 8px rgba(0,0,0,0.2); cursor: pointer;">
-                        <h6 class="m-0 animate__animated animate__fadeIn d-flex align-items-center" style="color: #0b2047; font-weight: 700;">
-                            <i class="fa fa-bars mr-3" style="font-size: 1.3rem; text-shadow: 0 0 5px rgba(0,0,0,0.7);"></i>
-                            Truy cập nhanh các chức năng
-                        </h6>
-                        <i class="fa fa-angle-down"
-                           style="color: white; transition: transform 0.3s ease; font-size: 1.5rem; text-shadow: 0 0 5px rgba(0,0,0,0.7);"></i>
-                    </a>
-
-                    <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-3 bg-white rounded shadow-sm" id="navbar-vertical" style="width: calc(100% - 30px); top: 65px; left: 15px; z-index: 999; transition: opacity 0.3s ease;">
-                        <div class="navbar-nav w-100">
-                            <a asp-controller="Phongtro" asp-action="Index" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Tất cả phòng trọ</a>
-                            <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Thông báo lịch hẹn</a>
-                            <a asp-controller="PhieuThanhToan" asp-action="Index" asp-route-categoryId="2" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Thanh toán hóa đơn</a>
-                            <a asp-controller="Phongtrocuatoi" asp-action="Index" asp-route-categoryId="3" class="nav-item nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">Phòng trọ của tôi</a>
-                        </div>
-                    </nav>
-                </div>
-
-                <div class="col-lg-9 position-relative" style="z-index: 1050;">
-                    <nav class="navbar navbar-expand-lg navbar-dark py-3 py-lg-0 px-0 rounded" style="background-color: #f39c12; transition: all 0.3s ease;">
-                        <a href="/" class="text-decoration-none d-block w-100 d-lg-none">
-                            <img src="/images/mainlogo3.png" alt="Logo Trọ quanh ta"
-                                 class="img-fluid"
-                                 style="max-width: 70%; height: auto; transition: transform 0.3s ease;"
-                                 onmouseover="this.style.transform='scale(1.05)'"
-                                 onmouseout="this.style.transform='scale(1)'">
-                        </a>
-                        <button type="button" class="navbar-toggler border-0" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" style="transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.15); border-radius: 50%;">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-
-                        @{
-                            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-                            bool hasRental = false;
-                            if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(userId))
-                            {
-                                hasRental = await userService.HasActiveRentalAsync(userId);
-                            }
-                        }
-
-                        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse" style="transition: opacity 0.3s ease;">
-                            <ul class="navbar-nav mr-auto font-weight-bold">
-                                <li class="nav-item mx-2">
-                                    <a asp-controller="Home" asp-action="Index" class="nav-link px-3 py-2 rounded">
-                                        <i class="fas fa-home mr-2"></i> Trang chủ
-                                    </a>
-                                </li>
-                                <li class="nav-item mx-2">
-                                    <a asp-controller="PhongTro" asp-action="Index" class="nav-link px-3 py-2 rounded">
-                                        <i class="fas fa-building mr-2"></i> Phòng trọ
-                                    </a>
-                                </li>
-                                
-                                @if (!User.Identity.IsAuthenticated)
-                                {
-                                    <li class="nav-item mx-2">
-                                        <span class="nav-link fst-italic text-white">
-                                            Hãy
-                                            <a asp-area="Identity" asp-page="/Account/Register" class="text-light font-weight-bold">
-                                                <i class="fas fa-user-plus mr-1"></i> đăng ký
-                                            </a>
-                                            /
-                                            <a asp-area="Identity" asp-page="/Account/Login" class="text-light font-weight-bold">
-                                                <i class="fas fa-sign-in-alt mr-1"></i> đăng nhập
-                                            </a> để xem các tiện ích khác
-                                        </span>
-                                    </li>
-                                }
-								else if (!hasRental)
-								{
-                                    <li class="nav-item mx-2">
-                                        <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1" class="nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">
-                                            <i class="fas fa-bell mr-2"></i> Thông báo lịch hẹn
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item mx-2">
-                                        <a asp-controller="HopDong" asp-action="XacNhan" class="nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">
-                                            <i class="fas fa-file-signature mr-2"></i> Xác nhận hợp đồng
-                                        </a>
-                                    </li>
-								}
-                                else if (hasRental)
-                                {
-                                    <li class="nav-item mx-2">
-                                        <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1" class="nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">
-                                            <i class="fas fa-bell mr-2"></i> Thông báo lịch hẹn
-                                        </a>
-                                    </li>
-
-                                    <li class="nav-item mx-2">
-                                        <a asp-controller="HopDong" asp-action="XacNhan" class="nav-link px-3 py-2 rounded" style="transition: all 0.3s ease;">
-                                            <i class="fas fa-file-signature mr-2"></i> Xác nhận hợp đồng
-                                        </a>
-                                    </li>
-                                    <li class="nav-item mx-2">
-                                        <a asp-controller="Phongtrocuatoi" asp-action="Index" class="nav-link px-3 py-2 rounded">
-                                            <i class="fas fa-door-open mr-2"></i> Phòng trọ của tôi
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-
-                        </div>
-                    </nav>
-                </div>
-            </div>
-        </div>
-
-        <style>
-        /* --- Nút Liên hệ ban đầu --- */
-        .back-to-contact {
-            margin-top: 5px;
-            position: fixed;
-            right: 30px;
-            top: 15px;
-            z-index: 11;
-            background-color: #e67e22;
-            border-color: #e67e22;
-            color: #fff;
-            font-weight: 600;
-            padding: 10px 15px;
-            font-size: 14px;
-            border-radius: 8px;
-            transition: all 0.5s ease;
-            }
-
-            /* Khi cuộn xuống: di chuyển sang góc trái, bật hiệu ứng nhảy */
-            .back-to-contact.fixed {
-            top: auto;
-            bottom: 25px;
-            left: 90px;   /* nằm gần nút back-to-top */
-            right: auto;
-            border-radius: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-            animation: action 1.5s infinite alternate;
-            }
-
-        .back-to-contact.fixed:hover {
-            transform: scale(1.1);
-            background-color: #cf6a11 !important;
+    <style>
+        :root {
+            /* === MÀU PASTEL LOFI MỚI - siêu chill === */
+            --primary: #a8d5e2; /* xanh dương nhạt chính */
+            --primary-dark: #94c8db;
+            --accent: #c7ceea; /* tím nhạt */
+            --text-dark: #2d3748;
+            --muted: #64748b;
+            --surface: #ffffff;
+            --surface-alt: #f8faff;
         }
 
-            .back-to-top {
-                position: fixed;
-                bottom: 25px;   /* cách đáy 25px */
-                left: 25px;     /* chuyển qua bên trái */
-                right: auto;    /* tắt cố định bên phải */
-                z-index: 9999;
-                background-color: #28a745; /* màu xanh lá như btn-success */
-                color: white;
-                border-radius: 50%;
-                width: 50px;
-                height: 50px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: transform 0.3s ease;
+        body {
+            /* FONT CHUNG VÀ CỠ CHỮ */
+            background: linear-gradient(135deg, #f0f4f8, #e0eafc, #f2e9f8);
+            background-attachment: fixed;
+            font-family: "Poppins", sans-serif;
+            font-size: 17px; /* TĂNG CỠ CHỮ CHUNG */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Đảm bảo Main mở rộng để đẩy Footer xuống */
+        .main {
+            flex-grow: 1;
+            padding-top: 75px;
+        }
+
+        /* Cần điều chỉnh padding-top của main nếu isHomePage = true */
+        body.home-page .main {
+            padding-top: 0;
+        }
+
+        /* --- 1. NAVBAR & LOGIN PARTIAL STYLING --- */
+        #mainNavbar {
+            background: rgba(255,255,255,0.95) !important;
+            backdrop-filter: blur(10px);
+        }
+
+            /* ... [Giữ nguyên CSS Navbar đã đồng bộ] ... */
+            #mainNavbar.scrolled {
+                background: #ffffff !important;
+                box-shadow: 0 8px 25px rgba(168,213,226,0.25);
             }
 
-            .back-to-top:hover {
-                transform: scale(1.1);
+        .navbar-brand .brand-mark {
+            color: var(--primary);
+        }
+
+        .navbar-brand .brand-text {
+            color: var(--text-dark);
+        }
+
+        /* Active/Hover links */
+        .navbar-nav .nav-link:hover {
+            color: var(--primary-dark) !important;
+        }
+
+        /* Link đang active */
+        .navbar-nav .nav-link.active {
+            background-color: var(--primary);
+            color: var(--text-dark) !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .navbar-nav .nav-link::after {
+            background: var(--primary);
+        }
+
+        /* Link Đăng ký/Đăng nhập */
+        .nav-link.fst-italic a {
+            color: var(--primary) !important;
+            text-decoration: underline;
+        }
+
+            .nav-link.fst-italic a:hover {
+                color: var(--primary-dark) !important;
             }
 
-            /* Tổng quan navbar */
-            .navbar {
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(243, 156, 18, 0.45);
+        /* Badge thông báo (chấm tròn) */
+        .notification-badge-color {
+            background-color: var(--primary) !important;
+            border-color: var(--surface) !important;
+        }
+
+        /* Icon Nav bar (Hợp đồng, Thông báo) */
+        .navbar-nav .bi {
+            color: var(--text-dark) !important;
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover .bi {
+            color: var(--primary-dark) !important;
+        }
+
+
+        /* --- 2. HERO LOFI STYLING (FONT ĐỘC ĐÁO & MÀU TÍM XANH) --- */
+        .hero-lofi {
+            padding: 140px 0 100px;
+            text-align: center;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3, #f2e9f8);
+        }
+
+            .hero-lofi h1 {
+                /* FONT ĐỘC ĐÁO */
+                font-family: "Satisfy", cursive;
+                font-size: 4.5rem;
+                font-weight: 400;
+                color: var(--text-dark);
+                margin-bottom: 1rem;
             }
 
-            /* Nav link chung */
-            .nav-link {
-                color: #0b2047 !important; /* Màu chữ đổi sang #0b2047 */
-                font-weight: 600;
-                font-size: 1rem;
-                transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-                padding-top: 0.3rem !important;
-                padding-bottom: 0.3rem !important;
-                line-height: 1.2;
+                .hero-lofi h1 span {
+                    /* Đổi gradient sang TÍM NHẠT (ACCENT) -> XANH NHẠT (PRIMARY) */
+                    background: linear-gradient(120deg, var(--accent), var(--primary));
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    /* Tăng font size cho phần span để nổi bật hơn */
+                    font-size: 1.1em;
+                }
+
+            .hero-lofi p.lead {
+                font-size: 1.3rem; /* Tăng nhẹ cỡ chữ Lead */
+            }
+
+
+        /* --- [Giữ nguyên CSS Hero Images và Buttons đã đồng bộ] --- */
+        /* Hình ảnh Hero */
+        .hero-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 180px 180px;
+            gap: 1.2rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+
+            .hero-images > div {
+                overflow: hidden;
+                border-radius: 1.5rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                position: relative;
+                transition: box-shadow 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+
+            .hero-images .large {
+                grid-row: span 2;
+                grid-column: span 2;
+            }
+
+            .hero-images img {
+                width: 100%;
                 height: 100%;
-                display: flex;
-                align-items: center;
+                object-fit: cover;
+                border-radius: 0;
+                transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             }
 
-                /* Hover nav link */
-                .nav-link:hover, .nav-link:focus {
-                    background-color: #d18b00 !important;
-                    color: white !important;
-                    box-shadow: 0 6px 15px rgba(209, 139, 0, 0.7);
-                    transform: scale(1.05);
-                    border-radius: 12px;
-                }
-
-            /* Navbar toggler button */
-            .navbar-toggler {
-                background-color: #d18b00;
-                border-radius: 50%;
-                transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-                box-shadow: 0 2px 10px rgba(209, 139, 0, 0.6);
+            /* Hiệu ứng hover cho hình ảnh (Bóng màu xanh dương nhạt) */
+            .hero-images > div:hover img {
+                transform: scale(1.15);
             }
 
-                .navbar-toggler:hover {
-                    background-color: #a97000;
-                    transform: scale(1.15);
-                    box-shadow: 0 6px 20px rgba(169, 112, 0, 0.8);
-                }
-
-            /* Vertical navbar menu */
-            #navbar-vertical {
-                border-radius: 0 0 12px 12px;
+            .hero-images > div:hover {
+                box-shadow: 0 15px 40px rgba(168, 213, 226, 0.6);
             }
 
-                #navbar-vertical .nav-link {
-                    color: #333 !important;
-                    font-weight: 500;
-                    transition: background-color 0.3s ease, color 0.3s ease;
+        /* Styling cho nút chính (btn-primary) */
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--text-dark);
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+            font-weight: 600;
+        }
+
+            .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+                background-color: var(--primary-dark) !important;
+                border-color: var(--primary-dark) !important;
+                color: var(--text-dark) !important;
+                box-shadow: 0 4px 15px rgba(168,213,226,0.5) !important;
+            }
+
+
+        /* --- 3. FOOTER STYLING --- */
+        .footer {
+            background-color: var(--surface);
+            border-top: 1px solid var(--primary);
+            padding: 30px 0;
+            width: 100%;
+        }
+
+            .footer .icon {
+                color: var(--primary);
+                font-size: 1.8rem;
+                margin-right: 15px;
+            }
+
+            .footer h4 {
+                font-weight: 700;
+            }
+
+            .footer p {
+                font-size: 1rem; /* Tăng nhẹ cỡ chữ footer */
+            }
+
+
+            .footer .social-links a {
+                background: var(--surface-alt);
+                color: var(--muted);
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+                .footer .social-links a:hover {
+                    background: var(--primary);
+                    color: var(--surface);
                 }
 
-                    #navbar-vertical .nav-link:hover {
-                        background-color: #f3c24b !important;
-                        color: #1a1a1a !important;
+        /* Màu nút cuộn lên đầu trang */
+        #scroll-top {
+            background: var(--primary);
+        }
+
+            #scroll-top:hover {
+                background: var(--primary-dark);
+            }
+
+    </style>
+</head>
+<body class="@(isHomePage ? "index-page home-page" : "")">
+
+    <header id="mainNavbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm py-2">
+        <div class="container-xl d-flex align-items-center justify-content-between">
+            <a class="navbar-brand fw-bold me-auto" asp-controller="Home" asp-action="Index">
+                <span class="brand-mark">Trọ</span>
+                <span class="brand-text ">Quanh Ta</span>
+            </a>
+            <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            @inject DACS_QuanLyPhongTro.Services.IUserService userService
+            @{
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                bool hasRental = false;
+                if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(userId))
+                {
+                    hasRental = await userService.HasActiveRentalAsync(userId);
+                }
+            }
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+                <ul class="navbar-nav align-items-center fw-semibold small text-dark ms-auto">
+                    <li class="nav-item mx-2">
+                        <a asp-controller="Home" asp-action="Index"
+                           class="nav-link @(currentController == "Home" ? "active" : "")">
+                            Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a asp-controller="PhongTro" asp-action="Index"
+                           class="nav-link @(currentController == "PhongTro" ? "active" : "")">
+                            Phòng trọ
+                        </a>
+                    </li>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item mx-2">
+                            <span class="nav-link fst-italic text-muted">
+                                Hãy
+                                <a asp-area="Identity" asp-page="/Account/Register">
+                                    đăng ký
+                                </a> /
+                                <a asp-area="Identity" asp-page="/Account/Login">
+                                    đăng nhập
+                                </a> để xem thêm tiện ích
+                            </span>
+                        </li>
                     }
-
-                /* Hide vertical navbar opacity transition fix */
-                #navbar-vertical.collapsing {
-                    opacity: 0;
+                    else if (hasRental)
+                    {
+                        <li class="nav-item mx-2">
+                            <a asp-controller="PhongTroCuaToi" asp-action="Index" class="nav-link">Phòng trọ của tôi </a>
+                        </li>
+                    }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item mx-2 position-relative">
+                            <a asp-controller="HopDong" asp-action="XacNhan"
+                               class="nav-link d-flex align-items-center justify-content-center p-0"
+                               title="Hợp đồng chờ xác nhận">
+                                <i class="bi bi-file-earmark-text fs-5 text-dark position-relative"></i>
+                                <span id="contractBadge"
+                                      class="position-absolute top-0 start-100 translate-middle p-1 border border-light rounded-circle d-none notification-badge-color"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item mx-2 position-relative">
+                            <a asp-controller="Notifications" asp-action="Index" asp-route-categoryId="1"
+                               class="nav-link d-flex align-items-center justify-content-center p-0"
+                               title="Thông báo lịch hẹn">
+                                <i class="bi bi-bell fs-5 text-dark position-relative notification-icon"></i>
+                                <span id="notificationBadge"
+                                      class="position-absolute top-0 start-100 translate-middle p-1 border border-light rounded-circle d-none notification-badge-color"></span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="btn-group ms-3 me-2">
+                        <partial name="_LoginPartial" />
+                    </div>
                 }
+            </div>
+        </div>
+    </header>
 
-                #navbar-vertical.show {
-                    opacity: 1;
-                }
+    @* HIỂN THỊ HERO SECTION CHỈ TRÊN TRANG HOME/INDEX *@
+    @if (isHomePage)
+    {
+        <section class="hero-lofi">
+            <div class="container">
+                <h1>Tìm trọ thật dễ<br><span>Chỉ cần chill và chọn ♡</span></h1>
+                <p class="lead mb-4">Những căn trọ xinh xắn, giá mềm, chủ nhà dễ thương đang chờ bạn</p>
+                <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary btn-lg">Bắt đầu tìm trọ ngay</a>
 
-            /* Căn chỉnh dọc nav item */
-            .navbar-nav .nav-item {
-                display: flex;
-                align-items: center;
-                height: 65px;
-            }
-            /* Hiệu ứng xoay icon mũi tên */
-            .fa-angle-down.rotated {
-                transform: rotate(180deg);
-                transition: transform 0.3s ease;
-            }
+                <div class="hero-images">
+                    <div class="large"><img src="https://i.pinimg.com/736x/3f/ae/fe/3faefeaf542d08f9c01b8e60e2f5abb0.jpg" alt="Phòng lớn"></div>
+                    <div><img src="https://i.pinimg.com/1200x/e4/2d/10/e42d10a1857b3cb588e58aa3e01c3aef.jpg" alt="Ảnh nhỏ 1"></div>
+                    <div><img src="https://i.pinimg.com/736x/c7/86/99/c786992cc869423b6b92e1bbf7ab1235.jpg" alt="Ảnh nhỏ 2"></div>
+                    <div><img src="https://i.pinimg.com/1200x/23/98/3a/23983a26a13563d318a27143ffc7dd3d.jpg" alt="Ảnh nhỏ 3"></div>
+                    <div><img src="https://i.pinimg.com/736x/93/af/ed/93afed7192a35372d2085ac2bdebbf21.jpg" alt="Ảnh nhỏ 4"></div>
+                </div>
+            </div>
+        </section>
+    }
 
-            /* Hiệu ứng nhấn khi hover */
-            a.btn:hover {
-                background-color: #d18b00 !important;
-                box-shadow: 0 6px 15px rgba(209, 139, 0, 0.7);
-                transform: scale(1.05);
-                border-radius: 10px 10px 0 0;
-            }
-
-            /* --- Footer --- */
-            .footer {
-                display: none; /* Ẩn footer theo mặc định */
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background-color: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(10px);
-                padding: 10px 0;
-                text-align: center;
-                z-index: 1000;
-                transition: transform 0.3s ease;
-            }
-
-            .footer-content {
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 0 15px;
-                font-size: 14px;
-                color: #333;
-            }
-
-            /* Khi cuộn xuống: hiện footer */
-            body.scrolled .footer {
-                display: block;
-                transform: translateY(0);
-            }
-
-            /* Khi cuộn lên: ẩn footer */
-            body:not(.scrolled) .footer {
-                transform: translateY(100%);
-            }
-        </style>
-
+    <main class="main">
         @RenderBody()
+    </main>
 
-        @await Html.PartialAsync("_Footer")
-    </div>
-    <!-- Back to Top -->
+    <footer id="footer" class="footer light-background">
+        <div class="container">
+            <div class="row gy-3">
+                <div class="col-lg-3 col-md-6 d-flex">
+                    <i class="bi bi-geo-alt icon"></i>
+                    <div class="address">
+                        <h4>Address</h4>
+                        <p>188/10B Tô Ngọc Vân</p>
+                        <p>phường Linh Đông, thành phố Hồ Chí Minh</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 d-flex">
+                    <i class="bi bi-telephone icon"></i>
+                    <div>
+                        <h4>Contact</h4>
+                        <p>
+                            <strong>Phone:</strong> <span>+84 862 357 096</span><br>
+                            <strong>Email:</strong> <span>trami27012004@gmail.com</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 d-flex">
+                    <i class="bi bi-clock icon"></i>
+                    <div>
+                        <h4>Support hours</h4>
+                        <p>
+                            <strong>Mon-Sat:</strong> <span>11AM - 23PM</span><br>
+                            <strong>Sunday</strong>: <span>Closed</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4>Follow Us</h4>
+                    <div class="social-links d-flex">
+                        <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-    <a href="#" class="btn btn-success  back-to-top"><i class="fa fa-angle-double-up" ></i></a>
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <div id="preloader"></div>
+    <script src="~/assets/vendor/php-email-form/validate.js"></script>
+    <script src="~/assets/vendor/aos/aos.js"></script>
+    <script src="~/assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/main.js"></script>
+    @RenderSection("Scripts", required: false)
 
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/easing/easing.min.js"></script>
-    <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
-
-    <!-- Contact Javascript File -->
-
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="~/js/main.js"></script>
-    @RenderSection("Scripts", required: false)  <!-- Thêm dòng này vào đây -->
+    <script>
+        document.addEventListener("scroll", () => {
+            const header = document.querySelector("#mainNavbar");
+            if (!header) return;
+            if (window.scrollY > 50) header.classList.add("scrolled");
+            else header.classList.remove("scrolled");
+        });
+    </script>
 </body>
 </html>
-<script>
-    // Thêm hiệu ứng xoay icon mũi tên khi mở/đóng collapse
-    $(document).ready(function () {
-        $('[data-toggle="collapse"]').on('click', function () {
-            var icon = $(this).find('.fa-angle-down');
-            icon.toggleClass('rotated');
-        });
-    });
-    window.addEventListener('scroll', function() {
-    const contactBtn = document.querySelector('.back-to-contact');
-    const scrollPos = window.scrollY;
-
-    if (scrollPos > 10) { // khi cuộn xuống hơn 300px
-        contactBtn.classList.add('fixed');
-    } else {
-        contactBtn.classList.remove('fixed');
-    }
-
-    const footer = document.querySelector('.footer');
-    if (window.scrollY > 100) {
-        document.body.classList.add('scrolled');
-    } else {
-        document.body.classList.remove('scrolled');
-    }
-});
-</script>

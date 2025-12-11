@@ -6,11 +6,10 @@
 <section class="section find-room-section">
     <div class="container text-center mb-5">
         <h2 class="section-title-main">
-            <i class="fas fa-map-marker-alt me-2 text-success"></i>
+            <i class="fas fa-map-marker-alt me-2 icon-primary"></i>
             Tìm phòng trọ gần tôi
         </h2>
 
-        <!-- Bộ lọc khoảng cách -->
         <div class="filter-distance d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4">
             <label for="distanceFilter" class="fw-semibold fs-5 text-dark">
                 Khoảng cách tối đa:
@@ -25,219 +24,249 @@
         </div>
     </div>
 
-    <!-- Kết quả -->
     <div id="phongGanContainer" class="container room-grid">
         <div class="loading-text text-muted">Đang tải phòng trọ gần bạn...</div>
     </div>
 </section>
 
 <style>
-/* ===== Chung layout ===== */
-.find-room-section {
-    margin-top: 100px;
-    margin-bottom: 80px;
-}
+    :root {
+        /* Định nghĩa lại màu sắc để các style bên dưới sử dụng */
+        --primary: #a8d5e2; /* xanh dương nhạt chính */
+        --primary-dark: #94c8db;
+        --accent: #c7ceea; /* tím nhạt */
+        --text-dark: #2d3748;
+    }
 
-.section-title-main {
-    font-weight: 800;
-    font-size: 2rem;
-    color: #0d2a4d;
-    text-transform: uppercase;
-    position: relative;
-    display: inline-block;
-}
-.section-title-main::after {
-    content: "";
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(90deg, #1ec36e, #22b87a);
-    border-radius: 2px;
-}
+    /* ===== Chung layout ===== */
+    .find-room-section {
+        margin-top: 100px;
+        margin-bottom: 80px;
+    }
 
-/* ===== Dropdown lọc ===== */
-.distance-select {
-    min-width: 160px;
-    border-radius: 30px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: 2px solid #1ec36e;
-    color: #0d2a4d;
-    transition: all 0.3s ease;
-}
-.distance-select:focus {
-    border-color: #22b87a;
-    box-shadow: 0 0 0 0.25rem rgba(30, 195, 110, 0.25);
-}
-.distance-select:hover {
-    border-color: #22b87a;
-}
-
-/* ===== Grid các phòng trọ ===== */
-.room-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-    gap: 25px;
-    justify-items: center;
-    padding: 0 20px;
-}
-
-.loading-text {
-    font-style: italic;
-    text-align: center;
-    font-size: 1.1rem;
-    color: #777;
-}
-
-/* ===== Card phòng trọ ===== */
-.phong-item {
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
-    width: 100%;
-    max-width: 340px;
-}
-.phong-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-/* --- Hình ảnh phòng --- */
-.phong-item img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
-    transition: transform 0.4s ease;
-}
-.phong-item:hover img {
-    transform: scale(1.05);
-}
-
-/* --- Nội dung --- */
-.phong-content {
-    padding: 1.2rem;
-}
-.phong-content h5 {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #0d2a4d;
-    margin-bottom: 8px;
-}
-.phong-content p {
-    margin-bottom: 6px;
-    font-size: 0.95rem;
-    color: #444;
-}
-
-/* --- Nút hành động --- */
-.phong-actions {
-    margin-top: 12px;
-}
-.phong-actions a {
-    margin: 0 5px;
-    border-radius: 25px;
-    font-size: 0.9rem;
-    padding: 6px 16px;
-    transition: all 0.3s ease;
-}
-.phong-actions .btn-info {
-    background-color: #1ec36e;
-    border: none;
-    color: #fff;
-}
-.phong-actions .btn-info:hover {
-    background-color: #169a57;
-    box-shadow: 0 5px 15px rgba(30, 195, 110, 0.3);
-}
-.phong-actions .btn-success {
-    background-color: #0d6efd;
-    border: none;
-}
-.phong-actions .btn-success:hover {
-    background-color: #0a58ca;
-    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
-}
-
-/* Responsive */
-@@media (max-width: 768px) {
     .section-title-main {
-        font-size: 1.6rem;
+        font-weight: 800;
+        font-size: 2rem;
+        color: var(--text-dark); /* Đổi màu chữ tối */
+        text-transform: uppercase;
+        position: relative;
+        display: inline-block;
     }
+
+        .section-title-main .icon-primary {
+            color: var(--primary); /* Đổi icon sang màu Primary */
+        }
+
+        .section-title-main::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark)); /* Đổi gradient sang Primary */
+            border-radius: 2px;
+        }
+
+    /* ===== Dropdown lọc ===== */
+    .distance-select {
+        min-width: 160px;
+        border-radius: 30px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: 2px solid var(--primary); /* Đổi viền sang Primary */
+        color: var(--text-dark);
+        transition: all 0.3s ease;
+    }
+
+        .distance-select:focus {
+            border-color: var(--primary-dark); /* Đổi màu focus sang Primary Dark */
+            box-shadow: 0 0 0 0.25rem rgba(168, 213, 226, 0.5); /* Đổi shadow focus sang Primary */
+        }
+
+        .distance-select:hover {
+            border-color: var(--primary-dark);
+        }
+
+    /* ===== Grid các phòng trọ (Giữ nguyên) ===== */
     .room-grid {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+        gap: 25px;
+        justify-items: center;
+        padding: 0 20px;
     }
-}
+
+    .loading-text {
+        font-style: italic;
+        text-align: center;
+        font-size: 1.1rem;
+        color: #777;
+    }
+
+    /* ===== Card phòng trọ (Giữ nguyên style chung) ===== */
+    .phong-item {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+        width: 100%;
+        max-width: 340px;
+    }
+
+        .phong-item:hover {
+            transform: translateY(-5px);
+            /* Thêm shadow Primary khi hover */
+            box-shadow: 0 8px 25px rgba(168, 213, 226, 0.4);
+        }
+
+        /* --- Hình ảnh phòng --- */
+        .phong-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 14px;
+            border-top-right-radius: 14px;
+            transition: transform 0.4s ease;
+        }
+
+        .phong-item:hover img {
+            transform: scale(1.05);
+        }
+
+    /* --- Nội dung --- */
+    .phong-content {
+        padding: 1.2rem;
+    }
+
+        .phong-content h5 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .phong-content p {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+    /* --- Nút hành động --- */
+    .phong-actions {
+        margin-top: 12px;
+    }
+
+        .phong-actions a {
+            margin: 0 5px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            padding: 6px 16px;
+            transition: all 0.3s ease;
+        }
+
+        /* Nút Bản đồ (trước là btn-info/xanh lá) -> Đổi sang Primary */
+        .phong-actions .btn-info {
+            background-color: var(--primary);
+            border: none;
+            color: var(--text-dark); /* Chữ tối để dễ đọc */
+        }
+
+            .phong-actions .btn-info:hover {
+                background-color: var(--primary-dark);
+                box-shadow: 0 5px 15px rgba(168, 213, 226, 0.3);
+            }
+
+        /* Nút Chi tiết (trước là btn-success/xanh lá) -> Đổi sang màu Accent/Darker Primary */
+        .phong-actions .btn-success {
+            background-color: var(--primary-dark);
+            border: none;
+            color: var(--text-dark);
+        }
+
+            .phong-actions .btn-success:hover {
+                background-color: var(--primary); /* Hover sáng hơn */
+                box-shadow: 0 5px 15px rgba(168, 213, 226, 0.3);
+            }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .section-title-main {
+            font-size: 1.6rem;
+        }
+
+        .room-grid {
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        }
+    }
 </style>
 
 <script>
-function getUserLocationAndSearch() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            fetchPhongGan(lat, lng);
-            document.getElementById("distanceFilter").addEventListener("change", function () {
+    function getUserLocationAndSearch() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
                 fetchPhongGan(lat, lng);
+                document.getElementById("distanceFilter").addEventListener("change", function () {
+                    fetchPhongGan(lat, lng);
+                });
+            }, function (error) {
+                document.getElementById("phongGanContainer").innerHTML =
+                    `<p class="text-center text-danger mt-4">Không thể lấy vị trí: ${error.message}</p>`;
             });
-        }, function (error) {
+        } else {
             document.getElementById("phongGanContainer").innerHTML =
-                `<p class="text-center text-danger mt-4">Không thể lấy vị trí: ${error.message}</p>`;
-        });
-    } else {
-        document.getElementById("phongGanContainer").innerHTML =
-            "<p class='text-center text-danger mt-4'>Trình duyệt không hỗ trợ Geolocation.</p>";
-    }
-}
-
-function fetchPhongGan(lat, lng) {
-    const maxDistance = document.getElementById("distanceFilter").value;
-    let url = `/PhongTro/GetPhongGanToi?lat=${lat}&lng=${lng}`;
-    if (maxDistance && maxDistance !== "0") url += `&maxDistance=${maxDistance}`;
-
-    fetch(url)
-        .then(response => response.json())
-        .then(data => renderPhongGan(data))
-        .catch(err => {
-            document.getElementById("phongGanContainer").innerHTML =
-                `<p class='text-center text-danger mt-4'>Lỗi khi tải danh sách phòng: ${err}</p>`;
-        });
-}
-
-function renderPhongGan(phongList) {
-    const container = document.getElementById("phongGanContainer");
-    container.innerHTML = "";
-    if (!phongList || phongList.length === 0) {
-        container.innerHTML = "<p class='text-center mt-4 text-muted'>Không tìm thấy phòng trọ gần vị trí của bạn.</p>";
-        return;
+                "<p class='text-center text-danger mt-4'>Trình duyệt không hỗ trợ Geolocation.</p>";
+        }
     }
 
-    phongList.forEach(p => {
-        const div = document.createElement("div");
-        div.classList.add("phong-item");
-        div.innerHTML = `
-            
-            <div class="phong-content">
-                <h5> Phòng : ${p.soPhong} - ${p.tenToaNha}</h5>
-                <p><strong>Giá:</strong> ${p.giaThue.toLocaleString('vi-VN')} VNĐ</p>
-                <p><strong>Địa chỉ:</strong> ${p.diaChi}</p>
-                <p><strong>Khoảng cách:</strong> ${p.distance.toFixed(2)} km</p>
-                <div class="phong-actions">
-                    <a href="https://www.google.com/maps?q=${p.viTri}" target="_blank" class="btn btn-info btn-sm">Bản đồ</a>
-                    <a href="/PhongTro/Details/${p.maPhong}" class="btn btn-success btn-sm">Chi tiết</a>
+    function fetchPhongGan(lat, lng) {
+        const maxDistance = document.getElementById("distanceFilter").value;
+        let url = `/PhongTro/GetPhongGanToi?lat=${lat}&lng=${lng}`;
+        if (maxDistance && maxDistance !== "0") url += `&maxDistance=${maxDistance}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => renderPhongGan(data))
+            .catch(err => {
+                document.getElementById("phongGanContainer").innerHTML =
+                    `<p class='text-center text-danger mt-4'>Lỗi khi tải danh sách phòng: ${err}</p>`;
+            });
+    }
+
+    function renderPhongGan(phongList) {
+        const container = document.getElementById("phongGanContainer");
+        container.innerHTML = "";
+        if (!phongList || phongList.length === 0) {
+            container.innerHTML = "<p class='text-center mt-4 text-muted'>Không tìm thấy phòng trọ gần vị trí của bạn.</p>";
+            return;
+        }
+
+        phongList.forEach(p => {
+            const div = document.createElement("div");
+            div.classList.add("phong-item");
+            // Chú ý: Tôi không thêm thẻ <img> vì không thấy định nghĩa URL hình ảnh trong mã JS gốc.
+            // Bạn cần tự thêm logic URL hình ảnh vào đây nếu muốn hiển thị ảnh.
+            div.innerHTML = `
+
+                <div class="phong-content">
+                    <h5> Phòng : ${p.soPhong} - ${p.tenToaNha}</h5>
+                    <p><strong>Giá:</strong> ${p.giaThue.toLocaleString('vi-VN')} VNĐ</p>
+                    <p><strong>Địa chỉ:</strong> ${p.diaChi}</p>
+                    <p><strong>Khoảng cách:</strong> ${p.distance.toFixed(2)} km</p>
+                    <div class="phong-actions">
+                        <a href="https://www.google.com/maps?q=${p.viTri}" target="_blank" class="btn btn-info btn-sm">Bản đồ</a>
+                        <a href="/PhongTro/Details/${p.maPhong}" class="btn btn-success btn-sm">Chi tiết</a>
+                    </div>
                 </div>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
+            `;
+            container.appendChild(div);
+        });
+    }
 
-window.onload = getUserLocationAndSearch;
+    window.onload = getUserLocationAndSearch;
 </script>

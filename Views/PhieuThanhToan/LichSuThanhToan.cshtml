@@ -7,24 +7,24 @@
 
 <section class="history-page section">
     <div class="container-fluid px-xl-5 py-5">
-        <div class="history-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
+        <div class="history-wrapper bg-white rounded-5 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
 
             <div class="text-center mb-4">
-                <h2 class="fw-bold" style="color: #1ec36e;">Lịch sử thanh toán</h2>
+                <h2 class="fw-bold text-primary-color">Lịch sử thanh toán</h2>
                 <p class="text-muted">Theo dõi các giao dịch thanh toán của bạn</p>
             </div>
 
             @if (!Model.Any())
             {
-                <div class="alert alert-light text-center border rounded-4 py-4 shadow-sm">
-                    <i class="bi bi-receipt-cutoff text-success me-2"></i>Bạn chưa có giao dịch nào.
+                <div class="alert alert-light text-center border rounded-4 py-4 shadow-sm alert-primary-style-empty">
+                    <i class="bi bi-receipt-cutoff text-primary-color me-2"></i>Bạn chưa có giao dịch nào.
                 </div>
             }
             else
             {
                 <div class="table-responsive">
                     <table class="table table-hover align-middle shadow-sm rounded-4 overflow-hidden history-table">
-                        <thead class="text-white">
+                        <thead class="text-dark">
                             <tr>
                                 <th>Phòng</th>
                                 <th>Ngày thanh toán</th>
@@ -44,13 +44,13 @@
                                     <td>
                                         @if (ptt.HoaDon?.TrangThai == "Chờ xác nhận")
                                         {
-                                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">
+                                            <span class="badge badge-pending px-3 py-2 rounded-pill">
                                                 <i class="bi bi-hourglass-split me-1"></i> Chờ xác nhận
                                             </span>
                                         }
                                         else if (ptt.HoaDon?.TrangThai == "Đã thanh toán")
                                         {
-                                            <span class="badge bg-success text-white px-3 py-2 rounded-pill">
+                                            <span class="badge badge-confirmed px-3 py-2 rounded-pill">
                                                 <i class="bi bi-check2-circle me-1"></i> Đã xác nhận
                                             </span>
                                         }
@@ -70,7 +70,7 @@
 
             <div class="text-center mt-5">
                 <a asp-controller="PhieuThanhToan" asp-action="Index"
-                   class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                   class="btn btn-primary-filled rounded-pill px-4 py-2 shadow-sm fw-semibold btn-hover-scale">
                     <i class="bi bi-arrow-left-circle me-2"></i> Quay về hóa đơn thanh toán
                 </a>
             </div>
@@ -79,49 +79,99 @@
 </section>
 
 <style>
-.history-page { margin-top: 10px; margin-bottom: 10px; }
+    :root {
+        --primary: #a8d5e2;
+        --primary-dark: #94c8db;
+        --accent: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+        --surface-alt: #f8faff;
+        --muted: #64748b;
+    }
 
-/* === BẢNG === */
-.history-table {
-    border: 1px solid #ddd;
-    border-radius: 14px;
-    background-color: #fff;
-}
-.history-table thead {
-    background-color: #1ec36e;
-}
-.history-table th {
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-    padding: 14px;
-}
-.history-table td {
-    color: #333;
-    padding: 12px;
-}
-.history-table tr:hover td {
-    background-color: #e8fff1;
-    transition: background-color 0.3s ease;
-}
+    /* Lớp hỗ trợ màu */
+    .text-primary-color {
+        color: var(--primary) !important;
+    }
 
-/* === CARD & NÚT === */
-.history-wrapper {
-    border: 1.4px solid #dcdcdc;
-    transition: all 0.3s ease;
-}
-.history-wrapper:hover {
-    border-color: #1ec36e;
-    box-shadow: 0 8px 20px rgba(30,195,110,0.15);
-}
-.btn-success {
-    background-color: #1ec36e;
-    border: none;
-}
-.btn-success:hover {
-    background-color: #17a75c;
-    transform: scale(1.05);
-    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
-}
+    .btn-primary-filled {
+        background-color: var(--primary);
+        color: var(--text-dark);
+        border: none;
+    }
+
+    /* Badge */
+    .badge-confirmed {
+        background-color: var(--primary) !important;
+        color: var(--text-dark) !important;
+    }
+
+    .badge-pending {
+        background-color: var(--accent) !important;
+        color: var(--text-dark) !important;
+    }
+
+    .alert-primary-style-empty {
+        background-color: var(--surface-alt) !important;
+        border-color: var(--primary) !important;
+    }
+
+
+    .history-page {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .history-wrapper {
+        border-radius: 1.5rem !important; /* Bo góc lớn hơn */
+        border: 1.5px solid var(--surface-alt);
+    }
+
+        .history-wrapper:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(168, 213, 226, 0.4);
+        }
+
+
+    /* === BẢNG === */
+    .history-table {
+        border: 1px solid var(--surface-alt);
+        border-radius: 14px;
+        background-color: var(--surface);
+    }
+
+        .history-table thead {
+            background-color: var(--primary-dark);
+        }
+
+        .history-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            padding: 14px;
+            color: var(--text-dark);
+        }
+
+        .history-table td {
+            color: #333;
+            padding: 12px;
+        }
+
+        .history-table tr:hover td {
+            background-color: var(--surface-alt);
+            transition: background-color 0.3s ease;
+        }
+
+    /* === NÚT === */
+    .btn-hover-scale {
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .btn-primary-filled:hover {
+        background-color: var(--primary-dark);
+        transform: scale(1.05);
+        box-shadow: 0 8px 14px rgba(168, 213, 226, 0.5);
+    }
 </style>

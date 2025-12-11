@@ -7,40 +7,38 @@
 
 <section class="contract-detail-page section">
     <div class="container-fluid px-xl-5 py-5">
-        <div class="contract-wrapper bg-white rounded-4 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
+        <div class="contract-wrapper bg-white rounded-5 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
 
-            <!-- Tiêu đề -->
             <div class="text-center mb-4">
-                <h2 class="fw-bold" style="color: #1ec36e;">Chi tiết hợp đồng</h2>
+                <h2 class="fw-bold text-primary-color">Chi tiết hợp đồng</h2>
                 <p class="text-muted">Thông tin chi tiết hợp đồng thuê phòng của bạn</p>
             </div>
 
-            <!-- Hợp đồng + Phòng -->
             <div class="row g-4 mb-4">
                 <div class="col-md-6">
-                    <div class="card shadow-sm border-0 rounded-4">
-                        <div class="card-header bg-success text-white fw-semibold rounded-top-4">
+                    <div class="card shadow-sm border-0 rounded-4 contract-card">
+                        <div class="card-header bg-primary-dark text-dark fw-semibold rounded-top-4">
                             <i class="bi bi-file-earmark-text me-2"></i>Thông tin hợp đồng
                         </div>
                         <div class="card-body p-3">
                             <table class="table table-sm align-middle table-borderless contract-table">
                                 <tbody>
                                     <tr>
-                                        <th><i class="bi bi-calendar-event me-2 text-success"></i>Ngày lập:</th>
+                                        <th><i class="bi bi-calendar-event me-2 text-primary-color"></i>Ngày lập:</th>
                                         <td>@Model.NgayLap.ToString("dd/MM/yyyy")</td>
                                     </tr>
                                     <tr>
-                                        <th><i class="bi bi-flag me-2 text-success"></i>Trạng thái:</th>
+                                        <th><i class="bi bi-flag me-2 text-primary-color"></i>Trạng thái:</th>
                                         <td>
                                             @if (Model.TrangThai == "Đã Xác Nhận")
                                             {
-                                                <span class="badge bg-success-subtle text-success border rounded-pill px-3 py-2">
+                                                <span class="badge badge-confirmed rounded-pill px-3 py-2 border">
                                                     <i class="bi bi-check2-circle me-1"></i>@Model.TrangThai
                                                 </span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-warning-subtle text-dark border rounded-pill px-3 py-2">
+                                                <span class="badge badge-pending rounded-pill px-3 py-2 border">
                                                     <i class="bi bi-hourglass-split me-1"></i>@Model.TrangThai
                                                 </span>
                                             }
@@ -53,8 +51,8 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="card shadow-sm border-0 rounded-4">
-                        <div class="card-header bg-success text-white fw-semibold rounded-top-4">
+                    <div class="card shadow-sm border-0 rounded-4 contract-card">
+                        <div class="card-header bg-primary-dark text-dark fw-semibold rounded-top-4">
                             <i class="bi bi-house-door me-2"></i>Thông tin phòng trọ
                         </div>
                         <div class="card-body p-3">
@@ -70,9 +68,8 @@
                 </div>
             </div>
 
-            <!-- Khách thuê -->
-            <div class="card shadow-sm border-0 rounded-4 mb-4">
-                <div class="card-header bg-success text-white fw-semibold rounded-top-4">
+            <div class="card shadow-sm border-0 rounded-4 contract-card mb-4">
+                <div class="card-header bg-primary-dark text-dark fw-semibold rounded-top-4">
                     <i class="bi bi-person-circle me-2"></i>Thông tin khách thuê
                 </div>
                 <div class="card-body p-3">
@@ -86,9 +83,8 @@
                 </div>
             </div>
 
-            <!-- Chủ trọ -->
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-header bg-success text-white fw-semibold rounded-top-4">
+            <div class="card shadow-sm border-0 rounded-4 contract-card">
+                <div class="card-header bg-primary-dark text-dark fw-semibold rounded-top-4">
                     <i class="bi bi-person-badge me-2"></i>Thông tin chủ trọ
                 </div>
                 <div class="card-body p-3">
@@ -102,9 +98,8 @@
                 </div>
             </div>
 
-            <!-- Nút quay lại -->
             <div class="text-center mt-5">
-                <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-success rounded-pill px-4 py-2 shadow-sm fw-semibold">
+                <a asp-controller="Phongtrocuatoi" asp-action="Index" class="btn btn-primary-filled rounded-pill px-4 py-2 shadow-sm fw-semibold">
                     <i class="bi bi-arrow-left-circle me-2"></i> Quay lại phòng trọ của tôi
                 </a>
             </div>
@@ -113,51 +108,93 @@
 </section>
 
 <style>
-.contract-table th {
-    width: 40%;
-    color: #444;
-    font-weight: 600;
-}
-.contract-table td {
-    color: #555;
-}
+    :root {
+        --primary: #a8d5e2;
+        --primary-dark: #94c8db;
+        --accent: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+        --surface-alt: #f8faff;
+        --muted: #64748b;
+    }
 
-.contract-wrapper {
-    border: 1.5px solid #dcdcdc;
-}
+    /* Lớp hỗ trợ màu */
+    .text-primary-color {
+        color: var(--primary) !important;
+    }
 
-/* === CARD VIỀN & HOVER === */
-.card {
-    border: 1px solid #dcdcdc !important;
-    transition: all 0.3s ease;
-}
-.card:hover {
-    border-color: #1ec36e !important;
-    box-shadow: 0 6px 18px rgba(30,195,110,0.15);
-}
+    .bg-primary-dark {
+        background-color: var(--primary-dark) !important;
+    }
 
-/* === BADGE MÀU MỚI === */
-.bg-success-subtle {
-    background-color: #e8fff1 !important;
-}
-.bg-warning-subtle {
-    background-color: #fff8e1 !important;
-}
+    .text-dark {
+        color: var(--text-dark) !important;
+    }
 
-/* === NÚT QUAY LẠI === */
-.btn-success {
-    background-color: #1ec36e;
-    border: none;
-}
-.btn-success:hover {
-    background-color: #17a75c;
-    transform: scale(1.05);
-    box-shadow: 0 8px 14px rgba(30,195,110,0.3);
-}
+    /* === TOÀN TRANG === */
+    .contract-detail-page {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
 
-/* === TOÀN TRANG === */
-.contract-detail-page {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
+    .contract-wrapper {
+        border: 1.5px solid var(--primary); /* Viền chính màu Primary */
+        border-radius: 1.5rem !important; /* Bo góc lớn hơn cho khung chính */
+    }
+
+
+    /* === CARD VIỀN & HOVER === */
+    .contract-card {
+        border: 1px solid var(--surface-alt) !important; /* Viền nhẹ nhàng */
+        border-radius: 1rem !important; /* Bo góc mềm mại */
+        transition: all 0.3s ease;
+    }
+
+        .contract-card:hover {
+            border-color: var(--primary) !important;
+            box-shadow: 0 6px 18px rgba(168, 213, 226, 0.4);
+        }
+
+        .contract-card .card-header {
+            border-radius: 1rem 1rem 0 0 !important; /* Đảm bảo bo góc trên của header */
+        }
+
+    /* === BADGE TRẠNG THÁI === */
+    /* Đã xác nhận (trước là xanh lá) -> Primary Color */
+    .badge-confirmed {
+        background-color: var(--primary) !important;
+        color: var(--text-dark) !important;
+        border-color: var(--primary-dark) !important;
+    }
+    /* Chờ xác nhận (trước là vàng) -> Accent Color (tím nhạt) */
+    .badge-pending {
+        background-color: var(--accent) !important;
+        color: var(--text-dark) !important;
+        border-color: var(--primary-dark) !important;
+    }
+
+
+    /* === NÚT QUAY LẠI === */
+    .btn-primary-filled {
+        background-color: var(--primary);
+        color: var(--text-dark);
+        border: none;
+    }
+
+        .btn-primary-filled:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.05);
+            box-shadow: 0 8px 14px rgba(168, 213, 226, 0.5);
+        }
+
+    /* === TABLE STYLE === */
+    .contract-table th {
+        width: 40%;
+        color: var(--text-dark);
+        font-weight: 600;
+    }
+
+    .contract-table td {
+        color: var(--muted);
+    }
 </style>
