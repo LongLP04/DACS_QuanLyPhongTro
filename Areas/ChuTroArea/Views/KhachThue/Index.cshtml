@@ -2,50 +2,156 @@
 
 @{
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+    ViewData["Title"] = "Quản lý Khách thuê";
+
+    // --- LOGIC: Tính toán các chỉ số tóm tắt ---
+    var totalTenants = Model.Count();
+    var activeTenants = Model.Count(t => t.TrangThaiPhong == "Đã Thuê");
+    var roomsRented = activeTenants;
+    
+    // Lấy ngày/giờ hiện tại bằng Razor (sẽ là thời gian lúc render trang)
+    var currentDateTime = DateTime.Now; 
 }
 
 <div class="content-header px-2 px-md-3 pt-1 pb-0">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <h2 class="h4 mb-0"><i class="fas fa-users-cog me-2 text-primary"></i> @ViewData["Title"]</h2>
         <div class="d-flex align-items-center gap-2">
-            <a class="btn btn-primary btn-sm" asp-area="ChuTroArea" asp-controller="KhachThue" asp-action="Index">Làm mới</a>
+            <a class="btn btn-outline-secondary btn-sm" asp-area="ChuTroArea" asp-controller="KhachThue" asp-action="Index">
+                <i class="fas fa-redo-alt me-1"></i> Làm mới
+            </a>
         </div>
     </div>
 </div>
 
-<div class="card">
+<section class="content px-2 px-md-3 mb-3">
+    <div class="container-fluid p-0">
+        <div class="row"> @* Loại bỏ justify-content-start để 4 thẻ tự phân bổ *@
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info shadow">
+                    <div class="inner">
+                        <h3>@totalTenants</h3>
+                        <p>Tổng số Khách thuê</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <a asp-controller="KhachThue" asp-action="Index" class="small-box-footer">
+                        Xem danh sách <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success shadow">
+                    <div class="inner">
+                        <h3>@roomsRented</h3>
+                        <p>Phòng đang có Hợp đồng</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <a asp-controller="HopDong" asp-action="Index" class="small-box-footer">
+                        Quản lý Hợp đồng <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-primary shadow">
+                    <div class="inner">
+                        <h3>Chat</h3> 
+                        <p>Trao đổi với Khách thuê</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <a asp-controller="Chat" asp-action="Index" class="small-box-footer">
+                        Truy cập Chat ngay <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-dark shadow"> @* Dùng màu tối để phân biệt với các chỉ số hoạt động *@
+                    <div class="inner">
+                        <h3 id="currentTime">@currentDateTime.ToString("HH:mm:ss")</h3> 
+                        <p>@currentDateTime.ToString("dd/MM/yyyy")</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">
+                        Ngày giờ Hệ thống <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<div class="card card-primary card-outline mx-2 mx-md-3 shadow-sm">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-list-alt me-1"></i> Danh sách Khách thuê</h3>
+    </div>
     <div class="card-body">
-        <table id="tenantsTable" class="table table-striped table-bordered">
+        <table id="tenantsTable" class="table table-striped table-hover table-bordered w-100">
             <thead>
                 <tr>
-                    <th>Họ tên</th>
-                    <th>Điện thoại</th>
-                    <th>Email</th>
+                    <th data-priority="1">Họ tên</th>
                     <th>Số phòng</th>
-                    <th>Tầng</th>
                     <th>Tòa nhà</th>
-                    <th>Địa chỉ</th>
-                    <th>Trạng thái phòng</th>
-                    <th>Hành động</th>
+                    <th data-priority="1">Trạng thái</th> 
+                    <th class="d-none d-lg-table-cell">Điện thoại</th> 
+                    <th class="d-none d-xl-table-cell">Email</th> 
+                    <th class="d-none d-xl-table-cell">Địa chỉ</th>
+                    <th data-priority="1">Hành động</th> 
                 </tr>
             </thead>
             <tbody>
                 @foreach(var t in Model)
                 {
                     <tr>
-                        <td>@t.HoTen</td>
-                        <td>@t.SoDienThoai</td>
-                        <td>@t.Email</td>
-                        <td>@t.SoPhong</td>
-                        <td>@t.Tang</td>
-                        <td>@t.TenToaNha</td>
-                        <td>@t.DiaChi</td>
-                        <td>@t.TrangThaiPhong</td>
                         <td>
-                            <a asp-area="ChuTroArea" asp-controller="KhachThue" asp-action="Details" asp-route-id="@t.MaKhachThue" class="btn btn-sm btn-primary me-1">Chi tiết</a>
+                            <i class="fas fa-user-tag me-1 text-muted"></i> @t.HoTen
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border"><i class="fas fa-door-open me-1"></i> @t.SoPhong</span>
+                        </td>
+                        <td>@t.TenToaNha</td>
+                        <td>
+                            @{
+                                // --- LOGIC: Ánh xạ trạng thái sang màu sắc (Giữ nguyên logic) ---
+                                var statusClass = t.TrangThaiPhong == "Đã Thuê" ? "bg-success" : 
+                                                  t.TrangThaiPhong == "Sắp hết hạn" ? "bg-warning text-dark" : 
+                                                  "bg-secondary"; 
+                            }
+                            <span class="badge @statusClass">@t.TrangThaiPhong</span>
+                        </td>
+                        <td class="d-none d-lg-table-cell">@t.SoDienThoai</td>
+                        <td class="d-none d-xl-table-cell">@t.Email</td>
+                        <td class="d-none d-xl-table-cell">@t.DiaChi</td>
+                        <td>
+                            <a asp-area="ChuTroArea" asp-controller="KhachThue" asp-action="Details" asp-route-id="@t.MaKhachThue" 
+                               class="btn btn-sm btn-outline-info me-1" title="Chi tiết Khách thuê">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                            
                             @if(!string.IsNullOrEmpty(t.ApplicationUserId))
                             {
-                                <a class="btn btn-sm btn-outline-success" href="@Url.Action("Index", "Chat", new { area = "ChuTroArea", userId = t.ApplicationUserId, hotenkhach = t.HoTen })">Chat</a>
+                                <a class="btn btn-sm btn-primary" 
+                                   href="@Url.Action("Index", "Chat", new { area = "ChuTroArea", userId = t.ApplicationUserId, hotenkhach = t.HoTen })" 
+                                   title="Bắt đầu Chat">
+                                    <i class="fas fa-comment-dots"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="btn btn-sm btn-light text-muted" title="Khách thuê chưa có tài khoản App">
+                                    <i class="fas fa-comment-slash"></i>
+                                </span>
                             }
                         </td>
                     </tr>
@@ -57,9 +163,38 @@
 
 @section Scripts {
     <script>
+        // Cập nhật giờ hiện tại mỗi giây để thẻ không bị tĩnh
+        function updateTime() {
+            var now = new Date();
+            // Lấy giờ, phút, giây
+            var hours = now.getHours().toString().padStart(2, '0');
+            var minutes = now.getMinutes().toString().padStart(2, '0');
+            var seconds = now.getSeconds().toString().padStart(2, '0');
+            
+            document.getElementById('currentTime').innerText = hours + ':' + minutes + ':' + seconds;
+        }
+
         $(document).ready(function() {
+            // Khởi tạo thời gian ngay lập tức và sau đó cập nhật mỗi giây
+            updateTime();
+            setInterval(updateTime, 1000);
+
             $('#tenantsTable').DataTable({
-                responsive: true
+                responsive: true,
+                "language": {
+                    "lengthMenu": "Hiển thị _MENU_ mục",
+                    "zeroRecords": "Không tìm thấy dữ liệu phù hợp",
+                    "info": "Hiển thị từ _START_ đến _END_ của _TOTAL_ mục",
+                    "infoEmpty": "Không có dữ liệu",
+                    "infoFiltered": "(Lọc từ tổng cộng _MAX_ mục)",
+                    "search": "Tìm kiếm:",
+                    "paginate": {
+                        "first": "Đầu",
+                        "last": "Cuối",
+                        "next": "Sau",
+                        "previous": "Trước"
+                    }
+                }
             });
         });
     </script>

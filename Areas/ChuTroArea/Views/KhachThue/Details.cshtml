@@ -2,158 +2,260 @@
 
 @{
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+    ViewData["Title"] = "Chi tiết Khách thuê: " + Model.HoTen;
 }
 
 <div class="content-header px-2 px-md-3 pt-1 pb-0">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
+        <h2 class="h4 mb-0"><i class="fas fa-id-card me-1 text-primary"></i> @ViewData["Title"]</h2>
         <div class="d-flex align-items-center gap-2">
-            <a asp-area="ChuTroArea" asp-controller="KhachThue" asp-action="Index" class="btn btn-secondary btn-sm">Quay lại</a>
+            <a asp-area="ChuTroArea" asp-controller="KhachThue" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Quay lại
+            </a>
+            <a asp-area="ChuTroArea" asp-controller="KhachThue" asp-action="Edit" asp-route-id="@Model.MaKhachThue" class="btn btn-primary btn-sm">
+                <i class="fas fa-edit me-1"></i> Chỉnh sửa
+            </a>
         </div>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-body">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <h5 class="h3 fw-bold text-primary mb-2">Thông tin khách thuê</h5>
-                <dl class="row">
-                    <dt class="col-sm-4">Họ tên</dt>
-                    <dd class="col-sm-8">@Model.HoTen</dd>
+<section class="content px-2 px-md-3">
+    <div class="container-fluid p-0">
+        
+        <div class="row g-3 mb-4">
+            
+            <div class="col-lg-6">
+                <div class="card card-primary card-outline shadow-sm h-100">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-user-circle me-1"></i> Thông tin Khách thuê</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4 text-muted">Họ tên:</dt>
+                            <dd class="col-sm-8 font-weight-bold">@Model.HoTen</dd>
 
-                    <dt class="col-sm-4">Email</dt>
-                    <dd class="col-sm-8">@Model.Email</dd>
+                            <dt class="col-sm-4 text-muted">Email:</dt>
+                            <dd class="col-sm-8">@Model.Email</dd>
 
-                    <dt class="col-sm-4">Điện thoại</dt>
-                    <dd class="col-sm-8">@Model.SoDienThoai</dd>
+                            <dt class="col-sm-4 text-muted">Điện thoại:</dt>
+                            <dd class="col-sm-8">@Model.SoDienThoai</dd>
 
-                    <dt class="col-sm-4">CCCD</dt>
-                    <dd class="col-sm-8">@Model.CCCD</dd>
-                </dl>
+                            <dt class="col-sm-4 text-muted">CCCD:</dt>
+                            <dd class="col-sm-8">@Model.CCCD</dd>
+                        </dl>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <h5 class="h3 fw-bold text-primary mb-2">Thông tin phòng</h5>
-                @if(Model.Phong != null)
+
+            <div class="col-lg-6">
+                <div class="card card-info card-outline shadow-sm h-100">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-home me-1"></i> Thông tin Phòng</h5>
+                    </div>
+                    <div class="card-body">
+                        @if(Model.Phong != null)
+                        {
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4 text-muted">Số phòng:</dt>
+                                <dd class="col-sm-8 font-weight-bold text-success">@Model.Phong.SoPhong</dd>
+
+                                <dt class="col-sm-4 text-muted">Tầng:</dt>
+                                <dd class="col-sm-8">@Model.Phong.Tang</dd>
+
+                                <dt class="col-sm-4 text-muted">Tòa nhà:</dt>
+                                <dd class="col-sm-8">@Model.Phong.TenToaNha</dd>
+
+                                <dt class="col-sm-4 text-muted">Địa chỉ:</dt>
+                                <dd class="col-sm-8">@Model.Phong.DiaChi</dd>
+                            </dl>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0"><i class="fas fa-exclamation-triangle me-1 text-warning"></i> Khách thuê này hiện chưa được gán phòng.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-secondary card-outline shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="card-title"><i class="fas fa-file-contract me-1"></i> Danh sách Hợp đồng</h5>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.HopDongs == null || !Model.HopDongs.Any())
                 {
-                    <dl class="row">
-                        <dt class="col-sm-4">Số phòng</dt>
-                        <dd class="col-sm-8">@Model.Phong.SoPhong</dd>
-
-                        <dt class="col-sm-4">Tầng</dt>
-                        <dd class="col-sm-8">@Model.Phong.Tang</dd>
-
-                        <dt class="col-sm-4">Tòa nhà</dt>
-                        <dd class="col-sm-8">@Model.Phong.TenToaNha</dd>
-
-                        <dt class="col-sm-4">Địa chỉ</dt>
-                        <dd class="col-sm-8">@Model.Phong.DiaChi</dd>
-                    </dl>
+                    <p class="text-muted p-3 mb-0">Chưa có hợp đồng nào được tạo cho khách thuê này.</p>
                 }
                 else
                 {
-                    <p class="text-muted">Chưa gán phòng.</p>
+                    <table class="table table-striped table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%">Mã</th>
+                                <th style="width: 15%">Ngày Lập</th>
+                                <th style="width: 15%">Ngày Bắt đầu</th>
+                                <th style="width: 15%">Ngày Kết thúc</th>
+                                <th style="width: 15%">Trạng thái</th>
+                                <th style="width: 10%">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var h in Model.HopDongs)
+                            {
+                                <tr>
+                                    <td>@h.MaHopDong</td>
+                                    <td>@h.NgayLap.ToString("dd/MM/yyyy")</td>
+                                    <td>@h.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                                    <td>@h.NgayKetThuc.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @{
+                                            // LOGIC: Màu trạng thái Hợp đồng
+                                            var statusClass = h.TrangThai == "Đang hiệu lực" ? "bg-success" : 
+                                                              h.TrangThai == "Hết hạn" ? "bg-danger" : 
+                                                              "bg-warning text-dark";
+                                        }
+                                        <span class="badge @statusClass">@h.TrangThai</span>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary" asp-area="ChuTroArea" asp-controller="HopDong" asp-action="Details" asp-route-id="@h.MaHopDong" title="Xem Chi tiết Hợp đồng">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 }
             </div>
         </div>
 
-        <hr />
-
-        
-
-        <div class="card mb-4">
-            <div class="card-header bg-white border-0 px-0">
-                <h5 class="h4 fw-bold text-primary mb-2">Hợp đồng</h5>
+        <div class="card card-teal card-outline shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="card-title"><i class="fas fa-tools me-1"></i> Phiếu dịch vụ đã đăng ký</h5>
             </div>
-            <div class="card-body px-0">
-                <table class="table table-sm mb-0">
-                    <thead>
-                        <tr><th>Mã</th><th>Ngày Lập</th><th>Ngày bắt đầu</th><th>Ngày kết thúc</th><th>Trạng thái</th><th></th></tr>
-                    </thead>
-                    <tbody>
-                        @foreach(var h in Model.HopDongs)
-                        {
+            <div class="card-body p-0">
+                @if (Model.PhieuDichVus == null || !Model.PhieuDichVus.Any())
+                {
+                    <p class="text-muted p-3 mb-0">Chưa có phiếu dịch vụ nào được đăng ký.</p>
+                }
+                else
+                {
+                    <table class="table table-striped table-hover mb-0">
+                        <thead>
                             <tr>
-                                <td>@h.MaHopDong</td>
-                                <td>@h.NgayLap.ToString("dd/MM/yyyy")</td>
-                                <td>@h.NgayBatDau.ToString("dd/MM/yyyy")</td>
-                                <td>@h.NgayKetThuc.ToString("dd/MM/yyyy")</td>
-                                <td>@h.TrangThai</td>
-                                <td><a class="btn btn-sm btn-primary" asp-area="ChuTroArea" asp-controller="HopDong" asp-action="Details" asp-route-id="@h.MaHopDong">Xem</a></td>
+                                <th style="width: 15%">Mã</th>
+                                <th style="width: 25%">Ngày đăng ký</th>
+                                <th style="width: 30%">Trạng thái</th>
+                                <th style="width: 15%">Hành động</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach(var d in Model.PhieuDichVus)
+                            {
+                                <tr>
+                                    <td>@d.MaDangKyDichVu</td>
+                                    <td>@d.NgayBatDau.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        @{
+                                            // LOGIC: Màu trạng thái Phiếu dịch vụ
+                                            var ticketStatusClass = d.TrangThai == "Đã xác nhận" ? "bg-primary" : 
+                                                                    d.TrangThai == "Đang chờ" ? "bg-warning text-dark" : 
+                                                                    "bg-secondary";
+                                        }
+                                        <span class="badge @ticketStatusClass">@d.TrangThai</span>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-info" asp-area="ChuTroArea" asp-controller="PhieuDichVu" asp-action="Details" asp-route-id="@d.MaDangKyDichVu" title="Xem Chi tiết Phiếu dịch vụ">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
             </div>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-header bg-white border-0 px-0">
-                <h5 class="h4 fw-bold text-primary mb-2">Phiếu dịch vụ</h5>
-            </div>
-            <div class="card-body px-0">
-                <table class="table table-sm mb-0">
-                    <thead>
-                        <tr><th>Mã</th><th>Ngày đăng ký</th><th>Trạng thái</th><th></th></tr>
-                    </thead>
-                    <tbody>
-                        @foreach(var d in Model.PhieuDichVus)
-                        {
-                            <tr>
-                                <td>@d.MaDangKyDichVu</td>
-                                <td>@d.NgayBatDau.ToString("dd/MM/yyyy")</td>
-                                <td>@d.TrangThai</td>
-                                <td><a class="btn btn-sm btn-info" asp-area="ChuTroArea" asp-controller="PhieuDichVu" asp-action="Details" asp-route-id="@d.MaDangKyDichVu">Xem</a></td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header bg-white border-0 px-0">
-                <h5 class="h4 fw-bold text-primary mb-2">Hóa đơn</h5>
-            </div>
-            <div class="card-body px-0">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 class="h5 fw-bold text-danger mb-2">Chưa thanh toán</h6>
-                        <table class="table table-sm mb-0">
-                            <thead><tr><th>Mã</th><th>Ngày lập</th><th>Tổng tiền</th><th></th></tr></thead>
-                            <tbody>
-                                @foreach(var hd in Model.HoaDons.Where(x=> x.TrangThai != "Đã thanh toán"))
-                                {
-                                    <tr>
-                                        <td>@hd.MaHoaDon</td>
-                                        <td>@hd.NgayLap.ToString("dd/MM/yyyy")</td>
-                                        <td>@hd.TongTien.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</td>
-                                        <td><a class="btn btn-sm btn-warning" asp-area="ChuTroArea" asp-controller="HoaDon" asp-action="Details" asp-route-id="@hd.MaHoaDon">Xem</a></td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+        <div class="row g-3">
+            
+            <div class="col-lg-6">
+                <div class="card card-danger card-outline shadow-sm h-100">
+                    <div class="card-header">
+                        <h6 class="card-title text-danger"><i class="fas fa-exclamation-circle me-1"></i> Hóa đơn Chưa thanh toán</h6>
                     </div>
-                    <div class="col-md-6">
-                        <h6 class="h5 fw-bold text-primary mb-2">Đã thanh toán</h6>
-                        <table class="table table-sm mb-0">
-                            <thead><tr><th>Mã</th><th>Ngày lập</th><th>Tổng tiền</th><th></th></tr></thead>
-                            <tbody>
-                                @foreach(var hd in Model.HoaDons.Where(x=> x.TrangThai == "Đã thanh toán"))
-                                {
-                                    <tr>
-                                        <td>@hd.MaHoaDon</td>
-                                        <td>@hd.NgayLap.ToString("dd/MM/yyyy")</td>
-                                        <td>@hd.TongTien.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</td>
-                                        <td><a class="btn btn-sm btn-secondary" asp-area="ChuTroArea" asp-controller="HoaDon" asp-action="Details" asp-route-id="@hd.MaHoaDon">Xem</a></td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                    <div class="card-body p-0">
+                        @{
+                            var pendingInvoices = Model.HoaDons.Where(x=> x.TrangThai != "Đã thanh toán").ToList();
+                        }
+                        @if (!pendingInvoices.Any())
+                        {
+                            <p class="text-muted p-3 mb-0">Không có hóa đơn đang chờ thanh toán.</p>
+                        }
+                        else
+                        {
+                            <table class="table table-striped table-hover table-sm mb-0">
+                                <thead><tr><th>Mã</th><th>Ngày lập</th><th>Tổng tiền</th><th>Hành động</th></tr></thead>
+                                <tbody>
+                                    @foreach(var hd in pendingInvoices)
+                                    {
+                                        <tr>
+                                            <td>@hd.MaHoaDon</td>
+                                            <td>@hd.NgayLap.ToString("dd/MM/yyyy")</td>
+                                            <td class="font-weight-bold text-danger">@hd.TongTien.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")) ₫</td>
+                                            <td>
+                                                <a class="btn btn-sm btn-warning" asp-area="ChuTroArea" asp-controller="HoaDon" asp-action="Details" asp-route-id="@hd.MaHoaDon" title="Xem Chi tiết Hóa đơn">
+                                                    <i class="fas fa-search-plus"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card card-success card-outline shadow-sm h-100">
+                    <div class="card-header">
+                        <h6 class="card-title text-success"><i class="fas fa-check-circle me-1"></i> Hóa đơn Đã thanh toán</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        @{
+                            var paidInvoices = Model.HoaDons.Where(x=> x.TrangThai == "Đã thanh toán").ToList();
+                        }
+                        @if (!paidInvoices.Any())
+                        {
+                            <p class="text-muted p-3 mb-0">Không có hóa đơn đã thanh toán.</p>
+                        }
+                        else
+                        {
+                            <table class="table table-striped table-hover table-sm mb-0">
+                                <thead><tr><th>Mã</th><th>Ngày lập</th><th>Tổng tiền</th><th>Hành động</th></tr></thead>
+                                <tbody>
+                                    @foreach(var hd in paidInvoices)
+                                    {
+                                        <tr>
+                                            <td>@hd.MaHoaDon</td>
+                                            <td>@hd.NgayLap.ToString("dd/MM/yyyy")</td>
+                                            <td class="text-success">@hd.TongTien.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")) ₫</td>
+                                            <td>
+                                                <a class="btn btn-sm btn-outline-secondary" asp-area="ChuTroArea" asp-controller="HoaDon" asp-action="Details" asp-route-id="@hd.MaHoaDon" title="Xem Chi tiết Hóa đơn">
+                                                    <i class="fas fa-search-plus"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
                     </div>
                 </div>
             </div>
         </div>
 
     </div>
-</div>
+</section>

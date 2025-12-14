@@ -355,6 +355,13 @@
     /* === CHAT COMPONENTS === */
     /* Nút nổi */
     #floatingChatBtn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
         background-color: var(--primary-dark);
         color: var(--text-dark);
         border: 2px solid var(--primary);
@@ -386,9 +393,21 @@
 
     /* Popup */
     .chat-popup {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 320px;
         border: 1px solid var(--primary);
+        border-radius: 16px;
         box-shadow: 0 6px 25px rgba(168, 213, 226, 0.4);
+        background-color: var(--surface);
+        display: none;
+        z-index: 2147483000;
     }
+
+        .chat-popup.show {
+            display: block;
+        }
 
     .text-success {
         color: var(--primary) !important;
@@ -421,9 +440,18 @@
     }
 
     #chatContainer {
+        position: fixed;
         bottom: 25px !important;
         right: 25px !important;
         z-index: 2147483000 !important;
+    }
+
+    .chat-card {
+        position: fixed;
+        bottom: 100px;
+        right: 25px;
+        width: 330px;
+        z-index: 2147483000;
     }
 </style>
 

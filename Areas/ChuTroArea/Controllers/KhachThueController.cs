@@ -71,55 +71,63 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         }
 
         // GET: ChuTroArea/KhachThue/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Unauthorized();
+public async Task<IActionResult> Details(int id)
+{
+    var user = await _userManager.GetUserAsync(User);
+    if (user == null) return Unauthorized();
 
-            var chuTro = await _context.ChuTros.FirstOrDefaultAsync(c => c.Email == user.Email);
-            if (chuTro == null) return Unauthorized();
+    var chuTro = await _context.ChuTros.FirstOrDefaultAsync(c => c.Email == user.Email);
+    if (chuTro == null) return Unauthorized();
 
-            var kh = await _context.KhachThues
-                .Include(k => k.PhongTros)
-                    .ThenInclude(p => p.ToaNha)
-                .Include(k => k.HopDongs)
-                    .ThenInclude(h => h.PhongTro)
-                        .ThenInclude(p => p.ToaNha)
-                .Include(k => k.PhieuDangKyDichVus)
-                    .ThenInclude(d => d.ChiTietPhieuDangKyDichVus)
-                .Include(k => k.HoaDons)
-                .FirstOrDefaultAsync(k => k.MaKhachThue == id);
+    var kh = await _context.KhachThues
+        .Include(k => k.PhongTros)
+            .ThenInclude(p => p.ToaNha)
+        // BỎ INCLUDE HopDongs Ở ĐÂY để tải riêng
+        .Include(k => k.PhieuDangKyDichVus) // Giữ lại include PhieuDichVus
+            .ThenInclude(d => d.ChiTietPhieuDangKyDichVus)
+        .FirstOrDefaultAsync(k => k.MaKhachThue == id);
 
-            if (kh == null) return NotFound();
+    if (kh == null) return NotFound();
 
-            // ensure tenant belongs to this chuTro via at least one room
-            var owns = kh.PhongTros.Any(p => p.ToaNha != null && p.ToaNha.MaChuTro == chuTro.MaChuTro);
-            if (!owns) return Unauthorized();
+    // ensure tenant belongs to this chuTro via at least one room
+    var owns = kh.PhongTros.Any(p => p.ToaNha != null && p.ToaNha.MaChuTro == chuTro.MaChuTro);
+    if (!owns) return Unauthorized();
 
-            var phong = kh.PhongTros.FirstOrDefault(p => p.ToaNha != null && p.ToaNha.MaChuTro == chuTro.MaChuTro);
+    var phong = kh.PhongTros.FirstOrDefault(p => p.ToaNha != null && p.ToaNha.MaChuTro == chuTro.MaChuTro);
+    
+    //---------------------------------------------------------
+    // BƯỚC MỚI: TẢI DANH SÁCH HỢP ĐỒNG RIÊNG BIỆT ĐỂ ĐẢM BẢO
+    //---------------------------------------------------------
+    var hopDongs = await _context.HopDongs
+        .Include(h => h.PhongTro)
+            .ThenInclude(p => p.ToaNha)
+        .Where(h => h.MaKhachThue == kh.MaKhachThue)
+        .OrderByDescending(h => h.NgayLap)
+        .ToListAsync();
+    
+    // Ensure invoices are loaded explicitly from the DB
+    var hoaDons = await _context.HoaDons
+        .Where(hd => hd.MaKhachThue == kh.MaKhachThue)
+        .OrderByDescending(hd => hd.NgayLap)
+        .ToListAsync();
 
-            // Ensure invoices are loaded explicitly from the DB (defensive in case navigation property isn't populated)
-            var hoaDons = await _context.HoaDons
-                .Where(hd => hd.MaKhachThue == kh.MaKhachThue)
-                .OrderByDescending(hd => hd.NgayLap)
-                .ToListAsync();
+    var vm = new KhachThueDetailsViewModel
+    {
+        MaKhachThue = kh.MaKhachThue,
+        HoTen = kh.HoTen,
+        Email = kh.Email,
+        SoDienThoai = kh.SoDienThoai,
+        CCCD = kh.CCCD,
+        Phong = phong == null ? null : new PhongInfo { MaPhong = phong.MaPhong, SoPhong = phong.SoPhong, Tang = phong.Tang, TenToaNha = phong.ToaNha?.TenToaNha, DiaChi = phong.ToaNha?.DiaChi },
+        // GÁN DANH SÁCH HỢP ĐỒNG ĐÃ TẢI RIÊNG
+        HopDongs = hopDongs, 
+        PhieuDichVus = kh.PhieuDangKyDichVus.OrderByDescending(d => d.NgayBatDau).ToList(),
+        HoaDons = hoaDons
+    };
 
-            var vm = new KhachThueDetailsViewModel
-            {
-                MaKhachThue = kh.MaKhachThue,
-                HoTen = kh.HoTen,
-                Email = kh.Email,
-                SoDienThoai = kh.SoDienThoai,
-                CCCD = kh.CCCD,
-                Phong = phong == null ? null : new PhongInfo { MaPhong = phong.MaPhong, SoPhong = phong.SoPhong, Tang = phong.Tang, TenToaNha = phong.ToaNha?.TenToaNha, DiaChi = phong.ToaNha?.DiaChi },
-                HopDongs = kh.HopDongs.OrderByDescending(h => h.NgayLap).ToList(),
-                PhieuDichVus = kh.PhieuDangKyDichVus.OrderByDescending(d => d.NgayBatDau).ToList(),
-                HoaDons = hoaDons
-            };
-
-            ViewData["Title"] = "Chi tiết khách thuê";
-            return View(vm);
-        }
+    ViewData["Title"] = "Chi tiết khách thuê";
+    return View(vm);
+}
 
         public class TenantRow
         {
