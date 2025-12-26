@@ -40,23 +40,27 @@
 
                 <div class="payment-method-options">
                     @foreach (var pt in ViewBag.PhuongThuc as List<DACS_QuanLyPhongTro.Models.PhuongThucThanhToan>)
-                    {
-                        <div class="payment-method text-center" onclick="selectPaymentMethod(@pt.MaPhuongThuc, '@pt.TenPhuongThuc')">
-                            <img src="@Url.Content("~/images/" + pt.TenPhuongThuc + ".png")" alt="@pt.TenPhuongThuc" class="payment-method-img mb-2" />
-                            <span class="fw-semibold">@pt.TenPhuongThuc</span>
-                        </div>
-
-                        @* Nút riêng cho VNPay *@
-                        @if (pt.TenPhuongThuc.ToLower().Contains("vnpay"))
-                        {
-                            <form method="post" action="@Url.Action("CreatePaymentUrlVnpay", "Payment")" class="d-inline">
-                                <input type="hidden" name="invoiceId" value="@Model.MaHoaDon" />
-                                <button type="submit" class="btn btn-primary-filled btn-sm rounded-pill shadow-sm ms-2 btn-vnpay-custom">
-                                    <i class="bi bi-wallet2 me-1"></i> Thanh toán VNPay
-                                </button>
-                            </form>
-                        }
-                    }
+    {
+        @if (pt.TenPhuongThuc.ToLower().Contains("vnpay"))
+        {
+            @* Form VNPay: Giữ nguyên logic submit chuẩn *@
+            <form method="post" action="@Url.Action("CreatePaymentUrlVnpay", "Payment")" class="d-flex">
+                <input type="hidden" name="invoiceId" value="@Model.MaHoaDon" />
+                <button type="submit" class="payment-method vnpay-button-custom">
+                    <img src="@Url.Content("~/images/vnpay.png")" alt="VNPay" class="payment-method-img mb-2" />
+                    <span class="fw-semibold d-block text-dark">Thanh toán VNPay</span>
+                </button>
+            </form>
+        }
+        else
+        {
+            @* Các phương thức còn lại hiện ô vuông chọn như cũ *@
+            <div class="payment-method text-center" onclick="selectPaymentMethod(@pt.MaPhuongThuc, '@pt.TenPhuongThuc')">
+                <img src="@Url.Content("~/images/" + pt.TenPhuongThuc + ".png")" alt="@pt.TenPhuongThuc" class="payment-method-img mb-2" />
+                <span class="fw-semibold d-block">@pt.TenPhuongThuc</span>
+            </div>
+        }
+    }
                 </div>
             </div>
 

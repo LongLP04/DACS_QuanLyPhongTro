@@ -33,8 +33,7 @@ namespace DACS_QuanLyPhongTro.Services
             pay.AddRequestData("vnp_OrderType", model.OrderType);
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             // Set vnp_TxnRef to MaHoaDon (OrderId)
-            pay.AddRequestData("vnp_TxnRef", model.OrderDescription.Split('#').Length > 1 ? model.OrderDescription.Split('#')[1] : "");
-            // Để test QR code, truyền vnp_BankCode là VNPAY
+            pay.AddRequestData("vnp_TxnRef", model.OrderDescription.Split('#').Last().Trim());            // Để test QR code, truyền vnp_BankCode là VNPAY
 
             var paymentUrl = pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
             return paymentUrl;

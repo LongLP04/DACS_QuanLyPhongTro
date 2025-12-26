@@ -53,38 +53,41 @@ namespace DACS_QuanLyPhongTro.Controllers
         //     return Content("Thanh toán thất bại!");
         // }
         [HttpGet]
-        public IActionResult PaymentCallbackVnpay()
-        {
-            var response = _vnPayService.PaymentExecute(Request.Query);
-            var vnp_ResponseCode = Request.Query["vnp_ResponseCode"].ToString();
-            var vnp_TransactionStatus = Request.Query["vnp_TransactionStatus"].ToString();
+public IActionResult PaymentCallbackVnpay()
+{
+    var response = _vnPayService.PaymentExecute(Request.Query);
+    var vnp_TxnRef = Request.Query["vnp_TxnRef"].ToString();
 
-            if (response.Success && vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
+    if (response.Success && response.VnPayResponseCode == "00")
+    {
+        var invoice = _db.HoaDons.FirstOrDefault(h => h.MaHoaDon.ToString() == vnp_TxnRef);
+        if (invoice != null)
+        {
+            // 1. Cập nhật trạng thái hóa đơn (Bạn đã làm phần này)
+            invoice.TrangThai = "Đã thanh toán";
+
+            // 2. TẠO PHIẾU THANH TOÁN (Phần này đang thiếu hoặc chưa SaveChanges thành công)
+            var vnpayMethod = _db.PhuongThucThanhToans.FirstOrDefault(pt => pt.TenPhuongThuc.Contains("VNPay"));
+            
+            var phieuThanhToan = new PhieuThanhToan
             {
-                // Lấy mã hóa đơn từ vnp_TxnRef để cập nhật trạng thái
-                var vnp_TxnRef = Request.Query["vnp_TxnRef"].ToString();
-                var invoice = _db.HoaDons.FirstOrDefault(h => h.MaHoaDon.ToString() == vnp_TxnRef);
-                if (invoice != null)
-                {
-                    invoice.TrangThai = "Đã thanh toán";
-                    // Tạo phiếu thanh toán cho giao dịch VNPay
-                    var vnpayMethod = _db.PhuongThucThanhToans.FirstOrDefault(pt => pt.TenPhuongThuc.Contains("VNPay"));
-                    var phieuThanhToan = new PhieuThanhToan
-                    {
-                        NgayThanhToan = DateTime.Now,
-                        SoTienThanhToan = invoice.TongTien,
-                        MaHoaDon = invoice.MaHoaDon,
-                        MaPhuongThuc = vnpayMethod != null ? vnpayMethod.MaPhuongThuc : 0,
-                        PhuongThucThanhToan = vnpayMethod
-                    };
-                    _db.PhieuThanhToans.Add(phieuThanhToan);
-                    _db.SaveChanges();
-                }
-                // Trả về trang thanh toán thành công VNPay
-                return View("~/Views/PhieuThanhToan/ThanhtoanthanhcongVNPay.cshtml");
-            }
-            // Nếu thất bại, hiển thị log debug
-            return Content($"Thanh toán thất bại! ResponseCode: {vnp_ResponseCode}, TransactionStatus: {vnp_TransactionStatus}, OrderId: {response.OrderId}");
+                NgayThanhToan = DateTime.Now,
+                SoTienThanhToan = invoice.TongTien,
+                MaHoaDon = invoice.MaHoaDon,
+                MaPhuongThuc = vnpayMethod?.MaPhuongThuc ?? 0,
+                // RẤT QUAN TRỌNG: Đảm bảo gán MaKhachThue để lọc lịch sử theo từng người
+                // MaKhachThue = invoice.MaKhachThue 
+            };
+
+            _db.PhieuThanhToans.Add(phieuThanhToan);
+            
+            // LƯU TẤT CẢ THAY ĐỔI
+            _db.SaveChanges(); 
+
+            return View("~/Views/PhieuThanhToan/ThanhtoanthanhcongVNPay.cshtml");
         }
+    }
+    return Content("Thanh toán không thành công");
+}
     }
 }
