@@ -1,7 +1,11 @@
-﻿@model DACS_QuanLyPhongTro.Models.ChiSoDienNuoc
+﻿@using System.Collections.Generic
+@using DACS_QuanLyPhongTro.ViewModels
+@model DACS_QuanLyPhongTro.Models.ChiSoDienNuoc
 @{
     ViewData["Title"] = "Ghi Chỉ Số Điện Nước";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+    var roomOptions = ViewBag.RoomOptions as List<RoomDropdownOptionViewModel> ?? new List<RoomDropdownOptionViewModel>();
+    var selectedReadingMonth = ViewBag.SelectedReadingMonth as string ?? DateTime.Now.ToString("yyyy-MM");
 }
 
 <div class="content-header px-2 px-md-3 pt-1 pb-0">
@@ -38,8 +42,20 @@
                     }
                     <div class="mb-3">
                         <label asp-for="MaPhong" class="form-label">Phòng Trọ</label>
-                        <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.PhongTros" required>
+                        <select asp-for="MaPhong" class="form-select" id="roomSelect" required>
                             <option value="">-- Chọn phòng trọ --</option>
+                            @foreach (var option in roomOptions)
+                            {
+                                var baseText = $"Phòng {option.SoPhong} ({option.TenantName})";
+                                var recordedMonths = option.RecordedReadingMonths ?? new List<string>();
+                                var hasReading = recordedMonths.Contains(selectedReadingMonth);
+                                var suffix = hasReading ? " - ĐÃ GHI CHỈ SỐ THÁNG NÀY" : string.Empty;
+                                <option value="@option.MaPhong"
+                                        data-base-text="@baseText"
+                                        data-reading-months="@string.Join(',', recordedMonths)">
+                                    @(baseText + suffix)
+                                </option>
+                            }
                         </select>
                         <span asp-validation-for="MaPhong" class="text-danger"></span>
                     </div>
@@ -75,7 +91,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Tháng ghi chỉ số</label>
-                        <input type="month" name="ReadingMonth" class="form-control" value="@DateTime.Now.ToString("yyyy-MM")" />
+                        <input type="month" name="ReadingMonth" id="readingMonthInput" class="form-control" value="@selectedReadingMonth" />
                         <div class="form-text">Chọn tháng mà chỉ số này áp dụng (một phòng chỉ được một chỉ số trên một tháng).</div>
                     </div>
                     <div class="d-flex justify-content-center gap-3 mt-4">
@@ -89,6 +105,33 @@
 </div>
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const monthInput = document.getElementById('readingMonthInput');
+            const roomSelect = document.getElementById('roomSelect');
+
+            const refreshRoomLabels = () => {
+                if (!roomSelect) {
+                    return;
+                }
+
+                const selectedMonth = monthInput?.value;
+                roomSelect.querySelectorAll('option[data-base-text]').forEach(option => {
+                    const baseText = option.dataset.baseText || option.textContent;
+                    const months = option.dataset.readingMonths
+                        ? option.dataset.readingMonths.split(',').filter(Boolean)
+                        : [];
+                    const hasReading = selectedMonth && months.includes(selectedMonth);
+                    option.textContent = hasReading
+                        ? `${baseText} - ĐÃ GHI CHỈ SỐ THÁNG NÀY`
+                        : baseText;
+                });
+            };
+
+            refreshRoomLabels();
+            monthInput?.addEventListener('change', refreshRoomLabels);
+        });
+    </script>
 }
 <style>
     .csdn-create-card {

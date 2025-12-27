@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using DACS_QuanLyPhongTro.Models;
+using DACS_QuanLyPhongTro.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
@@ -39,6 +39,47 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             public HoaDonController(ApplicationDbContext context) 
             {
                 _context = context;
+            }
+
+            private async Task<List<RoomDropdownOptionViewModel>> BuildRoomDropdownAsync(IEnumerable<PhongTro> phongTros)
+            {
+                var roomList = phongTros?.Where(p => p != null).ToList() ?? new List<PhongTro>();
+                if (!roomList.Any())
+                {
+                    return new List<RoomDropdownOptionViewModel>();
+                }
+
+                var roomIds = roomList.Select(p => p.MaPhong).ToList();
+                var invoiceRaw = await _context.HoaDons
+                    .Where(h => roomIds.Contains(h.MaPhong))
+                    .Select(h => new
+                    {
+                        h.MaPhong,
+                        MonthDate = h.ChiSoDienNuoc != null ? h.ChiSoDienNuoc.NgayGhi : h.NgayLap
+                    })
+                    .ToListAsync();
+
+                var invoiceLookup = invoiceRaw
+                    .GroupBy(x => x.MaPhong)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(x => x.MonthDate.ToString("yyyy-MM")).Distinct().ToList()
+                    );
+
+                return roomList
+                    .Select(room =>
+                    {
+                        invoiceLookup.TryGetValue(room.MaPhong, out var recordedInvoices);
+                        return new RoomDropdownOptionViewModel
+                        {
+                            MaPhong = room.MaPhong,
+                            SoPhong = room.SoPhong,
+                            TenantName = room.KhachThue?.HoTen ?? "Chưa có khách",
+                            RecordedInvoiceMonths = recordedInvoices ?? new List<string>()
+                        };
+                    })
+                    .OrderBy(option => option.SoPhong)
+                    .ToList();
             }
 
         // GET: Xem danh sách hóa đơn của các phòng trọ
@@ -124,19 +165,33 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
         }
 
         // Action để tạo hóa đơn
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var currentChuTroEmail = User.Identity.Name;
+            var currentChuTro = await _context.ChuTros
+                .Include(c => c.ToaNhas)
+                .ThenInclude(t => t.PhongTros)
+                .ThenInclude(p => p.KhachThue)
+                .FirstOrDefaultAsync(c => c.Email == currentChuTroEmail);
 
-            // Lấy phòng trọ của chủ trọ đang đăng nhập có trạng thái "Đã Thuê"
-            var phongTros = _context.ChuTros
-                .Where(c => c.Email == currentChuTroEmail)
-                .SelectMany(c => c.ToaNhas)
+            if (currentChuTro == null)
+            {
+                return NotFound("Không tìm thấy thông tin chủ trọ.");
+            }
+
+            var phongTros = currentChuTro.ToaNhas
                 .SelectMany(t => t.PhongTros)
                 .Where(p => p.TrangThai == "Đã Thuê")
                 .ToList();
 
-            ViewBag.PhongTros = new SelectList(phongTros, "MaPhong", "SoPhong");
+            if (!phongTros.Any())
+            {
+                TempData["ThongBao"] = "Hiện không có phòng nào đang được thuê để tạo hóa đơn.";
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.RoomOptions = await BuildRoomDropdownAsync(phongTros);
+            ViewBag.SelectedBillingMonth = DateTime.Now.ToString("yyyy-MM");
 
             return View();
         }
@@ -144,8 +199,45 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
 
         // Action xử lý khi người dùng submit form
         [HttpPost]
-        public IActionResult Create(HoaDon hoaDon, string? BillingMonth)
+        public async Task<IActionResult> Create(HoaDon hoaDon, string? BillingMonth)
         {
+            var currentChuTroEmail = User.Identity.Name;
+            var currentChuTro = await _context.ChuTros
+                .Include(c => c.ToaNhas)
+                .ThenInclude(t => t.PhongTros)
+                .ThenInclude(p => p.KhachThue)
+                .FirstOrDefaultAsync(c => c.Email == currentChuTroEmail);
+
+            if (currentChuTro == null)
+            {
+                return NotFound("Không tìm thấy thông tin chủ trọ.");
+            }
+
+            var phongTros = currentChuTro.ToaNhas
+                .SelectMany(t => t.PhongTros)
+                .Where(p => p.TrangThai == "Đã Thuê")
+                .ToList();
+
+            if (!phongTros.Any())
+            {
+                TempData["ThongBao"] = "Hiện không có phòng nào đang được thuê để tạo hóa đơn.";
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.RoomOptions = await BuildRoomDropdownAsync(phongTros);
+
+            var billingMonthValue = BillingMonth;
+            if (string.IsNullOrWhiteSpace(billingMonthValue))
+            {
+                billingMonthValue = Request.Form["BillingMonth"].FirstOrDefault();
+            }
+            if (string.IsNullOrWhiteSpace(billingMonthValue))
+            {
+                billingMonthValue = DateTime.Now.ToString("yyyy-MM");
+            }
+            ViewBag.SelectedBillingMonth = billingMonthValue;
+            BillingMonth = billingMonthValue;
+
             // parse billing month (format yyyy-MM from <input type=month>)
             DateTime periodStart = DateTime.Now;
             DateTime periodEnd = DateTime.Now;
@@ -156,7 +248,6 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             }
 
             // KIỂM TRA: Đã tồn tại hóa đơn của phòng này trong tháng này chưa?
-            // Điều kiện: cùng phòng + tháng/năm của chỉ số (hoặc ngày lập hóa đơn nếu đã có chuẩn hóa)
             var existedBill = _context.HoaDons
                 .Include(h => h.ChiSoDienNuoc)
                 .ThenInclude(c => c.PhongTro)
@@ -166,13 +257,6 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             if (existedBill)
             {
                 ModelState.AddModelError("", "Hóa đơn tháng này cho phòng đã được tạo. Vui lòng không tạo trùng.");
-                var phongTrosReload = _context.ChuTros
-                    .Where(c => c.Email == User.Identity.Name)
-                    .SelectMany(c => c.ToaNhas)
-                    .SelectMany(t => t.PhongTros)
-                    .Where(p => p.TrangThai == "Đã Thuê")
-                    .ToList();
-                ViewBag.PhongTros = new SelectList(phongTrosReload, "MaPhong", "SoPhong");
                 return View(hoaDon);
             }
 
@@ -185,7 +269,6 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             if (chiSoDienNuoc == null)
             {
                 ModelState.AddModelError("", "Không tìm thấy chỉ số điện nước cho phòng này trong tháng đã chọn.");
-                ViewBag.PhongTros = new SelectList(_context.PhongTros, "MaPhong", "SoPhong");
                 return View(hoaDon);
             }
 
@@ -193,22 +276,18 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             hoaDon.MaChiSo = chiSoDienNuoc.MaChiSo;
 
             // Tìm thông tin phòng và khách thuê
-            var phong = _context.PhongTros
-                .Include(p => p.KhachThue)
-                .FirstOrDefault(p => p.MaPhong == hoaDon.MaPhong);
+            var phong = phongTros.FirstOrDefault(p => p.MaPhong == hoaDon.MaPhong);
 
             if (phong == null)
             {
-                ModelState.AddModelError("", "Phòng không tồn tại.");
-                ViewBag.PhongTros = new SelectList(_context.PhongTros, "MaPhong", "SoPhong");
+                ModelState.AddModelError("", "Phòng không tồn tại hoặc không thuộc quyền quản lý của bạn.");
                 return View(hoaDon);
             }
 
-            var khachThue = _context.KhachThues.FirstOrDefault(k => k.MaKhachThue == phong.MaKhachThue);
+            var khachThue = phong.KhachThue ?? _context.KhachThues.FirstOrDefault(k => k.MaKhachThue == phong.MaKhachThue);
             if (khachThue == null)
             {
                 ModelState.AddModelError("", "Phòng này chưa có khách thuê.");
-                ViewBag.PhongTros = new SelectList(_context.PhongTros, "MaPhong", "SoPhong");
                 return View(hoaDon);
             }
 
@@ -235,9 +314,77 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             hoaDon.TrangThai = "Chưa thanh toán";
 
             _context.HoaDons.Add(hoaDon);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckPrerequisites(int maPhong, string billingMonth)
+        {
+            var currentChuTroEmail = User.Identity.Name;
+            if (string.IsNullOrEmpty(currentChuTroEmail))
+            {
+                return Json(new { success = false, message = "Bạn chưa đăng nhập." });
+            }
+
+            var currentChuTro = await _context.ChuTros
+                .Include(c => c.ToaNhas)
+                .ThenInclude(t => t.PhongTros)
+                .ThenInclude(p => p.KhachThue)
+                .FirstOrDefaultAsync(c => c.Email == currentChuTroEmail);
+
+            if (currentChuTro == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy thông tin chủ trọ." });
+            }
+
+            var phong = currentChuTro.ToaNhas
+                .SelectMany(t => t.PhongTros)
+                .FirstOrDefault(p => p.MaPhong == maPhong);
+
+            if (phong == null)
+            {
+                return Json(new { success = false, message = "Phòng không thuộc quyền quản lý của bạn." });
+            }
+
+            if (phong.MaKhachThue == null)
+            {
+                return Json(new
+                {
+                    success = true,
+                    hasService = false,
+                    hasReading = false,
+                    tenantName = "Chưa có khách",
+                    message = "Phòng này chưa có khách thuê."
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(billingMonth) || !DateTime.TryParse(billingMonth + "-01", out var parsed))
+            {
+                return Json(new { success = false, message = "Tháng lập hóa đơn không hợp lệ." });
+            }
+
+            var periodStart = new DateTime(parsed.Year, parsed.Month, 1);
+            var periodEnd = periodStart.AddMonths(1).AddTicks(-1);
+
+            var hasReading = await _context.ChiSoDienNuocs
+                .AnyAsync(c => c.MaPhong == phong.MaPhong && c.NgayGhi >= periodStart && c.NgayGhi <= periodEnd);
+
+            var hasService = await _context.PhieuDangKyDichVus
+                .AnyAsync(p => p.MaKhachThue == phong.MaKhachThue
+                               && p.TrangThai == "Đã xác nhận"
+                               && p.NgayBatDau >= periodStart
+                               && p.NgayBatDau <= periodEnd);
+
+            return Json(new
+            {
+                success = true,
+                hasService,
+                hasReading,
+                tenantName = phong.KhachThue?.HoTen ?? "",
+                message = string.Empty
+            });
         }
 
         public async Task<IActionResult> XacNhanThanhToan(int id)

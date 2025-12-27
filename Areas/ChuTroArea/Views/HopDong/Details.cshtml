@@ -11,9 +11,7 @@
             <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
                 <i class="fas fa-arrow-left me-1"></i> Quay Lại
             </a>
-            <a asp-action="ExportPdf" asp-route-id="@Model.MaHopDong" class="btn btn-primary btn-sm" target="_blank">
-                <i class="fas fa-print me-1"></i> In hợp đồng
-            </a>
+            
         </div>
     </div>
 </div>
@@ -95,6 +93,9 @@
             </div>
             
             <div class="card-footer bg-light border-top d-flex justify-content-end">
+                <a asp-action="ExportPdf" asp-route-id="@Model.MaHopDong" class="btn btn-primary btn-sm" target="_blank">
+                <i class="fas fa-print me-1"></i> In hợp đồng
+                </a>
                 <a asp-action="Delete" asp-route-id="@Model.MaHopDong" class="btn btn-danger btn-sm px-3 py-2 delete-btn">
                     <i class="fas fa-trash me-1"></i> Xóa Hợp đồng
                 </a>

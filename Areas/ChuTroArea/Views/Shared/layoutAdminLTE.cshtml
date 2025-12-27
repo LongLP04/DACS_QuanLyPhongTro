@@ -89,6 +89,242 @@
                 .layout-navbar-fixed .main-header { left: 0 !important; right: 0; width: 100%; }
                 .main-sidebar { position: fixed; }
             }
+
+            /* Floating chat widget */
+            #landlordChatFloating {
+                position: fixed;
+                bottom: 24px;
+                right: 24px;
+                z-index: 2147483600;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 12px;
+            }
+
+            .ld-chat-toggle {
+                width: 58px;
+                height: 58px;
+                border-radius: 50%;
+                border: none;
+                background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+                color: #fff;
+                box-shadow: 0 12px 30px rgba(37, 117, 252, 0.35);
+                position: relative;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: transform .2s ease, box-shadow .2s ease;
+            }
+
+            .ld-chat-toggle:hover {
+                transform: translateY(-2px) scale(1.02);
+                box-shadow: 0 16px 36px rgba(37, 117, 252, 0.45);
+            }
+
+            .ld-unread-dot {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: #ff6b6b;
+                box-shadow: 0 0 12px rgba(255, 107, 107, 0.8);
+                display: none;
+            }
+
+            .ld-unread-dot.show {
+                display: inline-block;
+            }
+
+            .ld-chat-panel {
+                width: 420px;
+                max-width: calc(100vw - 32px);
+                max-height: calc(100vh - 120px);
+                background: #fff;
+                border-radius: 18px;
+                box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
+                border: 1px solid #e3e8f0;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .ld-chat-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 14px 16px;
+                border-bottom: 1px solid #edf2f7;
+                background: linear-gradient(90deg, rgba(106,17,203,0.08), rgba(37,117,252,0.08));
+            }
+
+            .ld-chat-body {
+                display: flex;
+                gap: 12px;
+                padding: 14px 16px;
+                min-height: 300px;
+                overflow: hidden;
+                flex: 1;
+            }
+
+            .ld-chat-tenants {
+                flex: 0 0 42%;
+                max-width: 160px;
+                border-right: 1px solid #f1f2f6;
+                padding-right: 12px;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            .ld-tenant-list {
+                flex: 1;
+                overflow-y: auto;
+                padding-right: 6px;
+            }
+
+            .ld-tenant-item {
+                display: flex;
+                flex-direction: column;
+                border: 1px solid transparent;
+                border-radius: 12px;
+                padding: 8px 10px;
+                background: #f8fafc;
+                margin-bottom: 8px;
+                cursor: pointer;
+                transition: background .2s ease, border-color .2s ease;
+                width: 100%;
+                text-align: left;
+                color: #0f172a;
+                outline: none;
+            }
+
+            .ld-tenant-item:focus {
+                outline: none;
+                box-shadow: none;
+            }
+
+            .ld-tenant-item.active {
+                border-color: #4c6fff;
+                background: rgba(76, 111, 255, 0.08);
+            }
+
+            .ld-tenant-item.ld-unread::after {
+                content: '';
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #ff6b6b;
+                align-self: flex-end;
+            }
+
+            .ld-tenant-name {
+                font-weight: 600;
+                font-size: .9rem;
+            }
+
+            .ld-tenant-meta {
+                font-size: .75rem;
+                color: #94a3b8;
+            }
+
+            .ld-chat-conversation {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+                overflow: hidden;
+            }
+
+            .ld-chat-messages {
+                flex: 1;
+                overflow-y: auto;
+                padding-right: 6px;
+                display: none;
+                min-height: 0;
+            }
+
+            .ld-chat-empty {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                color: #94a3b8;
+                font-size: .9rem;
+                gap: 6px;
+            }
+
+            .ld-chat-empty i {
+                font-size: 2rem;
+                color: #8b5cf6;
+            }
+
+            .ld-chat-input {
+                display: flex;
+                gap: 8px;
+                margin-top: 10px;
+            }
+
+            .ld-chat-message {
+                border-radius: 12px;
+                padding: 8px 12px;
+                margin-bottom: 6px;
+                font-size: .85rem;
+                max-width: 85%;
+                position: relative;
+                box-shadow: 0 3px 8px rgba(15,23,42,0.08);
+            }
+
+            .ld-chat-message.you {
+                margin-left: auto;
+                background: #4c6fff;
+                color: #fff;
+            }
+
+            .ld-chat-message.them {
+                margin-right: auto;
+                background: #f1f5f9;
+                color: #0f172a;
+            }
+
+            .ld-chat-time {
+                display: block;
+                font-size: .7rem;
+                margin-top: 4px;
+                opacity: .7;
+            }
+
+            .ld-tenant-empty {
+                font-size: .85rem;
+                color: #94a3b8;
+                text-align: center;
+                margin-top: 12px;
+            }
+
+            .ld-chat-footer {
+                border-top: 1px solid #edf2f7;
+                padding: 8px 16px;
+                background: #f8fafc;
+            }
+
+            @@media (max-width: 576px) {
+                #landlordChatFloating { right: 12px; bottom: 12px; }
+                .ld-chat-panel { width: calc(100vw - 24px); }
+                .ld-chat-body { flex-direction: column; }
+                .ld-chat-tenants {
+                    flex: none;
+                    max-width: 100%;
+                    border-right: none;
+                    border-bottom: 1px solid #f1f2f6;
+                    padding-right: 0;
+                    padding-bottom: 10px;
+                }
+            }
         </style>
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -222,6 +458,49 @@
         </footer>
     </div>
 
+    <div id="landlordChatFloating">
+        <button type="button" class="ld-chat-toggle" id="landlordChatToggle" title="Chat nhanh với khách thuê">
+            <i class="fas fa-comments"></i>
+            <span class="ld-unread-dot" id="landlordChatUnread"></span>
+        </button>
+        <div class="ld-chat-panel d-none" id="landlordChatPanel">
+            <div class="ld-chat-header">
+                <div>
+                    <strong>Chat nhanh</strong>
+                    <small class="text-muted d-block">Trao đổi tức thì với khách thuê</small>
+                </div>
+                <button type="button" class="btn btn-sm btn-light ld-chat-close" id="landlordChatClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="ld-chat-body">
+                <div class="ld-chat-tenants">
+                    <div class="input-group input-group-sm mb-2">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Tìm khách..." id="landlordChatSearch" autocomplete="off" />
+                    </div>
+                    <div class="ld-tenant-list" id="landlordTenantList"></div>
+                </div>
+                <div class="ld-chat-conversation">
+                    <div class="ld-chat-empty" id="landlordChatEmpty">
+                        <i class="fas fa-comments"></i>
+                        <p class="mb-0">Chọn khách thuê để bắt đầu trò chuyện.</p>
+                    </div>
+                    <div class="ld-chat-messages" id="landlordChatMessages"></div>
+                    <form id="landlordChatForm" class="ld-chat-input">
+                        <input type="text" class="form-control" placeholder="Nhập tin nhắn..." autocomplete="off" id="landlordChatMessage" disabled />
+                        <button type="submit" class="btn btn-primary" id="landlordChatSend" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="ld-chat-footer">
+                <a href="@Url.Action("Index", "Chat", new { area = "ChuTroArea" })" class="btn btn-link btn-sm p-0">Mở trang chat đầy đủ</a>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@@3.6.4/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -231,9 +510,218 @@
     <script src="https://cdn.jsdelivr.net/npm/datatables.net@@1.13.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/datatables.net-bs4@@1.13.5/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastr@@2.1.4/build/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script>
         // Toastr default config
         toastr.options = { positionClass: 'toast-bottom-right', timeOut: 3000 };
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('landlordChatToggle');
+            const panel = document.getElementById('landlordChatPanel');
+            const closeBtn = document.getElementById('landlordChatClose');
+            const tenantListEl = document.getElementById('landlordTenantList');
+            const searchInput = document.getElementById('landlordChatSearch');
+            const messagesEl = document.getElementById('landlordChatMessages');
+            const emptyState = document.getElementById('landlordChatEmpty');
+            const form = document.getElementById('landlordChatForm');
+            const messageInput = document.getElementById('landlordChatMessage');
+            const sendBtn = document.getElementById('landlordChatSend');
+            const unreadDot = document.getElementById('landlordChatUnread');
+
+            if (!toggleBtn || !panel || typeof signalR === 'undefined') {
+                return;
+            }
+
+            let tenants = [];
+            let selectedTenantId = null;
+            let selectedTenantName = '';
+            const unreadMap = new Map();
+
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl('/chathub')
+                .withAutomaticReconnect()
+                .build();
+
+            connection.start().catch(err => console.error('SignalR error', err));
+
+            connection.on('ReceiveMessage', (senderId, message) => {
+                if (senderId === selectedTenantId) {
+                    appendMessage(message, false);
+                    if (panel.classList.contains('d-none')) {
+                        unreadDot?.classList.add('show');
+                    }
+                    return;
+                }
+
+                unreadMap.set(senderId, true);
+                updateUnreadIndicators();
+            });
+
+            const togglePanel = () => {
+                panel.classList.toggle('d-none');
+                if (!panel.classList.contains('d-none')) {
+                    unreadDot?.classList.remove('show');
+                }
+            };
+
+            const closePanel = () => {
+                panel.classList.add('d-none');
+            };
+
+            toggleBtn.addEventListener('click', togglePanel);
+            closeBtn?.addEventListener('click', closePanel);
+
+            function updateUnreadIndicators() {
+                const items = tenantListEl?.querySelectorAll('[data-user-id]') || [];
+                items.forEach(item => {
+                    const id = item.getAttribute('data-user-id');
+                    if (unreadMap.has(id)) {
+                        item.classList.add('ld-unread');
+                    } else {
+                        item.classList.remove('ld-unread');
+                    }
+                });
+                if (unreadMap.size > 0) {
+                    unreadDot?.classList.add('show');
+                } else {
+                    unreadDot?.classList.remove('show');
+                }
+            }
+
+            function appendMessage(content, isSender, timestamp = null) {
+                const timeLabel = timestamp ? new Date(timestamp) : new Date();
+                const msg = document.createElement('div');
+                msg.className = `ld-chat-message ${isSender ? 'you' : 'them'}`;
+                msg.innerHTML = `${escapeHtml(content)}<span class="ld-chat-time">${timeLabel.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>`;
+                messagesEl.appendChild(msg);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
+
+            function escapeHtml(text) {
+                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+                return text.replace(/[&<>"']/g, m => map[m]);
+            }
+
+            async function loadTenants() {
+                try {
+                    const res = await fetch('/ChuTroArea/Chat/GetTenantList');
+                    const json = await res.json();
+                    if (!json.success) {
+                        tenantListEl.innerHTML = `<div class="ld-tenant-empty">${json.message || 'Không tải được danh sách khách thuê.'}</div>`;
+                        return;
+                    }
+                    tenants = (json.data || []).map(t => ({
+                        userId: t.userId ?? t.UserId,
+                        tenantName: t.tenantName ?? t.TenantName,
+                        phone: t.phone ?? t.Phone,
+                        roomLabel: t.roomLabel ?? t.RoomLabel
+                    }));
+                    renderTenantList();
+                }
+                catch (err) {
+                    tenantListEl.innerHTML = '<div class="ld-tenant-empty">Không thể tải danh sách khách thuê.</div>';
+                    console.error(err);
+                }
+            }
+
+            function renderTenantList(filter = '') {
+                if (!tenantListEl) return;
+                tenantListEl.innerHTML = '';
+                const keyword = filter.trim().toLowerCase();
+                const filtered = tenants.filter(t =>
+                    t.tenantName?.toLowerCase().includes(keyword) ||
+                    t.phone?.toLowerCase().includes(keyword) ||
+                    t.roomLabel?.toLowerCase().includes(keyword)
+                );
+
+                if (filtered.length === 0) {
+                    tenantListEl.innerHTML = '<div class="ld-tenant-empty">Không có khách thuê phù hợp.</div>';
+                    return;
+                }
+
+                filtered.forEach(t => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'ld-tenant-item';
+                    btn.setAttribute('data-user-id', t.userId);
+                    btn.innerHTML = `<span class="ld-tenant-name">${t.tenantName}</span><span class="ld-tenant-meta">${t.roomLabel} · ${t.phone}</span>`;
+                    if (t.userId === selectedTenantId) {
+                        btn.classList.add('active');
+                    }
+                    if (unreadMap.has(t.userId)) {
+                        btn.classList.add('ld-unread');
+                    }
+                    btn.addEventListener('click', () => selectTenant(t.userId));
+                    tenantListEl.appendChild(btn);
+                });
+            }
+
+            searchInput?.addEventListener('input', (e) => {
+                renderTenantList(e.target.value);
+            });
+
+            async function selectTenant(userId) {
+                if (selectedTenantId === userId) return;
+                selectedTenantId = userId;
+                const tenant = tenants.find(t => t.userId === userId);
+                selectedTenantName = tenant ? tenant.tenantName : '';
+                messageInput.disabled = false;
+                sendBtn.disabled = false;
+                messagesEl.innerHTML = '';
+                if (messagesEl) {
+                    messagesEl.style.display = 'block';
+                }
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+
+                unreadMap.delete(userId);
+                updateUnreadIndicators();
+                renderTenantList(searchInput?.value || '');
+                await loadChatHistory();
+            }
+
+            async function loadChatHistory() {
+                if (!selectedTenantId) return;
+                messagesEl.innerHTML = '<div class="ld-tenant-empty py-3">Đang tải lịch sử...</div>';
+                try {
+                    const res = await fetch(`/ChuTroArea/Chat/GetChatHistory?userId=${selectedTenantId}`);
+                    if (!res.ok) throw new Error('failed');
+                    const data = await res.json();
+                    messagesEl.innerHTML = '';
+                    data.forEach(msg => {
+                        const senderId = msg.senderId ?? msg.SenderId;
+                        const content = msg.content ?? msg.Content;
+                        const timestamp = msg.timestamp ?? msg.Timestamp;
+                        const isSender = senderId !== selectedTenantId;
+                        appendMessage(content, isSender, timestamp);
+                    });
+                }
+                catch (err) {
+                    messagesEl.innerHTML = '<div class="ld-tenant-empty py-3">Không thể tải lịch sử chat.</div>';
+                }
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const content = messageInput.value.trim();
+                if (!content || !selectedTenantId || connection.state !== 'Connected') {
+                    return;
+                }
+                try {
+                    await connection.invoke('SendPrivateMessage', selectedTenantId, content);
+                    appendMessage(content, true);
+                    messageInput.value = '';
+                    messageInput.focus();
+                }
+                catch (err) {
+                    console.error('send failed', err);
+                }
+            });
+
+            loadTenants();
+        });
     </script>
     @RenderSection("Scripts", required: false)
 </body>

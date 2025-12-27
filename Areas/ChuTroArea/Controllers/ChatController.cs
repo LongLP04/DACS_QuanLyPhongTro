@@ -1,4 +1,5 @@
 using DACS_QuanLyPhongTro.Models;
+using DACS_QuanLyPhongTro.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,9 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 .ThenInclude(k => k.ApplicationUser)
                 .Include(p => p.ToaNha)
                 .ThenInclude(t => t.ChuTro)
-                .Where(p => p.ToaNha.ChuTro.ApplicationUserId == user.Id && p.KhachThue != null)
+                .Where(p => p.KhachThue != null &&
+                    ((p.ToaNha.ChuTro.ApplicationUserId != null && p.ToaNha.ChuTro.ApplicationUserId == user.Id)
+                    || (!string.IsNullOrEmpty(user.Email) && p.ToaNha.ChuTro.Email == user.Email)))
                 .Select(p => p.KhachThue)
                 .Distinct()
                 .ToListAsync();
@@ -40,6 +43,44 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             ViewData["SelectedUserName"] = hotenkhach;
 
             return View(khachThueList);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTenantList()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Không xác định được chủ trọ." });
+            }
+
+            var tenantRooms = await _context.PhongTros
+                .Include(p => p.KhachThue)
+                    .ThenInclude(k => k.ApplicationUser)
+                .Include(p => p.ToaNha)
+                    .ThenInclude(t => t.ChuTro)
+                .Where(p => p.KhachThue != null
+                            && (
+                                (p.ToaNha.ChuTro.ApplicationUserId != null && p.ToaNha.ChuTro.ApplicationUserId == user.Id)
+                                || (!string.IsNullOrEmpty(user.Email) && p.ToaNha.ChuTro.Email == user.Email)
+                            ))
+                .Select(p => new ChatTenantViewModel
+                {
+                    UserId = p.KhachThue.ApplicationUserId ?? string.Empty,
+                    TenantName = p.KhachThue.HoTen,
+                    Phone = p.KhachThue.SoDienThoai,
+                    RoomLabel = $"Phòng {p.SoPhong}"
+                })
+                .ToListAsync();
+
+            var tenants = tenantRooms
+                .Where(t => !string.IsNullOrWhiteSpace(t.UserId))
+                .GroupBy(t => t.UserId)
+                .Select(g => g.First())
+                .OrderBy(t => t.TenantName)
+                .ToList();
+
+            return Json(new { success = true, data = tenants });
         }
 
         // API: Lấy lịch sử chat giữa chủ trọ và khách thuê

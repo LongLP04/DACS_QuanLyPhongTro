@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using DACS_QuanLyPhongTro.Models;
+using DACS_QuanLyPhongTro.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -39,6 +40,39 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             public ChiSoDienNuocController(ApplicationDbContext context) 
             {
                 _context = context;
+            }
+
+            private async Task<List<RoomDropdownOptionViewModel>> BuildRoomDropdownAsync(IEnumerable<PhongTro> phongTros)
+            {
+                var roomList = phongTros?.Where(p => p != null).ToList() ?? new List<PhongTro>();
+                if (!roomList.Any())
+                {
+                    return new List<RoomDropdownOptionViewModel>();
+                }
+
+                var roomIds = roomList.Select(p => p.MaPhong).ToList();
+                var readingLookup = await _context.ChiSoDienNuocs
+                    .Where(c => roomIds.Contains(c.MaPhong))
+                    .GroupBy(c => c.MaPhong)
+                    .ToDictionaryAsync(
+                        g => g.Key,
+                        g => g.Select(x => x.NgayGhi.ToString("yyyy-MM")).Distinct().ToList()
+                    );
+
+                return roomList
+                    .Select(room =>
+                    {
+                        readingLookup.TryGetValue(room.MaPhong, out var recordedMonths);
+                        return new RoomDropdownOptionViewModel
+                        {
+                            MaPhong = room.MaPhong,
+                            SoPhong = room.SoPhong,
+                            TenantName = room.KhachThue?.HoTen ?? "Chưa có khách",
+                            RecordedReadingMonths = recordedMonths ?? new List<string>()
+                        };
+                    })
+                    .OrderBy(option => option.SoPhong)
+                    .ToList();
             }
 
     // GET: Danh sách chỉ số điện nước
@@ -135,6 +169,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             var currentChuTro = await _context.ChuTros
                 .Include(c => c.ToaNhas)
                 .ThenInclude(t => t.PhongTros)
+                .ThenInclude(p => p.KhachThue)
                 .FirstOrDefaultAsync(c => c.Email == currentChuTroEmail);
 
             if (currentChuTro == null)
@@ -153,8 +188,8 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.PhongTros = new SelectList(phongTrosDaThue, "MaPhong", "SoPhong");
-            Console.WriteLine($"ViewBag.PhongTros count: {phongTrosDaThue.Count}");
+            ViewBag.RoomOptions = await BuildRoomDropdownAsync(phongTrosDaThue);
+            ViewBag.SelectedReadingMonth = DateTime.Now.ToString("yyyy-MM");
             return View();
         }
 
@@ -171,6 +206,7 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
             var currentChuTro = await _context.ChuTros
                 .Include(c => c.ToaNhas)
                 .ThenInclude(t => t.PhongTros)
+                .ThenInclude(p => p.KhachThue)
                 .FirstOrDefaultAsync(c => c.Email == currentChuTroEmail);
 
             if (currentChuTro == null)
@@ -225,20 +261,28 @@ namespace DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers
                 .SelectMany(t => t.PhongTros)
                 .Where(p => p.TrangThai == "Đã Thuê")
                 .ToList();
-            ViewBag.PhongTros = new SelectList(phongTrosDaThue, "MaPhong", "SoPhong");
 
-            if (ModelState.ErrorCount > 0)
+            ViewBag.RoomOptions = await BuildRoomDropdownAsync(phongTrosDaThue);
+
+            var readingMonthValue = ReadingMonth;
+            if (string.IsNullOrWhiteSpace(readingMonthValue))
+            {
+                readingMonthValue = Request.Form["ReadingMonth"].FirstOrDefault();
+            }
+            if (string.IsNullOrWhiteSpace(readingMonthValue))
+            {
+                readingMonthValue = DateTime.Now.ToString("yyyy-MM");
+            }
+            ViewBag.SelectedReadingMonth = readingMonthValue;
+            ReadingMonth = readingMonthValue;
+
+            if (!ModelState.IsValid)
             {
                 return View(chiSoDienNuoc);
             }
 
             try
             {
-                // parse reading month if provided (fallback: đọc từ form nếu tham số trống)
-                if (string.IsNullOrWhiteSpace(ReadingMonth))
-                {
-                    ReadingMonth = Request.Form["ReadingMonth"].FirstOrDefault();
-                }
                 DateTime monthStart = DateTime.Now;
                 DateTime monthEnd = DateTime.Now;
                 if (!string.IsNullOrEmpty(ReadingMonth) && DateTime.TryParse(ReadingMonth + "-01", out var parsed))

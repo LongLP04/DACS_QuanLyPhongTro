@@ -1,7 +1,11 @@
-﻿@model DACS_QuanLyPhongTro.Models.HoaDon
+﻿@using System.Collections.Generic
+@using DACS_QuanLyPhongTro.ViewModels
+@model DACS_QuanLyPhongTro.Models.HoaDon
 @{
     ViewData["Title"] = "Tạo Hóa Đơn";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
+    var roomOptions = ViewBag.RoomOptions as List<RoomDropdownOptionViewModel> ?? new List<RoomDropdownOptionViewModel>();
+    var selectedBillingMonth = ViewBag.SelectedBillingMonth as string ?? DateTime.Now.ToString("yyyy-MM");
 }
 
 <div class="content-header px-2 px-md-3 pt-1 pb-0">
@@ -29,15 +33,33 @@
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
                         <label asp-for="MaPhong" class="form-label fw-bold">Phòng</label>
-                        <select asp-for="MaPhong" class="form-select" asp-items="ViewBag.PhongTros">
+                        <select asp-for="MaPhong" class="form-select" id="invoiceRoomSelect">
                             <option value="">-- Chọn phòng trọ --</option>
+                            @foreach (var option in roomOptions)
+                            {
+                                var baseText = $"Phòng {option.SoPhong} ({option.TenantName})";
+                                var recordedMonths = option.RecordedInvoiceMonths ?? new List<string>();
+                                var hasInvoice = recordedMonths.Contains(selectedBillingMonth);
+                                var suffix = hasInvoice ? " - ĐÃ GHI HÓA ĐƠN THÁNG NÀY" : string.Empty;
+                                <option value="@option.MaPhong"
+                                        data-base-text="@baseText"
+                                        data-invoice-months="@string.Join(',', recordedMonths)">
+                                    @(baseText + suffix)
+                                </option>
+                            }
                         </select>
                         <span asp-validation-for="MaPhong" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Tháng lập hóa đơn</label>
-                        <input type="month" name="BillingMonth" class="form-control" value="@DateTime.Now.ToString("yyyy-MM")" />
+                        <input type="month" name="BillingMonth" id="billingMonthInput" class="form-control" value="@selectedBillingMonth" />
                         <div class="form-text">Chọn tháng mà hóa đơn sẽ áp dụng (dịch vụ/điện nước trong tháng này sẽ được tính).</div>
+                        <div class="mt-3 status-line text-muted small" id="serviceStatus" data-default-text="Vui lòng chọn phòng và tháng để kiểm tra dịch vụ.">
+                            Vui lòng chọn phòng và tháng để kiểm tra dịch vụ.
+                        </div>
+                        <div class="status-line text-muted small" id="readingStatus" data-default-text="Vui lòng chọn phòng và tháng để kiểm tra chỉ số điện nước.">
+                            Vui lòng chọn phòng và tháng để kiểm tra chỉ số điện nước.
+                        </div>
                     </div>
                     <div class="d-flex justify-content-center gap-3 mt-4">
                         <button type="submit" class="btn btn-primary btn-sm px-5">Tạo hóa đơn</button>
@@ -50,6 +72,112 @@
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const monthInput = document.getElementById('billingMonthInput');
+            const roomSelect = document.getElementById('invoiceRoomSelect');
+            const serviceStatusEl = document.getElementById('serviceStatus');
+            const readingStatusEl = document.getElementById('readingStatus');
+
+            const statusClasses = ['text-muted', 'text-success', 'text-danger', 'text-warning'];
+
+            const setStatus = (el, cssClass, text) => {
+                if (!el) {
+                    return;
+                }
+                statusClasses.forEach(cls => el.classList.remove(cls));
+                el.classList.add(cssClass);
+                el.textContent = text;
+            };
+
+            const resetStatuses = () => {
+                if (serviceStatusEl) {
+                    const defaultText = serviceStatusEl.dataset.defaultText || 'Vui lòng chọn phòng và tháng để kiểm tra dịch vụ.';
+                    setStatus(serviceStatusEl, 'text-muted', defaultText);
+                }
+                if (readingStatusEl) {
+                    const defaultText = readingStatusEl.dataset.defaultText || 'Vui lòng chọn phòng và tháng để kiểm tra chỉ số điện nước.';
+                    setStatus(readingStatusEl, 'text-muted', defaultText);
+                }
+            };
+
+            const refreshInvoiceLabels = () => {
+                if (!roomSelect) {
+                    return;
+                }
+
+                const selectedMonth = monthInput?.value;
+                roomSelect.querySelectorAll('option[data-base-text]').forEach(option => {
+                    const baseText = option.dataset.baseText || option.textContent;
+                    const months = option.dataset.invoiceMonths
+                        ? option.dataset.invoiceMonths.split(',').filter(Boolean)
+                        : [];
+                    const hasInvoice = selectedMonth && months.includes(selectedMonth);
+                    option.textContent = hasInvoice
+                        ? `${baseText} - ĐÃ GHI HÓA ĐƠN THÁNG NÀY`
+                        : baseText;
+                });
+            };
+
+            const checkPrerequisites = () => {
+                const roomId = roomSelect?.value;
+                const billingMonth = monthInput?.value;
+
+                if (!roomId || !billingMonth) {
+                    resetStatuses();
+                    return;
+                }
+
+                setStatus(serviceStatusEl, 'text-warning', 'Đang kiểm tra dịch vụ đã đăng ký...');
+                setStatus(readingStatusEl, 'text-warning', 'Đang kiểm tra chỉ số điện nước...');
+
+                const url = `/ChuTroArea/HoaDon/CheckPrerequisites?maPhong=${roomId}&billingMonth=${encodeURIComponent(billingMonth)}`;
+
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.success) {
+                            const message = data.message || 'Không thể kiểm tra trạng thái.';
+                            setStatus(serviceStatusEl, 'text-danger', message);
+                            setStatus(readingStatusEl, 'text-danger', message);
+                            return;
+                        }
+
+                        const tenantLabel = data.tenantName ? `cho khách ${data.tenantName}` : 'cho khách này';
+
+                        setStatus(serviceStatusEl,
+                            data.hasService ? 'text-success' : 'text-danger',
+                            data.hasService
+                                ? `Đã có dịch vụ được xác nhận ${tenantLabel} trong tháng này.`
+                                : `Chưa có dịch vụ được xác nhận ${tenantLabel} trong tháng này.`);
+
+                        setStatus(readingStatusEl,
+                            data.hasReading ? 'text-success' : 'text-danger',
+                            data.hasReading
+                                ? 'Đã có chỉ số điện nước cho phòng trong tháng này.'
+                                : 'Chưa ghi chỉ số điện nước cho phòng trong tháng này.');
+                    })
+                    .catch(() => {
+                        const err = 'Không thể kiểm tra trạng thái. Vui lòng thử lại.';
+                        setStatus(serviceStatusEl, 'text-danger', err);
+                        setStatus(readingStatusEl, 'text-danger', err);
+                    });
+            };
+
+            refreshInvoiceLabels();
+            checkPrerequisites();
+
+            monthInput?.addEventListener('change', () => {
+                refreshInvoiceLabels();
+                checkPrerequisites();
+            });
+
+            roomSelect?.addEventListener('change', () => {
+                refreshInvoiceLabels();
+                checkPrerequisites();
+            });
+        });
+    </script>
 }
 <style>
     .hoadon-create-card {
@@ -75,5 +203,8 @@
     }
     .hoadon-create-card .form-label {
         font-weight: 600;
+    }
+    .status-line {
+        font-size: 0.85rem;
     }
 </style>
