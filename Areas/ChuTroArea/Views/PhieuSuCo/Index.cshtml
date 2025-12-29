@@ -79,68 +79,94 @@ else
         @foreach (var phieu in Model)
         {
             <div class="col-12 col-sm-6 col-lg-4 col-xl-3 phieusuco-item">
-                <div class="card shadow-sm border-0 h-100 phieusuco-card">
-                    <div class="card-body p-3">
-                        <div class="d-flex align-items-start justify-content-between mb-2">
-                            <div class="flex-grow-1 me-2 d-flex flex-column">
-                                <div class="text-muted mb-2">
-                                    <h5 class="card-title mb-1 fw-bold text-dark">
-                                        <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Mã phiếu: @phieu.MaPhieuSuCo
-                                    </h5>
+                <div class="card shadow-sm border-0 h-100 phieusuco-card d-flex flex-column">
+                    <div class="card-body p-3 d-flex flex-column">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="room-indicator">
+                                <div class="room-icon bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width:35px;height:35px;">
+                                    <i class="fas fa-exclamation "></i>
                                 </div>
-                                <div class="text-muted fs-6 mb-2">
-                                    <i class="fas fa-user me-1"></i>Khách thuê:
-                                    <span class="fs-6">@phieu.KhachThue?.HoTen</span>
-                                </div>
-                                <div class="text-muted mb-2">
-                                    <i class="fas fa-door-open me-1"></i>Phòng: <span class="fs-6">@(phieu.KhachThue?.PhongTros != null && phieu.KhachThue.PhongTros.Any() ? phieu.KhachThue.PhongTros.First().SoPhong : "Chưa có phòng")</span>
-                                </div>
-                                <div class="text-muted mb-2">
-                                    <i class="fas fa-calendar-alt me-1"></i>Ngày ghi nhận: <span class="fs-6">@phieu.NgayGhiNhan.ToString("dd/MM/yyyy HH:mm")</span>
+                                <span class="room-name ms-2 fw-bold text-dark fs-6">Mã phiếu: @phieu.MaPhieuSuCo</span>
+                            </div>
+                            <div>
+                                @if (phieu.TinhTrang == "Đã xử lý")
+                                {
+                                    <span class="badge bg-success-soft text-success rounded-pill px-2 py-1 small border border-success"><i class="fas fa-check me-1"></i>Xong</span>
+                                }
+                                else if (phieu.TinhTrang == "Đã tiếp nhận")
+                                {
+                                    <span class="badge bg-warning-soft text-dark rounded-pill px-2 py-1 small border border-warning"><i class="fas fa-clock me-1"></i>Tiếp nhận</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-soft text-danger rounded-pill px-2 py-1 small border border-danger"><i class="fas fa-bolt me-1"></i>Cần xử lý</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="info-block-tenant p-2 rounded mb-3 bg-light d-flex align-items-center">
+                            
+                            <div>
+                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;">Khách báo</div>
+                                <div class="fw-bold small">@phieu.KhachThue?.HoTen</div>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="p-2 rounded bg-light border-start border-primary border-4 h-100">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;"><i class="fas fa-door-open me-1"></i>Phòng</div>
+                                    <div class="fw-bold small">P.@(phieu.KhachThue?.PhongTros != null && phieu.KhachThue.PhongTros.Any() ? phieu.KhachThue.PhongTros.First().SoPhong : "N/A")</div>
                                 </div>
                             </div>
-                            <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
-                                <i class="fas fa-tools fs-6"></i>
+                            <div class="col-6">
+                                <div class="p-2 rounded bg-light border-start border-info border-4 h-100">
+                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;"><i class="far fa-calendar-alt me-1"></i>Ngày báo</div>
+                                    <div class="fw-bold small">@phieu.NgayGhiNhan.ToString("dd/MM/yyyy")</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="mb-2">
-                            <span class="badge bg-warning-subtle text-warning border border-warning fs-6 px-2 py-1">
-                                Mô tả: <strong>@phieu.MoTaSuCo</strong>
-                            </span>
+
+                        <div class="p-2 rounded bg-light mb-3">
+                            <div class="mb-2">
+                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;">Mô tả sự cố</div>
+                                <div class="small">@phieu.MoTaSuCo</div>
+                            </div>
+                            <div>
+                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;">Hiện trạng</div>
+                                <div class="small fw-semibold text-danger">@phieu.HienTrang</div>
+                            </div>
                         </div>
-                        <div class="mb-2">
-                            <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
-                                Hiện trạng: <strong>@phieu.HienTrang</strong>
-                            </span>
+
+                        @if (!string.IsNullOrWhiteSpace(phieu.GhiChu))
+                        {
+                            <div class="p-2 rounded bg-light mb-3">
+                                <div class="small font-italic text-muted"><i class="fas fa-comment-dots me-1"></i>@phieu.GhiChu</div>
+                            </div>
+                        }
+
+                        <div class="mt-auto p-2 rounded bg-light bg-opacity-10 text-center border border-primary border-opacity-25 mb-2">
+                            <div class="text-dark small fw-bold text-uppercase" style="font-size: 0.65rem; opacity: 0.8;">Tình trạng xử lý</div>
+                            <div class="fw-bold text-primary">@phieu.TinhTrang</div>
                         </div>
-                        <div class="mb-2">
-                            <span class="badge bg-success-subtle text-success border border-success fs-6 px-2 py-1">
-                                Ghi chú: <strong>@phieu.GhiChu</strong>
-                            </span>
-                        </div>
-                        <div class="mb-2">
-                            @if (phieu.TinhTrang == "Chưa xử lý" || phieu.TinhTrang == "Đã tiếp nhận")
-                            {
-                                <form asp-action="XacNhan" method="post" class="d-flex flex-column flex-md-row align-items-center gap-2">
+
+                        @if (phieu.TinhTrang == "Chưa xử lý" || phieu.TinhTrang == "Đã tiếp nhận")
+                        {
+                            <div class="p-2 rounded bg-white border shadow-sm">
+                                <form asp-action="XacNhan" method="post" class="d-flex gap-2">
                                     <input type="hidden" name="id" value="@phieu.MaPhieuSuCo" />
-                                    <select name="tinhTrang" class="form-select form-select-sm w-auto" required>
-                                        <option value="">Chọn trạng thái</option>
+                                    <select name="tinhTrang" class="form-select form-select-sm" required>
+                                        <option value="">Cập nhật...</option>
                                         @if (phieu.TinhTrang == "Chưa xử lý")
                                         {
                                             <option value="Đã tiếp nhận">Đã tiếp nhận</option>
                                         }
                                         <option value="Đã xử lý">Đã xử lý</option>
                                     </select>
-                                    <button type="submit" class="btn btn-primary btn-sm px-3">Xác nhận</button>
+                                    <button type="submit" class="btn btn-primary btn-sm px-3 rounded-pill">OK</button>
                                 </form>
-                            }
-                            
-                        </div>
-                        <div class="mb-2">
-                            <span class="badge-tinhtrang bg-primary-subtle text-primary border border-primary fs-6 px-2 py-1">
-                                Tình trạng: <strong>@phieu.TinhTrang</strong>
-                            </span>
-                        </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

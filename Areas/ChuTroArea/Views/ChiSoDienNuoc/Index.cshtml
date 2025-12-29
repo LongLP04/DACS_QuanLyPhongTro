@@ -95,58 +95,78 @@
     <div class="col-12"><hr class="my-2"></div>
 </div>
 
-<div class="row px-2 px-md-3 g-3" id="csdnGrid">
+<div class="row px-2 px-md-3 g-3 mt-3" id="csdnGrid">
     @foreach (var chiSo in Model)
     {
         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 csdn-item" data-room="@chiSo.PhongTro?.SoPhong" data-date="@chiSo.NgayGhi.ToString("yyyy-MM-dd")">
-            <div class="card shadow-sm border-0 h-100 csdn-card">
-                <div class="card-body p-3">
-                    <div class="d-flex align-items-start justify-content-between mb-2">
-                        <div class="flex-grow-1 me-2">
-                            <h5 class="card-title mb-1 fw-bold text-dark">
-                                <i class="fas fa-bolt me-2 text-warning"></i>Phòng: @chiSo.PhongTro?.SoPhong
-                            </h5>
+            <div class="card shadow-sm border-0 h-100 csdn-card d-flex flex-column">
+                <div class="card-body p-3 d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="room-indicator">
+                            <div class="room-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:35px;height:35px;">
+                                <i class="fas fa-bolt "></i>
+                            </div>
+                            <span class="room-name ms-2 fw-bold text-dark fs-6">Phòng @chiSo.PhongTro?.SoPhong</span>
                         </div>
-                        <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
-                            <i class="fas fa-tint fs-6"></i>
+                        
+                    </div>  
+
+                    <div class="info-block-tenant p-2 rounded mb-3 bg-light d-flex align-items-center">
+                        @* <div class="avatar-circle me-2 bg-secondary bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width:40px; height:40px;">
+                            <i class="fas fa-calendar-check text-secondary small"></i>
+                        </div> *@
+                        <div>
+                            <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;">Ngày ghi chỉ số</div>
+                            <div class="fw-bold small">@chiSo.NgayGhi.ToString("dd/MM/yyyy")</div>
                         </div>
                     </div>
-                    <div class="mb-2">
-                        <div class="text-muted mb-2" style="margin-top:0.75rem; display:block;">
-                                <i class="fas fa-calendar-alt me-1"></i><span class="fs-6">@chiSo.NgayGhi.ToString("dd/MM/yyyy")</span>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="p-2 rounded bg-light border-start border-primary border-4 h-100">
+                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;">Điện tiêu thụ</div>
+                                <div class="fw-bold text-primary">@chiSo.SoDienTieuThu <small>kWh</small></div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 rounded bg-light border-start border-warning border-4 h-100">
+                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;">Đơn giá điện</div>
+                                <div class="fw-bold small text-warning">@chiSo.DonGiaDien.ToString("N0")</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="mb-2">
-                        <span class="badge bg-primary-subtle text-primary border border-primary fs-6 px-2 py-1">
-                            Điện tiêu thụ: <strong>@chiSo.SoDienTieuThu</strong>
-                        </span>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="p-2 rounded bg-light border-start border-info border-4 h-100">
+                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;">Nước dùng</div>
+                                <div class="fw-bold text-info">@chiSo.SoNuocTieuThu <small>m³</small></div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 rounded bg-light border-start border-success border-4 h-100">
+                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;">Đơn giá nước</div>
+                                <div class="fw-bold small text-success">@chiSo.DonGiaNuoc.ToString("N0")</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-2">
-                        <span class="badge bg-warning-subtle text-warning border border-warning fs-6 px-2 py-1">
-                            Đơn giá điện: <strong>@chiSo.DonGiaDien.ToString("N0") VNĐ</strong>
-                        </span>
-                    </div>
-                    <div class="mb-2">
-                        <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
-                            Nước tiêu thụ: <strong>@chiSo.SoNuocTieuThu</strong>
-                        </span>
-                    </div>
-                    <div class="mb-2">
-                        <span class="badge bg-success-subtle text-success border border-success fs-6 px-2 py-1">
-                            Đơn giá nước: <strong>@chiSo.DonGiaNuoc.ToString("N0") VNĐ</strong>
-                        </span>
+
+                    <div class="mt-auto p-2 rounded bg-light bg-opacity-10 text-center border border-primary border-opacity-25">
+                        <div class="text-dark small fw-bold text-uppercase" style="font-size: 0.65rem; opacity: 0.8;">Ghi nhận thành công</div>
+                        <div class="fw-bold text-primary small"><i class="fas fa-check-circle me-1"></i>Đã lưu hệ thống</div>
                     </div>
                 </div>
+
                 <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
                     <div class="d-flex gap-2">
-                        <a asp-action="Details" asp-route-id="@chiSo.MaChiSo" class="btn btn-outline-info btn-sm px-2 py-1">
+                        <a asp-action="Details" asp-route-id="@chiSo.MaChiSo" class="btn btn-primary flex-fill btn-sm rounded-pill shadow-sm">
                             <i class="fas fa-eye me-1"></i>Xem
                         </a>
-                        <button type="button" class="btn btn-outline-warning btn-sm px-2 py-1" onclick="showPasswordModal('edit', '@chiSo.MaChiSo')">
-                            <i class="fas fa-edit me-1"></i>Sửa
+                        <button type="button" class="btn btn-outline-warning btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;" onclick="showPasswordModal('edit', '@chiSo.MaChiSo')">
+                            <i class="fas fa-edit small"></i>
                         </button>
-                        <button type="button" class="btn btn-outline-danger btn-sm px-2 py-1" onclick="showPasswordModal('delete', '@chiSo.MaChiSo')">
-                            <i class="fas fa-trash me-1"></i>Xóa
+                        <button type="button" class="btn btn-outline-danger btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;" onclick="showPasswordModal('delete', '@chiSo.MaChiSo')">
+                            <i class="fas fa-trash-alt small"></i>
                         </button>
                     </div>
                 </div>
