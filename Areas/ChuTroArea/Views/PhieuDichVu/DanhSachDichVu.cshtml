@@ -2,149 +2,308 @@
 @{
     ViewData["Title"] = "Quản lý dịch vụ";
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
-    
+
     var totalServices = Model?.Count() ?? 0;
-    var activeServices = totalServices; // DichVu không có TrangThai, coi như tất cả đều hoạt động
-    var inactiveServices = 0; // DichVu không có trạng thái tạm dừng
-    var avgPrice = Model?.Average(d => d.DonGiaDichVu) ?? 0;
+    var activeServices = totalServices;
+    var inactiveServices = 0;
+    var avgPrice = Model != null && Model.Any() ? Model.Average(x => x.DonGiaDichVu) : 0;
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-success btn-sm" onclick="showPasswordModal('create')">
-                <i class="fas fa-plus me-1"></i> Thêm dịch vụ mới
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Summary widgets -->
-<div class="row px-2 px-md-3 mt-3 g-3">
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-primary mb-0">
-            <div class="inner">
-                <h3>@totalServices</h3>
-                <p>Tổng dịch vụ</p>
-            </div>
-            <div class="icon"><i class="fas fa-concierge-bell"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-success mb-0">
-            <div class="inner">
-                <h3>@activeServices</h3>
-                <p>Đang hoạt động</p>
-            </div>
-            <div class="icon"><i class="fas fa-check-circle"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-warning mb-0">
-            <div class="inner">
-                <h3>@inactiveServices</h3>
-                <p>Tạm dừng</p>
-            </div>
-            <div class="icon"><i class="fas fa-pause-circle"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-info mb-0">
-            <div class="inner">
-                <h3>@string.Format("{0:N0}", avgPrice)</h3>
-                <p>Giá TB (VND)</p>
-            </div>
-            <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
-        </div>
-    </div>
-    <div class="col-12"><hr class="my-2"></div>
-</div>
-
-@if (TempData["ThongBao"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-        @TempData["ThongBao"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-<div class="row px-2 px-md-3 g-3 mt-3" id="dichvuGrid">
-    @foreach (var dv in Model)
-    {
-        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 dichvu-item">
-            <div class="card shadow-sm border-0 h-100 dichvu-card">
-                <div class="card-body p-3">
-                    <div class="d-flex align-items-start justify-content-between mb-2">
-                        <div class="flex-grow-1 me-2">
-                            <h5 class="card-title mb-1 fw-bold text-dark">
-                                <i class="fas fa-cog me-2 text-primary"></i>@dv.TenDichVu
-                            </h5>
-                            <div class="text-muted fs-6 mb-2">
-                                <i class="fas fa-money-bill-wave me-1"></i>Đơn giá: <span class="fs-6">@dv.DonGiaDichVu.ToString("N0") VND</span>
-                            </div>
-                        </div>
-                        <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
-                            <i class="fas fa-cogs fs-6"></i>
-                        </div>
-                    </div>
-                    <div class="mb-2">
-                        <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1 d-block text-break" style="white-space:pre-line;word-break:break-word;max-width:100%;">
-                            @dv.MoTa
-                        </span>
-                    </div>
-                </div>
-                <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
-                    <div class="d-flex gap-2">
-                        <a asp-action="SuaDichVu" asp-route-id="@dv.MaDichVu" class="btn btn-outline-warning btn-sm px-2 py-1">
-                            <i class="fas fa-edit me-1"></i>Sửa
-                        </a>
-                        <form asp-action="XoaDichVu" asp-route-id="@dv.MaDichVu" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa?');">
-                            <button type="button" class="btn btn-outline-danger btn-sm px-2 py-1" onclick="showPasswordModal('delete', '@dv.MaDichVu')"><i class="fas fa-trash me-1"></i>Xóa</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-</div>
-
-<div class="text-center mt-4">
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-4">Quay lại</a>
-</div>
-
-<!-- Password Confirmation Modal -->
-<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="passwordModalLabel">Xác minh mật khẩu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="password" id="verifyPassword" class="form-control" placeholder="Nhập mật khẩu của bạn" />
-                <div id="passwordError" class="text-danger mt-2" style="display:none;"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="submitPassword()">Xác nhận</button>
-            </div>
-        </div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
 <style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. WELCOME CARD */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 24px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.5rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.15);
+    }
+
+    /* 3. STATS CARDS (4 CARD TRÊN CÙNG) */
+    .custom-box-service {
+        background: var(--surface);
+        border-radius: 20px !important;
+        padding: 30px 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(168, 213, 226, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+
+        .custom-box-service:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
+        }
+
+        .custom-box-service .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: white;
+            transition: transform 0.4s ease; /* Hiệu ứng xoay icon */
+        }
+
+        /* Hiệu ứng xoay 15 độ cho 4 card thống kê */
+        .custom-box-service:hover .icon-wrapper {
+            transform: rotate(15deg);
+        }
+
+    /* 4. DỊCH VỤ CARDS */
+    .service-card {
+        border-radius: 28px !important;
+        background: #ffffff;
+        border: 1px solid #f1f5f9 !important;
+        transition: all 0.4s ease;
+        height: 100%;
+        position: relative;
+    }
+
+        .service-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
+        }
+
+        .service-card .card-body {
+            padding: 2.2rem !important;
+        }
+
+        /* Xoay icon trong card chính khi hover */
+        .service-card:hover .avatar-icon {
+            transform: rotate(15deg);
+        }
+
+    .avatar-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.4s ease;
+    }
+
+    /* Phân loại màu viền pastel */
+    .dichvu-item:nth-child(4n+1) .service-card {
+        border-top: 8px solid var(--p-blue) !important;
+    }
+
+    .dichvu-item:nth-child(4n+2) .service-card {
+        border-top: 8px solid var(--p-yellow) !important;
+    }
+
+    .dichvu-item:nth-child(4n+3) .service-card {
+        border-top: 8px solid var(--p-green) !important;
+    }
+
+    .dichvu-item:nth-child(4n+4) .service-card {
+        border-top: 8px solid var(--p-red) !important;
+    }
+
+    /* Nút bấm cân bằng */
+    .btn-action {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: 0.3s;
+    }
+
+    .btn-edit-pastel {
+        background: var(--p-yellow) !important;
+        color: #856404 !important;
+    }
+
+    .btn-delete-pastel {
+        background: var(--p-red) !important;
+        color: #742a2a !important;
+    }
+
+    .btn-action:hover {
+        transform: scale(1.15);
+        filter: brightness(0.95);
+    }
+
+    .desc-box {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 0.9rem;
+        color: #64748b;
+        border-left: 4px solid var(--p-blue);
+        min-height: 60px;
+    }
+</style>
+
+<div class="container-fluid">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-4 text-left">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Danh Mục Dịch Vụ</h2>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <button class="btn btn-dark shadow px-4" style="border-radius:12px; height: 50px; font-weight: 700;" onclick="showPasswordModal('create')">
+                                + THÊM DỊCH VỤ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-service shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-blue)"><i class="fas fa-concierge-bell"></i></div>
+                <h3 class="fw-bold">@totalServices</h3>
+                <p class="small text-muted mb-0 font-weight-bold">TỔNG DỊCH VỤ</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-service shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-green)"><i class="fas fa-check-circle"></i></div>
+                <h3 class="fw-bold">@activeServices</h3>
+                <p class="small text-muted mb-0 font-weight-bold">ĐANG HOẠT ĐỘNG</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-service shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-yellow); color:#856404"><i class="fas fa-pause-circle"></i></div>
+                <h3 class="fw-bold">@inactiveServices</h3>
+                <p class="small text-muted mb-0 font-weight-bold">TẠM DỪNG</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-service shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-purple)"><i class="fas fa-money-bill-wave"></i></div>
+                <h3 class="fw-bold">@string.Format("{0:N0}", avgPrice)</h3>
+                <p class="small text-muted mb-0 font-weight-bold">GIÁ TRUNG BÌNH</p>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" style="border-radius:15px; border:none;" role="alert">
+            <i class="fas fa-check-circle mr-2"></i> @TempData["ThongBao"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-4 mt-3" id="dichvuGrid">
+        @foreach (var dv in Model)
+        {
+            <div class="col-12 col-md-6 col-xl-3 dichvu-item mb-4">
+                <div class="card service-card shadow-sm">
+                    <div class="card-body text-left">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div class="avatar-icon bg-light shadow-xs"><i class="fas fa-cog text-primary"></i></div>
+                            <div class="text-right">
+                                <p class="small text-muted mb-0 uppercase font-weight-bold" style="letter-spacing:1px">Đơn giá</p>
+                                <h4 class="fw-bold text-dark mb-0">@dv.DonGiaDichVu.ToString("N0") <small>đ</small></h4>
+                            </div>
+                        </div>
+
+                        <h4 class="card-title-lg fw-bold text-dark mb-3">@dv.TenDichVu</h4>
+
+                        <div class="desc-box mb-4">
+                            <span class="small">@(string.IsNullOrEmpty(dv.MoTa) ? "Không có mô tả cho dịch vụ này." : dv.MoTa)</span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 border-top pt-4">
+                            <a asp-action="SuaDichVu" asp-route-id="@dv.MaDichVu" class="btn-action btn-edit-pastel shadow-sm" title="Chỉnh sửa">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button type="button" class="btn-action btn-delete-pastel shadow-sm" onclick="showPasswordModal('delete', '@dv.MaDichVu')" title="Xóa">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="text-center mt-5 mb-5">
+        <a asp-action="Index" class="btn btn-outline-secondary px-5" style="border-radius:12px; font-weight:600">QUAY LẠI TRANG CHỦ</a>
+    </div>
+</div>
+
+<div class="modal fade" id="passwordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 28px;">
+            <div class="modal-header d-flex flex-column align-items-center border-0 pt-5">
+                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                <h5 class="modal-title fw-bold">XÁC MINH DANH TÍNH</h5>
+            </div>
+            <div class="modal-body px-5">
+                <p class="text-center text-muted small mb-4">Vui lòng nhập mật khẩu để thực hiện thao tác.</p>
+                <input type="password" id="verifyPassword" class="form-control border-0 bg-light text-center shadow-sm" placeholder="Nhập mật khẩu..." style="border-radius:15px; height:55px;">
+                <div id="passwordError" class="text-danger mt-2 text-center small" style="display:none;"></div>
+            </div>
+            <div class="modal-footer border-0 px-5 pb-5">
+                <button type="button" class="btn btn-dark w-100 fw-bold shadow" style="height:50px; border-radius:12px" onclick="submitPassword()">XÁC NHẬN</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
+        // LOGIC GIỮ NGUYÊN
         let actionType = null;
         let deleteId = null;
+
         function showPasswordModal(type, id = null) {
             actionType = type;
             deleteId = id;
             document.getElementById("verifyPassword").value = "";
             document.getElementById("passwordError").style.display = "none";
-            var modal = new bootstrap.Modal(document.getElementById('passwordModal'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('passwordModal')).show();
         }
 
         function submitPassword() {
@@ -153,10 +312,7 @@
 
             fetch("/ChuTroArea/PhieuDichVu/VerifyPassword", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "RequestVerificationToken": token
-                },
+                headers: { "Content-Type": "application/json", "RequestVerificationToken": token },
                 body: JSON.stringify({ password: password })
             })
             .then(res => res.json())
@@ -165,22 +321,16 @@
                     if (actionType === "create") {
                         window.location.href = "/ChuTroArea/PhieuDichVu/TaoDichVu";
                     } else if (actionType === "delete" && deleteId) {
-                        // Tạo form ẩn để submit delete request
                         const form = document.createElement('form');
                         form.method = 'POST';
                         form.action = '/ChuTroArea/PhieuDichVu/XoaDichVu';
                         const idInput = document.createElement('input');
-                        idInput.type = 'hidden';
-                        idInput.name = 'id';
-                        idInput.value = deleteId;
+                        idInput.type = 'hidden'; idInput.name = 'id'; idInput.value = deleteId;
                         const tokenInput = document.createElement('input');
-                        tokenInput.type = 'hidden';
-                        tokenInput.name = '__RequestVerificationToken';
+                        tokenInput.type = 'hidden'; tokenInput.name = '__RequestVerificationToken';
                         tokenInput.value = token;
-                        form.appendChild(idInput);
-                        form.appendChild(tokenInput);
-                        document.body.appendChild(form);
-                        form.submit();
+                        form.appendChild(idInput); form.appendChild(tokenInput);
+                        document.body.appendChild(form); form.submit();
                     }
                 } else {
                     const err = document.getElementById("passwordError");
@@ -192,57 +342,3 @@
         }
     </script>
 }
-    .dichvu-card {
-        transition: transform .15s ease, box-shadow .15s ease;
-        margin-bottom: 0;
-        background-color: #f0f8ff;
-    }
-    .dichvu-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    }
-    .avatar {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    }
-    .dichvu-card .card-title {
-        font-size: 1.15rem;
-        line-height: 1.3;
-        color: #2c3e50;
-    }
-    .dichvu-card .badge {
-        font-size: 0.875rem;
-        font-weight: 500;
-        background-color: rgba(255, 255, 255, 0.8) !important;
-        backdrop-filter: blur(10px);
-    }
-    .dichvu-card .btn {
-        font-size: 0.875rem;
-        font-weight: 500;
-    }
-    .dichvu-card .card-body > * + * {
-        margin-top: 1rem;
-    }
-    .dichvu-item {
-        margin-bottom: 1rem;
-    }
-    .dichvu-item:nth-last-child(-n+4) {
-        margin-bottom: 0;
-    }
-    .dichvu-item:nth-child(4n+1) .dichvu-card {
-        background-color: #e3ffff;
-    }
-    .dichvu-item:nth-child(4n+2) .dichvu-card {
-        background-color: #fff9f0;
-    }
-    .dichvu-item:nth-child(4n+3) .dichvu-card {
-        background-color: #f0fff4;
-    }
-    .dichvu-item:nth-child(4n+4) .dichvu-card {
-        background-color: #fff0f5;
-    }
-    .dichvu-card .card-title,
-    .dichvu-card .text-muted,
-    .dichvu-card .text-secondary {
-        color: #2c3e50 !important;
-    }
-</style>

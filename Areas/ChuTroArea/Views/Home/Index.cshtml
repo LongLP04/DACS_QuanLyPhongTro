@@ -4,38 +4,164 @@
     var dashboardData = ViewData["DashboardData"] as DACS_QuanLyPhongTro.Areas.ChuTroArea.Controllers.DashboardData;
 }
 
-<!-- Content Header -->
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">Dashboard</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Dashboard</li>
-                </ol>
-            </div>
-        </div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
-<!-- Main content -->
+<style>
+    /* 1. Định nghĩa bảng màu Pastel */
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    body {
+        font-family: "Montserrat", sans-serif !important;
+        background-color: #f8faff !important;
+    }
+
+    /* ĐIỀU CHỈNH KHOẢNG CÁCH VỚI SIDEBAR (~5px) */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+    }
+
+    /* 2. Welcome Card - CẬP NHẬT PHÔNG CHỮ NGHỆ THUẬT & ICON NHÀ */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+    }
+
+    .welcome-title {
+        /* Chuyển sang font Pacifico để chữ mềm mại, nghệ thuật hơn */
+        font-family: "Pacifico", cursive !important;
+        font-weight: 400 !important;
+        font-size: 2.5rem;
+        margin-bottom: 5px;
+        color: #ffffff;
+        /* Đổ bóng mịn để làm nổi bật chữ tiếng Việt có dấu */
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.15);
+    }
+
+    .welcome-subtitle {
+        font-family: "Montserrat", sans-serif !important;
+        font-weight: 500;
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.95);
+        letter-spacing: 0.3px;
+    }
+
+    /* 3. Custom Small Boxes (GIỮ NGUYÊN) */
+    .custom-box {
+        background: var(--surface);
+        border-radius: 20px !important;
+        padding: 30px 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(168, 213, 226, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--text-dark) !important;
+        text-decoration: none !important;
+    }
+
+        .custom-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
+        }
+
+        .custom-box .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 15px;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .custom-box:hover .icon-wrapper {
+            transform: scale(1.2) rotate(20deg);
+        }
+
+        .custom-box h3 {
+            font-weight: 800;
+            margin-bottom: 5px;
+            font-size: 1.6rem;
+        }
+
+        .custom-box p {
+            color: #64748b;
+            margin-bottom: 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+    .bg-p-blue {
+        background-color: var(--p-blue);
+        color: #fff;
+    }
+
+    .bg-p-green {
+        background-color: var(--p-green);
+        color: #fff;
+    }
+
+    .bg-p-yellow {
+        background-color: var(--p-yellow);
+        color: #856404;
+    }
+
+    .bg-p-red {
+        background-color: var(--p-red);
+        color: #fff;
+    }
+
+    /* 4. Chart Cards (GIỮ NGUYÊN) */
+    .chart-card {
+        border-radius: 25px !important;
+        border: none !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05) !important;
+        margin-bottom: 20px;
+    }
+
+        .chart-card .card-header {
+            background-color: transparent !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            padding: 20px;
+        }
+
+        .chart-card .card-title {
+            font-weight: 700 !important;
+            color: var(--text-dark);
+        }
+</style>
+
 <section class="content">
     <div class="container-fluid">
-        <!-- Welcome Section -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card bg-gradient-primary">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h3 class="text-white mb-0">Chào mừng trở lại, @hoTen!</h3>
-                                <p class="text-white-50 mb-0">Đây là tổng quan về hoạt động quản lý phòng trọ của bạn</p>
+                <div class="card welcome-card">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-9">
+                                <h2 class="welcome-title">Chào mừng trở lại, @hoTen ✨</h2>
+                                <p class="welcome-subtitle">Hệ thống đã sẵn sàng để bạn quản lý những căn trọ yêu dấu của mình.</p>
                             </div>
-                            <div class="col-md-4 text-right">
-                                <i class="fas fa-chart-line fa-3x text-white opacity-50"></i>
+                            <div class="col-md-3 text-right d-none d-md-block">
+                                <i class="fas fa-home fa-4x text-white opacity-25"></i>
                             </div>
                         </div>
                     </div>
@@ -43,131 +169,63 @@
             </div>
         </div>
 
-        <!-- Summary Cards -->
         <div class="row">
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>@(dashboardData?.TongSoToaNha ?? 0)</h3>
-                        <p>Tòa nhà</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <a href="@Url.Action("Index", "ToaNha", new { area = "ChuTroArea" })" class="small-box-footer">
-                        Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                </div>
+                <a href="@Url.Action("Index", "ToaNha", new { area = "ChuTroArea" })" class="custom-box">
+                    <div class="icon-wrapper bg-p-blue"><i class="fas fa-building"></i></div>
+                    <h3>@(dashboardData?.TongSoToaNha ?? 0)</h3>
+                    <p>Tòa nhà</p>
+                </a>
             </div>
-
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3>@(dashboardData?.TongSoPhongTro ?? 0)</h3>
-                        <p>Tổng phòng trọ</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <a href="@Url.Action("Index", "PhongTro", new { area = "ChuTroArea" })" class="small-box-footer">
-                        Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                </div>
+                <a href="@Url.Action("Index", "PhongTro", new { area = "ChuTroArea" })" class="custom-box">
+                    <div class="icon-wrapper bg-p-green"><i class="fas fa-door-open"></i></div>
+                    <h3>@(dashboardData?.TongSoPhongTro ?? 0)</h3>
+                    <p>Phòng trọ</p>
+                </a>
             </div>
-
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-warning">
-                    <div class="inner">
-                        <h3>@(dashboardData?.TongSoPhongDaThue ?? 0)</h3>
-                        <p>Phòng đã thuê</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-user-check"></i>
-                    </div>
-                    <a href="@Url.Action("Index", "HopDong", new { area = "ChuTroArea" })" class="small-box-footer">
-                        Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                </div>
+                <a href="@Url.Action("Index", "HopDong", new { area = "ChuTroArea" })" class="custom-box">
+                    <div class="icon-wrapper bg-p-yellow"><i class="fas fa-user-check"></i></div>
+                    <h3>@(dashboardData?.TongSoPhongDaThue ?? 0)</h3>
+                    <p>Phòng đã thuê</p>
+                </a>
             </div>
-
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-danger">
-                    <div class="inner">
-                        <h3>@((dashboardData?.DoanhThuThangNay ?? 0).ToString("N0")) VNĐ</h3>
-                        <p>Doanh thu tháng này</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <a href="@Url.Action("Index", "HoaDon", new { area = "ChuTroArea" })" class="small-box-footer">
-                        Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                </div>
+                <a href="@Url.Action("Index", "HoaDon", new { area = "ChuTroArea" })" class="custom-box">
+                    <div class="icon-wrapper bg-p-red"><i class="fas fa-wallet"></i></div>
+                    <h3>@((dashboardData?.DoanhThuThangNay ?? 0).ToString("N0"))</h3>
+                    <p>Doanh thu (VNĐ)</p>
+                </a>
             </div>
         </div>
 
-        <!-- Charts Row -->
-        <div class="row">
-            <!-- Doanh thu theo tháng -->
+        <div class="row mt-2">
             <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-chart-bar mr-1"></i>
-                            Doanh thu 6 tháng gần nhất
-                        </h3>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="revenueChart" width="400" height="200"></canvas>
-                    </div>
+                <div class="card chart-card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-chart-bar mr-2 text-info"></i> Doanh thu 6 tháng gần nhất</h3></div>
+                    <div class="card-body"><canvas id="revenueChart" style="min-height: 300px; height: 300px;"></canvas></div>
                 </div>
             </div>
-
-            <!-- Tỷ lệ phòng trống/đã thuê -->
             <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-chart-pie mr-1"></i>
-                            Tỷ lệ phòng trống/đã thuê
-                        </h3>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="roomStatusChart" width="400" height="200"></canvas>
-                    </div>
+                <div class="card chart-card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-chart-pie mr-2 text-warning"></i> Trạng thái phòng</h3></div>
+                    <div class="card-body"><canvas id="roomStatusChart" style="min-height: 300px; height: 300px;"></canvas></div>
                 </div>
             </div>
         </div>
 
-        <!-- Second Charts Row -->
-        <div class="row">
-            <!-- Khách thuê mới -->
+        <div class="row mt-2">
             <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-chart-line mr-1"></i>
-                            Khách thuê mới 6 tháng gần nhất
-                        </h3>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="newTenantsChart" width="400" height="200"></canvas>
-                    </div>
+                <div class="card chart-card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-users mr-2 text-primary"></i> Khách thuê mới</h3></div>
+                    <div class="card-body"><canvas id="newTenantsChart" style="min-height: 250px; height: 250px;"></canvas></div>
                 </div>
             </div>
-
-            <!-- Sự cố theo tháng -->
             <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-exclamation-triangle mr-1"></i>
-                            Sự cố theo tháng
-                        </h3>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="incidentsChart" width="400" height="200"></canvas>
-                    </div>
+                <div class="card chart-card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-tools mr-2 text-danger"></i> Báo cáo sự cố</h3></div>
+                    <div class="card-body"><canvas id="incidentsChart" style="min-height: 250px; height: 250px;"></canvas></div>
                 </div>
             </div>
         </div>
@@ -175,132 +233,74 @@
 </section>
 
 @section Scripts {
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <script>
-        // Dữ liệu từ server
         var dashboardData = @Html.Raw(Json.Serialize(dashboardData));
-        
-        // Doanh thu theo tháng
-        var revenueCtx = document.getElementById('revenueChart').getContext('2d');
-        var revenueChart = new Chart(revenueCtx, {
+
+        const pastelColors = {
+            blue: '#a8d5e2',
+            blueDark: '#94c8db',
+            green: '#c1e1c1',
+            red: '#ffb7b2',
+            purple: '#c7ceea',
+            orange: '#ffdac1'
+        };
+
+        new Chart(document.getElementById('revenueChart').getContext('2d'), {
             type: 'bar',
             data: {
                 labels: dashboardData?.doanhThuTheoThang?.map(x => x.thang) || [],
                 datasets: [{
                     label: 'Doanh thu (VNĐ)',
                     data: dashboardData?.doanhThuTheoThang?.map(x => x.doanhThu) || [],
-                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
+                    backgroundColor: pastelColors.blue,
+                    borderRadius: 10
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString('vi-VN') + ' VNĐ';
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return 'Doanh thu: ' + context.parsed.y.toLocaleString('vi-VN') + ' VNĐ';
-                            }
-                        }
-                    }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });
 
-        // Tỷ lệ phòng trống/đã thuê
-        var roomStatusCtx = document.getElementById('roomStatusChart').getContext('2d');
-        var roomStatusChart = new Chart(roomStatusCtx, {
+        new Chart(document.getElementById('roomStatusChart').getContext('2d'), {
             type: 'doughnut',
             data: {
                 labels: ['Phòng trống', 'Phòng đã thuê'],
                 datasets: [{
                     data: [dashboardData?.tyLePhongTrong || 0, dashboardData?.tyLePhongDaThue || 0],
-                    backgroundColor: ['rgba(255, 99, 132, 0.8)', 'rgba(75, 192, 192, 0.8)'],
-                    borderColor: ['rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'],
-                    borderWidth: 1
+                    backgroundColor: [pastelColors.red, pastelColors.green],
+                    borderWidth: 0
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom' } } }
         });
 
-        // Khách thuê mới
-        var newTenantsCtx = document.getElementById('newTenantsChart').getContext('2d');
-        var newTenantsChart = new Chart(newTenantsCtx, {
+        new Chart(document.getElementById('newTenantsChart').getContext('2d'), {
             type: 'line',
             data: {
                 labels: dashboardData?.khachThueMoiTheoThang?.map(x => x.thang) || [],
                 datasets: [{
-                    label: 'Khách thuê mới',
+                    label: 'Khách mới',
                     data: dashboardData?.khachThueMoiTheoThang?.map(x => x.soKhachThueMoi) || [],
-                    borderColor: 'rgba(255, 159, 64, 1)',
-                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                    borderWidth: 2,
+                    borderColor: pastelColors.purple,
+                    backgroundColor: 'rgba(199, 206, 234, 0.2)',
                     fill: true,
                     tension: 0.4
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // Sự cố theo tháng
-        var incidentsCtx = document.getElementById('incidentsChart').getContext('2d');
-        var incidentsChart = new Chart(incidentsCtx, {
+        new Chart(document.getElementById('incidentsChart').getContext('2d'), {
             type: 'bar',
             data: {
                 labels: dashboardData?.suCoTheoThang?.map(x => x.thang) || [],
                 datasets: [{
-                    label: 'Số sự cố',
+                    label: 'Sự cố',
                     data: dashboardData?.suCoTheoThang?.map(x => x.soSuCo) || [],
-                    backgroundColor: 'rgba(220, 53, 69, 0.8)',
-                    borderColor: 'rgba(220, 53, 69, 1)',
-                    borderWidth: 1
+                    backgroundColor: pastelColors.orange,
+                    borderRadius: 10
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
     </script>
 }

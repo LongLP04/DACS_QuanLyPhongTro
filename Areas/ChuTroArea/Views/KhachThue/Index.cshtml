@@ -4,155 +4,308 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
     ViewData["Title"] = "Quản lý Khách thuê";
 
-    // --- LOGIC: Tính toán các chỉ số tóm tắt ---
     var totalTenants = Model.Count();
     var activeTenants = Model.Count(t => t.TrangThaiPhong == "Đã Thuê");
     var roomsRented = activeTenants;
-    
-    // Lấy ngày/giờ hiện tại bằng Razor (sẽ là thời gian lúc render trang)
-    var currentDateTime = DateTime.Now; 
+    var currentDateTime = DateTime.Now;
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0"><i class="fas fa-users-cog me-2 text-primary"></i> @ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <a class="btn btn-outline-secondary btn-sm" asp-area="ChuTroArea" asp-controller="KhachThue" asp-action="Index">
-                <i class="fas fa-redo-alt me-1"></i> Làm mới
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+    /* 1. Đồng bộ Palette màu từ Dashboard */
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    /* 2. Fix khoảng cách Sidebar y hệt Dashboard (255px) */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 3. Welcome Card Style */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 24px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.5rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.15);
+        margin-bottom: 5px;
+    }
+
+    .welcome-subtitle {
+        font-weight: 500;
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.95);
+    }
+
+    /* 4. Thống kê Card Style (Giống Dashboard) */
+    .custom-box-tenant {
+        background: var(--surface);
+        border-radius: 20px !important;
+        padding: 30px 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(168, 213, 226, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        color: var(--text-dark) !important;
+        text-decoration: none !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+
+        .custom-box-tenant:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
+        }
+
+        .custom-box-tenant .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 15px;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: white;
+        }
+
+        .custom-box-tenant:hover .icon-wrapper {
+            transform: scale(1.2) rotate(15deg);
+        }
+
+        .custom-box-tenant h3 {
+            font-weight: 800;
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .custom-box-tenant p {
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+    /* 5. Table Container nghệ thuật */
+    .grid-view-container {
+        background: #ffffff;
+        border-radius: 25px;
+        padding: 25px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        border: 1px solid rgba(168, 213, 226, 0.1);
+    }
+
+    #tenantsTable {
+        border-collapse: separate !important;
+        border-spacing: 0 12px !important;
+    }
+
+        #tenantsTable thead th {
+            border: none !important;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        #tenantsTable tbody tr {
+            background-color: #fbfcfe !important;
+            transition: all 0.2s ease;
+        }
+
+        #tenantsTable tbody td {
+            border-top: 1px solid #edf2f7 !important;
+            border-bottom: 1px solid #edf2f7 !important;
+            padding: 18px 10px !important;
+            vertical-align: middle !important;
+            text-align: center;
+        }
+
+        #tenantsTable tbody tr td:first-child {
+            border-left: 1px solid #edf2f7 !important;
+            border-top-left-radius: 15px !important;
+            border-bottom-left-radius: 15px !important;
+        }
+
+        #tenantsTable tbody tr td:last-child {
+            border-right: 1px solid #edf2f7 !important;
+            border-top-right-radius: 15px !important;
+            border-bottom-right-radius: 15px !important;
+        }
+
+        #tenantsTable tbody tr:hover {
+            background-color: #ffffff !important;
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(168, 213, 226, 0.2);
+        }
+
+    /* Button Action */
+    .btn-action-round {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+        border: none;
+        margin: 0 4px;
+    }
+
+    .bg-p-blue {
+        background-color: var(--p-blue);
+    }
+
+    .bg-p-green {
+        background-color: var(--p-green);
+    }
+
+    .bg-p-purple {
+        background-color: var(--p-purple);
+    }
+
+    .bg-p-red {
+        background-color: var(--p-red);
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Hồ sơ Khách thuê</h2>
+                            <p class="welcome-subtitle">Xem thông tin chi tiết và quản lý những người bạn đang lưu trú.</p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block">
+                            <i class="fas fa-user-friends fa-4x text-white" style="opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant">
+                <div class="icon-wrapper bg-p-blue"><i class="fas fa-users"></i></div>
+                <h3>@totalTenants</h3>
+                <p>Khách thuê</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant">
+                <div class="icon-wrapper bg-p-green"><i class="fas fa-door-open"></i></div>
+                <h3>@roomsRented</h3>
+                <p>Phòng đang thuê</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <a asp-controller="Chat" asp-action="Index" class="custom-box-tenant">
+                <div class="icon-wrapper bg-p-purple"><i class="fas fa-comments"></i></div>
+                <h3>CHAT</h3>
+                <p>Trao đổi</p>
             </a>
         </div>
-    </div>
-</div>
-
-<section class="content px-2 px-md-3 mb-3">
-    <div class="container-fluid p-0">
-        <div class="row"> @* Loại bỏ justify-content-start để 4 thẻ tự phân bổ *@
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-info shadow">
-                    <div class="inner">
-                        <h3>@totalTenants</h3>
-                        <p>Tổng số Khách thuê</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <a asp-controller="KhachThue" asp-action="Index" class="small-box-footer">
-                        Xem danh sách <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant">
+                <div class="icon-wrapper bg-p-red"><i class="fas fa-clock"></i></div>
+                <h3 id="currentTime">@currentDateTime.ToString("HH:mm")</h3>
+                <p>@currentDateTime.ToString("dd/MM/yyyy")</p>
             </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-success shadow">
-                    <div class="inner">
-                        <h3>@roomsRented</h3>
-                        <p>Phòng đang có Hợp đồng</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-key"></i>
-                    </div>
-                    <a asp-controller="HopDong" asp-action="Index" class="small-box-footer">
-                        Quản lý Hợp đồng <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-primary shadow">
-                    <div class="inner">
-                        <h3>Chat</h3> 
-                        <p>Trao đổi với Khách thuê</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-comments"></i>
-                    </div>
-                    <a asp-controller="Chat" asp-action="Index" class="small-box-footer">
-                        Truy cập Chat ngay <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-6">
-                <div class="small-box bg-dark shadow"> @* Dùng màu tối để phân biệt với các chỉ số hoạt động *@
-                    <div class="inner">
-                        <h3 id="currentTime">@currentDateTime.ToString("HH:mm:ss")</h3> 
-                        <p>@currentDateTime.ToString("dd/MM/yyyy")</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <a href="#" class="small-box-footer">
-                        Ngày giờ Hệ thống <i class="fas fa-arrow-circle-right"></i>
-                    </a>
-                </div>
-            </div>
-
         </div>
     </div>
-</section>
 
-<div class="card card-primary card-outline mx-2 mx-md-3 shadow-sm">
-    <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-list-alt me-1"></i> Danh sách Khách thuê</h3>
-    </div>
-    <div class="card-body">
-        <table id="tenantsTable" class="table table-striped table-hover table-bordered w-100">
+    <div class="grid-view-container mt-2">
+        <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+            <h5 style="font-weight: 800; color: var(--text-dark); margin: 0; letter-spacing: 0.5px;">DANH SÁCH CHI TIẾT</h5>
+            <a class="btn btn-sm bg-white border shadow-sm" style="border-radius: 12px; font-weight: 700;" asp-action="Index">
+                <i class="fas fa-sync-alt text-primary mr-1"></i> Làm mới
+            </a>
+        </div>
+
+        <table id="tenantsTable" class="table w-100">
             <thead>
                 <tr>
-                    <th data-priority="1">Họ tên</th>
-                    <th>Số phòng</th>
-                    <th>Tòa nhà</th>
-                    <th data-priority="1">Trạng thái</th> 
-                    <th class="d-none d-lg-table-cell">Điện thoại</th> 
-                    <th class="d-none d-xl-table-cell">Email</th> 
-                    <th class="d-none d-xl-table-cell">Địa chỉ</th>
-                    <th data-priority="1">Hành động</th> 
+                    <th>Khách thuê</th>
+                    <th>Vị trí ở</th>
+                    <th>Trạng thái</th>
+                    <th>Liên hệ</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach(var t in Model)
+                @foreach (var t in Model)
                 {
                     <tr>
                         <td>
-                            <i class="fas fa-user-tag me-1 text-muted"></i> @t.HoTen
+                            <div class="d-flex align-items-center text-left" style="text-align: left;">
+                                <div class="mr-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 12px; background: #fff; color: var(--p-blue); min-width:40px;">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div>
+                                    <span style="font-weight: 800; color: var(--text-dark); display: block;">@t.HoTen</span>
+                                    <small class="text-muted">ID: #KT-@t.MaKhachThue</small>
+                                </div>
+                            </div>
                         </td>
                         <td>
-                            <span class="badge bg-light text-dark border"><i class="fas fa-door-open me-1"></i> @t.SoPhong</span>
+                            <div class="text-center">
+                                <span style="font-weight: 700; color: #0ea5e9; display:block;">Phòng @t.SoPhong</span>
+                                <small class="text-muted">@t.TenToaNha</small>
+                            </div>
                         </td>
-                        <td>@t.TenToaNha</td>
                         <td>
                             @{
-                                // --- LOGIC: Ánh xạ trạng thái sang màu sắc (Giữ nguyên logic) ---
-                                var statusClass = t.TrangThaiPhong == "Đã Thuê" ? "bg-success" : 
-                                                  t.TrangThaiPhong == "Sắp hết hạn" ? "bg-warning text-dark" : 
-                                                  "bg-secondary"; 
+                                var statusClass = t.TrangThaiPhong == "Đã Thuê" ? "badge-success" : "badge-secondary";
                             }
-                            <span class="badge @statusClass">@t.TrangThaiPhong</span>
+                            <span class="badge @statusClass" style="border-radius: 50px; padding: 6px 15px; font-size: 0.7rem; font-weight: 700;">@t.TrangThaiPhong</span>
                         </td>
-                        <td class="d-none d-lg-table-cell">@t.SoDienThoai</td>
-                        <td class="d-none d-xl-table-cell">@t.Email</td>
-                        <td class="d-none d-xl-table-cell">@t.DiaChi</td>
                         <td>
-                            <a asp-area="ChuTroArea" asp-controller="KhachThue" asp-action="Details" asp-route-id="@t.MaKhachThue" 
-                               class="btn btn-sm btn-outline-info me-1" title="Chi tiết Khách thuê">
-                                <i class="fas fa-info-circle"></i>
-                            </a>
-                            
-                            @if(!string.IsNullOrEmpty(t.ApplicationUserId))
-                            {
-                                <a class="btn btn-sm btn-primary" 
-                                   href="@Url.Action("Index", "Chat", new { area = "ChuTroArea", userId = t.ApplicationUserId, hotenkhach = t.HoTen })" 
-                                   title="Bắt đầu Chat">
-                                    <i class="fas fa-comment-dots"></i>
+                            <div class="text-center">
+                                <span style="font-weight: 700; display:block; font-size: 0.9rem;">@t.SoDienThoai</span>
+                                <small class="text-muted">@t.Email</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-center">
+                                <a asp-action="Details" asp-route-id="@t.MaKhachThue" class="btn-action-round bg-light text-primary shadow-sm" title="Chi tiết">
+                                    <i class="fas fa-expand-alt"></i>
                                 </a>
-                            }
-                            else
-                            {
-                                <span class="btn btn-sm btn-light text-muted" title="Khách thuê chưa có tài khoản App">
-                                    <i class="fas fa-comment-slash"></i>
-                                </span>
-                            }
+                                @if (!string.IsNullOrEmpty(t.ApplicationUserId))
+                                {
+                                    <a class="btn-action-round bg-p-green text-white shadow-sm"
+                                       href="@Url.Action("Index", "Chat", new { area = "ChuTroArea", userId = t.ApplicationUserId })" title="Gửi tin nhắn">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </a>
+                                }
+                            </div>
                         </td>
                     </tr>
                 }
@@ -163,37 +316,27 @@
 
 @section Scripts {
     <script>
-        // Cập nhật giờ hiện tại mỗi giây để thẻ không bị tĩnh
         function updateTime() {
             var now = new Date();
-            // Lấy giờ, phút, giây
             var hours = now.getHours().toString().padStart(2, '0');
             var minutes = now.getMinutes().toString().padStart(2, '0');
-            var seconds = now.getSeconds().toString().padStart(2, '0');
-            
-            document.getElementById('currentTime').innerText = hours + ':' + minutes + ':' + seconds;
+            if(document.getElementById('currentTime')) {
+                document.getElementById('currentTime').innerText = hours + ':' + minutes;
+            }
         }
 
         $(document).ready(function() {
-            // Khởi tạo thời gian ngay lập tức và sau đó cập nhật mỗi giây
             updateTime();
             setInterval(updateTime, 1000);
 
             $('#tenantsTable').DataTable({
                 responsive: true,
+                autoWidth: false,
+                dom: 'ftip',
                 "language": {
-                    "lengthMenu": "Hiển thị _MENU_ mục",
-                    "zeroRecords": "Không tìm thấy dữ liệu phù hợp",
-                    "info": "Hiển thị từ _START_ đến _END_ của _TOTAL_ mục",
-                    "infoEmpty": "Không có dữ liệu",
-                    "infoFiltered": "(Lọc từ tổng cộng _MAX_ mục)",
-                    "search": "Tìm kiếm:",
-                    "paginate": {
-                        "first": "Đầu",
-                        "last": "Cuối",
-                        "next": "Sau",
-                        "previous": "Trước"
-                    }
+                    "search": "TÌM NHANH:",
+                    "paginate": { "next": "Sau", "previous": "Trước" },
+                    "info": "Tổng cộng: _TOTAL_ khách thuê"
                 }
             });
         });

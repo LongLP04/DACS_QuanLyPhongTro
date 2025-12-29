@@ -2,176 +2,309 @@
 @{
     ViewData["Title"] = "Xác nhận phiếu đăng ký dịch vụ";
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
-    
+
     var totalRecords = Model?.Count() ?? 0;
     var thisMonthRecords = Model?.Count(p => p.NgayBatDau.Month == DateTime.Now.Month && p.NgayBatDau.Year == DateTime.Now.Year) ?? 0;
     var pendingRecords = Model?.Count(p => p.TrangThai == "Chờ xác nhận") ?? 0;
     var approvedRecords = Model?.Count(p => p.TrangThai == "Đã xác nhận") ?? 0;
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <a asp-action="Index" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i> Quay Lại
-            </a>
-        </div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
-<!-- Summary widgets -->
-<div class="row px-2 px-md-3 mt-3 g-3">
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-primary mb-0">
-            <div class="inner">
-                <h3>@totalRecords</h3>
-                <p>Tổng phiếu đăng ký</p>
-            </div>
-            <div class="icon"><i class="fas fa-clipboard-list"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-info mb-0">
-            <div class="inner">
-                <h3>@thisMonthRecords</h3>
-                <p>Tháng này</p>
-            </div>
-            <div class="icon"><i class="fas fa-calendar-alt"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-warning mb-0">
-            <div class="inner">
-                <h3>@pendingRecords</h3>
-                <p>Chờ xác nhận</p>
-            </div>
-            <div class="icon"><i class="fas fa-clock"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-success mb-0">
-            <div class="inner">
-                <h3>@approvedRecords</h3>
-                <p>Đã xác nhận</p>
-            </div>
-            <div class="icon"><i class="fas fa-check-circle"></i></div>
-        </div>
-    </div>
-    <div class="col-12"><hr class="my-2"></div>
-</div>
+<style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info mt-3">Không có phiếu đăng ký dịch vụ nào cần xác nhận.</div>
-}
-else
-{
-    <div class="row px-2 px-md-3 g-3 mt-3" id="phieudichvuchoxacnhanGrid">
-        @foreach (var phieu in Model)
-        {
-            <div class="col-12 col-sm-6 col-lg-4 col-xl-3 phieudichvu-item">
-                <div class="card shadow-sm border-0 h-100 phieudichvu-card">
-                    <div class="card-body p-3">
-                        <div class="d-flex align-items-start justify-content-between mb-2">
-                            <div class="flex-grow-1 me-2">
-                                <h5 class="card-title mb-1 fw-bold text-dark">
-                                    <i class="fas fa-user me-2 text-primary"></i>@phieu.KhachThue.HoTen
-                                </h5>
-                                <div class="text-muted mb-2">
-                                    <i class="fas fa-calendar-alt me-1"></i>Bắt đầu: <span class="fs-6">@phieu.NgayBatDau.ToShortDateString()</span>
-                                </div>
-                                <div class="text-muted mb-2">
-                                    <i class="fas fa-calendar-check me-1"></i>Kết thúc: <span class="fs-6">@phieu.NgayKetThuc.ToShortDateString()</span>
-                                </div>
-                            </div>
-                            <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:40px;height:40px;">
-                                <i class="fas fa-cogs fs-6"></i>
-                            </div>
+    /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. WELCOME CARD */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 24px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.5rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.15);
+    }
+
+    /* 3. 4 STATS CARDS ĐỒNG BỘ - XOAY 15 ĐỘ */
+    .custom-box-stats {
+        background: var(--surface);
+        border-radius: 20px !important;
+        padding: 30px 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(168, 213, 226, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+
+        .custom-box-stats:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
+        }
+
+        .custom-box-stats .icon-wrapper {
+            width: 65px;
+            height: 65px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 15px;
+            color: white;
+            transition: transform 0.4s ease;
+        }
+
+        .custom-box-stats:hover .icon-wrapper {
+            transform: rotate(15deg);
+        }
+
+    /* 4. PHIẾU CARDS - KÍCH THƯỚC DÃN RỘNG CHUẨN */
+    .building-card {
+        border-radius: 28px !important;
+        background: #ffffff;
+        border: 1px solid #f1f5f9 !important;
+        transition: all 0.4s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .building-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
+            border-color: var(--p-blue) !important;
+        }
+
+        .building-card .card-body {
+            padding: 2.2rem !important; /* Kích thước dãn rộng đồng nhất */
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+    /* Xoay icon user khi hover card */
+    .avatar-circle-icon {
+        width: 55px;
+        height: 55px;
+        background: #f8fafc;
+        color: #3182ce;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        font-size: 1.3rem;
+        transition: transform 0.4s ease;
+    }
+
+    .building-card:hover .avatar-circle-icon {
+        transform: rotate(15deg);
+    }
+
+    .service-list-box {
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #edf2f7;
+    }
+
+    /* Phân loại màu viền pastel */
+    .phieudichvu-item:nth-child(4n+1) .building-card {
+        border-top: 8px solid var(--p-blue) !important;
+    }
+
+    .phieudichvu-item:nth-child(4n+2) .building-card {
+        border-top: 8px solid var(--p-yellow) !important;
+    }
+
+    .phieudichvu-item:nth-child(4n+3) .building-card {
+        border-top: 8px solid var(--p-green) !important;
+    }
+
+    .phieudichvu-item:nth-child(4n+4) .building-card {
+        border-top: 8px solid var(--p-purple) !important;
+    }
+
+    .btn-custom-confirm {
+        background-color: var(--p-green);
+        color: #2d6a4f;
+        border-radius: 14px;
+        font-weight: 800;
+        padding: 18px 25px;
+        border: none;
+        transition: 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        width: 100%;
+    }
+
+        .btn-custom-confirm:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 15px rgba(193, 225, 193, 0.6);
+            filter: brightness(0.95);
+        }
+
+    .btn-back-minimal {
+        border-radius: 12px;
+        font-weight: 700;
+        color: #64748b;
+        background: white;
+        border: 1.5px solid #edf2f7;
+        padding: 10px 25px;
+        transition: 0.3s;
+        margin-bottom: 30px;
+        display: inline-flex;
+        align-items: center;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-4 text-left">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Duyệt Đăng Ký Dịch Vụ ✨</h2>
                         </div>
-                        <div class="mb-2">
-                            <ul class="mb-0 ps-3">
-                                @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
-                                {
-                                    <li>@ct.DichVu.TenDichVu - SL: @ct.SoLuong - @ct.TongTienDichVu.ToString("N0") VND</li>
-                                }
-                            </ul>
+                        <div class="col-md-3 text-right d-none d-md-block">
+                            <i class="fas fa-clipboard-check fa-4x text-white opacity-25"></i>
                         </div>
-                        <div class="mb-2">
-                            <span class="badge bg-danger-subtle text-danger border border-danger fs-6 px-2 py-1">
-                                Tổng tiền: <strong>@phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu).ToString("N0") VND</strong>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
-                        <form asp-action="XacNhan" asp-route-id="@phieu.MaDangKyDichVu" method="post" class="d-flex gap-2 justify-content-end">
-                            <button type="submit" class="btn btn-outline-success btn-sm px-3">
-                                <i class="fas fa-check me-1"></i>Xác nhận
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-stats shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-blue)"><i class="fas fa-file-invoice"></i></div>
+                <h3>@totalRecords</h3>
+                <p class="small text-muted mb-0 font-weight-bold uppercase">Tổng phiếu</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-stats shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-purple)"><i class="fas fa-calendar-day"></i></div>
+                <h3>@thisMonthRecords</h3>
+                <p class="small text-muted mb-0 font-weight-bold uppercase">Trong tháng</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-stats shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-yellow); color:#856404"><i class="fas fa-hourglass-half"></i></div>
+                <h3>@pendingRecords</h3>
+                <p class="small text-muted mb-0 font-weight-bold uppercase">Chờ duyệt</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-stats shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-green)"><i class="fas fa-check-double"></i></div>
+                <h3>@approvedRecords</h3>
+                <p class="small text-muted mb-0 font-weight-bold uppercase">Đã duyệt</p>
+            </div>
+        </div>
+    </div>
+
+    <a asp-action="Index" class="btn btn-back-minimal shadow-sm">
+        <i class="fas fa-chevron-left mr-2"></i> QUAY LẠI DANH SÁCH
+    </a>
+
+    <div class="row g-4 mt-2" id="phieudichvuchoxacnhanGrid">
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <div class="card p-5 border-0 shadow-sm" style="border-radius:30px;">
+                    <i class="fas fa-smile fa-4x text-muted opacity-25 mb-3"></i>
+                    <h4 class="text-muted">Tuyệt vời! Không còn phiếu nào chờ xác nhận.</h4>
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var phieu in Model)
+            {
+                <div class="col-12 col-md-6 col-xl-4 phieudichvu-item mb-5">
+                    <div class="card building-card shadow-sm h-100 text-left">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                                <div class="avatar-circle-icon mr-3 shadow-sm">
+                                    <i class="fas fa-user-tag"></i>
+                                </div>
+                                <div>
+                                    <h4 class="card-title-lg mb-0" style="font-size: 1.3rem; font-weight: 800;">@phieu.KhachThue.HoTen</h4>
+                                    <small class="text-muted fw-600 uppercase">Khách hàng thuê phòng</small>
+                                </div>
+                            </div>
+
+                            <div class="info-group-box mb-4 shadow-xs">
+                                <div class="row text-center">
+                                    <div class="col-6 border-right">
+                                        <div class="small text-muted font-weight-bold uppercase mb-1" style="font-size: 0.75rem;">Bắt đầu</div>
+                                        <div class="text-dark font-weight-bold">@phieu.NgayBatDau.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="small text-muted font-weight-bold uppercase mb-1" style="font-size: 0.75rem;">Kết thúc</div>
+                                        <div class="text-dark font-weight-bold">@phieu.NgayKetThuc.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="service-list-box flex-grow-1 mb-4 shadow-xs">
+                                <p class="small fw-bold text-muted text-uppercase mb-3" style="letter-spacing: 0.5px;"><i class="fas fa-stream mr-2"></i>Dịch vụ đăng ký:</p>
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
+                                    {
+                                        <li class="mb-3 d-flex justify-content-between align-items-center border-bottom border-light pb-2">
+                                            <span class="text-dark font-weight-600">• @ct.DichVu.TenDichVu (x@ct.SoLuong)</span>
+                                            <span class="badge bg-white text-primary border shadow-xs" style="font-size: 0.9rem; padding: 5px 12px; border-radius: 8px;">@ct.TongTienDichVu.ToString("N0") đ</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+
+                            <div class="mt-auto pt-4 border-top">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <span class="text-muted fw-bold small uppercase">Tổng cộng:</span>
+                                    <h3 class="text-danger fw-bold mb-0">@phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu).ToString("N0") <small>đ</small></h3>
+                                </div>
+
+                                <form asp-action="XacNhan" asp-route-id="@phieu.MaDangKyDichVu" method="post">
+                                    <button type="submit" class="btn btn-custom-confirm shadow-sm">
+                                        <i class="fas fa-check-circle mr-2"></i> PHÊ DUYỆT PHIẾU
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         }
     </div>
-}
-
-<div class="text-center mt-4">
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-4">Quay lại</a>
 </div>
-
-<style>
-    .phieudichvu-card {
-        transition: transform .15s ease, box-shadow .15s ease;
-        margin-bottom: 0;
-        background-color: #f0f8ff;
-    }
-    .phieudichvu-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    }
-    .avatar {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    }
-    .phieudichvu-card .card-title {
-        font-size: 1.15rem;
-        line-height: 1.3;
-        color: #2c3e50;
-    }
-    .phieudichvu-card .badge {
-        font-size: 0.875rem;
-        font-weight: 500;
-        background-color: rgba(255, 255, 255, 0.8) !important;
-        backdrop-filter: blur(10px);
-    }
-    .phieudichvu-card .btn {
-        font-size: 0.875rem;
-        font-weight: 500;
-    }
-    .phieudichvu-card .card-body > * + * {
-        margin-top: 1rem;
-    }
-    .phieudichvu-item {
-        margin-bottom: 1rem;
-    }
-    .phieudichvu-item:nth-last-child(-n+4) {
-        margin-bottom: 0;
-    }
-    .phieudichvu-item:nth-child(4n+1) .phieudichvu-card {
-        background-color: #e3ffff;
-    }
-    .phieudichvu-item:nth-child(4n+2) .phieudichvu-card {
-        background-color: #fff9f0;
-    }
-    .phieudichvu-item:nth-child(4n+3) .phieudichvu-card {
-        background-color: #f0fff4;
-    }
-    .phieudichvu-item:nth-child(4n+4) .phieudichvu-card {
-        background-color: #fff0f5;
-    }
-    .phieudichvu-card .card-title,
-    .phieudichvu-card .text-muted,
-    .phieudichvu-card .text-secondary {
-        color: #2c3e50 !important;
-    }
-</style>

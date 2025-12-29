@@ -5,149 +5,230 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
-@Html.AntiForgeryToken()
-
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i>Quay lại
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Summary widget -->
-<div class="row px-2 px-md-3 mt-3 g-3">
-    <div class="col-12">
-        <div class="small-box bg-gradient-info mb-0">
-            <div class="inner">
-                <h3><i class="fas fa-plus-circle me-2"></i>Thêm Tòa Nhà Mới</h3>
-                <p>Nhập thông tin chi tiết để tạo tòa nhà mới vào hệ thống</p>
-            </div>
-            <div class="icon"><i class="fas fa-building"></i></div>
-        </div>
-    </div>
-    <div class="col-12"><hr class="my-2"></div>
-</div>
-
-<div class="row px-2 px-md-3 g-3">
-    <div class="col-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-                <form asp-action="Create" method="post">
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label asp-for="TenToaNha" class="form-label fw-bold">
-                                    <i class="fas fa-building me-2 text-primary"></i>Tên tòa nhà
-                                </label>
-                                <input asp-for="TenToaNha" class="form-control form-control-lg" placeholder="Nhập tên tòa nhà" />
-                                <span asp-validation-for="TenToaNha" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label asp-for="DiaChi" class="form-label fw-bold">
-                                    <i class="fas fa-map-marker-alt me-2 text-success"></i>Địa chỉ
-                                </label>
-                                <input asp-for="DiaChi" class="form-control form-control-lg" placeholder="Nhập địa chỉ" />
-                                <span asp-validation-for="DiaChi" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label asp-for="TongSoTang" class="form-label fw-bold">
-                                    <i class="fas fa-layer-group me-2 text-warning"></i>Số tầng
-                                </label>
-                                <input asp-for="TongSoTang" class="form-control form-control-lg" type="number" min="1" placeholder="Nhập số tầng" />
-                                <span asp-validation-for="TongSoTang" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label asp-for="MoTa" class="form-label fw-bold">
-                                    <i class="fas fa-info-circle me-2 text-info"></i>Mô tả
-                                </label>
-                                <textarea asp-for="MoTa" class="form-control form-control-lg" rows="3" placeholder="Nhập mô tả tòa nhà"></textarea>
-                                <span asp-validation-for="MoTa" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-map me-2 text-danger"></i>Chọn vị trí trên bản đồ
-                                </label>
-                                <div id="map" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 8px;"></div>
-                                <input type="hidden" asp-for="ViTri" id="ViTri" />
-                                <small class="form-text text-muted mt-2">
-                                    <i class="fas fa-info-circle me-1"></i>Kéo marker hoặc tìm kiếm để cập nhật vị trí tọa độ.
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group text-center mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg px-5 me-3">
-                            <i class="fas fa-save me-2"></i>Thêm tòa nhà
-                        </button>
-                        <a asp-action="Index" class="btn btn-secondary btn-lg px-5">
-                            <i class="fas fa-times me-2"></i>Hủy
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
 <style>
-    .small-box .icon{right:10px; top: 6px;}
-    .form-control-lg {
-        border-radius: 8px;
-        border: 2px solid #e9ecef;
-        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
     }
-    .form-control-lg:focus {
-        border-color: #6a11cb;
-        box-shadow: 0 0 0 0.2rem rgba(106, 17, 203, 0.25);
+
+    /* 1. Đồng bộ Sidebar & Background */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
     }
+
+    /* 2. Welcome Card Style */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 24px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.5rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.15);
+        margin-bottom: 5px;
+    }
+
+    /* 3. Form Card - Khung bo tròn viền xanh nhạt */
+    .card-custom {
+        background: var(--surface);
+        border-radius: 28px !important;
+        padding: 20px;
+        border: 2px solid var(--p-blue) !important; /* Viền xanh dương nhạt */
+        box-shadow: 0 8px 25px rgba(168, 213, 226, 0.15);
+    }
+
     .form-label {
-        color: #2c3e50;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 8px;
         font-size: 0.95rem;
     }
-    .card {
+
+    .form-control-custom {
+        border-radius: 15px !important;
+        border: 1.5px solid #edf2f7 !important;
+        padding: 12px 20px !important;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-custom:focus {
+            border-color: var(--p-blue) !important;
+            box-shadow: 0 0 0 4px rgba(168, 213, 226, 0.2) !important;
+            outline: none;
+        }
+
+    /* 4. Map Container */
+    #map {
+        width: 100%;
+        height: 400px;
+        border: 2px solid var(--p-blue);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    /* 5. Buttons - Bo tròn viền xanh */
+    .btn-custom-save {
+        background: var(--p-blue);
+        color: #2c5282;
+        border-radius: 15px;
+        font-weight: 800;
+        padding: 12px 40px;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(168, 213, 226, 0.4);
+            background: #94c8db;
+        }
+
+    .btn-custom-cancel {
+        background: white;
+        color: #64748b;
+        border-radius: 15px;
+        font-weight: 700;
+        padding: 12px 40px;
+        border: 2px solid #edf2f7;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom-cancel:hover {
+            background: #f8fafc;
+            border-color: var(--p-blue);
+            color: var(--text-dark);
+        }
+
+    .btn-back-minimal {
         border-radius: 12px;
-        transition: transform .15s ease, box-shadow .15s ease;
+        font-weight: 700;
+        color: #64748b;
+        background: white;
+        border: 1.5px solid #edf2f7;
+        padding: 8px 20px;
+        transition: 0.3s;
     }
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    }
-    .btn-lg {
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all .15s ease;
-    }
-    .btn-lg:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,.15);
-    }
+
+        .btn-back-minimal:hover {
+            border-color: var(--p-blue);
+            color: var(--text-dark);
+        }
 </style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Thêm Tòa Nhà ✨</h2>
+                            <p class="mb-0 text-white opacity-75">Khởi tạo không gian quản lý bất động sản mới của bạn.</p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block">
+                            <i class="fas fa-plus-circle fa-4x text-white" style="opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-back-minimal shadow-sm">
+            <i class="fas fa-chevron-left mr-2"></i> QUAY LẠI DANH SÁCH
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card card-custom shadow-sm">
+                <div class="card-body p-md-4">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="border-radius: 15px;" role="alert"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="TenToaNha" class="form-label">
+                                    <i class="fas fa-building mr-2 text-primary"></i>TÊN TÒA NHÀ
+                                </label>
+                                <input asp-for="TenToaNha" class="form-control form-control-custom" placeholder="Ví dụ: Tòa nhà Sunshine" />
+                                <span asp-validation-for="TenToaNha" class="text-danger small font-weight-bold"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="DiaChi" class="form-label">
+                                    <i class="fas fa-map-marker-alt mr-2 text-success"></i>ĐỊA CHỈ CHI TIẾT
+                                </label>
+                                <input asp-for="DiaChi" class="form-control form-control-custom" id="addressSearch" placeholder="Số nhà, tên đường, phường/xã..." />
+                                <span asp-validation-for="DiaChi" class="text-danger small font-weight-bold"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="TongSoTang" class="form-label">
+                                    <i class="fas fa-layer-group mr-2 text-warning"></i>TỔNG SỐ TẦNG
+                                </label>
+                                <input asp-for="TongSoTang" class="form-control form-control-custom" type="number" min="1" placeholder="Nhập số tầng" />
+                                <span asp-validation-for="TongSoTang" class="text-danger small font-weight-bold"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="MoTa" class="form-label">
+                                    <i class="fas fa-edit mr-2 text-info"></i>MÔ TẢ NGẮN
+                                </label>
+                                <textarea asp-for="MoTa" class="form-control form-control-custom" rows="2" placeholder="Ghi chú thêm về tòa nhà..."></textarea>
+                                <span asp-validation-for="MoTa" class="text-danger small font-weight-bold"></span>
+                            </div>
+
+                            <div class="col-12 mb-5">
+                                <label class="form-label">
+                                    <i class="fas fa-map-marked-alt mr-2 text-danger"></i>VỊ TRÍ TRÊN BẢN ĐỒ
+                                </label>
+                                <div id="map" class="shadow-sm"></div>
+                                <input type="hidden" asp-for="ViTri" id="ViTri" />
+                                <div class="mt-2 text-muted small">
+                                    <i class="fas fa-info-circle mr-1"></i> Mẹo: Nhập địa chỉ ở trên và nhấn Enter, hoặc kéo Marker màu đỏ trên bản đồ để chọn vị trí chính xác.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center pb-3">
+                            <button type="submit" class="btn btn-custom-save shadow-sm mr-3">
+                                <i class="fas fa-save mr-2"></i> LƯU TÒA NHÀ
+                            </button>
+                            <a asp-action="Index" class="btn btn-custom-cancel">
+                                HỦY BỎ
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKjse9i60p-i4Ld99JfraTgjMsoMBGjX4&callback=initMap&libraries=&v=weekly" async></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&callback=initMap&libraries=geocoding&v=weekly" async></script>
     <script>
         function initMap() {
-            var defaultLocation = { lat: 10.823, lng: 106.627 };  // Tọa độ mặc định
+            var defaultLocation = { lat: 10.823, lng: 106.627 };
 
             var map = new google.maps.Map(document.getElementById('map'), {
                 center: defaultLocation,
@@ -165,20 +246,15 @@
                 position: defaultLocation,
                 map: map,
                 draggable: true,
-                icon: {
-                    url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-                    scaledSize: new google.maps.Size(32, 32)
-                }
+                title: "Kéo tôi đến vị trí tòa nhà"
             });
 
-            // Cập nhật tọa độ khi kéo marker
             google.maps.event.addListener(marker, 'dragend', function (event) {
                 var lat = event.latLng.lat();
                 var lng = event.latLng.lng();
                 document.getElementById('ViTri').value = lat + ',' + lng;
             });
 
-            // Cập nhật khi tìm kiếm địa chỉ (Google Maps API geocoder)
             var geocoder = new google.maps.Geocoder();
             document.getElementById('addressSearch').addEventListener('keydown', function (e) {
                 if (e.key === 'Enter') {
@@ -192,7 +268,7 @@
                                 marker.setPosition(loc);
                                 document.getElementById('ViTri').value = loc.lat() + ',' + loc.lng();
                             } else {
-                                alert('Không thể tìm thấy địa chỉ này.');
+                                alert('Không thể tìm thấy địa chỉ này trên bản đồ.');
                             }
                         });
                     }

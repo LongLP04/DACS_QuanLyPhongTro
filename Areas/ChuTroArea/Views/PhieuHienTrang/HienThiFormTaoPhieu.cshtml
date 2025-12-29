@@ -5,92 +5,273 @@
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"] - @Model.TenPhong</h2>
-        <div class="d-flex align-items-center gap-2">
-            <a asp-action="ChonPhong" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i> Quay Lại
-            </a>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. WELCOME CARD */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 35px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.2rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.1);
+        margin-bottom: 5px;
+    }
+
+    /* 3. FORM CARD - DÃN RỘNG */
+    .card-custom {
+        background: var(--surface);
+        border-radius: 35px !important;
+        padding: 50px;
+        border: 2px solid var(--p-blue) !important;
+        box-shadow: 0 15px 35px rgba(168, 213, 226, 0.1);
+    }
+
+    .form-label {
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 12px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-control-custom {
+        border-radius: 15px !important;
+        border: 1.5px solid #edf2f7 !important;
+        padding: 12px 20px !important;
+        transition: all 0.3s ease;
+        background-color: #fbfcfe;
+    }
+
+        .form-control-custom:focus {
+            border-color: var(--p-blue) !important;
+            box-shadow: 0 0 0 4px rgba(168, 213, 226, 0.2) !important;
+            background-color: #fff;
+        }
+
+    /* 4. TABLE STYLING */
+    .custom-table {
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid #edf2f7 !important;
+    }
+
+        .custom-table thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            border: none;
+            padding: 15px;
+        }
+
+        .custom-table tbody td {
+            padding: 12px;
+            vertical-align: middle;
+            border-color: #f1f5f9 !important;
+        }
+
+    /* 5. BUTTONS */
+    .btn-add-row {
+        background-color: #f1f5f9;
+        color: #475569;
+        border-radius: 12px;
+        font-weight: 700;
+        border: 1.5px dashed #cbd5e1;
+        padding: 12px;
+        width: 100%;
+        transition: 0.3s;
+    }
+
+        .btn-add-row:hover {
+            background-color: var(--p-blue);
+            color: #2c5282;
+            border-style: solid;
+        }
+
+    .btn-submit-phieu {
+        background: var(--p-blue);
+        color: #2c5282;
+        border-radius: 18px;
+        font-weight: 800;
+        padding: 18px 60px;
+        border: none;
+        transition: 0.4s ease;
+        text-transform: uppercase;
+    }
+
+        .btn-submit-phieu:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(168, 213, 226, 0.4);
+        }
+
+    .btn-back-minimal {
+        border-radius: 12px;
+        font-weight: 700;
+        color: #64748b;
+        background: white;
+        border: 1.5px solid #edf2f7;
+        padding: 10px 25px;
+        transition: 0.3s;
+        margin-bottom: 30px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .avatar-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple));
+        transition: transform 0.4s ease;
+    }
+
+    .card-custom:hover .avatar-icon-wrapper {
+        transform: rotate(15deg);
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-5 text-left">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Lập Phiếu Bàn Giao</h2>
+                            <p class="mb-0 text-white opacity-90" style="font-size: 1.1rem;">Ghi nhận hiện trạng vật dụng cho <strong>@Model.TenPhong</strong></p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block text-white opacity-20">
+                            <i class="fas fa-clipboard-check fa-5x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="row justify-content-center mt-3">
-    <div class="col-12 col-md-10 col-lg-8">
-        <div class="card shadow-sm border-0 phieuhientrang-create-card">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:48px;height:48px;">
-                        <i class="fas fa-clipboard-list fs-4"></i>
+    <a asp-action="ChonPhong" class="btn btn-back-minimal shadow-sm">
+        <i class="fas fa-arrow-left mr-2"></i> TRỞ VỀ CHỌN PHÒNG
+    </a>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 pb-5">
+            <div class="card card-custom shadow-sm text-left">
+                <div class="card-body p-0">
+                    <div class="d-flex align-items-center mb-5">
+                        <div class="avatar-icon-wrapper shadow-sm mr-4">
+                            <i class="fas fa-pen-fancy"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-0">Nội dung phiếu hiện trạng</h4>
                     </div>
-                    <h5 class="card-title mb-0 fw-bold text-dark">Tạo phiếu hiện trạng - @Model.TenPhong</h5>
+
+                    <form asp-action="TaoPhieu" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="MaPhong" />
+
+                        <div class="mb-5">
+                            <label asp-for="GhiChu" class="form-label text-primary">Ghi chú tổng quát</label>
+                            <textarea asp-for="GhiChu" class="form-control form-control-custom" rows="3" placeholder="Nhập nhận xét chung về phòng khi bàn giao..."></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="fw-bold text-dark mb-0"><i class="fas fa-box-open mr-2 text-warning"></i> Danh sách vật dụng</h5>
+                                <span class="badge bg-light text-muted px-3 py-2" style="border-radius: 8px;">Vui lòng liệt kê đầy đủ</span>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table custom-table" id="table-vatdung">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50%;">Tên vật dụng</th>
+                                            <th style="width: 40%;">Tình trạng hiện tại</th>
+                                            <th style="width: 10%;" class="text-center">Xóa</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <button type="button" onclick="themVatDung()" class="btn btn-add-row mt-3 shadow-xs">
+                                <i class="fas fa-plus-circle mr-2"></i> THÊM DÒNG MỚI
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-5 pt-4 border-top">
+                            <button type="submit" class="btn btn-submit-phieu shadow-sm">
+                                <i class="fas fa-save mr-2"></i> XÁC NHẬN TẠO PHIẾU
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                                <form asp-action="TaoPhieu" method="post" style="max-width: 700px; margin:auto;">
-                                    <input type="hidden" asp-for="MaPhong" />
-                                    <div class="mb-3">
-                                        <label asp-for="GhiChu" class="form-label fw-bold">Ghi chú</label>
-                                        <textarea asp-for="GhiChu" class="form-control"></textarea>
-                                    </div>
-                                    <h4 class="mb-3">Vật dụng</h4>
-                                    <table class="table table-bordered" id="table-vatdung">
-                                        <thead class="thead-custom text-white">
-                                            <tr>
-                                                <th>Tên vật dụng</th>
-                                                <th>Tình trạng</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Dữ liệu thêm tự động bởi JS -->
-                                        </tbody>
-                                    </table>
-                                    <button type="button" onclick="themVatDung()" class="btn btn-secondary btn-custom btn-zoom mb-3">+ Thêm vật dụng</button>
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary btn-custom btn-zoom px-5">Tạo phiếu</button>
-                                    </div>
-                                </form>
             </div>
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script>
+        // LOGIC GIỮ NGUYÊN HOÀN TOÀN
         function themVatDung() {
             var index = document.querySelectorAll('#table-vatdung tbody tr').length;
             var row = `
-                <tr>
-                    <td><input name="VatDungs[${index}].TenVatDung" class="form-control" required /></td>
-                    <td><input name="VatDungs[${index}].TinhTrang" class="form-control" required /></td>
-                    <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-sm btn-danger btn-custom btn-zoom">X</button></td>
+                <tr class="animate__animated animate__fadeIn">
+                    <td>
+                        <input name="VatDungs[${index}].TenVatDung" class="form-control form-control-custom" placeholder="Ví dụ: Máy lạnh, Giường..." required />
+                    </td>
+                    <td>
+                        <input name="VatDungs[${index}].TinhTrang" class="form-control form-control-custom" placeholder="Ví dụ: Mới 95%, Trầy xước nhẹ..." required />
+                    </td>
+                    <td class="text-center">
+                        <button type="button" onclick="this.closest('tr').remove()" class="btn btn-light text-danger shadow-xs" style="border-radius: 10px; width: 40px; height: 40px;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </td>
                 </tr>`;
             document.querySelector('#table-vatdung tbody').insertAdjacentHTML('beforeend', row);
         }
+
+        // Thêm sẵn 1 dòng khi load trang để user dễ thấy
+        window.onload = function() {
+            if(document.querySelectorAll('#table-vatdung tbody tr').length === 0) {
+                themVatDung();
+            }
+        };
     </script>
 }
-<style>
-    .phieuhientrang-create-card {
-        transition: transform .15s ease, box-shadow .15s ease;
-        margin-bottom: 0;
-        background-color: #f0fff4;
-    }
-    .phieuhientrang-create-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    }
-    .avatar {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    }
-    .phieuhientrang-create-card .card-title {
-        font-size: 1.15rem;
-        line-height: 1.3;
-        color: #2c3e50;
-    }
-    .phieuhientrang-create-card .btn {
-        font-size: 0.95rem;
-        font-weight: 500;
-    }
-    .phieuhientrang-create-card .form-label {
-        font-weight: 600;
-    }
-</style>

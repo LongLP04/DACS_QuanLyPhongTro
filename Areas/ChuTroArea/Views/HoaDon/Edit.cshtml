@@ -4,48 +4,227 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
     var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
 }
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <h2 class="h4 mb-0">Sửa hóa đơn #@Model.MaHoaDon</h2>
-</div>
-<div class="row justify-content-center mt-3">
-    <div class="col-12 col-md-10 col-lg-8">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-                <form asp-action="Edit" method="post">
-                    <input type="hidden" asp-for="MaHoaDon" />
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tiền điện</label>
-                        <input asp-for="TienDien" class="form-control" />
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. WELCOME CARD */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 40px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.2rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.1);
+        margin-bottom: 5px;
+    }
+
+    /* 3. FORM CARD - DÃN RỘNG KHUNG */
+    .card-custom {
+        background: var(--surface);
+        border-radius: 35px !important;
+        padding: 50px;
+        border: 2px solid var(--p-blue) !important;
+        box-shadow: 0 15px 35px rgba(168, 213, 226, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .form-label {
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 12px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-control-custom, .form-select-custom {
+        border-radius: 18px !important;
+        border: 1.5px solid #edf2f7 !important;
+        padding: 15px 25px !important;
+        height: auto !important;
+        transition: all 0.3s ease;
+        background-color: #fbfcfe;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+        .form-control-custom:focus, .form-select-custom:focus {
+            border-color: var(--p-blue) !important;
+            box-shadow: 0 0 0 5px rgba(168, 213, 226, 0.25) !important;
+            background-color: #fff;
+            outline: none;
+        }
+
+    /* 4. ICON & AVATAR EFFECT */
+    .avatar-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple));
+        transition: transform 0.4s ease;
+    }
+
+    .card-custom:hover .avatar-icon-wrapper {
+        transform: rotate(15deg);
+    }
+
+    /* 5. BUTTONS */
+    .btn-custom-save {
+        background: var(--p-blue);
+        color: #2c5282;
+        border-radius: 18px;
+        font-weight: 800;
+        padding: 18px 60px;
+        border: none;
+        transition: all 0.4s ease;
+        text-transform: uppercase;
+    }
+
+        .btn-custom-save:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(168, 213, 226, 0.45);
+        }
+
+    .btn-back-minimal {
+        border-radius: 15px;
+        font-weight: 700;
+        color: #64748b;
+        background: white;
+        border: 1.5px solid #edf2f7;
+        padding: 12px 30px;
+        transition: 0.3s;
+        margin-bottom: 30px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .row.g-information {
+        --bs-gutter-y: 2rem;
+    }
+</style>
+
+<div class="container-fluid text-left">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Hiệu Chỉnh Hóa Đơn</h2>
+                            <p class="mb-0 text-white opacity-90" style="font-size: 1.1rem;">
+                                Đang điều chỉnh nội dung hóa đơn <strong>#@Model.MaHoaDon</strong>
+                            </p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block text-white opacity-20">
+                            <i class="fas fa-file-signature fa-5x"></i>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tiền nước</label>
-                        <input asp-for="TienNuoc" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a asp-action="Index" class="btn btn-back-minimal shadow-sm">
+        <i class="fas fa-arrow-left mr-2"></i> QUAY LẠI DANH SÁCH
+    </a>
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card card-custom shadow-sm mb-5">
+                <div class="card-body p-0">
+                    <div class="d-flex align-items-center mb-5">
+                        <div class="avatar-icon-wrapper shadow-sm mr-4">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-0">Thông tin tài chính hóa đơn</h4>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tiền phòng</label>
-                        <input asp-for="TienPhong" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tiền dịch vụ</label>
-                        <input asp-for="TienDichVu" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tổng tiền</label>
-                        <input asp-for="TongTien" class="form-control" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Trạng thái</label>
-                        <select asp-for="TrangThai" class="form-select">
-                            <option value="Chờ xác nhận">Chờ xác nhận</option>
-                            <option value="Đã thanh toán">Đã thanh toán</option>
-                        </select>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary px-5">Lưu thay đổi</button>
-                        <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Quay lại</a>
-                    </div>
-                </form>
+
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="MaHoaDon" />
+
+                        <div class="row g-information">
+                            <div class="col-md-6">
+                                <label class="form-label text-warning"><i class="fas fa-bolt mr-2"></i> Tiền điện</label>
+                                <input asp-for="TienDien" class="form-control form-control-custom" type="number" step="0.01" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-primary"><i class="fas fa-tint mr-2"></i> Tiền nước</label>
+                                <input asp-for="TienNuoc" class="form-control form-control-custom" type="number" step="0.01" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-success"><i class="fas fa-home mr-2"></i> Tiền phòng</label>
+                                <input asp-for="TienPhong" class="form-control form-control-custom" type="number" step="0.01" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-purple"><i class="fas fa-concierge-bell mr-2"></i> Tiền dịch vụ</label>
+                                <input asp-for="TienDichVu" class="form-control form-control-custom" type="number" step="0.01" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-danger fw-bold"><i class="fas fa-money-bill-wave mr-2"></i> Tổng cộng hóa đơn</label>
+                                <input asp-for="TongTien" class="form-control form-control-custom border-danger" type="number" step="0.01" style="background-color: #fff5f5 !important;" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-dark"><i class="fas fa-info-circle mr-2"></i> Trạng thái thanh toán</label>
+                                <select asp-for="TrangThai" class="form-select form-select-custom shadow-sm">
+                                    <option value="Chờ xác nhận">Chờ xác nhận</option>
+                                    <option value="Đã thanh toán">Đã thanh toán</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5 pt-4 border-top">
+                            <button type="submit" class="btn btn-custom-save shadow-sm mr-4">
+                                <i class="fas fa-save mr-2"></i> LƯU THAY ĐỔI
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 18px; padding: 18px 40px; font-weight: 700;">
+                                HỦY BỎ
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -5,6 +5,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 <section class="room-list section">
     <div class="container-fluid px-xl-5">
 
@@ -46,7 +49,7 @@
         <div class="row g-4 justify-content-center product-row">
             @foreach (var product in Model)
             {
-                <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="product-card">
                         <div class="product-img">
                             <img src="@(string.IsNullOrEmpty(product.Hinhanh) ? Url.Content("~/img/default-product.jpg") : Url.Content("~/" + product.Hinhanh))"
@@ -64,11 +67,11 @@
                         <div class="product-body text-center d-flex flex-column justify-content-between">
                             <div>
                                 <a href="@Url.Action("Details", "PhongTro", new { id = product.MaPhong })"
-                                   class="room-title">Phòng @product.SoPhong</a>
+                                   class="room-title fw-bold">Phòng @product.SoPhong</a>
                             </div>
                             <div class="price-status mt-auto">
-                                <h5>@product.GiaThue.ToString("#,##0 VNĐ")</h5>
-                                <span class="badge badge-status mt-2">@product.TrangThai</span>
+                                <h5 class="fw-bold">@product.GiaThue.ToString("#,##0 VNĐ")</h5>
+                                <span class="badge badge-status mt-2 fw-semibold">@product.TrangThai</span>
                             </div>
                         </div>
                     </div>
@@ -79,96 +82,77 @@
 </section>
 
 <style>
+    /* Áp dụng font chữ mới cho toàn bộ trang để không lỗi dấu tiếng Việt */
+    body, section.room-list {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+
     :root {
-        /* Định nghĩa lại màu sắc để các style bên dưới sử dụng */
-        --primary: #a8d5e2; /* xanh dương nhạt chính */
+        --primary: #a8d5e2;
         --primary-dark: #94c8db;
-        --accent: #c7ceea; /* tím nhạt */
+        --accent: #c7ceea;
         --text-dark: #2d3748;
     }
 
-    /* === FONT SIZE ADJUSTMENTS === */
-    .label-filter {
-        font-size: 1em; /* Giữ 18px */
+    /* Định nghĩa độ đậm nhạt chuẩn theo Font Montserrat */
+    .fw-bold {
+        font-weight: 700 !important;
     }
 
-    /* === ĐẨY XUỐNG DƯỚI HEADER === */
+    .fw-semibold {
+        font-weight: 600 !important;
+    }
+
     .room-list {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        margin-top: 0px;
+        margin-bottom: 0px;
     }
 
-    /* === Container giới hạn chiều rộng === */
     .container-fluid {
         max-width: 1300px;
         margin: 0 auto;
     }
 
-    /* === Thanh lọc ngang === */
     .filter-toolbar {
-        border: 1px solid var(--primary); /* Đổi màu viền sang Primary */
+        border: 1px solid var(--primary);
     }
 
     .filter-select {
+        font-family: 'Montserrat', sans-serif;
         min-width: 200px;
         border-radius: 8px;
-        border: 1px solid #ccc;
-        padding: 6px 10px;
-        transition: border 0.2s;
-        font-size: 0.95em; /* Tinh chỉnh cỡ chữ cho dropdown */
     }
 
-        .filter-select:focus {
-            border-color: var(--primary); /* Đổi màu focus sang Primary */
-            box-shadow: 0 0 0 0.2rem rgba(168, 213, 226, 0.5); /* Box shadow màu Primary với độ trong suốt */
-        }
-
-    /* === Nút tìm trọ gần tôi (btn-highlighted) === */
     .btn-highlighted {
-        background-color: var(--primary); /* Đổi nền sang Primary */
-        color: var(--text-dark); /* Chữ tối để dễ đọc */
+        background-color: var(--primary);
+        color: var(--text-dark);
         font-weight: 700;
         padding: 10px 18px;
         border-radius: 25px;
-        /* Giữ hiệu ứng nổi bật (shadow), đổi màu shadow sang Primary/Accent */
         box-shadow: 0 3px 8px rgba(168, 213, 226, 0.4);
-        transition: all 0.3s;
+        transition: all 0.3s ease;
     }
 
-        .btn-highlighted:hover {
-            background-color: var(--primary-dark); /* Hover tối hơn chút */
-            box-shadow: 0 5px 15px rgba(168, 213, 226, 0.6);
-            color: var(--text-dark); /* Giữ màu chữ */
-        }
-
-    /* === CARD PHÒNG TRỌ === */
-    .product-row {
-        margin-top: 5px;
-    }
-
-    /* Thiết lập Flexbox cho Card để căn chỉnh nội dung */
     .product-card {
         background: #fff;
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
         height: 100%;
-        display: flex; /* Kích hoạt flexbox */
-        flex-direction: column; /* Xếp dọc các phần tử */
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
         .product-card:hover {
             transform: translateY(-5px);
-            /* Box shadow nổi bật màu xanh dương nhạt */
             box-shadow: 0 10px 25px rgba(168, 213, 226, 0.4);
         }
 
-    /* --- Ảnh sản phẩm --- */
     .product-img {
         position: relative;
         width: 100%;
-        height: 230px;
+        aspect-ratio: 1 / 1;
         overflow: hidden;
     }
 
@@ -179,18 +163,13 @@
             transition: transform 0.4s ease;
         }
 
-    .product-card:hover img {
-        transform: scale(1.08);
-    }
-
-    /* --- Overlay --- */
     .product-action {
         position: absolute;
         inset: 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        background: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.7);
         opacity: 0;
         transition: opacity 0.3s ease;
     }
@@ -202,94 +181,58 @@
     .btn-action {
         background: #fff;
         border: 1px solid #ddd;
-        color: var(--text-dark); /* Màu icon mặc định tối */
-        width: 40px;
-        height: 40px;
+        color: var(--text-dark);
+        width: 45px;
+        height: 45px;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 0 6px;
-        font-size: 17px;
-        border-radius: 6px;
+        margin: 0 8px;
+        border-radius: 50%;
         transition: all 0.3s ease;
     }
 
         .btn-action:hover {
-            background: var(--primary); /* Đổi hover sang Primary */
-            color: #fff; /* Chữ trắng khi hover */
+            background: var(--primary);
+            color: #fff;
             border-color: var(--primary);
         }
 
-    /* --- Nội dung trong card (Body) --- */
     .product-body {
-        padding: 1.1rem;
-        text-align: center;
-        flex-grow: 1; /* Quan trọng: Đảm bảo body chiếm hết không gian còn lại */
-        /* d-flex flex-column justify-content-between được thêm vào HTML để căn chỉnh nội dung */
+        padding: 1.25rem;
+        flex-grow: 1;
     }
 
     .room-title {
-        font-weight: 600;
-        color: var(--text-dark); /* Màu chữ tối */
-        font-size: 1.05em; /* Tăng nhẹ cỡ chữ so với base font 18px */
-        margin-bottom: 6px;
-        display: block;
+        color: var(--text-dark);
+        font-size: 1.2rem;
         text-decoration: none;
-        transition: color 0.25s;
+        display: block;
+        margin-bottom: 5px;
+        transition: color 0.3s;
     }
 
         .room-title:hover {
-            color: var(--primary); /* Đổi hover sang Primary */
+            color: var(--primary-dark);
         }
 
     .price-status h5 {
-        color: var(--primary-dark); /* Giá tiền màu xanh đậm hơn */
-        font-weight: 700;
-        margin-bottom: 5px;
-        font-size: 1em; /* Kích thước tương đối */
+        color: var(--primary-dark);
+        font-size: 1.15rem;
+        margin-top: 10px;
     }
 
     .badge-status {
-        background-color: var(--primary); /* Đổi màu badge sang Primary */
-        color: var(--text-dark); /* Chữ tối để dễ đọc */
-        border-radius: 30px;
-        padding: 0.35em 0.75em;
-        font-size: 0.8em; /* Kích thước tương đối nhỏ hơn */
-    }
-
-    /* === RESPONSIVE === */
-    @@media (max-width: 1200px) {
-        .product-img {
-            height: 210px;
-        }
-    }
-
-    @@media (max-width: 992px) {
-        .col-lg-4 {
-            flex: 0 0 50%;
-            max-width: 50%;
-        }
-
-        .product-img {
-            height: 200px;
-        }
-    }
-
-    @@media (max-width: 768px) {
-        .col-md-6 {
-            flex: 0 0 100%;
-            max-width: 100%;
-        }
-
-        .product-img {
-            height: 180px;
-        }
+        background-color: var(--primary);
+        color: var(--text-dark);
+        border-radius: 20px;
+        padding: 6px 15px;
+        font-size: 0.85rem;
     }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Khi thay đổi giá hoặc diện tích
         $('#priceSelect, #areaSelect').change(function () {
             const url = new URL(window.location.href);
             url.searchParams.delete('minPrice');
@@ -315,7 +258,6 @@
             window.location.href = url.toString();
         });
 
-        // Đặt lại trạng thái selected khi reload
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('minPrice')) {
             const min = urlParams.get('minPrice');

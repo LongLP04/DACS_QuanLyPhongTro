@@ -2,134 +2,250 @@
 @{
     ViewData["Title"] = "Chi Tiết Chỉ Số Điện Nước";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
-    
-    // Tính toán tổng tiền (Nếu có) để hiển thị nổi bật
-    // Logic giả định: Tiêu thụ * Đơn giá
+
     decimal tongTienDien = Model.SoDienTieuThu * Model.DonGiaDien;
     decimal tongTienNuoc = Model.SoNuocTieuThu * Model.DonGiaNuoc;
     decimal tongCong = tongTienDien + tongTienNuoc;
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0"><i class="fas fa-bolt me-2 text-primary"></i> @ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i> Quay Lại
-            </a>
-            <button class="btn btn-primary btn-sm"><i class="fas fa-edit me-1"></i> Chỉnh sửa</button>
-        </div>
-    </div>
-</div>
-
-<div class="row justify-content-center mt-3">
-    <div class="col-12 col-md-10 col-lg-8">
-        
-        <div class="card card-info card-outline shadow-lg csdn-detail-card">
-            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
-                <h4 class="card-title mb-0 fw-bold">Chỉ số tháng: @Model.NgayGhi.ToString("MM/yyyy")</h4>
-                <span class="badge bg-danger text-white px-3 py-2 fs-6">
-                    Tổng tiền tạm tính: <strong>@tongCong.ToString("N0") VNĐ</strong>
-                </span>
-            </div>
-            
-            <div class="card-body p-4">
-                
-                <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-info-circle me-2"></i> Thông tin chung</h5>
-                <dl class="row mb-4 border-bottom pb-3">
-                    <dt class="col-sm-3 text-muted">Mã chỉ số:</dt>
-                    <dd class="col-sm-3 fw-bold">@Model.MaChiSo</dd>
-
-                    <dt class="col-sm-3 text-muted">Phòng:</dt>
-                    <dd class="col-sm-3 fw-bold text-success">@Model.PhongTro?.SoPhong</dd>
-
-                    <dt class="col-sm-3 text-muted">Ngày ghi:</dt>
-                    <dd class="col-sm-3">@Model.NgayGhi.ToString("dd/MM/yyyy")</dd>
-                    
-                    
-                </dl>
-
-                <div class="row mb-4">
-                    <div class="col-lg-6 border-right pr-4"> 
-                        <h5 class="fw-bold mb-3 text-warning"><i class="fas fa-bolt me-2"></i> Chỉ số Điện (kWh)</h5>
-                        <dl class="row">
-                            <dt class="col-sm-6 text-muted">Điện cũ:</dt>
-                            <dd class="col-sm-6 fw-bold">@Model.ChiSoDienCu</dd>
-
-                            <dt class="col-sm-6 text-muted">Điện mới:</dt>
-                            <dd class="col-sm-6 fw-bold text-warning">@Model.ChiSoDienMoi</dd>
-                            
-                            <hr class="mt-2 mb-2">
-                            
-                            <dt class="col-sm-6 text-muted">Tiêu thụ:</dt>
-                            <dd class="col-sm-6 fw-bold text-danger">@Model.SoDienTieuThu kWh</dd>
-
-                            <dt class="col-sm-6 text-muted">Đơn giá:</dt>
-                            <dd class="col-sm-6">@Model.DonGiaDien.ToString("N0") VNĐ/kWh</dd>
-                        </dl>
-                    </div>
-
-                    <div class="col-lg-6 pl-4">
-                        <h5 class="fw-bold mb-3 text-success"><i class="fas fa-tint me-2"></i> Chỉ số Nước (m³)</h5>
-                        <dl class="row">
-                            <dt class="col-sm-6 text-muted">Nước cũ:</dt>
-                            <dd class="col-sm-6 fw-bold">@Model.ChiSoNuocCu</dd>
-
-                            <dt class="col-sm-6 text-muted">Nước mới:</dt>
-                            <dd class="col-sm-6 fw-bold text-success">@Model.ChiSoNuocMoi</dd>
-                            
-                            <hr class="mt-2 mb-2">
-                            
-                            <dt class="col-sm-6 text-muted">Tiêu thụ:</dt>
-                            <dd class="col-sm-6 fw-bold text-danger">@Model.SoNuocTieuThu m³</dd>
-
-                            <dt class="col-sm-6 text-muted">Đơn giá:</dt>
-                            <dd class="col-sm-6">@Model.DonGiaNuoc.ToString("N0") VNĐ/m³</dd>
-                        </dl>
-                    </div>
-                </div>
-                
-            </div>
-            
-            <div class="card-footer bg-light border-top d-flex justify-content-end">
-                <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3 py-1">
-                    <i class="fas fa-arrow-left me-1"></i> Quay Lại Danh Sách
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
 <style>
-    /* CSS CŨ ĐƯỢC GIỮ LẠI VÀ CHỈNH SỬA */
-    .csdn-detail-card {
-        transition: transform .15s ease, box-shadow .15s ease;
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. WELCOME CARD */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 40px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.2rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.1);
+        margin-bottom: 5px;
+    }
+
+    /* 3. DETAIL CARD - KHUNG BO TRÒN DÃN RỘNG */
+    .card-custom {
+        background: var(--surface);
+        border-radius: 35px !important;
+        padding: 50px;
+        border: 2px solid var(--p-blue) !important;
+        box-shadow: 0 15px 35px rgba(168, 213, 226, 0.1);
+    }
+
+    .group-title {
+        font-weight: 800;
+        color: #64748b;
+        margin-bottom: 25px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        display: flex;
+        align-items: center;
+    }
+
+    .info-label {
+        font-weight: 700;
+        color: #718096;
+        font-size: 0.95rem;
+    }
+
+    .info-value-box {
+        background-color: #fbfcfe !important;
+        border: 1.5px solid #edf2f7 !important;
+        border-radius: 18px !important;
+        padding: 15px 25px !important;
+        color: var(--text-dark);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        min-height: 60px;
+        transition: 0.3s;
         margin-bottom: 20px;
-        background-color: #f8ffff; /* Nền trắng xanh nhạt */
-        border: 1px solid #dee2e6;
     }
-    .csdn-detail-card:hover {
-        transform: translateY(-2px); 
-        box-shadow: 0 4px 12px rgba(0,0,0,.08);
+
+        .info-value-box:hover {
+            border-color: var(--p-blue);
+            background-color: #ffffff !important;
+            transform: translateX(5px);
+        }
+
+    /* 4. TỔNG TIỀN NỔI BẬT */
+    .total-revenue-box {
+        background: linear-gradient(135deg, var(--p-red), #ff9a9e);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 10px 20px rgba(255, 183, 178, 0.4);
+        margin-bottom: 40px;
     }
-    .card-header {
-        background-color: #f7f9fc !important;
+
+    /* 5. BUTTONS */
+    .btn-action-lg {
+        border-radius: 18px;
+        font-weight: 800;
+        padding: 16px 40px;
+        transition: 0.4s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
-    .card-title {
-        color: #2c3e50 !important;
-    }
-    
-    /* Tối ưu hóa dl/dt/dd cho bố cục */
-    .row dt, .row dd {
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
-    .row dd {
-        font-size: 1rem; 
-    }
-    
-    /* Đường phân cách dọc giữa 2 cột thông tin */
-    .border-right {
-        border-right: 1px solid #e9ecef;
+
+    .btn-back-minimal {
+        border-radius: 12px;
+        font-weight: 700;
+        color: #64748b;
+        background: white;
+        border: 1.5px solid #edf2f7;
+        padding: 10px 25px;
+        transition: 0.3s;
+        margin-bottom: 30px;
+        display: inline-flex;
+        align-items: center;
     }
 </style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-9 text-left">
+                            <h2 class="welcome-title">Chi Tiết Sử Dụng</h2>
+                            <p class="mb-0 text-white opacity-90" style="font-size: 1.1rem;">
+                                Xem thông tin điện nước của <strong>Phòng @Model.PhongTro?.SoPhong</strong> tháng @Model.NgayGhi.ToString("MM/yyyy")
+                            </p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block text-white opacity-20">
+                            <i class="fas fa-file-invoice-dollar fa-5x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a asp-action="Index" class="btn btn-back-minimal shadow-sm">
+        <i class="fas fa-chevron-left mr-2"></i> TRỞ VỀ DANH SÁCH
+    </a>
+
+    <div class="row justify-content-center">
+        <div class="col-12 pb-5">
+            <div class="card card-custom">
+                <div class="card-body p-0 text-left">
+
+                    <div class="total-revenue-box shadow-sm">
+                        <p class="text-white small fw-bold uppercase mb-1" style="letter-spacing: 2px;">Tổng tiền tạm tính tháng này</p>
+                        <h2 class="fw-bold mb-0" style="font-size: 3rem;">@tongCong.ToString("N0") <small style="font-size: 1.2rem;">VNĐ</small></h2>
+                    </div>
+
+                    <div class="row g-5">
+                        <div class="col-lg-12">
+                            <h5 class="group-title text-primary">
+                                <i class="fas fa-info-circle mr-3 opacity-50"></i> Thông tin cơ bản
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="info-label">Mã hồ sơ</label>
+                                    <div class="info-value-box">#@Model.MaChiSo</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="info-label">Phòng trọ</label>
+                                    <div class="info-value-box">Phòng @Model.PhongTro?.SoPhong</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="info-label">Ngày ghi chỉ số</label>
+                                    <div class="info-value-box">@Model.NgayGhi.ToString("dd/MM/yyyy")</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <h5 class="group-title text-warning">
+                                <i class="fas fa-bolt mr-3 opacity-50"></i> Chi tiết Điện (kWh)
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="info-label">Chỉ số cũ</label>
+                                    <div class="info-value-box">@Model.ChiSoDienCu</div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="info-label">Chỉ số mới</label>
+                                    <div class="info-value-box">@Model.ChiSoDienMoi</div>
+                                </div>
+                            </div>
+
+                            <label class="info-label">Lượng tiêu thụ</label>
+                            <div class="info-value-box border-warning" style="background: #fffdf5 !important;">
+                                <span class="fw-bold text-danger">@Model.SoDienTieuThu kWh</span>
+                            </div>
+
+                            <label class="info-label">Đơn giá áp dụng</label>
+                            <div class="info-value-box">@Model.DonGiaDien.ToString("N0") đ/kWh</div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <h5 class="group-title text-success">
+                                <i class="fas fa-tint mr-3 opacity-50"></i> Chi tiết Nước (m³)
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="info-label">Chỉ số cũ</label>
+                                    <div class="info-value-box">@Model.ChiSoNuocCu</div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="info-label">Chỉ số mới</label>
+                                    <div class="info-value-box">@Model.ChiSoNuocMoi</div>
+                                </div>
+                            </div>
+
+                            <label class="info-label">Lượng tiêu thụ</label>
+                            <div class="info-value-box border-info" style="background: #f0faff !important;">
+                                <span class="fw-bold text-danger">@Model.SoNuocTieuThu m³</span>
+                            </div>
+
+                            <label class="info-label">Đơn giá áp dụng</label>
+                            <div class="info-value-box">@Model.DonGiaNuoc.ToString("N0") đ/m³</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-5 border-top d-flex justify-content-end gap-4">
+                        <button onclick="location.href='@Url.Action("Edit", new { id = Model.MaChiSo })'" class="btn btn-action-lg shadow-sm" style="background: var(--p-blue); color: #2c5282; border: none; min-width: 220px;">
+                            <i class="fas fa-edit mr-2"></i> CHỈNH SỬA DỮ LIỆU
+                        </button>
+
+                        <a asp-action="Index" class="btn btn-action-lg shadow-sm" style="background: #f1f5f9; color: #64748b; border: none; min-width: 200px; display: inline-flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-undo mr-2"></i> QUAY LẠI
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

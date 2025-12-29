@@ -5,56 +5,67 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<section class="notifications-page section">
-    <div class="container-fluid px-xl-5 py-5">
-        <div class="notifications-wrapper bg-white rounded-5 shadow-sm p-4 mx-auto" style="max-width: 1100px;">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
-            <div class="text-center mb-4">
-                <h2 class="fw-bold text-primary-color">Thông báo của bạn</h2>
-                <p class="text-muted">Xem các cập nhật mới nhất từ hệ thống Trọ Quanh Ta</p>
+<section class="notifications-page section">
+    <div class="container py-5">
+        <div class="notifications-wrapper mx-auto">
+
+            <div class="welcome-header mb-5 p-5 text-left position-relative overflow-hidden shadow-sm">
+                <div class="row align-items-center position-relative" style="z-index: 2;">
+                    <div class="col-md-9">
+                        <h2 class="welcome-title">Trung tâm Thông báo 🔔</h2>
+                        <p class="mb-0 text-white opacity-90" style="font-size: 1.1rem;">Cập nhật những tin tức và hoạt động mới nhất từ hệ thống Trọ Quanh Ta.</p>
+                    </div>
+                    <div class="col-md-3 text-right d-none d-md-block opacity-20">
+                        <i class="bi bi- megaphone fa-5x text-white"></i>
+                    </div>
+                </div>
+                <div class="decoration-circle"></div>
             </div>
 
             @if (Model == null || !Model.Any())
             {
-                <div class="alert alert-light border-0 text-center py-4 rounded-4 shadow-sm alert-primary-style-empty">
-                    <i class="bi bi-bell-slash fs-3 text-primary-dark mb-2 d-block"></i>
-                    <span class="fs-5 text-muted">Hiện tại bạn chưa có thông báo nào.</span>
+                <div class="card empty-state-card p-5 text-center shadow-sm border-0">
+                    <div class="mb-4">
+                        <div class="empty-icon-wrapper mx-auto">
+                            <i class="bi bi-bell-slash"></i>
+                        </div>
+                    </div>
+                    <h4 class="fw-bold text-dark mb-2">Hộp thư trống</h4>
+                    <p class="text-muted">Hiện tại bạn chưa có thông báo nào mới. Hãy quay lại sau nhé!</p>
                 </div>
             }
             else
             {
-                <ul class="list-group list-group-flush">
+                <div class="notification-list">
                     @foreach (var notification in Model.OrderByDescending(n => n.CreatedAt))
                     {
                         var isRead = notification.IsRead;
 
-                        // Định nghĩa style động dựa trên trạng thái (sử dụng màu Pastel)
-                        var listItemBackground = isRead ? "var(--surface)" : "var(--surface-alt)";
-                        var listItemBorder = isRead ? "var(--muted)" : "var(--primary)";
-                        var listItemColor = isRead ? "var(--muted)" : "var(--text-dark)";
-                        var listItemWeight = isRead ? "400" : "600";
-
-                        <li class="list-group-item d-flex justify-content-between align-items-start py-3 px-3 rounded-4 mb-2 border-0 shadow-sm list-item-custom-style"
-                            style="
-                                        background-color: @listItemBackground;
-                                        border-left: 6px solid @listItemBorder;
-                                        color: @listItemColor;
-                                        font-weight: @listItemWeight;
-                                    ">
-                            <div class="me-3">
-                                <i class="bi @(isRead ? "bi-bell" : "bi-bell-fill") me-2 text-primary-color"></i>
-                                @notification.Message
+                        <div class="notification-item @(isRead ? "read" : "unread") d-flex align-items-start p-4 mb-4 shadow-sm">
+                            <div class="notif-icon-wrapper me-4 shadow-sm">
+                                <i class="bi @(isRead ? "bi-bell" : "bi-bell-fill")"></i>
                             </div>
-                            <small class="text-muted text-nowrap">@notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
-                        </li>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge @(isRead ? "bg-light text-muted" : "bg-primary-pastel text-primary-dark") px-3 py-2 rounded-pill">
+                                        @(isRead ? "Đã xem" : "Mới")
+                                    </span>
+                                    <small class="text-muted font-weight-bold uppercase" style="letter-spacing: 0.5px;">
+                                        <i class="bi bi-clock me-1"></i> @notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                                    </small>
+                                </div>
+                                <p class="notif-message mb-0 text-dark">@notification.Message</p>
+                            </div>
+                        </div>
                     }
-                </ul>
+                </div>
             }
 
-            <div class="text-center mt-4">
-                <a asp-controller="Home" asp-action="Index"
-                   class="btn btn-primary-filled rounded-pill px-4 py-2 shadow-sm btn-hover">
-                    <i class="bi bi-arrow-left-circle me-2"></i> Quay lại trang chủ
+            <div class="text-center mt-5">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-back-home shadow-sm px-5 py-3">
+                    <i class="bi bi-house-door me-2"></i> QUAY LẠI TRANG CHỦ
                 </a>
             </div>
         </div>
@@ -63,90 +74,136 @@
 
 <style>
     :root {
-        --primary: #a8d5e2;
-        --primary-dark: #94c8db;
-        --accent: #c7ceea;
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
         --text-dark: #2d3748;
         --surface: #ffffff;
         --surface-alt: #f8faff;
-        --muted: #64748b;
+        --primary-dark: #2c5282;
     }
 
-    /* Lớp hỗ trợ màu */
-    .text-primary-color {
-        color: var(--primary) !important;
-    }
-
-    .text-primary-dark {
-        color: var(--primary-dark) !important;
-    }
-
-    .icon-primary {
-        color: var(--primary);
-    }
-
-    .btn-primary-filled {
-        background-color: var(--primary);
-        color: var(--text-dark);
-        border: none;
-    }
-
-    /* === CÁC KHUNG CHỨA === */
     .notifications-page {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        background-color: #f8faff;
+        font-family: "Montserrat", sans-serif;
+        min-height: 80vh;
     }
 
     .notifications-wrapper {
-        border-radius: 1.5rem !important; /* Bo góc lớn hơn cho khung chính */
-        border: 1.5px solid var(--surface-alt);
+        max-width: 900px;
     }
 
-    /* Khung rỗng */
-    .alert-primary-style-empty {
-        background-color: var(--surface-alt) !important;
-        border-color: var(--primary) !important;
+    /* Welcome Header */
+    .welcome-header {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple));
+        border-radius: 30px;
+        color: white;
     }
 
-    /* Danh sách thông báo */
-    .list-group-item {
+    .welcome-title {
+        font-family: "Pacifico", cursive;
+        font-size: 2.5rem;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.1);
+    }
+
+    .decoration-circle {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        top: -50px;
+        right: -50px;
+    }
+
+    /* Notification Items */
+    .notification-item {
         background: var(--surface);
-        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
-        cursor: default;
-    }
-
-    /* Tinh chỉnh list item để có bo góc 4 góc */
-    .list-item-custom-style {
-        border-radius: 1rem !important;
-        border: 1px solid var(--surface-alt);
-    }
-
-
-        .list-item-custom-style:hover {
-            transform: translateY(-2px);
-            background: var(--surface-alt) !important;
-            box-shadow: 0 4px 10px rgba(168, 213, 226, 0.2);
-        }
-
-    /* Nút quay lại */
-    .btn-hover {
+        border-radius: 25px;
         transition: all 0.3s ease;
+        border: 2px solid transparent;
+        position: relative;
+    }
+
+        .notification-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(168, 213, 226, 0.25) !important;
+            border-color: var(--p-blue);
+        }
+
+        .notification-item.unread {
+            border-left: 8px solid var(--p-blue);
+        }
+
+        .notification-item.read {
+            opacity: 0.8;
+            border-left: 8px solid #edf2f7;
+        }
+
+    .notif-icon-wrapper {
+        width: 55px;
+        height: 55px;
+        background: var(--surface-alt);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--p-blue);
+        transition: transform 0.4s ease;
+    }
+
+    .notification-item:hover .notif-icon-wrapper {
+        transform: rotate(15deg);
+        background: var(--p-blue);
+        color: white;
+    }
+
+    .notif-message {
         font-weight: 600;
-        letter-spacing: 0.3px;
+        line-height: 1.6;
+        font-size: 1.05rem;
     }
 
-        .btn-hover:hover {
-            background-color: var(--primary-dark);
+    .bg-primary-pastel {
+        background-color: var(--p-blue);
+        opacity: 0.8;
+    }
+
+    /* Empty State */
+    .empty-state-card {
+        border-radius: 30px;
+        background: white;
+    }
+
+    .empty-icon-wrapper {
+        width: 100px;
+        height: 100px;
+        background: var(--surface-alt);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #cbd5e1;
+    }
+
+    /* Buttons */
+    .btn-back-home {
+        background: var(--text-dark);
+        color: white;
+        border-radius: 15px;
+        font-weight: 700;
+        border: none;
+        transition: all 0.3s ease;
+        letter-spacing: 1px;
+    }
+
+        .btn-back-home:hover {
+            background: black;
             transform: scale(1.05);
-            box-shadow: 0 8px 15px rgba(168, 213, 226, 0.5);
+            color: white;
         }
-
-        .btn-hover:active {
-            transform: scale(0.96);
-        }
-
-    /* Icon */
-    .bi-bell-fill {
-        font-size: 1.1rem;
-    }
 </style>
