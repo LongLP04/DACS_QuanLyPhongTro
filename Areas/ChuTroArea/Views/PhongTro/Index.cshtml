@@ -7,7 +7,6 @@
     var totalEmptyRooms = Model?.Count(p => p.TrangThai == "Trống") ?? 0;
     var totalRentedRooms = Model?.Count(p => p.TrangThai == "Đã Thuê") ?? 0;
     var totalRevenue = Model?.Where(p => p.TrangThai == "Đã Thuê").Sum(p => p.GiaThue) ?? 0;
-    var currentDateTime = DateTime.Now;
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
@@ -62,81 +61,46 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.02);
     }
 
-        .custom-box-tenant:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
-        }
+    .custom-box-tenant:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
+    }
 
-        .custom-box-tenant .icon-wrapper {
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: 15px;
-            color: white;
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+    .custom-box-tenant .icon-wrapper {
+        width: 70px;
+        height: 70px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 15px;
+        color: white;
+    }
 
-        .custom-box-tenant:hover .icon-wrapper {
-            transform: rotate(15deg) scale(1.1);
-        }
+    .custom-box-tenant h3 { font-weight: 800; font-size: 1.6rem; margin-bottom: 5px; }
+    .custom-box-tenant p { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
 
-        .custom-box-tenant h3 {
-            font-weight: 800;
-            font-size: 1.6rem;
-            margin-bottom: 5px;
-        }
-
-        .custom-box-tenant p {
-            color: #64748b;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
-
-    /* 4. ROOM CARDS - DÃN RỘNG NỘI DUNG */
+    /* 4. ROOM CARDS */
     .building-card {
         border-radius: 28px !important;
         background: #ffffff;
         border: 1px solid #f1f5f9 !important;
         transition: all 0.4s ease;
-        position: relative;
         display: flex;
         flex-direction: column;
         height: 100%;
     }
 
-        .building-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
-            border-color: var(--p-blue) !important;
-        }
-
-        .building-card .card-body {
-            padding: 2.2rem !important; /* Dãn rộng nội dung */
-            display: flex;
-            flex-direction: column;
-            flex: 1 1 auto;
-        }
-
-    .card-title-lg {
-        font-weight: 850 !important;
-        font-size: 1.5rem !important;
-        color: #1a202c;
-        margin-bottom: 12px;
+    .building-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
+        border-color: var(--p-blue) !important;
     }
 
-    .text-address {
-        font-size: 1rem;
-        color: #718096;
-        font-weight: 500;
-        line-height: 1.6;
-        display: block;
-    }
+    .building-card .card-body { padding: 2.2rem !important; flex: 1 1 auto; display: flex; flex-direction: column; }
+    .card-title-lg { font-weight: 850 !important; font-size: 1.5rem !important; color: #1a202c; margin-bottom: 12px; }
+    .text-address { font-size: 1rem; color: #718096; font-weight: 500; }
 
     .minimal-icon-box {
         width: 60px;
@@ -148,29 +112,12 @@
         justify-content: center;
         border-radius: 16px;
         font-size: 1.4rem;
-        transition: 0.3s;
     }
 
-    /* 5. BADGES & LABELS */
-    .count-badge {
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: #4a5568;
-        background: #f1f5f9;
-        padding: 6px 14px;
-        border-radius: 10px;
-        margin-right: 8px;
-    }
+    .count-badge { font-size: 0.85rem; font-weight: 700; color: #4a5568; background: #f1f5f9; padding: 6px 14px; border-radius: 10px; margin-right: 8px; }
+    .price-text { font-size: 1.25rem; font-weight: 800; color: #2d6a4f; margin-top: 15px; display: block; }
 
-    .price-text {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: #2d6a4f;
-        margin-top: 15px;
-        display: block;
-    }
-
-    /* 6. NÚT THAO TÁC */
+    /* 5. NÚT THAO TÁC */
     .btn-circle-action {
         width: 48px;
         height: 48px;
@@ -182,38 +129,16 @@
         background: white;
         color: #94a3b8;
         transition: 0.3s;
-        margin-left: 15px !important;
+        margin-left: 10px !important;
     }
 
-        .btn-circle-action:hover {
-            background: var(--p-blue);
-            color: white;
-            transform: scale(1.1);
-            border-color: transparent;
-        }
-
-    .btn-view-minimal {
-        color: #3b82f6;
-        background: rgba(59, 130, 246, 0.08);
-        border: none;
-    }
+    .btn-circle-action:hover { background: var(--p-blue); color: white; transform: scale(1.1); border-color: transparent; }
 
     /* Phân loại màu viền pastel */
-    .room-item:nth-child(4n+1) .building-card {
-        border-top: 8px solid var(--p-blue) !important;
-    }
-
-    .room-item:nth-child(4n+2) .building-card {
-        border-top: 8px solid var(--p-green) !important;
-    }
-
-    .room-item:nth-child(4n+3) .building-card {
-        border-top: 8px solid var(--p-purple) !important;
-    }
-
-    .room-item:nth-child(4n+4) .building-card {
-        border-top: 8px solid var(--p-red) !important;
-    }
+    .room-item:nth-child(4n+1) .building-card { border-top: 8px solid var(--p-blue) !important; }
+    .room-item:nth-child(4n+2) .building-card { border-top: 8px solid var(--p-green) !important; }
+    .room-item:nth-child(4n+3) .building-card { border-top: 8px solid var(--p-purple) !important; }
+    .room-item:nth-child(4n+4) .building-card { border-top: 8px solid var(--p-red) !important; }
 
     .filter-section {
         background: white;
@@ -221,18 +146,20 @@
         border-radius: 24px;
         margin-bottom: 35px;
         border: 1px solid #edf2f7;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
     }
 </style>
 
 <div class="container-fluid">
+    <input type="text" style="display:none;" aria-hidden="true">
+    <input type="password" style="display:none;" aria-hidden="true">
+
     <div class="row">
         <div class="col-12">
             <div class="card welcome-card shadow-sm">
                 <div class="card-body p-4">
                     <div class="row align-items-center">
                         <div class="col-md-9">
-                            <h2 class="welcome-title">Quản lý Phòng Trọ</h2>
+                            <h2 class="welcome-title">Quản lý Phòng Trọ ✨</h2>
                         </div>
                         <div class="col-md-3 text-right d-none d-md-block">
                             <i class="fas fa-bed fa-4x text-white opacity-25"></i>
@@ -276,7 +203,15 @@
 
     <div class="filter-section d-flex align-items-center justify-content-between flex-wrap gap-3 mt-2 shadow-sm">
         <div class="d-flex align-items-center gap-3">
-            <input id="searchBox" type="text" class="form-control border-0 bg-light shadow-sm" style="border-radius: 12px; width: 350px; height: 50px;" placeholder="Tìm theo số phòng, tòa nhà...">
+            <input id="searchBox" type="text" 
+                   class="form-control border-0 bg-light shadow-sm" 
+                   style="border-radius: 12px; width: 350px; height: 50px;" 
+                   placeholder="Tìm theo số phòng, tòa nhà..." 
+                   readonly 
+                   onfocus="this.removeAttribute('readonly');" 
+                   autocomplete="new-password" 
+                   name="phongtroSearch_@(Guid.NewGuid().ToString("N"))">
+
             <select id="sortSelect" class="form-select border-0 bg-light shadow-sm" style="width:180px; border-radius: 12px; height: 50px; font-weight: 600;">
                 <option value="room">Số phòng (A→Z)</option>
                 <option value="price">Giá thuê</option>
@@ -352,9 +287,37 @@
 
 @Html.AntiForgeryToken()
 
+<div class="modal fade" id="passwordConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 28px;">
+            <div class="modal-header d-flex flex-column align-items-center border-0 pt-5">
+                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                <h5 class="modal-title font-weight-bold">XÁC MINH BẢO MẬT</h5>
+            </div>
+            <div class="modal-body px-5">
+                <p class="text-center text-muted small mb-4">Vui lòng nhập mật khẩu chủ trọ để tạo phòng trọ mới.</p>
+                <input type="password" class="form-control shadow-sm" id="confirmPassword" 
+                       placeholder="Nhập mật khẩu..." 
+                       style="border-radius: 15px; height: 55px; text-align: center; border: 1px solid #eee;"
+                       readonly onfocus="this.removeAttribute('readonly');" autocomplete="new-password">
+                <div class="invalid-feedback text-center" id="passwordError">Mật khẩu không đúng!</div>
+            </div>
+            <div class="modal-footer px-5 border-0 pb-5 justify-content-center">
+                <button type="button" class="btn btn-primary btn-confirm-lg shadow" id="confirmPasswordBtn" style="min-width: 150px; border-radius: 15px; font-weight: 700; height: 50px;">XÁC NHẬN</button>
+                <button type="button" class="btn btn-link text-muted mt-2 w-100" data-dismiss="modal">Hủy bỏ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
-        (function(){
+        $(document).ready(function () {
+            // Xóa sạch giá trị rác trình duyệt tự điền khi vừa load trang
+            setTimeout(function() {
+                $('#searchBox').val('');
+            }, 50);
+
             const grid = document.getElementById('roomsGrid');
             const searchBox = document.getElementById('searchBox');
             const sortSelect = document.getElementById('sortSelect');
@@ -375,7 +338,7 @@
                 items.sort((a,b)=>{
                     if(type==='price') return (parseInt(b.dataset.price||'0') - parseInt(a.dataset.price||'0'));
                     if(type==='status') return (a.dataset.status||'').localeCompare(b.dataset.status||'');
-                    return (a.dataset.room||'').localeCompare(b.dataset.room||'');
+                    return (a.dataset.room||'').localeCompare(b.dataset.room||'', undefined, {numeric: true});
                 });
                 items.forEach(i=>grid.appendChild(i));
             }
@@ -384,7 +347,7 @@
             sortSelect?.addEventListener('change', sort);
             sort();
 
-            // Logic xác thực mật khẩu (Giữ nguyên logic của bạn)
+            // Logic xác thực mật khẩu
             const confirmPasswordBtn = document.getElementById('confirmPasswordBtn');
             const passwordInput = document.getElementById('confirmPassword');
             const passwordError = document.getElementById('passwordError');
@@ -421,26 +384,6 @@
                     confirmPasswordBtn.innerHTML = 'XÁC NHẬN';
                 });
             });
-        })();
+        });
     </script>
 }
-
-<div class="modal fade" id="passwordConfirmModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content shadow-lg border-0" style="border-radius: 28px;">
-            <div class="modal-header d-flex flex-column align-items-center border-0 pt-5">
-                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
-                <h5 class="modal-title font-weight-bold">XÁC MINH BẢO MẬT</h5>
-            </div>
-            <div class="modal-body px-5">
-                <p class="text-center text-muted small mb-4">Vui lòng nhập mật khẩu chủ trọ để tạo phòng trọ mới.</p>
-                <input type="password" class="form-control shadow-sm" id="confirmPassword" placeholder="Nhập mật khẩu..." style="border-radius: 15px; height: 55px; text-align: center; border: 1px solid #eee;">
-                <div class="invalid-feedback text-center" id="passwordError">Mật khẩu không đúng!</div>
-            </div>
-            <div class="modal-footer px-5 border-0 pb-5">
-                <button type="button" class="btn btn-primary btn-confirm-lg shadow" id="confirmPasswordBtn">XÁC NHẬN</button>
-                <button type="button" class="btn btn-link text-muted mt-2" data-dismiss="modal">Hủy bỏ</button>
-            </div>
-        </div>
-    </div>
-</div>

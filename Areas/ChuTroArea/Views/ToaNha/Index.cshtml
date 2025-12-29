@@ -1,31 +1,17 @@
 ﻿@model IEnumerable<DACS_QuanLyPhongTro.Models.ToaNha>
-
 @{
-
     ViewData["Title"] = "Danh sách Tòa Nhà";
-
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 
-
-
     var totalBuildings = Model?.Count() ?? 0;
-
     var totalEmptyRooms = Model?.Sum(t => t.PhongTros?.Count(p => p.TrangThai == "Trống") ?? 0) ?? 0;
-
     var totalRentedRooms = Model?.Sum(t => t.PhongTros?.Count(p => p.TrangThai == "Đã Thuê") ?? 0) ?? 0;
-
     var currentDateTime = DateTime.Now;
-
 }
-
-
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
-
-
 <style>
-
     :root {
         --p-blue: #a8d5e2;
         --p-green: #c1e1c1;
@@ -36,10 +22,7 @@
         --surface: #ffffff;
     }
 
-
-
     /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
-
     .content-wrapper {
         margin-left: 255px !important;
         padding-top: 25px;
@@ -47,10 +30,7 @@
         font-family: "Montserrat", sans-serif !important;
     }
 
-
-
     /* 2. WELCOME CARD */
-
     .welcome-card {
         background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
         border: none !important;
@@ -58,8 +38,6 @@
         box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
         margin-bottom: 24px;
     }
-
-
 
     .welcome-title {
         font-family: "Pacifico", cursive !important;
@@ -69,10 +47,7 @@
         margin-bottom: 5px;
     }
 
-
-
-    /* 3. 4 CARDS THỐNG KÊ - THÊM HIỆU ỨNG XOAY ICON KHI HOVER */
-
+    /* 3. 4 CARDS THỐNG KÊ */
     .custom-box-tenant {
         background: var(--surface);
         border-radius: 20px !important;
@@ -87,58 +62,32 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.02);
     }
 
+    .custom-box-tenant:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
+    }
 
+    .custom-box-tenant .icon-wrapper {
+        width: 70px;
+        height: 70px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 15px;
+        color: white;
+        transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-        .custom-box-tenant:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
-        }
+    .custom-box-tenant:hover .icon-wrapper {
+        transform: rotate(15deg) scale(1.1);
+    }
 
+    .custom-box-tenant h3 { font-weight: 800; font-size: 1.6rem; margin-bottom: 5px; }
+    .custom-box-tenant p { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
 
-
-        .custom-box-tenant .icon-wrapper {
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: 15px;
-            color: white;
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* Hiệu ứng xoay mượt */
-        }
-
-
-
-        /* XOAY ICON NHẸ KHI HOVER CARD */
-
-        .custom-box-tenant:hover .icon-wrapper {
-            transform: rotate(15deg) scale(1.1);
-        }
-
-
-
-        .custom-box-tenant h3 {
-            font-weight: 800;
-            font-size: 1.6rem;
-            margin-bottom: 5px;
-        }
-
-
-
-        .custom-box-tenant p {
-            color: #64748b;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
-
-
-
-    /* 4. BUILDING CARDS - DÃN RỘNG CÁC THÀNH PHẦN */
-
+    /* 4. BUILDING CARDS */
     .building-card {
         border-radius: 28px !important;
         background: #ffffff;
@@ -147,41 +96,15 @@
         position: relative;
     }
 
-
-
-        .building-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
-            border-color: var(--p-blue) !important;
-        }
-
-
-
-        .building-card .card-body {
-            padding: 2.2rem !important; /* Dãn rộng nội dung bên trong */
-        }
-
-
-
-    .card-title-lg {
-        font-weight: 850 !important;
-        font-size: 1.5rem !important;
-        color: #1a202c;
-        margin-bottom: 10px;
+    .building-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
+        border-color: var(--p-blue) !important;
     }
 
-
-
-    .text-address {
-        font-size: 1rem;
-        color: #718096;
-        font-weight: 500;
-        line-height: 1.6;
-        display: block;
-        white-space: normal;
-    }
-
-
+    .building-card .card-body { padding: 2.2rem !important; }
+    .card-title-lg { font-weight: 850 !important; font-size: 1.5rem !important; color: #1a202c; margin-bottom: 10px; }
+    .text-address { font-size: 1rem; color: #718096; font-weight: 500; line-height: 1.6; display: block; white-space: normal; }
 
     .minimal-icon-box {
         width: 60px;
@@ -196,27 +119,11 @@
         transition: 0.3s;
     }
 
-
-
-    /* 5. DÃN CÁC NHÃN (BADGE) */
-
-    .count-badge {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: #4a5568;
-        background: #f1f5f9;
-        padding: 8px 18px;
-        border-radius: 12px;
-        margin-right: 12px; /* Dãn khoảng cách giữa Tầng và Phòng */
-    }
-
-
-
-    /* 6. DÃN CÁC NÚT BẤM (ACTION BUTTONS) */
+    /* 5. BADGES & ACTION BUTTONS */
+    .count-badge { font-size: 0.9rem; font-weight: 700; color: #4a5568; background: #f1f5f9; padding: 8px 18px; border-radius: 12px; margin-right: 12px; }
 
     .btn-circle-action {
-        width: 48px; /* To hơn */
-
+        width: 48px;
         height: 48px;
         border-radius: 14px;
         display: flex;
@@ -226,454 +133,233 @@
         background: white;
         color: #94a3b8;
         transition: 0.3s;
-        margin-left: 15px !important; /* Dãn khoảng cách giữa các nút Arrow, Edit, Delete */
+        margin-left: 15px !important;
     }
 
+    .btn-circle-action:hover { background: var(--p-blue); color: white; transform: scale(1.1); border-color: transparent; }
+    .btn-view-minimal { color: #3b82f6; background: rgba(59, 130, 246, 0.08); border: none; }
 
+    /* Pastel colors for top border */
+    .building-item:nth-child(4n+1) .building-card { border-top: 6px solid var(--p-blue) !important; }
+    .building-item:nth-child(4n+2) .building-card { border-top: 6px solid var(--p-green) !important; }
+    .building-item:nth-child(4n+3) .building-card { border-top: 6px solid var(--p-purple) !important; }
+    .building-item:nth-child(4n+4) .building-card { border-top: 6px solid var(--p-red) !important; }
 
-        .btn-circle-action:hover {
-            background: var(--p-blue);
-            color: white;
-            transform: scale(1.1);
-            border-color: transparent;
-        }
-
-
-
-    .btn-view-minimal {
-        color: #3b82f6;
-        background: rgba(59, 130, 246, 0.08);
-        border: none;
+    .filter-section {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 24px;
+        margin-bottom: 35px;
+        border: 1px solid #edf2f7;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
     }
-
-
-
-    /* Phân loại màu viền trên */
-
-    .building-item:nth-child(4n+1) .building-card {
-        border-top: 6px solid var(--p-blue) !important;
-    }
-
-
-
-    .building-item:nth-child(4n+2) .building-card {
-        border-top: 6px solid var(--p-green) !important;
-    }
-
-
-
-    .building-item:nth-child(4n+3) .building-card {
-        border-top: 6px solid var(--p-purple) !important;
-    }
-
-
-
-    .building-item:nth-child(4n+4) .building-card {
-        border-top: 6px solid var(--p-red) !important;
-    }
-
-
-
-    /* 7. MODAL CHỈNH LẠI */
-
-    .modal-content {
-        border-radius: 28px !important;
-        border: none !important;
-    }
-
-
-
-    .btn-confirm-lg {
-        border-radius: 15px;
-        padding: 14px;
-        font-weight: 800;
-        width: 100%;
-    }
-
 </style>
 
-
-
 <div class="container-fluid">
+    <input type="text" style="display:none;" aria-hidden="true">
+    <input type="password" style="display:none;" aria-hidden="true">
 
     <div class="row">
-
         <div class="col-12">
-
-            <div class="card welcome-card">
-
-                <div class="card-body p-4">
-
-                    <div class="row align-items-center">
-
-                        <div class="col-md-9">
-
-                            <h2 class="welcome-title">Quản lý Tòa nhà</h2>
-
-                        </div>
-
-                        <div class="col-md-3 text-right d-none d-md-block">
-
-                            <i class="fas fa-city fa-4x text-white" style="opacity: 0.3;"></i>
-
-                        </div>
-
-                    </div>
-
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-4 text-center text-md-left">
+                    <h2 class="welcome-title mb-0">Quản lý Tòa nhà ✨</h2>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
-
 
     <div class="row">
-
         <div class="col-lg-3 col-6">
-
-            <div class="custom-box-tenant">
-
+            <div class="custom-box-tenant shadow-sm">
                 <div class="icon-wrapper" style="background:var(--p-blue)"><i class="fas fa-building"></i></div>
-
                 <h3>@totalBuildings</h3>
-
                 <p>Tòa nhà</p>
-
             </div>
-
         </div>
-
         <div class="col-lg-3 col-6">
-
-            <div class="custom-box-tenant">
-
+            <div class="custom-box-tenant shadow-sm">
                 <div class="icon-wrapper" style="background:var(--p-green)"><i class="fas fa-door-open"></i></div>
-
                 <h3>@totalEmptyRooms</h3>
-
                 <p>Phòng trống</p>
-
             </div>
-
         </div>
-
         <div class="col-lg-3 col-6">
-
-            <div class="custom-box-tenant">
-
+            <div class="custom-box-tenant shadow-sm">
                 <div class="icon-wrapper" style="background:var(--p-purple)"><i class="fas fa-user-check"></i></div>
-
                 <h3>@totalRentedRooms</h3>
-
                 <p>Đã cho thuê</p>
-
             </div>
-
         </div>
-
         <div class="col-lg-3 col-6">
-
-            <div class="custom-box-tenant">
-
+            <div class="custom-box-tenant shadow-sm">
                 <div class="icon-wrapper" style="background:var(--p-red)"><i class="fas fa-clock"></i></div>
-
                 <h3 id="currentTimeDisplay">@currentDateTime.ToString("HH:mm")</h3>
-
                 <p>@currentDateTime.ToString("dd/MM/yyyy")</p>
-
             </div>
-
         </div>
-
     </div>
-
-
 
     <div class="filter-section d-flex align-items-center justify-content-between flex-wrap gap-3 mt-2 shadow-sm">
-
         <div class="d-flex align-items-center gap-3">
-
-            <input id="searchBox" type="text" class="form-control border-0 bg-light shadow-sm" style="border-radius: 12px; width: 350px; height: 50px;" placeholder="Tìm nhanh theo tên, địa chỉ...">
+            <input id="searchBox" type="text" 
+                   class="form-control border-0 bg-light shadow-sm" 
+                   style="border-radius: 12px; width: 350px; height: 50px;" 
+                   placeholder="Tìm nhanh theo tên, địa chỉ..." 
+                   readonly 
+                   onfocus="this.removeAttribute('readonly');" 
+                   autocomplete="new-password" 
+                   name="toanhaSearch_@(Guid.NewGuid().ToString("N"))">
 
             <select id="sortSelect" class="form-select border-0 bg-light shadow-sm" style="width:180px; border-radius: 12px; height: 50px; font-weight: 600;">
-
                 <option value="name">Tên A-Z</option>
-
                 <option value="floors">Số tầng</option>
-
             </select>
-
         </div>
-
         <button class="btn btn-dark shadow" style="border-radius: 12px; font-weight: 700; padding: 12px 30px;" data-toggle="modal" data-target="#passwordConfirmModal">
-
             <i class="fas fa-plus mr-2"></i> THÊM TÒA NHÀ
-
         </button>
-
     </div>
-
-
 
     <div class="row mt-4" id="buildingsGrid">
-
         @foreach (var t in Model)
-
         {
-
             var rooms = t.PhongTros?.Count ?? 0;
-
             <div class="col-12 col-md-6 col-xl-4 building-item mb-5" data-name="@t.TenToaNha" data-address="@t.DiaChi" data-floors="@t.TongSoTang">
-
                 <div class="card building-card h-100 shadow-sm">
-
-                    <div class="card-body">
-
+                    <div class="card-body d-flex flex-column">
                         <div class="d-flex align-items-center mb-4">
-
                             <div class="minimal-icon-box shadow-sm mr-4">
-
                                 <i class="fas fa-building"></i>
-
                             </div>
-
                             <div class="flex-grow-1 overflow-hidden">
-
                                 <h4 class="card-title-lg mb-1">@t.TenToaNha</h4>
-
-                                <span class="text-address">@t.DiaChi</span>
-
+                                <span class="text-address text-truncate">@t.DiaChi</span>
                             </div>
-
                         </div>
 
-
-
-                        <div class="d-flex align-items-center justify-content-between pt-4 border-top mt-2">
-
+                        <div class="d-flex align-items-center justify-content-between pt-4 border-top mt-auto">
                             <div class="d-flex align-items-center">
-
                                 <span class="count-badge">@t.TongSoTang Tầng</span>
-
                                 <span class="count-badge">@rooms Phòng</span>
-
                             </div>
-
-
 
                             <div class="d-flex align-items-center">
-
                                 <a asp-action="RoomsByBuilding" asp-route-id="@t.MaToaNha" class="btn-circle-action btn-view-minimal" title="Xem chi tiết">
-
                                     <i class="fas fa-arrow-right"></i>
-
                                 </a>
-
                                 <a asp-action="Edit" asp-route-id="@t.MaToaNha" class="btn-circle-action" title="Sửa">
-
                                     <i class="fas fa-pen-nib"></i>
-
                                 </a>
-
                                 <a asp-action="Delete" asp-route-id="@t.MaToaNha" class="btn-circle-action text-danger" title="Xóa">
-
                                     <i class="fas fa-trash-alt"></i>
-
                                 </a>
-
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         }
-
     </div>
-
 </div>
-
-
 
 @Html.AntiForgeryToken()
 
-
+<div class="modal fade" id="passwordConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
+            <div class="modal-header d-flex flex-column align-items-center border-0 pt-5">
+                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                <h5 class="modal-title font-weight-bold">XÁC MINH BẢO MẬT</h5>
+            </div>
+            <div class="modal-body px-5">
+                <p class="text-center text-muted small mb-4">Vui lòng nhập mật khẩu chủ trọ để tiếp tục.</p>
+                <input type="password" class="form-control text-center shadow-sm" id="confirmPassword" 
+                       placeholder="••••••••" style="border-radius: 15px; height: 55px; border: 1px solid #eee;"
+                       autocomplete="new-password"
+                       readonly onfocus="this.removeAttribute('readonly');">
+                <div class="invalid-feedback text-center" id="passwordError">Mật khẩu không đúng!</div>
+            </div>
+            <div class="modal-footer px-5 border-0 pb-5 justify-content-center">
+                <button type="button" class="btn btn-primary w-100 py-2 shadow" id="confirmPasswordBtn" style="border-radius: 12px; font-weight: 700; height: 50px;">XÁC NHẬN</button>
+                <button type="button" class="btn btn-link text-muted mt-2 w-100" data-dismiss="modal">Hủy bỏ</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-
     <script>
-
         (function(){
-
             const grid = document.getElementById('buildingsGrid');
-
             const searchBox = document.getElementById('searchBox');
-
             const sortSelect = document.getElementById('sortSelect');
-
             const timeDisplay = document.getElementById('currentTimeDisplay');
 
-
+            // Xóa giá trị rác trình duyệt tự điền khi load trang
+            window.onload = function() {
+                setTimeout(function() { searchBox.value = ''; }, 10);
+            };
 
             function updateTime() {
-
                 const now = new Date();
-
                 timeDisplay.textContent = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-
             }
-
             setInterval(updateTime, 1000); updateTime();
 
-
-
             function filter() {
-
-                const q = searchBox.value.toLowerCase();
-
+                const q = searchBox.value.toLowerCase().trim();
                 grid.querySelectorAll('.building-item').forEach(el => {
-
                     const text = (el.dataset.name + el.dataset.address).toLowerCase();
-
                     el.style.display = text.includes(q) ? '' : 'none';
-
                 });
-
             }
-
-
 
             function sort() {
-
                 const items = Array.from(grid.querySelectorAll('.building-item'));
-
                 const type = sortSelect.value;
-
                 items.sort((a,b) => {
-
                     if(type==='floors') return b.dataset.floors - a.dataset.floors;
-
                     return a.dataset.name.localeCompare(b.dataset.name);
-
                 });
-
                 items.forEach(i => grid.appendChild(i));
-
             }
 
-
-
             searchBox.addEventListener('input', filter);
-
             sortSelect.addEventListener('change', sort);
 
-
-
-            // Logic Modal (jQuery)
-
+            // Logic Modal
             $('#confirmPasswordBtn').on('click', function() {
-
-                const password = $('#confirmPassword').val();
-
+                const password = $('#confirmPassword').val().trim();
                 if (!password) { $('#confirmPassword').addClass('is-invalid'); return; }
 
-
-
                 const $btn = $(this);
-
                 $btn.prop('disabled', true);
-
                 $btn.html('<i class="fas fa-spinner fa-spin"></i>');
 
-
-
                 fetch('/ChuTroArea/ToaNha/VerifyPassword', {
-
                     method: 'POST',
-
                     headers: {
-
                         'Content-Type': 'application/json',
-
                         'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-
                     },
-
                     body: JSON.stringify({ password: password })
-
                 })
-
                 .then(r => r.json())
-
                 .then(data => {
-
                     if (data.success) window.location.href = '/ChuTroArea/ToaNha/Create';
-
                     else {
-
-                        $('#confirmPassword').addClass('is-invalid');
-
-                        $('#passwordError').text(data.message);
-
+                        $('#confirmPassword').addClass('is-invalid').val('');
+                        $('#passwordError').text(data.message || 'Mật khẩu không chính xác.');
                         $btn.prop('disabled', false);
-
                         $btn.html('XÁC NHẬN');
-
                     }
-
+                })
+                .catch(() => {
+                    $btn.prop('disabled', false);
+                    $btn.html('XÁC NHẬN');
                 });
-
             });
-
         })();
-
     </script>
-
 }
-
-
-
-<div class="modal fade" id="passwordConfirmModal" tabindex="-1">
-
-    <div class="modal-dialog modal-dialog-centered">
-
-        <div class="modal-content shadow-lg">
-
-            <div class="modal-header d-flex flex-column align-items-center">
-
-                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
-
-                <h5 class="modal-title font-weight-bold">XÁC MINH BẢO MẬT</h5>
-
-            </div>
-
-            <div class="modal-body px-5">
-
-                <p class="text-center text-muted small mb-4">Vui lòng nhập mật khẩu chủ trọ để thực hiện thêm tòa nhà mới.</p>
-
-                <input type="password" class="form-control shadow-sm" id="confirmPassword" placeholder="Nhập mật khẩu..." style="border-radius: 15px; height: 55px; text-align: center; border: 1px solid #eee;">
-
-                <div class="invalid-feedback text-center" id="passwordError">Mật khẩu không đúng!</div>
-
-            </div>
-
-            <div class="modal-footer px-5">
-
-                <button type="button" class="btn btn-primary btn-confirm-lg shadow" id="confirmPasswordBtn">XÁC NHẬN</button>
-
-                <button type="button" class="btn btn-link text-muted mt-2" data-dismiss="modal">Hủy bỏ</button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
