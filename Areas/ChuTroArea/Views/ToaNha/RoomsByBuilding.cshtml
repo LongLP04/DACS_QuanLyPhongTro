@@ -4,39 +4,187 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between">
-        <h2 class="h4 mb-0">@Model.TenToaNha</h2>
-        <div class="text-muted">@Model.DiaChi</div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
-<div class="row px-2 px-md-3 mt-3 g-3">
-    @if (Model.Floors != null && Model.Floors.Any())
-    {
-        foreach (var f in Model.Floors.OrderByDescending(k => k.Key))
-        {
-            <div class="col-12">
-                <div class="card mb-3">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Tầng @f.Key</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            @foreach (var p in f.Value)
-                            {
-                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                    @await Html.PartialAsync("~/Views/Shared/_RoomCard.cshtml", p)
-                                </div>
-                            }
+<style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    /* 1. Đồng bộ Sidebar & Background */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. Welcome Card */
+    .welcome-card-building {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 24px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 24px;
+    }
+
+    .building-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.5rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.15);
+    }
+
+    .building-address {
+        font-weight: 500;
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.95);
+    }
+
+    /* 3. Khung Card Tầng - Dãn rộng nội dung */
+    .floor-item-container {
+        margin-bottom: 50px; /* Tăng khoảng cách giữa các tầng */
+    }
+
+    .floor-card {
+        border-radius: 30px !important;
+        background: #ffffff;
+        border: 1px solid #f1f5f9 !important;
+        transition: all 0.4s ease;
+    }
+
+    .floor-header-custom {
+        padding: 30px 45px !important; /* Dãn rộng tiêu đề tầng */
+        background: transparent !important;
+        border-bottom: 1px solid #edf2f7 !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .floor-title-text {
+        font-weight: 850 !important;
+        font-size: 1.5rem !important; /* To rõ hơn */
+        color: #1a202c;
+        margin: 0;
+        letter-spacing: 0.5px;
+    }
+
+    .floor-body-custom {
+        padding: 45px !important; /* Dãn rộng vùng chứa các phòng */
+        background-color: #ffffff;
+        border-radius: 0 0 30px 30px;
+    }
+
+    .floor-count-badge {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #64748b;
+        background: #f1f5f9;
+        padding: 10px 20px;
+        border-radius: 14px;
+    }
+
+    .btn-back-minimal {
+        border-radius: 12px;
+        font-weight: 700;
+        color: #64748b;
+        background: white;
+        border: 1.5px solid #edf2f7;
+        padding: 10px 25px;
+        transition: 0.3s;
+        margin-bottom: 30px;
+        display: inline-flex;
+        align-items: center;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+        .btn-back-minimal:hover {
+            border-color: var(--p-blue);
+            color: var(--text-dark);
+            transform: translateX(-5px);
+        }
+
+    /* Viền trên pastel cho từng tầng */
+    .floor-item-container:nth-child(4n+1) .floor-card {
+        border-top: 8px solid var(--p-blue) !important;
+    }
+
+    .floor-item-container:nth-child(4n+2) .floor-card {
+        border-top: 8px solid var(--p-green) !important;
+    }
+
+    .floor-item-container:nth-child(4n+3) .floor-card {
+        border-top: 8px solid var(--p-purple) !important;
+    }
+
+    .floor-item-container:nth-child(4n+4) .floor-card {
+        border-top: 8px solid var(--p-red) !important;
+    }
+
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card-building shadow-sm">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="building-title">@Model.TenToaNha</h2>
+                            <p class="building-address mb-0">
+                                <i class="fas fa-map-marker-alt mr-2 opacity-75"></i>@Model.DiaChi
+                            </p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block">
+                            <i class="fas fa-city fa-4x text-white" style="opacity: 0.2;"></i>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <a asp-action="Index" class="btn btn-back-minimal shadow-sm">
+        <i class="fas fa-chevron-left mr-2"></i> Quay lại danh sách
+    </a>
+
+    <div class="row">
+        @if (Model.Floors != null && Model.Floors.Any())
+        {
+            foreach (var f in Model.Floors.OrderByDescending(k => k.Key))
+            {
+                <div class="col-12 floor-item-container">
+                    <div class="card floor-card shadow-sm">
+                        <div class="card-header floor-header-custom">
+                            <h5 class="floor-title-text">
+                                <i class="fas fa-layer-group mr-3 text-primary opacity-50"></i>TẦNG @f.Key
+                            </h5>
+                            <span class="floor-count-badge">@f.Value.Count() Phòng ở</span>
+                        </div>
+
+                        <div class="card-body floor-body-custom">
+                            <div class="row g-5">
+                                @foreach (var p in f.Value)
+                                {
+                                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                        <div class="h-100" style="transition: 0.3s;" onmouseover="this.style.transform='translateY(-8px)'" onmouseout="this.style.transform='translateY(0)'">
+                                            @await Html.PartialAsync("~/Views/Shared/_RoomCard.cshtml", p)
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         }
-    }
-    else
-    {
-        <div class="col-12"><div class="alert alert-info">Không có phòng trong tòa nhà này.</div></div>
-    }
+    </div>
 </div>

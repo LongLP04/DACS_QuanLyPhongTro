@@ -5,100 +5,228 @@
     var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <a asp-action="Index" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i> Quay Lại
-            </a>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. WELCOME CARD */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-green), var(--p-blue)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(193, 225, 193, 0.3);
+        margin-bottom: 40px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.2rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.1);
+        margin-bottom: 5px;
+    }
+
+    /* 3. CARD CUSTOM & LAYOUT */
+    .card-custom {
+        background: var(--surface);
+        border-radius: 35px !important;
+        padding: 50px;
+        border: 2px solid var(--p-green) !important;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+        transition: transform 0.3s ease;
+    }
+
+    .info-label {
+        font-weight: 800;
+        color: #64748b;
+        margin-bottom: 12px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        display: flex;
+        align-items: center;
+    }
+
+    .info-value-box {
+        background-color: #fbfcfe !important;
+        border: 1.5px solid #edf2f7 !important;
+        border-radius: 18px !important;
+        padding: 15px 25px !important;
+        color: var(--text-dark);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        min-height: 60px;
+        margin-bottom: 25px;
+    }
+
+    /* Hiệu ứng xoay icon khi hover card */
+    .card-custom:hover .avatar-success {
+        transform: rotate(15deg);
+    }
+
+    .avatar-success {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        background: linear-gradient(135deg, var(--p-green), #81c784);
+        transition: transform 0.4s ease;
+    }
+
+    /* 4. BUTTONS */
+    .btn-confirm-main {
+        background: var(--p-green);
+        color: #2d6a4f;
+        border-radius: 18px;
+        font-weight: 800;
+        padding: 18px 60px;
+        border: none;
+        transition: 0.3s;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+        .btn-confirm-main:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(193, 225, 193, 0.5);
+        }
+
+    .btn-custom-cancel {
+        background: white;
+        color: #64748b;
+        border-radius: 18px;
+        font-weight: 700;
+        padding: 18px 60px;
+        border: 2.5px solid #edf2f7;
+        transition: 0.3s;
+        text-transform: uppercase;
+    }
+
+        .btn-custom-cancel:hover {
+            background: #f8fafc;
+            border-color: var(--p-blue);
+        }
+
+    .btn-back-minimal {
+        border-radius: 15px;
+        font-weight: 700;
+        color: #64748b;
+        background: white;
+        border: 1.5px solid #edf2f7;
+        padding: 12px 30px;
+        transition: 0.3s;
+        margin-bottom: 30px;
+        display: inline-flex;
+        align-items: center;
+    }
+</style>
+
+<div class="container-fluid text-left">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Duyệt Thanh Toán </h2>
+                            <p class="mb-0 text-white opacity-90" style="font-size: 1.1rem;">
+                                Bạn đang thực hiện xác nhận tiền đã về cho hóa đơn <strong>#@Model.MaHoaDon</strong>
+                            </p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block text-white opacity-20">
+                            <i class="fas fa-hand-holding-usd fa-5x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="row justify-content-center mt-3">
-    <div class="col-12 col-md-8 col-lg-6">
-        <div class="card shadow-sm border-0 hoadon-xacnhan-card">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:48px;height:48px;">
-                        <i class="fas fa-file-invoice-dollar fs-4"></i>
+    <a asp-action="Index" class="btn btn-back-minimal shadow-sm">
+        <i class="fas fa-arrow-left mr-2"></i> QUAY LẠI DANH SÁCH
+    </a>
+
+    <div class="row justify-content-center">
+        <div class="col-12 pb-5">
+            <div class="card card-custom shadow-sm">
+                <div class="card-body p-0">
+                    <div class="d-flex align-items-center mb-5">
+                        <div class="avatar-success shadow-sm mr-4">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold text-dark mb-1">Kiểm tra thông tin giao dịch</h4>
+                            <p class="text-muted mb-0 small font-weight-bold uppercase">Vui lòng đối soát kỹ số tiền thực nhận trước khi xác nhận.</p>
+                        </div>
                     </div>
-                    <h5 class="card-title mb-0 fw-bold text-dark">Xác nhận thanh toán hóa đơn</h5>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="info-label text-primary"><i class="fas fa-user mr-2"></i> Khách hàng</label>
+                            <div class="info-value-box">
+                                @(Model.KhachThue?.HoTen ?? "N/A")
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="info-label text-success"><i class="fas fa-door-open mr-2"></i> Số phòng</label>
+                            <div class="info-value-box">
+                                Phòng @(Model.ChiSoDienNuoc?.PhongTro?.SoPhong ?? "N/A")
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="info-label text-warning"><i class="fas fa-calendar-alt mr-2"></i> Trạng thái</label>
+                            <div class="info-value-box">
+                                <span class="text-warning">● @Model.TrangThai</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="info-label text-danger"><i class="fas fa-money-bill-wave mr-2"></i> Số tiền cần xác nhận</label>
+                            <div class="info-value-box shadow-xs" style="background-color: #f0fff4 !important; border-color: var(--p-green) !important;">
+                                <span class="fs-4 fw-bold text-success">@Model.TongTien.ToString("N0")</span>
+                                <small class="ml-2 font-weight-bold text-success">VNĐ</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="XacNhanThanhToan" method="post" class="text-center mt-5 pt-4 border-top">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="MaHoaDon" />
+
+                        <button type="submit" class="btn btn-confirm-main shadow-sm mr-4">
+                            <i class="fas fa-check-circle mr-2"></i> XÁC NHẬN ĐÃ THU TIỀN
+                        </button>
+
+                        <a asp-action="Index" class="btn btn-custom-cancel shadow-sm">
+                            HỦY BỎ
+                        </a>
+                    </form>
                 </div>
-                <div class="mb-2">
-                    <span class="badge bg-primary-subtle text-primary border border-primary fs-6 px-2 py-1">
-                        Mã hóa đơn: <strong>@Model.MaHoaDon</strong>
-                    </span>
-                </div>
-                <div class="mb-2">
-                    <span class="badge bg-info-subtle text-info border border-info fs-6 px-2 py-1">
-                        Khách thuê: <strong>@Model.KhachThue?.HoTen</strong>
-                    </span>
-                </div>
-                <div class="mb-2">
-                    <span class="badge bg-success-subtle text-success border border-success fs-6 px-2 py-1">
-                        Phòng: <strong>@Model.ChiSoDienNuoc?.PhongTro?.SoPhong</strong>
-                    </span>
-                </div>
-                <div class="mb-2">
-                    <span class="badge bg-danger-subtle text-danger border border-danger fs-6 px-2 py-1">
-                        Tổng tiền: <strong>@Model.TongTien.ToString("N0", vnd) VNĐ</strong>
-                    </span>
-                </div>
-                <div class="mb-2">
-                    @if (Model.TrangThai == "Chờ xác nhận")
-                    {
-                        <span class="badge bg-warning text-dark px-2 py-1"><i class="fas fa-clock me-1"></i>@Model.TrangThai</span>
-                    }
-                    else if (Model.TrangThai == "Đã thanh toán")
-                    {
-                        <span class="badge bg-success text-white px-2 py-1"><i class="fas fa-check me-1"></i>@Model.TrangThai</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger text-white px-2 py-1"><i class="fas fa-times me-1"></i>@Model.TrangThai</span>
-                    }
-                </div>
-                <form asp-action="XacNhanThanhToan" method="post" class="d-flex gap-2 justify-content-end mt-4">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="MaHoaDon" />
-                    <button type="submit" class="btn btn-outline-success btn-sm px-3">
-                        <i class="fas fa-check me-1"></i>Xác nhận thanh toán
-                    </button>
-                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-3">Hủy</a>
-                </form>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .hoadon-xacnhan-card {
-        transition: transform .15s ease, box-shadow .15s ease;
-        margin-bottom: 0;
-        background-color: #fff0f5;
-    }
-    .hoadon-xacnhan-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    }
-    .avatar {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    }
-    .hoadon-xacnhan-card .card-title {
-        font-size: 1.15rem;
-        line-height: 1.3;
-        color: #2c3e50;
-    }
-    .hoadon-xacnhan-card .badge {
-        font-size: 0.875rem;
-        font-weight: 500;
-        background-color: rgba(255, 255, 255, 0.8) !important;
-        backdrop-filter: blur(10px);
-    }
-    .hoadon-xacnhan-card .btn {
-        font-size: 0.95rem;
-        font-weight: 500;
-    }
-</style>

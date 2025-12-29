@@ -8,68 +8,240 @@
     var selectedBillingMonth = ViewBag.SelectedBillingMonth as string ?? DateTime.Now.ToString("yyyy-MM");
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <a asp-action="Index" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i> Quay Lại
-            </a>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. WELCOME CARD */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 40px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.2rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.1);
+        margin-bottom: 5px;
+    }
+
+    /* 3. FORM CARD - DÃN RỘNG KHUNG */
+    .card-custom {
+        background: var(--surface);
+        border-radius: 35px !important;
+        padding: 50px;
+        border: 2px solid var(--p-blue) !important;
+        box-shadow: 0 15px 35px rgba(168, 213, 226, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .form-label {
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 12px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-control-custom, .form-select-custom {
+        border-radius: 18px !important;
+        border: 1.5px solid #edf2f7 !important;
+        padding: 18px 25px !important;
+        height: auto !important;
+        transition: all 0.3s ease;
+        background-color: #fbfcfe;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+        .form-control-custom:focus, .form-select-custom:focus {
+            border-color: var(--p-blue) !important;
+            box-shadow: 0 0 0 5px rgba(168, 213, 226, 0.25) !important;
+            background-color: #fff;
+        }
+
+    /* 4. TRẠNG THÁI KIỂM TRA (Status Lines) */
+    .status-container {
+        background: #f8fafc;
+        border-radius: 20px;
+        padding: 20px;
+        margin-top: 25px;
+        border: 1px solid #edf2f7;
+    }
+
+    .status-line {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+        .status-line:last-child {
+            margin-bottom: 0;
+        }
+
+    /* 5. BUTTONS */
+    .btn-custom-create {
+        background: var(--p-blue);
+        color: #2c5282;
+        border-radius: 18px;
+        font-weight: 800;
+        padding: 18px 60px;
+        border: none;
+        transition: all 0.4s ease;
+        text-transform: uppercase;
+    }
+
+        .btn-custom-create:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(168, 213, 226, 0.45);
+        }
+
+    .btn-back-minimal {
+        border-radius: 15px;
+        font-weight: 700;
+        color: #64748b;
+        background: white;
+        border: 1.5px solid #edf2f7;
+        padding: 12px 30px;
+        transition: 0.3s;
+        margin-bottom: 30px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .avatar-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple));
+        transition: transform 0.4s ease;
+    }
+
+    .card-custom:hover .avatar-icon-wrapper {
+        transform: rotate(15deg);
+    }
+</style>
+
+<div class="container-fluid text-left">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Lập Hóa Đơn Mới</h2>
+                            <p class="mb-0 text-white opacity-90" style="font-size: 1.2rem;">Hệ thống sẽ tự động tổng hợp phí phòng, điện nước và dịch vụ theo tháng.</p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block text-white opacity-20">
+                            <i class="fas fa-file-invoice-dollar fa-5x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="row justify-content-center mt-3">
-    <div class="col-12 col-md-8 col-lg-6">
-        <div class="card shadow-sm border-0 hoadon-create-card">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:48px;height:48px;">
-                        <i class="fas fa-file-invoice fs-4"></i>
+    <a asp-action="Index" class="btn btn-back-minimal shadow-sm">
+        <i class="fas fa-arrow-left mr-2"></i> QUAY LẠI DANH SÁCH
+    </a>
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card card-custom shadow-sm mb-5">
+                <div class="card-body p-0">
+                    <div class="d-flex align-items-center mb-5">
+                        <div class="avatar-icon-wrapper shadow-sm mr-4">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-0">Thông tin khởi tạo hóa đơn</h4>
                     </div>
-                    <h5 class="card-title mb-0 fw-bold text-dark">Tạo Hóa Đơn Mới</h5>
+
+                    <form asp-action="Create" method="post" novalidate>
+                        @Html.AntiForgeryToken()
+
+                        <div class="row g-4">
+                            <div class="col-md-12">
+                                <label asp-for="MaPhong" class="form-label text-primary">Phòng Trọ Mục Tiêu</label>
+                                <select asp-for="MaPhong" class="form-select form-select-custom shadow-sm" id="invoiceRoomSelect" required>
+                                    <option value="">-- Chọn phòng trọ cần lập hóa đơn --</option>
+                                    @foreach (var option in roomOptions)
+                                    {
+                                        var baseText = $"Phòng {option.SoPhong} ({option.TenantName})";
+                                        var recordedMonths = option.RecordedInvoiceMonths ?? new List<string>();
+                                        var hasInvoice = recordedMonths.Contains(selectedBillingMonth);
+                                        var suffix = hasInvoice ? " - ĐÃ CÓ HÓA ĐƠN THÁNG NÀY" : string.Empty;
+                                        <option value="@option.MaPhong"
+                                                data-base-text="@baseText"
+                                                data-invoice-months="@string.Join(',', recordedMonths)">
+                                            @(baseText + suffix)
+                                        </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="MaPhong" class="text-danger small fw-bold mt-2 d-block"></span>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label text-purple">Kỳ Thanh Toán (Tháng/Năm)</label>
+                                <input type="month" name="BillingMonth" id="billingMonthInput" class="form-control form-control-custom shadow-sm" value="@selectedBillingMonth" />
+                                <div class="form-text mt-2 text-muted">Dữ liệu điện nước và dịch vụ sẽ được truy xuất dựa trên tháng này.</div>
+                            </div>
+                        </div>
+
+                        <div class="status-container shadow-sm">
+                            <div class="status-line text-muted" id="serviceStatus" data-default-text="Chưa chọn phòng: Hệ thống chưa thể kiểm tra dịch vụ.">
+                                <i class="fas fa-info-circle mr-3"></i> Chưa chọn phòng: Hệ thống chưa thể kiểm tra dịch vụ.
+                            </div>
+                            <div class="status-line text-muted" id="readingStatus" data-default-text="Chưa chọn phòng: Hệ thống chưa thể kiểm tra điện nước.">
+                                <i class="fas fa-info-circle mr-3"></i> Chưa chọn phòng: Hệ thống chưa thể kiểm tra điện nước.
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5 pt-4 border-top">
+                            <button type="submit" class="btn btn-custom-create shadow-sm mr-4">
+                                <i class="fas fa-check-circle mr-2"></i> XÁC NHẬN TẠO
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 18px; padding: 18px 40px; font-weight: 700;">
+                                HỦY BỎ
+                            </a>
+                        </div>
+                    </form>
                 </div>
-                <form asp-action="Create" method="post" novalidate>
-                    @Html.AntiForgeryToken()
-                    <div class="mb-3">
-                        <label asp-for="MaPhong" class="form-label fw-bold">Phòng</label>
-                        <select asp-for="MaPhong" class="form-select" id="invoiceRoomSelect">
-                            <option value="">-- Chọn phòng trọ --</option>
-                            @foreach (var option in roomOptions)
-                            {
-                                var baseText = $"Phòng {option.SoPhong} ({option.TenantName})";
-                                var recordedMonths = option.RecordedInvoiceMonths ?? new List<string>();
-                                var hasInvoice = recordedMonths.Contains(selectedBillingMonth);
-                                var suffix = hasInvoice ? " - ĐÃ GHI HÓA ĐƠN THÁNG NÀY" : string.Empty;
-                                <option value="@option.MaPhong"
-                                        data-base-text="@baseText"
-                                        data-invoice-months="@string.Join(',', recordedMonths)">
-                                    @(baseText + suffix)
-                                </option>
-                            }
-                        </select>
-                        <span asp-validation-for="MaPhong" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tháng lập hóa đơn</label>
-                        <input type="month" name="BillingMonth" id="billingMonthInput" class="form-control" value="@selectedBillingMonth" />
-                        <div class="form-text">Chọn tháng mà hóa đơn sẽ áp dụng (dịch vụ/điện nước trong tháng này sẽ được tính).</div>
-                        <div class="mt-3 status-line text-muted small" id="serviceStatus" data-default-text="Vui lòng chọn phòng và tháng để kiểm tra dịch vụ.">
-                            Vui lòng chọn phòng và tháng để kiểm tra dịch vụ.
-                        </div>
-                        <div class="status-line text-muted small" id="readingStatus" data-default-text="Vui lòng chọn phòng và tháng để kiểm tra chỉ số điện nước.">
-                            Vui lòng chọn phòng và tháng để kiểm tra chỉ số điện nước.
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center gap-3 mt-4">
-                        <button type="submit" class="btn btn-primary btn-sm px-5">Tạo hóa đơn</button>
-                        <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-4">Quay lại</a>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
 </div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
@@ -81,41 +253,26 @@
 
             const statusClasses = ['text-muted', 'text-success', 'text-danger', 'text-warning'];
 
-            const setStatus = (el, cssClass, text) => {
-                if (!el) {
-                    return;
-                }
+            const setStatus = (el, cssClass, text, iconClass) => {
+                if (!el) return;
                 statusClasses.forEach(cls => el.classList.remove(cls));
                 el.classList.add(cssClass);
-                el.textContent = text;
+                el.innerHTML = `<i class="fas ${iconClass} mr-3"></i> ${text}`;
             };
 
             const resetStatuses = () => {
-                if (serviceStatusEl) {
-                    const defaultText = serviceStatusEl.dataset.defaultText || 'Vui lòng chọn phòng và tháng để kiểm tra dịch vụ.';
-                    setStatus(serviceStatusEl, 'text-muted', defaultText);
-                }
-                if (readingStatusEl) {
-                    const defaultText = readingStatusEl.dataset.defaultText || 'Vui lòng chọn phòng và tháng để kiểm tra chỉ số điện nước.';
-                    setStatus(readingStatusEl, 'text-muted', defaultText);
-                }
+                setStatus(serviceStatusEl, 'text-muted', serviceStatusEl.dataset.defaultText, 'fa-info-circle');
+                setStatus(readingStatusEl, 'text-muted', readingStatusEl.dataset.defaultText, 'fa-info-circle');
             };
 
             const refreshInvoiceLabels = () => {
-                if (!roomSelect) {
-                    return;
-                }
-
+                if (!roomSelect) return;
                 const selectedMonth = monthInput?.value;
                 roomSelect.querySelectorAll('option[data-base-text]').forEach(option => {
                     const baseText = option.dataset.baseText || option.textContent;
-                    const months = option.dataset.invoiceMonths
-                        ? option.dataset.invoiceMonths.split(',').filter(Boolean)
-                        : [];
+                    const months = option.dataset.invoiceMonths ? option.dataset.invoiceMonths.split(',').filter(Boolean) : [];
                     const hasInvoice = selectedMonth && months.includes(selectedMonth);
-                    option.textContent = hasInvoice
-                        ? `${baseText} - ĐÃ GHI HÓA ĐƠN THÁNG NÀY`
-                        : baseText;
+                    option.textContent = hasInvoice ? `${baseText} - ĐÃ CÓ HÓA ĐƠN THÁNG NÀY` : baseText;
                 });
             };
 
@@ -128,8 +285,8 @@
                     return;
                 }
 
-                setStatus(serviceStatusEl, 'text-warning', 'Đang kiểm tra dịch vụ đã đăng ký...');
-                setStatus(readingStatusEl, 'text-warning', 'Đang kiểm tra chỉ số điện nước...');
+                setStatus(serviceStatusEl, 'text-warning', 'Đang truy xuất dịch vụ...', 'fa-spinner fa-spin');
+                setStatus(readingStatusEl, 'text-warning', 'Đang truy xuất điện nước...', 'fa-spinner fa-spin');
 
                 const url = `/ChuTroArea/HoaDon/CheckPrerequisites?maPhong=${roomId}&billingMonth=${encodeURIComponent(billingMonth)}`;
 
@@ -137,9 +294,9 @@
                     .then(res => res.json())
                     .then(data => {
                         if (!data.success) {
-                            const message = data.message || 'Không thể kiểm tra trạng thái.';
-                            setStatus(serviceStatusEl, 'text-danger', message);
-                            setStatus(readingStatusEl, 'text-danger', message);
+                            const msg = data.message || 'Lỗi kiểm tra.';
+                            setStatus(serviceStatusEl, 'text-danger', msg, 'fa-exclamation-circle');
+                            setStatus(readingStatusEl, 'text-danger', msg, 'fa-exclamation-circle');
                             return;
                         }
 
@@ -147,64 +304,26 @@
 
                         setStatus(serviceStatusEl,
                             data.hasService ? 'text-success' : 'text-danger',
-                            data.hasService
-                                ? `Đã có dịch vụ được xác nhận ${tenantLabel} trong tháng này.`
-                                : `Chưa có dịch vụ được xác nhận ${tenantLabel} trong tháng này.`);
+                            data.hasService ? `Sẵn sàng: Đã có dịch vụ xác nhận ${tenantLabel}.` : `Cảnh báo: Chưa có dịch vụ xác nhận ${tenantLabel}.`,
+                            data.hasService ? 'fa-check-circle' : 'fa-times-circle');
 
                         setStatus(readingStatusEl,
                             data.hasReading ? 'text-success' : 'text-danger',
-                            data.hasReading
-                                ? 'Đã có chỉ số điện nước cho phòng trong tháng này.'
-                                : 'Chưa ghi chỉ số điện nước cho phòng trong tháng này.');
+                            data.hasReading ? 'Sẵn sàng: Đã có chỉ số điện nước tháng này.' : 'Lỗi: Chưa ghi chỉ số điện nước cho tháng này.',
+                            data.hasReading ? 'fa-check-circle' : 'fa-times-circle');
                     })
                     .catch(() => {
-                        const err = 'Không thể kiểm tra trạng thái. Vui lòng thử lại.';
-                        setStatus(serviceStatusEl, 'text-danger', err);
-                        setStatus(readingStatusEl, 'text-danger', err);
+                        const err = 'Lỗi kết nối máy chủ.';
+                        setStatus(serviceStatusEl, 'text-danger', err, 'fa-wifi');
+                        setStatus(readingStatusEl, 'text-danger', err, 'fa-wifi');
                     });
             };
 
             refreshInvoiceLabels();
             checkPrerequisites();
 
-            monthInput?.addEventListener('change', () => {
-                refreshInvoiceLabels();
-                checkPrerequisites();
-            });
-
-            roomSelect?.addEventListener('change', () => {
-                refreshInvoiceLabels();
-                checkPrerequisites();
-            });
+            monthInput?.addEventListener('change', () => { refreshInvoiceLabels(); checkPrerequisites(); });
+            roomSelect?.addEventListener('change', () => { refreshInvoiceLabels(); checkPrerequisites(); });
         });
     </script>
 }
-<style>
-    .hoadon-create-card {
-        transition: transform .15s ease, box-shadow .15s ease;
-        margin-bottom: 0;
-        background-color: #f0fff4;
-    }
-    .hoadon-create-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    }
-    .avatar {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    }
-    .hoadon-create-card .card-title {
-        font-size: 1.15rem;
-        line-height: 1.3;
-        color: #2c3e50;
-    }
-    .hoadon-create-card .btn {
-        font-size: 0.95rem;
-        font-weight: 500;
-    }
-    .hoadon-create-card .form-label {
-        font-weight: 600;
-    }
-    .status-line {
-        font-size: 0.85rem;
-    }
-</style>

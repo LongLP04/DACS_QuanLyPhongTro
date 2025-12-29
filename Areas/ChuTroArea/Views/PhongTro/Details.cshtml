@@ -5,170 +5,244 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i>Quay lại
-            </a>
-        </div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
-<!-- Summary widget -->
-<div class="row px-2 px-md-3 mt-3 g-3">
-    <div class="col-12">
-        <div class="small-box bg-gradient-info mb-0">
-            <div class="inner">
-                <h3><i class="fas fa-info-circle me-2"></i>Thông tin chi tiết</h3>
-                <p>Xem thông tin đầy đủ về phòng trọ: <strong>@Model.SoPhong</strong></p>
-            </div>
-            <div class="icon"><i class="fas fa-bed"></i></div>
-        </div>
-    </div>
-    <div class="col-12"><hr class="my-2"></div>
-</div>
+<style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
 
-<div class="row px-2 px-md-3 g-3">
-    <div class="col-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-                <div class="row g-4">
-                    <!-- Hình ảnh -->
-                    <div class="col-md-5">
-                        <div class="text-center">
-                            <h5 class="mb-3 fw-bold text-primary">
-                                <i class="fas fa-image me-2"></i>Hình ảnh phòng
-                            </h5>
-                            @if (!string.IsNullOrEmpty(Model.Hinhanh))
-                            {
-                                <img src="@Url.Content("~/" + Model.Hinhanh)" alt="Hình ảnh phòng trọ" 
-                                     class="img-fluid rounded border shadow-sm" 
-                                     style="max-height: 400px; width: 100%; object-fit: contain;" />
-                            }
-                            else
-                            {
-                                <div class="p-5 bg-light rounded border">
-                                    <i class="fas fa-image fa-4x text-muted"></i>
-                                    <p class="mt-3 text-muted">Không có hình ảnh</p>
-                                </div>
-                            }
+    /* 1. Đồng bộ Sidebar & Background */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. Welcome Card Style - Tăng Margin Bottom */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 40px; /* Tăng dãn cách xuống phần nội dung */
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.2rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.1);
+        margin-bottom: 5px;
+    }
+
+    /* 3. Detail Card - Tăng Padding */
+    .card-custom {
+        background: var(--surface);
+        border-radius: 35px !important;
+        padding: 50px; /* Tăng padding cực đại để dãn khung */
+        border: 1px solid #f1f5f9 !important;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+    }
+
+    .info-label {
+        font-weight: 800;
+        color: #64748b;
+        margin-bottom: 15px; /* Tăng khoảng cách label tới box */
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+    }
+
+    .info-value-box {
+        background-color: #fbfcfe !important;
+        border: 1.5px solid #edf2f7 !important;
+        border-radius: 18px !important;
+        padding: 18px 25px !important; /* Tăng padding trong box */
+        color: var(--text-dark);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        min-height: 65px; /* Tăng chiều cao box */
+        transition: 0.4s;
+    }
+
+        .info-value-box:hover {
+            border-color: var(--p-blue);
+            background-color: #ffffff !important;
+            transform: translateX(5px);
+        }
+
+    /* 4. Hình ảnh và Hiệu ứng */
+    .img-wrapper-full {
+        height: 100%;
+        min-height: 500px; /* Tăng chiều cao ảnh */
+        border-radius: 28px;
+        overflow: hidden;
+        border: 8px solid white;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        position: relative;
+    }
+
+    .room-detail-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s ease;
+    }
+
+    /* 5. Nút bấm tối giản */
+    .btn-minimal {
+        width: 55px;
+        height: 55px;
+        border-radius: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1.5px solid #edf2f7;
+        background: white;
+        color: #94a3b8;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+        .btn-minimal:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+    .row.g-information {
+        --bs-gutter-y: 2.5rem; /* Tăng dãn cách dọc giữa các hàng thông tin */
+    }
+
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-9 text-left">
+                            <h2 class="welcome-title">Chi tiết không gian</h2>
+                            <p class="mb-0 text-white opacity-90" style="font-size: 1.1rem;">
+                                Cung cấp cái nhìn toàn diện về <strong>Phòng @Model.SoPhong</strong>
+                            </p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block">
+                            <i class="fas fa-fingerprint fa-5x text-white opacity-20"></i>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <!-- Thông tin chi tiết -->
-                    <div class="col-md-7">
-                        <h4 class="mb-4 fw-bold text-dark">
-                            <i class="fas fa-door-open me-2 text-primary"></i>Phòng @Model.SoPhong
-                        </h4>
-                        
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <label class="form-label fw-bold text-success">
-                                        <i class="fas fa-building me-2"></i>Tòa nhà
-                                    </label>
-                                    <div class="info-value">@Model.ToaNha?.TenToaNha</div>
-                                </div>
-                            </div>
+    <div class="row justify-content-center">
+        <div class="col-12 pb-5">
+            <div class="card card-custom">
+                <div class="card-body p-0">
+                    <div class="row g-5 align-items-stretch">
 
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <label class="form-label fw-bold text-warning">
-                                        <i class="fas fa-layer-group me-2"></i>Tầng
-                                    </label>
-                                    <div class="info-value">@Model.Tang</div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <label class="form-label fw-bold text-info">
-                                        <i class="fas fa-ruler-combined me-2"></i>Diện tích
-                                    </label>
-                                    <div class="info-value">@Model.DienTich m²</div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <label class="form-label fw-bold text-success">
-                                        <i class="fas fa-money-bill-wave me-2"></i>Giá thuê
-                                    </label>
-                                    <div class="info-value text-success fw-bold">
-                                        @string.Format("{0:N0}", Model.GiaThue) VND
+                        <div class="col-lg-5">
+                            <div class="img-wrapper-full">
+                                @if (!string.IsNullOrEmpty(Model.Hinhanh))
+                                {
+                                    <img src="@Url.Content("~/" + Model.Hinhanh)" alt="Room Interior" class="room-detail-img" />
+                                }
+                                else
+                                {
+                                    <div class="h-100 d-flex align-items-center justify-content-center bg-light">
+                                        <i class="fas fa-image fa-6x text-muted opacity-10"></i>
                                     </div>
-                                </div>
+                                }
                             </div>
-
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <label class="form-label fw-bold text-warning">
-                                        <i class="fas fa-info-circle me-2"></i>Trạng thái
-                                    </label>
-                                    <div class="info-value">
-                                        @if (Model.TrangThai == "Trống")
-                                        {
-                                            <span class="badge bg-info text-white px-3 py-2">@Model.TrangThai</span>
-                                        }
-                                        else if (Model.TrangThai == "Đã Thuê")
-                                        {
-                                            <span class="badge bg-success text-white px-3 py-2">@Model.TrangThai</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-warning text-dark px-3 py-2">@Model.TrangThai</span>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="info-item">
-                                    <label class="form-label fw-bold text-info">
-                                        <i class="fas fa-user me-2"></i>Khách thuê
-                                    </label>
-                                    <div class="info-value">
-                                        @if (Model.KhachThue != null)
-                                        {
-                                            <span class="text-success fw-bold">@Model.KhachThue.HoTen</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">Chưa có khách thuê</span>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-
-                            @if (!string.IsNullOrWhiteSpace(Model.MoTa))
-                            {
-                                <div class="col-12">
-                                    <div class="info-item">
-                                        <label class="form-label fw-bold text-info">
-                                            <i class="fas fa-comment-alt me-2"></i>Mô tả
-                                        </label>
-                                        <div class="info-value">
-                                            <p class="mb-0 text-secondary">@Model.MoTa</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
                         </div>
 
-                        <!-- Action buttons -->
-                        <div class="mt-4 pt-3 border-top">
-                            <div class="d-flex gap-2">
-                                <a asp-action="Edit" asp-route-id="@Model.MaPhong" class="btn btn-warning btn-lg px-4">
-                                    <i class="fas fa-edit me-2"></i>Chỉnh sửa
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@Model.MaPhong" class="btn btn-danger btn-lg px-4">
-                                    <i class="fas fa-trash me-2"></i>Xóa
-                                </a>
-                                <a asp-action="Index" class="btn btn-secondary btn-lg px-4">
-                                    <i class="fas fa-list me-2"></i>Danh sách
-                                </a>
+                        <div class="col-lg-7 d-flex flex-column pl-md-5">
+                            <div class="mb-auto">
+                                <div class="d-flex justify-content-between align-items-start mb-5 pb-4 border-bottom">
+                                    <div>
+                                        <h3 class="fw-bold text-dark mb-2" style="font-weight: 900; font-size: 2.8rem; letter-spacing: -2px;">
+                                            P.@Model.SoPhong
+                                        </h3>
+                                        <div class="badge bg-light text-muted px-3 py-2" style="border-radius: 8px;">Mã định danh: #@Model.MaPhong</div>
+                                    </div>
+
+                                    <div class="d-flex gap-3">
+                                        <a asp-action="Index" class="btn-minimal btn-back" title="Về danh sách">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@Model.MaPhong" class="btn-minimal btn-edit" title="Chỉnh sửa">
+                                            <i class="fas fa-pen-nib"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@Model.MaPhong" class="btn-minimal btn-delete" title="Xóa bỏ">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="row g-information">
+                                    <div class="col-md-6">
+                                        <label class="info-label text-success">Phân loại & Trạng thái</label>
+                                        @{
+                                            var isTrong = Model.TrangThai == "Trống";
+                                            var statusColor = isTrong ? "#38b2ac" : "#48bb78";
+                                            var statusBg = isTrong ? "rgba(168, 213, 226, 0.25)" : "rgba(193, 225, 193, 0.25)";
+                                        }
+                                        <div class="info-value-box" style="background-color: @statusBg !important; border-color: transparent !important; color: @statusColor;">
+                                            <i class="fas @(isTrong ? "fa-door-closed" : "fa-user-check") mr-3"></i> @Model.TrangThai
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="info-label text-danger">Chi phí thuê tháng</label>
+                                        <div class="info-value-box">
+                                            <i class="fas fa-money-bill-wave text-danger mr-3"></i>
+                                            <span style="font-size: 1.2rem; font-weight: 800;">@string.Format("{0:N0}", Model.GiaThue)</span>
+                                            <small class="ml-2 opacity-50">VND</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="info-label text-warning">Vị trí mặt bằng</label>
+                                        <div class="info-value-box">
+                                            <i class="fas fa-layer-group text-warning mr-3"></i> Tầng @Model.Tang
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="info-label text-info">Diện tích khả dụng</label>
+                                        <div class="info-value-box">
+                                            <i class="fas fa-ruler-combined text-info mr-3"></i> @Model.DienTich m²
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="info-label text-purple">Chủ thể thuê</label>
+                                        <div class="info-value-box" style="background-color: #f8faff !important;">
+                                            <i class="fas fa-id-badge text-purple mr-3"></i>
+                                            <span style="font-size: 1.1rem;">@(Model.KhachThue?.HoTen ?? "Chưa có dữ liệu khách thuê")</span>
+                                        </div>
+                                    </div>
+
+                                    @if (!string.IsNullOrWhiteSpace(Model.MoTa))
+                                    {
+                                        <div class="col-12 mt-4">
+                                            <label class="info-label text-secondary">Ghi chú bổ sung</label>
+                                            <div class="p-4" style="background-color: #fdfdfd; border-radius: 20px; border-left: 6px solid var(--p-blue); color: #718096; line-height: 1.8;">
+                                                <i class="fas fa-quote-left mr-2 opacity-20"></i>
+                                                @Model.MoTa
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -177,53 +251,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    .small-box .icon{right:10px; top: 6px;}
-    .info-item {
-        margin-bottom: 1rem;
-    }
-    .info-item .form-label {
-        color: #2c3e50;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-    .info-value {
-        background-color: #f8f9fa;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        color: #2c3e50;
-        font-weight: 500;
-        min-height: 48px;
-        display: flex;
-        align-items: center;
-        transition: all .15s ease;
-    }
-    .info-value:hover {
-        background-color: #e9ecef;
-        border-color: #6c757d;
-    }
-    .card {
-        border-radius: 12px;
-        transition: transform .15s ease, box-shadow .15s ease;
-    }
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    }
-    .btn-lg {
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all .15s ease;
-    }
-    .btn-lg:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,.15);
-    }
-    .badge {
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-</style>

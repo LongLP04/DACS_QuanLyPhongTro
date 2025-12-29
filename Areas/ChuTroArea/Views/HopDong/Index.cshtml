@@ -2,271 +2,349 @@
 @{
     ViewData["Title"] = "Danh Sách Hợp Đồng";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
-}
 
-@Html.AntiForgeryToken()
-    @if (TempData["ThongBao"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["ThongBao"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
-@{
     var totalContracts = Model?.Count() ?? 0;
     var signedContracts = Model?.Count(h => h.TrangThai == "Đã Xác Nhận") ?? 0;
     var validContracts = Model?.Count(h => h.NgayKetThuc >= DateTime.Now && h.TrangThai == "Đã Xác Nhận") ?? 0;
     var expiredContracts = Model?.Count(h => h.NgayKetThuc < DateTime.Now && h.TrangThai == "Đã Xác Nhận") ?? 0;
-    
-    // Debug: In ra console để kiểm tra
     var allContracts = Model?.ToList() ?? new List<DACS_QuanLyPhongTro.Models.HopDong>();
-    
-    // Debug: In thông tin tổng quan
-    System.Diagnostics.Debug.WriteLine($"Total contracts: {totalContracts}");
-    System.Diagnostics.Debug.WriteLine($"Signed contracts: {signedContracts}");
-    System.Diagnostics.Debug.WriteLine($"Valid contracts: {validContracts}");
-    System.Diagnostics.Debug.WriteLine($"Expired contracts: {expiredContracts}");
 }
 
-
-
-@Html.AntiForgeryToken()
-
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-primary btn-sm" onclick="showPasswordModal('create')">
-                <i class="fas fa-plus me-1"></i> Tạo Hợp Đồng Mới
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Summary widgets -->
-<div class="row px-2 px-md-3 mt-3 g-3">
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-primary mb-0">
-            <div class="inner">
-                <h3>@totalContracts</h3>
-                <p>Tổng hợp đồng</p>
-            </div>
-            <div class="icon"><i class="fas fa-file-contract"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-success mb-0">
-            <div class="inner">
-                <h3>@validContracts</h3>
-                <p>Còn hạn </p>
-            </div>
-            <div class="icon"><i class="fas fa-check-circle"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-danger mb-0">
-            <div class="inner">
-                <h3>@expiredContracts</h3>
-                <p>Hết hạn</p>
-            </div>
-            <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-info mb-0">
-            <div class="inner">
-                <h3>@DateTime.Now.ToString("MM/yyyy")</h3>
-                <p>Tháng hiện tại</p>
-            </div>
-            <div class="icon"><i class="fas fa-calendar-alt"></i></div>
-        </div>
-    </div>
-    <div class="col-12"><hr class="my-2"></div>
-</div>
-
-<!-- Filter button -->
-<div class="row px-2 px-md-3 mb-3">
-    <div class="col-12">
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#filterModal">
-                <i class="fas fa-filter me-1"></i>Lọc
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Card grid -->
-<div class="row px-2 px-md-3 g-3 mt-3" id="contractsGrid">
-    @foreach (var hopDong in Model)
-    {
-        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 contract-item" data-tenant="@hopDong.KhachThue?.HoTen" data-room="@hopDong.PhongTro?.SoPhong" data-status="@hopDong.TrangThai" data-date="@hopDong.NgayBatDau.ToString("yyyy-MM-dd")">
-            <div class="card shadow-sm border-0 h-100 contract-card">
-                <div class="card-body p-3">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <div>
-                            <h5 class="card-title mb-0 fw-bold text-dark fs-6">
-                                <i class="fas fa-file-contract me-2 text-primary"></i> Hợp đồng số @hopDong.MaHopDong
-                            </h5>
-                        </div>
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:35px;height:35px;">
-                            <i class="fas fa-file-contract "></i>
-                        </div>
-                    </div>
-
-                    <div class="info-block-tenant p-2 rounded mb-3 bg-light d-flex align-items-center">
-                        
-                        <div>
-                            <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">Khách thuê</div>
-                            <div class="fw-bold">@(hopDong.KhachThue?.HoTen ?? "N/A")</div>
-                        </div>
-                    </div>
-
-                    <div class="p-2 rounded mb-3 bg-light border-start border-primary border-4">
-                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;"><i class="fas fa-door-open me-1"></i>Phòng</div>
-                        <div class="fw-bold">@hopDong.PhongTro?.SoPhong - @hopDong.PhongTro?.ToaNha?.TenToaNha</div>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <div class="p-2 rounded bg-light border-start border-success border-4">
-                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;"><i class="far fa-calendar-alt me-1"></i>Bắt đầu</div>
-                                <div class="fw-bold small">@hopDong.NgayBatDau.ToString("dd/MM/yyyy")</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="p-2 rounded bg-light border-start border-danger border-4">
-                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;"><i class="far fa-calendar-check me-1"></i>Kết thúc</div>
-                                <div class="fw-bold small contract-end-date">@hopDong.NgayKetThuc.ToString("dd/MM/yyyy")</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-2 rounded bg-light bg-opacity-10 text-center border border-success border-opacity-25 mb-3">
-                        <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">Tiền cọc</div>
-                        <div class="fw-bold text-success">@hopDong.TienCoc.ToString("N0") VNĐ</div>
-                    </div>
-
-                    <div>
-                        @if (hopDong.TrangThai == "Đã Xác Nhận")
-                        {
-                            <span class="badge bg-success text-white fs-6 px-3 py-2 rounded-pill shadow-sm" style="background-color: rgba(18, 183, 12, 0.8) !important;">
-                                <i class="fas fa-check me-1"></i>@hopDong.TrangThai
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill shadow-sm" style="background-color: rgba(11, 163, 205, 0.8) !important;">
-                                <i class="fas fa-clock me-1"></i>@hopDong.TrangThai
-                            </span>
-                        }
-                    </div>
-                </div>
-
-                <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
-                    <div class="d-flex gap-2">
-                        <a asp-action="Details" asp-route-id="@hopDong.MaHopDong" class="btn btn-primary flex-fill btn-sm rounded-pill shadow-sm">
-                            <i class="fas fa-eye me-1"></i>Chi tiết
-                        </a>
-                        <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm" onclick="showPasswordModal('delete', '@hopDong.MaHopDong')">
-                            <i class="fas fa-trash me-1"></i>Xóa
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
 <style>
-    .contract-card {
-        transition: transform .15s ease, box-shadow .15s ease;
-        margin-bottom: 0;
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
     }
-    .contract-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
+
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
     }
-    .avatar {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 24px;
     }
-    .contract-card .card-title {
-        font-size: 1.25rem;
-        line-height: 1.3;
-        color: #2c3e50;
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.5rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.15);
     }
-    .contract-card .badge {
-        font-size: 0.875rem;
-        font-weight: 500;
-        background-color: rgba(255, 255, 255, 0.8) ;
-        backdrop-filter: blur(10px);
+
+    .custom-box-tenant {
+        background: var(--surface);
+        border-radius: 20px !important;
+        padding: 30px 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(168, 213, 226, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
     }
-    .contract-card .btn {
-        margin-left: 5px;
-        font-size: 0.875rem;
-        font-weight: 500;
+
+        .custom-box-tenant:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
+        }
+
+        .custom-box-tenant .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: white;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .custom-box-tenant:hover .icon-wrapper {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .custom-box-tenant h3 {
+            font-weight: 800;
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .custom-box-tenant p {
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+    .building-card {
+        border-radius: 28px !important;
+        background: #ffffff;
+        border: 1px solid #f1f5f9 !important;
+        transition: all 0.4s ease;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
-    .contract-card .card-body > * + * {
-        margin-top: 1rem;
+
+        .building-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
+            border-color: var(--p-blue) !important;
+        }
+
+        .building-card .card-body {
+            padding: 2.2rem !important;
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+        }
+
+    .card-title-lg {
+        font-weight: 850 !important;
+        font-size: 1.3rem !important;
+        color: #1a202c;
+        margin-bottom: 12px;
     }
-    .contract-item {
-        margin-bottom: 1rem;
+
+    .minimal-icon-box {
+        width: 50px;
+        height: 50px;
+        background: #f8fafc;
+        color: #3182ce;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        font-size: 1.2rem;
     }
-    .contract-item:nth-last-child(-n+4) {
-        margin-bottom: 0;
+
+    .count-badge {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #4a5568;
+        background: #f1f5f9;
+        padding: 6px 14px;
+        border-radius: 10px;
+        margin-right: 8px;
     }
-    .contract-item:nth-child(4n+1) .contract-card {
-        background-color: #e3ffff;
+
+    .contract-item:nth-child(4n+1) .building-card {
+        border-top: 8px solid var(--p-blue) !important;
     }
-    .contract-item:nth-child(4n+2) .contract-card {
-        background-color: #fff9f0;
+
+    .contract-item:nth-child(4n+2) .building-card {
+        border-top: 8px solid var(--p-green) !important;
     }
-    .contract-item:nth-child(4n+3) .contract-card {
-        background-color: #f0fff4;
+
+    .contract-item:nth-child(4n+3) .building-card {
+        border-top: 8px solid var(--p-red) !important;
     }
-    .contract-item:nth-child(4n+4) .contract-card {
-        background-color: #fff0f5;
+
+    .contract-item:nth-child(4n+4) .building-card {
+        border-top: 8px solid var(--p-purple) !important;
     }
-    .contract-card .card-title,
-    .contract-card .text-muted,
-    .contract-card .text-secondary {
-        color: #2c3e50 !important;
+
+    .filter-section {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 24px;
+        margin-bottom: 35px;
+        border: 1px solid #edf2f7;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+
+    .btn-circle-action {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1.5px solid #edf2f7;
+        background: white;
+        color: #94a3b8;
+        transition: 0.3s;
+    }
+
+        .btn-circle-action:hover {
+            background: var(--p-blue);
+            color: white;
+            transform: scale(1.1);
         }
 </style>
 
-<!-- Filter Modal -->
-<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="filterModalLabel">
-                    <i class="fas fa-filter me-2"></i>Lọc hợp đồng
-                </h5>
-                <small class="text-muted">Nhấn ESC để đóng</small>
+<div class="container-fluid">
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert" style="border-radius:15px; border:none;">
+            <i class="fas fa-check-circle me-2"></i> @TempData["ThongBao"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-4 text-left">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Quản lý Hợp Đồng </h2>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block">
+                            <i class="fas fa-file-contract fa-4x text-white opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label for="filterMonth" class="form-label">Tháng</label>
-                        <select id="filterMonth" class="form-select">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-blue)"><i class="fas fa-file-signature"></i></div>
+                <h3>@totalContracts</h3>
+                <p>Tổng hợp đồng</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-green)"><i class="fas fa-check-circle"></i></div>
+                <h3>@validContracts</h3>
+                <p>Còn thời hạn</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-red)"><i class="fas fa-exclamation-triangle"></i></div>
+                <h3>@expiredContracts</h3>
+                <p>Đã hết hạn</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-purple)"><i class="fas fa-calendar-alt"></i></div>
+                <h3>@DateTime.Now.ToString("MM/yyyy")</h3>
+                <p>Tháng hiện tại</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-section d-flex align-items-center justify-content-between flex-wrap gap-3 mt-2 shadow-sm">
+        <div class="d-flex align-items-center gap-3">
+            <button type="button" class="btn btn-light shadow-sm" style="border-radius: 12px; height: 50px; font-weight: 700; padding: 0 25px;" data-bs-toggle="modal" data-bs-target="#filterModal">
+                <i class="fas fa-filter mr-2 opacity-50"></i> BỘ LỌC
+            </button>
+        </div>
+        <button class="btn btn-dark shadow" style="border-radius: 12px; font-weight: 700; padding: 12px 30px;" onclick="showPasswordModal('create')">
+            + TẠO HỢP ĐỒNG MỚI
+        </button>
+    </div>
+
+    <div class="row mt-4" id="contractsGrid">
+        @foreach (var hopDong in Model)
+        {
+            <div class="col-12 col-md-6 col-xl-4 contract-item mb-5"
+                 data-tenant="@hopDong.KhachThue?.HoTen"
+                 data-room="@hopDong.PhongTro?.SoPhong"
+                 data-status="@hopDong.TrangThai"
+                 data-date="@hopDong.NgayBatDau.ToString("yyyy-MM-dd")">
+                <div class="card building-card shadow-sm h-100">
+                    <div class="card-body text-left">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="minimal-icon-box shadow-sm mr-4">
+                                <i class="fas fa-file-contract"></i>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h4 class="card-title-lg mb-1">Số: @hopDong.MaHopDong</h4>
+                                <span class="text-muted small text-truncate d-block">
+                                    <i class="fas fa-door-open mr-1"></i>Phòng @hopDong.PhongTro?.SoPhong
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="mb-3">
+                                <div class="text-muted small fw-bold text-uppercase mb-1">Khách thuê:</div>
+                                <div class="fw-bold text-dark fs-5">@(hopDong.KhachThue?.HoTen ?? "N/A")</div>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <div class="count-badge w-100 m-0"><i class="far fa-calendar-alt mr-1"></i>@hopDong.NgayBatDau.ToString("dd/MM/yyyy")</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="count-badge w-100 m-0 contract-end-date"><i class="far fa-calendar-check mr-1"></i>@hopDong.NgayKetThuc.ToString("dd/MM/yyyy")</div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mt-3">
+                                <div class="text-success fw-bold">Cọc: @hopDong.TienCoc.ToString("N0") đ</div>
+                                @{
+                                    var isXacNhan = hopDong.TrangThai == "Đã Xác Nhận";
+                                    var statusBg = isXacNhan ? "var(--p-green)" : "var(--p-yellow)";
+                                }
+                                <span class="badge text-dark px-3 py-2" style="background-color:@statusBg !important; border-radius:10px;">@hopDong.TrangThai</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto pt-4 border-top">
+                            <div class="d-flex justify-content-end gap-2">
+                                <a asp-action="Details" asp-route-id="@hopDong.MaHopDong" class="btn-circle-action" title="Chi tiết" style="background: rgba(59, 130, 246, 0.08); color: #3b82f6; border:none;">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button type="button" class="btn-circle-action text-danger" onclick="showPasswordModal('delete', '@hopDong.MaHopDong')" title="Xóa" style="background: rgba(239, 68, 68, 0.08); border:none;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="filterModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:28px;">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold"><i class="fas fa-filter mr-2"></i>LỌC HỢP ĐỒNG</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 pb-4">
+                <div class="row g-4">
+                    <div class="col-12 text-left">
+                        <label class="form-label fw-bold small text-muted">CHỌN THÁNG</label>
+                        <select id="filterMonth" class="form-select border-0 bg-light" style="border-radius:12px; height:50px;">
                             <option value="0">Tất cả tháng</option>
-                            <option value="1">Tháng 1</option>
-                            <option value="2">Tháng 2</option>
-                            <option value="3">Tháng 3</option>
-                            <option value="4">Tháng 4</option>
-                            <option value="5">Tháng 5</option>
-                            <option value="6">Tháng 6</option>
-                            <option value="7">Tháng 7</option>
-                            <option value="8">Tháng 8</option>
-                            <option value="9">Tháng 9</option>
-                            <option value="10">Tháng 10</option>
-                            <option value="11">Tháng 11</option>
-                            <option value="12">Tháng 12</option>
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <option value="@i">Tháng @i</option>
+                            }
                         </select>
                     </div>
-                    <div class="col-12">
-                        <label for="filterYear" class="form-label">Năm</label>
-                        <select id="filterYear" class="form-select">
+                    <div class="col-12 text-left">
+                        <label class="form-label fw-bold small text-muted">CHỌN NĂM</label>
+                        <select id="filterYear" class="form-select border-0 bg-light" style="border-radius:12px; height:50px;">
                             <option value="0">Tất cả năm</option>
                             @for (int year = DateTime.Now.Year - 2; year <= DateTime.Now.Year + 1; year++)
                             {
@@ -281,54 +359,32 @@
                             }
                         </select>
                     </div>
-                    <div class="col-12">
-                        <label class="form-label">Trạng thái</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="filterStatusAll" checked>
-                            <label class="form-check-label" for="filterStatusAll">
-                                Tất cả trạng thái
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="filterStatusConfirmed">
-                            <label class="form-check-label" for="filterStatusConfirmed">
-                                Đã xác nhận
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="filterStatusPending">
-                            <label class="form-check-label" for="filterStatusPending">
-                                Chờ xác nhận
-                            </label>
-                        </div>
-                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" onclick="clearFilter()">
-                    <i class="fas fa-times me-1"></i>Xóa lọc
-                </button>
-                <button type="button" class="btn btn-primary" onclick="applyFilter()">
-                    <i class="fas fa-search me-1"></i>Áp dụng lọc
-                </button>
+            <div class="modal-footer border-0 p-4">
+                <button type="button" class="btn btn-light flex-fill fw-bold" onclick="clearFilter()" style="border-radius:12px; height:50px;">XÓA LỌC</button>
+                <button type="button" class="btn btn-primary flex-fill fw-bold" onclick="applyFilter()" style="border-radius:12px; height:50px; background:var(--p-blue); color:#2c5282; border:none;">ÁP DỤNG</button>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="passwordModalLabel">Xác minh mật khẩu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+<div class="modal fade" id="passwordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 30px;">
+            <div class="modal-header d-flex flex-column align-items-center border-0 pt-5 pb-0">
+                <i class="fas fa-shield-alt fa-3x text-warning mb-4"></i>
+                <h5 class="modal-title font-weight-bold">XÁC MINH BẢO MẬT</h5>
             </div>
-            <div class="modal-body">
-                <input type="password" id="verifyPassword" class="form-control" placeholder="Nhập mật khẩu của bạn" />
-                <div id="passwordError" class="text-danger mt-2" style="display:none;"></div>
+            <div class="modal-body px-5 py-4 text-center">
+                <p class="text-muted small mb-4">Nhập mật khẩu chủ trọ để tiếp tục thao tác.</p>
+                <input type="password" id="verifyPassword" class="form-control shadow-sm" placeholder="Mật khẩu của bạn..."
+                       style="border-radius: 18px; height: 60px; text-align: center; border: 2px solid #edf2f7; font-size: 1.1rem;">
+                <div id="passwordError" class="text-danger mt-2 small" style="display:none;"></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="submitPassword()">Xác nhận</button>
+            <div class="modal-footer px-5 border-0 pb-5">
+                <button type="button" class="btn btn-primary w-100 fw-bold shadow" onclick="submitPassword()" style="border-radius:12px; height:50px; background:var(--p-blue); color:#2c5282; border:none;">XÁC NHẬN</button>
+                <button type="button" class="btn btn-link text-muted mt-2 mx-auto w-100" data-bs-dismiss="modal">Hủy bỏ</button>
             </div>
         </div>
     </div>
@@ -336,315 +392,58 @@
 
 @section Scripts {
     <script>
-    // Mở modal nhập mật khẩu
-    function showPasswordModal(action, contractId = null) {
-        const modal = new bootstrap.Modal(document.getElementById('passwordModal'));
-        modal.show();
+        let actionType = null;
+        let deleteId = null;
 
-        // Lưu action và contractId vào data-* để sử dụng sau khi xác nhận mật khẩu
-        const confirmBtn = document.getElementById("confirmPasswordBtn");
-        confirmBtn.setAttribute("data-action", action);
-        if (contractId) {
-            confirmBtn.setAttribute("data-contract-id", contractId);
-        } else {
-            confirmBtn.removeAttribute("data-contract-id");
+        function showPasswordModal(type, id = null) {
+            actionType = type;
+            deleteId = id;
+            document.getElementById("verifyPassword").value = "";
+            document.getElementById("passwordError").style.display = "none";
+            new bootstrap.Modal(document.getElementById('passwordModal')).show();
         }
-    }
-    //Xac nhan mat khau 
-    let actionType = null;
-    let deleteId = null;
 
-    function showPasswordModal(type, id = null) {
-        actionType = type;
-        deleteId = id;
-        document.getElementById("verifyPassword").value = "";
-        document.getElementById("passwordError").style.display = "none";
-        var modal = new bootstrap.Modal(document.getElementById('passwordModal'));
-        modal.show();
-    }
+        function submitPassword() {
+            const password = document.getElementById("verifyPassword").value;
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
-    function submitPassword() {
-        const password = document.getElementById("verifyPassword").value;
-        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-
-        fetch("/ChuTroArea/HopDong/VerifyPassword", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "RequestVerificationToken": token
-            },
-            body: JSON.stringify({ password: password })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                if (actionType === "create") {
-                    window.location.href = "/ChuTroArea/HopDong/Create";
-                } else if (actionType === "delete" && deleteId) {
-                    window.location.href = "/ChuTroArea/HopDong/Delete/" + deleteId;
+            fetch("/ChuTroArea/HopDong/VerifyPassword", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "RequestVerificationToken": token },
+                body: JSON.stringify({ password: password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (actionType === "create") window.location.href = "/ChuTroArea/HopDong/Create";
+                    else if (actionType === "delete" && deleteId) window.location.href = "/ChuTroArea/HopDong/Delete/" + deleteId;
+                } else {
+                    const err = document.getElementById("passwordError");
+                    err.innerText = data.message;
+                    err.style.display = "block";
                 }
-            } else {
-                const err = document.getElementById("passwordError");
-                err.innerText = data.message;
-                err.style.display = "block";
-            }
-        })
-        .catch(err => console.error("Error:", err));
-    }
-        // Debug: In thông tin debug ra console
-        console.log('Debug info:');
-        @foreach (var contract in allContracts)
-        {
-            <text>
-            console.log('Contract @contract.MaHopDong: TrangThai=@contract.TrangThai, NgayKetThuc=@contract.NgayKetThuc.ToString("yyyy-MM-dd"), Valid=@(contract.NgayKetThuc >= DateTime.Now && contract.TrangThai == "Đã Xác Nhận")');
-            </text>
+            });
         }
-        
+
         function applyFilter() {
             const month = document.getElementById('filterMonth').value;
             const year = document.getElementById('filterYear').value;
-            const statusAll = document.getElementById('filterStatusAll').checked;
-            const statusConfirmed = document.getElementById('filterStatusConfirmed').checked;
-            const statusPending = document.getElementById('filterStatusPending').checked;
             const contracts = document.querySelectorAll('.contract-item');
-            
-            console.log('Filtering by month:', month, 'year:', year, 'status:', { statusAll, statusConfirmed, statusPending });
-            
-            let visibleCount = 0;
-            let validCount = 0;
-            let expiredCount = 0;
-            
             contracts.forEach(contract => {
-                const contractDate = contract.getAttribute('data-date');
-                const contractStatus = contract.getAttribute('data-status');
-                
-                if (!contractDate) {
-                    console.log('No data-date found for contract');
-                    return;
-                }
-                
-                const date = new Date(contractDate);
-                const contractMonth = date.getMonth() + 1; // JavaScript months are 0-based
-                const contractYear = date.getFullYear();
-                
-                let showContract = true;
-                
-                // Filter by month
-                if (month !== '0' && parseInt(contractMonth) !== parseInt(month)) {
-                    showContract = false;
-                }
-                
-                // Filter by year
-                if (year !== '0' && parseInt(contractYear) !== parseInt(year)) {
-                    showContract = false;
-                }
-                
-                // Filter by status
-                if (!statusAll) {
-                    let statusMatch = false;
-                    if (statusConfirmed && contractStatus === 'Đã Xác Nhận') {
-                        statusMatch = true;
-                    }
-                    if (statusPending && contractStatus === 'Chờ Xác Nhận') {
-                        statusMatch = true;
-                    }
-                    if (!statusMatch) {
-                        showContract = false;
-                    }
-                }
-                
-                if (showContract) {
-                    contract.style.display = 'block';
-                    visibleCount++;
-                    
-                    // Check if contract is valid or expired
-                    const contractEndDate = contract.querySelector('.contract-end-date')?.textContent;
-                    if (contractEndDate && contractStatus === 'Đã Xác Nhận') {
-                        const endDate = new Date(contractEndDate.split('/').reverse().join('-'));
-                        const now = new Date();
-                        if (endDate >= now) {
-                            validCount++;
-                        } else {
-                            expiredCount++;
-                        }
-                    }
-                } else {
-                    contract.style.display = 'none';
-                }
+                const date = new Date(contract.getAttribute('data-date'));
+                let show = true;
+                if (month !== '0' && (date.getMonth() + 1) != month) show = false;
+                if (year !== '0' && date.getFullYear() != year) show = false;
+                contract.style.display = show ? 'block' : 'none';
             });
-            
-            // Update summary widgets
-            updateSummaryWidgets(visibleCount, validCount, expiredCount);
-            
-            // Close modal
-            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('filterModal'));
-                if (modal) {
-                    modal.hide();
-                }
-            } else {
-                closeModal();
-            }
+            bootstrap.Modal.getInstance(document.getElementById('filterModal')).hide();
         }
-        
+
         function clearFilter() {
             document.getElementById('filterMonth').value = '0';
             document.getElementById('filterYear').value = '0';
-            document.getElementById('filterStatusAll').checked = true;
-            document.getElementById('filterStatusConfirmed').checked = false;
-            document.getElementById('filterStatusPending').checked = false;
-            
-            const contracts = document.querySelectorAll('.contract-item');
-            contracts.forEach(contract => {
-                contract.style.display = 'block';
-            });
-            
-            // Reset to original values
-            updateSummaryWidgets(@totalContracts, @validContracts, @expiredContracts);
-            
-            // Close modal
-            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('filterModal'));
-                if (modal) {
-                    modal.hide();
-                }
-            } else {
-                closeModal();
-            }
+            document.querySelectorAll('.contract-item').forEach(c => c.style.display = 'block');
+            bootstrap.Modal.getInstance(document.getElementById('filterModal')).hide();
         }
-        
-        function updateSummaryWidgets(total, valid, expired) {
-            const widgets = document.querySelectorAll('.small-box .inner h3');
-            if (widgets.length >= 4) {
-                widgets[0].textContent = total || @totalContracts;
-                widgets[1].textContent = valid || @validContracts;
-                widgets[2].textContent = expired || @expiredContracts;
-            }
-        }
-        
-        // Set current month as default
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing filter modal...');
-            
-            const currentMonth = new Date().getMonth() + 1;
-            const monthSelect = document.getElementById('filterMonth');
-            if (monthSelect) {
-                monthSelect.value = currentMonth;
-                console.log('Set default month to:', currentMonth);
-            } else {
-                console.error('filterMonth element not found');
-            }
-            
-            // Test modal button
-            const filterButton = document.querySelector('[data-bs-target="#filterModal"]');
-            if (filterButton) {
-                console.log('Filter button found');
-                filterButton.addEventListener('click', function(e) {
-                    console.log('Filter button clicked');
-                    e.preventDefault();
-                    
-                    // Try Bootstrap modal first
-                    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                        const modal = new bootstrap.Modal(document.getElementById('filterModal'));
-                        modal.show();
-                    } else {
-                        // Fallback: show modal manually
-                        const modal = document.getElementById('filterModal');
-                        if (modal) {
-                            modal.style.display = 'block';
-                            modal.classList.add('show');
-                            document.body.classList.add('modal-open');
-                            
-                            // Add backdrop
-                            const backdrop = document.createElement('div');
-                            backdrop.className = 'modal-backdrop fade show';
-                            backdrop.id = 'modal-backdrop';
-                            document.body.appendChild(backdrop);
-                            
-                            // Close modal when clicking backdrop
-                            backdrop.addEventListener('click', function() {
-                                closeModal();
-                            });
-                            
-                            // Close modal when clicking close button
-                            const closeBtn = modal.querySelector('.btn-close');
-                            if (closeBtn) {
-                                closeBtn.addEventListener('click', function(e) {
-                                    e.preventDefault();
-                                    closeModal();
-                                });
-                            }
-                        }
-                    }
-                });
-            } else {
-                console.error('Filter button not found');
-            }
-            
-            // Function to close modal manually
-            function closeModal() {
-                const modal = document.getElementById('filterModal');
-                if (modal) {
-                    modal.style.display = 'none';
-                    modal.classList.remove('show');
-                    document.body.classList.remove('modal-open');
-                    
-                    const backdrop = document.getElementById('modal-backdrop');
-                    if (backdrop) {
-                        backdrop.remove();
-                    }
-                }
-            }
-            
-            // Add escape key listener to close modal
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    const modal = document.getElementById('filterModal');
-                    if (modal && (modal.classList.contains('show') || modal.style.display === 'block')) {
-                        console.log('Escape key pressed, closing modal');
-                        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                            const bsModal = bootstrap.Modal.getInstance(modal);
-                            if (bsModal) {
-                                bsModal.hide();
-                            } else {
-                                closeModal();
-                            }
-                        } else {
-                            closeModal();
-                        }
-                    }
-                }
-            });
-            
-            // Handle "All status" checkbox
-            const statusAllCheckbox = document.getElementById('filterStatusAll');
-            if (statusAllCheckbox) {
-                statusAllCheckbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        document.getElementById('filterStatusConfirmed').checked = false;
-                        document.getElementById('filterStatusPending').checked = false;
-                    }
-                });
-            }
-            
-            // Handle individual status checkboxes
-            const statusConfirmedCheckbox = document.getElementById('filterStatusConfirmed');
-            if (statusConfirmedCheckbox) {
-                statusConfirmedCheckbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        document.getElementById('filterStatusAll').checked = false;
-                    }
-                });
-            }
-            
-            const statusPendingCheckbox = document.getElementById('filterStatusPending');
-            if (statusPendingCheckbox) {
-                statusPendingCheckbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        document.getElementById('filterStatusAll').checked = false;
-                    }
-                });
-            }
-        });
     </script>
 }

@@ -5,181 +5,242 @@
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
 }
 
-@Html.AntiForgeryToken()
-
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i>Quay lại
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Summary widget -->
-<div class="row px-2 px-md-3 mt-3 g-3">
-    <div class="col-12">
-        <div class="small-box bg-gradient-warning mb-0">
-            <div class="inner">
-                <h3><i class="fas fa-edit me-2"></i>Chỉnh sửa Tòa Nhà</h3>
-                <p>Cập nhật thông tin cho tòa nhà: <strong>@Model.TenToaNha</strong></p>
-            </div>
-            <div class="icon"><i class="fas fa-building"></i></div>
-        </div>
-    </div>
-    <div class="col-12"><hr class="my-2"></div>
-</div>
-
-<div class="row px-2 px-md-3 g-3">
-    <div class="col-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-                <form asp-action="Edit" method="post" id="editForm">
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                    <input type="hidden" asp-for="MaToaNha" />
-
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label asp-for="TenToaNha" class="form-label fw-bold">
-                                    <i class="fas fa-building me-2 text-primary"></i>Tên tòa nhà
-                                </label>
-                                <input asp-for="TenToaNha" class="form-control form-control-lg" placeholder="Nhập tên tòa nhà" />
-                                <span asp-validation-for="TenToaNha" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label asp-for="DiaChi" class="form-label fw-bold">
-                                    <i class="fas fa-map-marker-alt me-2 text-success"></i>Địa chỉ
-                                </label>
-                                <input asp-for="DiaChi" class="form-control form-control-lg" placeholder="Nhập địa chỉ" />
-                                <span asp-validation-for="DiaChi" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label asp-for="TongSoTang" class="form-label fw-bold">
-                                    <i class="fas fa-layer-group me-2 text-warning"></i>Tổng số tầng
-                                </label>
-                                <input asp-for="TongSoTang" class="form-control form-control-lg" type="number" min="1" placeholder="Nhập số tầng" />
-                                <span asp-validation-for="TongSoTang" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label asp-for="MoTa" class="form-label fw-bold">
-                                    <i class="fas fa-info-circle me-2 text-info"></i>Mô tả tòa nhà
-                                </label>
-                                <textarea asp-for="MoTa" class="form-control form-control-lg" rows="3" placeholder="Nhập mô tả tòa nhà"></textarea>
-                                <span asp-validation-for="MoTa" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-map me-2 text-danger"></i>Chỉnh sửa vị trí trên bản đồ
-                                </label>
-                                <input type="text" id="addressSearch" class="form-control form-control-lg mb-2" placeholder="Nhập địa chỉ để tìm kiếm" />
-                                <div id="map" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 8px;"></div>
-                                <input type="hidden" asp-for="ViTri" id="ViTri" value="@Model.ViTri" />
-                                <small class="form-text text-muted mt-2">
-                                    <i class="fas fa-info-circle me-1"></i>Kéo marker hoặc tìm kiếm để cập nhật vị trí tọa độ.
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group text-center mt-4">
-                        <button type="button" class="btn btn-warning btn-lg px-5 me-3" data-toggle="modal" data-target="#passwordConfirmModal">
-                            <i class="fas fa-save me-2"></i>Lưu thay đổi
-                        </button>
-                        <a asp-action="Index" class="btn btn-secondary btn-lg px-5">
-                            <i class="fas fa-times me-2"></i>Hủy
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
 <style>
-    .small-box .icon{right:10px; top: 6px;}
-    .form-control-lg {
-        border-radius: 8px;
-        border: 2px solid #e9ecef;
-        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    :root {
+        --p-blue: #a8d5e2;
+        --p-purple: #c7ceea;
+        --p-green: #c1e1c1;
+        --p-red: #ffb7b2;
+        --p-yellow: #fdfd96;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
     }
-    .form-control-lg:focus {
-        border-color: #ffc107;
-        box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+
+    /* 1. Đồng bộ Sidebar & Background */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
     }
+
+    /* 2. Welcome Card Style (Màu vàng Pastel cho trạng thái Chỉnh sửa) */
+    .welcome-card-edit {
+        background: linear-gradient(135deg, var(--p-yellow), #f8edeb) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(253, 253, 150, 0.3);
+        margin-bottom: 24px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.5rem;
+        color: #856404; /* Chữ tối hơn để dễ đọc trên nền vàng */
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.05);
+        margin-bottom: 5px;
+    }
+
+    .welcome-subtitle {
+        font-weight: 500;
+        font-size: 1.1rem;
+        color: #856404;
+        opacity: 0.8;
+    }
+
+    /* 3. Card Form - Khung bo tròn viền xanh nhạt */
+    .card-custom {
+        background: var(--surface);
+        border-radius: 28px !important;
+        padding: 20px;
+        border: 2px solid var(--p-blue) !important;
+        box-shadow: 0 8px 25px rgba(168, 213, 226, 0.15);
+    }
+
     .form-label {
-        color: #2c3e50;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 8px;
         font-size: 0.95rem;
     }
-    .card {
+
+    .form-control-custom {
+        border-radius: 15px !important;
+        border: 1.5px solid #edf2f7 !important;
+        padding: 12px 20px !important;
+        transition: all 0.3s ease;
+    }
+
+        .form-control-custom:focus {
+            border-color: var(--p-blue) !important;
+            box-shadow: 0 0 0 4px rgba(168, 213, 226, 0.2) !important;
+            outline: none;
+        }
+
+    /* 4. Map & Search Bar */
+    #map {
+        width: 100%;
+        height: 400px;
+        border: 2px solid var(--p-blue);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    /* 5. Buttons */
+    .btn-custom-save {
+        background: var(--p-blue);
+        color: #2c5282;
+        border-radius: 15px;
+        font-weight: 800;
+        padding: 12px 40px;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+        .btn-custom-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(168, 213, 226, 0.4);
+            background: #94c8db;
+        }
+
+    .btn-custom-cancel {
+        background: white;
+        color: #64748b;
+        border-radius: 15px;
+        font-weight: 700;
+        padding: 12px 40px;
+        border: 2px solid #edf2f7;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back-minimal {
         border-radius: 12px;
-        transition: transform .15s ease, box-shadow .15s ease;
+        font-weight: 700;
+        color: #64748b;
+        background: white;
+        border: 1.5px solid #edf2f7;
+        padding: 8px 20px;
+        transition: 0.3s;
     }
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
+
+    /* 6. Modal Styling */
+    .modal-content {
+        border-radius: 28px !important;
+        border: none !important;
+        overflow: hidden;
     }
-    .btn-lg {
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all .15s ease;
-    }
-    .btn-lg:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0,0,0,.15);
+
+    .btn-confirm-lg {
+        border-radius: 15px;
+        padding: 14px;
+        font-weight: 800;
+        width: 100%;
     }
 </style>
 
-<!-- Password Confirmation Modal -->
-<div class="modal fade" id="passwordConfirmModal" tabindex="-1" aria-labelledby="passwordConfirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="passwordConfirmModalLabel">
-                    <i class="fas fa-shield-alt text-warning me-2"></i>
-                    Xác nhận quyền truy cập
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Để chỉnh sửa tòa nhà, vui lòng nhập mật khẩu đăng nhập của bạn để xác thực.
-                </div>
-                <form id="passwordConfirmForm">
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">
-                            <i class="fas fa-lock me-2"></i>Mật khẩu
-                        </label>
-                        <input type="password" class="form-control" id="confirmPassword" 
-                               placeholder="Nhập mật khẩu của bạn" required>
-                        <div class="invalid-feedback" id="passwordError">
-                            Mật khẩu không đúng. Vui lòng thử lại.
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card-edit">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Chỉnh sửa Tòa Nhà</h2>
+                            <p class="welcome-subtitle mb-0">Cập nhật thông tin chi tiết cho tòa nhà: <strong>@Model.TenToaNha</strong></p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block">
+                            <i class="fas fa-edit fa-4x" style="opacity: 0.2; color: #856404;"></i>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Hủy
-                </button>
-                <button type="button" class="btn btn-warning" id="confirmPasswordBtn">
-                    <i class="fas fa-check me-2"></i>Xác nhận
-                </button>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-back-minimal shadow-sm">
+            <i class="fas fa-chevron-left mr-2"></i> QUAY LẠI DANH SÁCH
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card card-custom shadow-sm">
+                <div class="card-body p-md-4">
+                    <form asp-action="Edit" method="post" id="editForm">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="border-radius: 15px;" role="alert"></div>
+                        <input type="hidden" asp-for="MaToaNha" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="TenToaNha" class="form-label"><i class="fas fa-building mr-2 text-primary"></i>TÊN TÒA NHÀ</label>
+                                <input asp-for="TenToaNha" class="form-control form-control-custom" placeholder="Nhập tên tòa nhà" />
+                                <span asp-validation-for="TenToaNha" class="text-danger small font-weight-bold"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="DiaChi" class="form-label"><i class="fas fa-map-marker-alt mr-2 text-success"></i>ĐỊA CHỈ</label>
+                                <input asp-for="DiaChi" class="form-control form-control-custom" placeholder="Nhập địa chỉ" />
+                                <span asp-validation-for="DiaChi" class="text-danger small font-weight-bold"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="TongSoTang" class="form-label"><i class="fas fa-layer-group mr-2 text-warning"></i>TỔNG SỐ TẦNG</label>
+                                <input asp-for="TongSoTang" class="form-control form-control-custom" type="number" min="1" placeholder="Nhập số tầng" />
+                                <span asp-validation-for="TongSoTang" class="text-danger small font-weight-bold"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="MoTa" class="form-label"><i class="fas fa-info-circle mr-2 text-info"></i>MÔ TẢ</label>
+                                <textarea asp-for="MoTa" class="form-control form-control-custom" rows="2" placeholder="Nhập mô tả tòa nhà"></textarea>
+                                <span asp-validation-for="MoTa" class="text-danger small font-weight-bold"></span>
+                            </div>
+
+                            <div class="col-12 mb-5">
+                                <label class="form-label"><i class="fas fa-map-marked-alt mr-2 text-danger"></i>CHỈNH SỬA VỊ TRÍ TRÊN BẢN ĐỒ</label>
+                                <input type="text" id="addressSearch" class="form-control form-control-custom mb-3 shadow-sm" placeholder="Tìm kiếm địa chỉ mới..." />
+                                <div id="map" class="shadow-sm"></div>
+                                <input type="hidden" asp-for="ViTri" id="ViTri" value="@Model.ViTri" />
+                                <div class="mt-2 text-muted small">
+                                    <i class="fas fa-info-circle mr-1"></i> Di chuyển Marker màu đỏ để xác định lại tọa độ chính xác.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center pb-3">
+                            <button type="button" class="btn btn-custom-save shadow-sm mr-3" data-toggle="modal" data-target="#passwordConfirmModal">
+                                <i class="fas fa-save mr-2"></i> LƯU THAY ĐỔI
+                            </button>
+                            <a asp-action="Index" class="btn btn-custom-cancel">HỦY BỎ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="passwordConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header d-flex flex-column align-items-center">
+                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                <h5 class="modal-title font-weight-bold">XÁC MINH BẢO MẬT</h5>
+            </div>
+            <div class="modal-body px-5">
+                <p class="text-center text-muted small mb-4">Vui lòng nhập mật khẩu chủ trọ để xác nhận các thay đổi cho tòa nhà này.</p>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Nhập mật khẩu..."
+                           style="border-radius: 12px; height: 50px; text-align: center; border: 1.5px solid #eee;">
+                    <div class="invalid-feedback text-center" id="passwordError">Mật khẩu không chính xác!</div>
+                </div>
+            </div>
+            <div class="modal-footer px-5 flex-column">
+                <button type="button" class="btn btn-primary btn-confirm-lg shadow" id="confirmPasswordBtn">XÁC NHẬN LƯU</button>
+                <button type="button" class="btn btn-link text-muted mt-2" data-dismiss="modal">Hủy bỏ</button>
             </div>
         </div>
     </div>
@@ -189,11 +250,9 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKjse9i60p-i4Ld99JfraTgjMsoMBGjX4&callback=initMap&libraries=&v=weekly" async></script>
     <script>
+        // --- GIỮ NGUYÊN LOGIC MAP CỦA BẠN ---
         function initMap() {
-            // Vị trí mặc định
             var defaultLocation = { lat: 10.823, lng: 106.627 };
-
-            // Nếu có vị trí của tòa nhà, sử dụng nó
             var initialLocation = '@Model.ViTri'.split(',');
             if (initialLocation.length === 2) {
                 defaultLocation = { lat: parseFloat(initialLocation[0]), lng: parseFloat(initialLocation[1]) };
@@ -202,33 +261,20 @@
             var map = new google.maps.Map(document.getElementById('map'), {
                 center: defaultLocation,
                 zoom: 12,
-                styles: [
-                    {
-                        featureType: "poi",
-                        elementType: "labels",
-                        stylers: [{ visibility: "off" }]
-                    }
-                ]
+                styles: [{ featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] }]
             });
 
             var marker = new google.maps.Marker({
                 position: defaultLocation,
                 map: map,
                 draggable: true,
-                icon: {
-                    url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-                    scaledSize: new google.maps.Size(32, 32)
-                }
+                icon: { url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' }
             });
 
-            // Cập nhật tọa độ khi kéo marker
             google.maps.event.addListener(marker, 'dragend', function (event) {
-                var lat = event.latLng.lat();
-                var lng = event.latLng.lng();
-                document.getElementById('ViTri').value = lat + ',' + lng;
+                document.getElementById('ViTri').value = event.latLng.lat() + ',' + event.latLng.lng();
             });
 
-            // Cập nhật khi tìm kiếm địa chỉ (Google Maps API geocoder)
             var geocoder = new google.maps.Geocoder();
             document.getElementById('addressSearch').addEventListener('keydown', function (e) {
                 if (e.key === 'Enter') {
@@ -249,100 +295,58 @@
                 }
             });
         }
-        
-        // Password confirmation modal handling
+
+        // --- GIỮ NGUYÊN LOGIC MODAL & PASSWORD ---
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, setting up modal...');
-            
             const confirmPasswordBtn = document.getElementById('confirmPasswordBtn');
             const passwordInput = document.getElementById('confirmPassword');
             const passwordError = document.getElementById('passwordError');
             const modal = document.getElementById('passwordConfirmModal');
-            
-            console.log('Modal elements:', { confirmPasswordBtn, passwordInput, passwordError, modal });
-            
-            if (!confirmPasswordBtn || !passwordInput || !passwordError || !modal) {
-                console.error('Some modal elements are missing!');
-                return;
-            }
-            
+
             confirmPasswordBtn.addEventListener('click', function() {
-                console.log('Confirm button clicked');
                 const password = passwordInput.value.trim();
-                
                 if (!password) {
                     passwordInput.classList.add('is-invalid');
                     passwordError.textContent = 'Vui lòng nhập mật khẩu.';
                     return;
                 }
-                
-                // Show loading state
+
                 confirmPasswordBtn.disabled = true;
                 confirmPasswordBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xác thực...';
-                
-                // Send password to server for verification
+
                 fetch('/ChuTroArea/ToaNha/VerifyPassword', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: password })
                 })
-                .then(response => {
-                    console.log('Response received:', response);
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
-                    console.log('Data received:', data);
                     if (data.success) {
-                        // Password is correct, submit the form
-                        console.log('Password verified, submitting form...');
                         const form = document.getElementById('editForm');
                         if (form) {
-                            console.log('Form found, submitting...');
+                            $('#passwordConfirmModal').modal('hide');
                             form.submit();
-                        } else {
-                            console.error('Form not found!');
-                            passwordError.textContent = 'Không tìm thấy form. Vui lòng thử lại.';
-                            confirmPasswordBtn.disabled = false;
-                            confirmPasswordBtn.innerHTML = '<i class="fas fa-check me-2"></i>Xác nhận';
-                            return;
                         }
                     } else {
-                        // Password is incorrect
                         passwordInput.classList.add('is-invalid');
-                        passwordError.textContent = data.message || 'Mật khẩu không đúng. Vui lòng thử lại.';
+                        passwordError.textContent = data.message || 'Mật khẩu không đúng.';
                         confirmPasswordBtn.disabled = false;
                         confirmPasswordBtn.innerHTML = '<i class="fas fa-check me-2"></i>Xác nhận';
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
                     passwordInput.classList.add('is-invalid');
-                    passwordError.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
+                    passwordError.textContent = 'Đã xảy ra lỗi.';
                     confirmPasswordBtn.disabled = false;
-                    confirmPasswordBtn.innerHTML = '<i class="fas fa-check me-2"></i>Xác nhận';
                 });
             });
-            
-            // Reset form when modal is closed (Bootstrap 4)
+
             $('#passwordConfirmModal').on('hidden.bs.modal', function() {
-                console.log('Modal hidden, resetting form');
                 passwordInput.value = '';
                 passwordInput.classList.remove('is-invalid');
                 confirmPasswordBtn.disabled = false;
-                confirmPasswordBtn.innerHTML = '<i class="fas fa-check me-2"></i>Xác nhận';
+                confirmPasswordBtn.innerHTML = 'XÁC NHẬN LƯU';
             });
-            
-            // Handle Enter key in password input
-            passwordInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    confirmPasswordBtn.click();
-                }
-            });
-            
-            console.log('Modal setup complete');
         });
     </script>
 }

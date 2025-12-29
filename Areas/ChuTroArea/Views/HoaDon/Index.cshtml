@@ -3,216 +3,327 @@
     ViewData["Title"] = "Danh Sách Hóa Đơn";
     Layout = "~/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
     var vnd = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
-    
+
     var totalInvoices = Model?.Count() ?? 0;
     var pendingInvoices = Model?.Count(h => h.TrangThai == "Chờ xác nhận") ?? 0;
     var paidInvoices = Model?.Count(h => h.TrangThai == "Đã thanh toán") ?? 0;
     var totalRevenue = Model?.Where(h => h.TrangThai == "Đã thanh toán").Sum(h => h.TongTien) ?? 0;
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-primary btn-sm" onclick="showPasswordModal('create')">
-                <i class="fas fa-plus me-1"></i> Tạo Hóa Đơn Mới
-            </button>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. WELCOME CARD */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 24px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.5rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.15);
+    }
+
+    /* 3. 4 CARDS THỐNG KÊ */
+    .custom-box-tenant {
+        background: var(--surface);
+        border-radius: 20px !important;
+        padding: 30px 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(168, 213, 226, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+
+        .custom-box-tenant:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
+        }
+
+        .custom-box-tenant .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: white;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .custom-box-tenant:hover .icon-wrapper {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+    /* 4. HÓA ĐƠN CARDS */
+    .building-card {
+        border-radius: 28px !important;
+        background: #ffffff;
+        border: 1px solid #f1f5f9 !important;
+        transition: all 0.4s ease;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+        .building-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
+        }
+
+        .building-card .card-body {
+            padding: 2rem !important;
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+        }
+
+    .minimal-icon-box {
+        width: 55px;
+        height: 55px;
+        border-radius: 16px;
+        background: #f8fafc;
+        color: #3182ce;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        transition: 0.4s;
+    }
+
+    .building-card:hover .minimal-icon-box {
+        transform: rotate(15deg);
+    }
+
+    .price-details-box {
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid #edf2f7;
+    }
+
+    /* 5. NÚT XEM - ĐÃ ĐƯỢC CHỈNH LẠI ĐẸP HƠN */
+    .btn-view-details {
+        background-color: var(--p-blue) !important;
+        color: #2c5282 !important;
+        border: none !important;
+        border-radius: 14px !important;
+        font-weight: 800 !important;
+        padding: 10px 20px !important;
+        transition: all 0.3s ease !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        letter-spacing: 0.5px;
+        flex-grow: 1; /* Dãn rộng nút */
+        box-shadow: 0 4px 10px rgba(168, 213, 226, 0.3);
+    }
+
+        .btn-view-details:hover {
+            background-color: #94c8db !important;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 15px rgba(168, 213, 226, 0.5);
+        }
+
+    .btn-circle-action {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+        border: none;
+    }
+
+    /* Phân loại màu viền pastel */
+    .hoadon-item:nth-child(4n+1) .building-card {
+        border-top: 8px solid var(--p-blue) !important;
+    }
+
+    .hoadon-item:nth-child(4n+2) .building-card {
+        border-top: 8px solid var(--p-yellow) !important;
+    }
+
+    .hoadon-item:nth-child(4n+3) .building-card {
+        border-top: 8px solid var(--p-green) !important;
+    }
+
+    .hoadon-item:nth-child(4n+4) .building-card {
+        border-top: 8px solid var(--p-purple) !important;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-4 text-left">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Quản lý Hóa đơn</h2>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <button class="btn btn-dark shadow px-4" style="border-radius:12px; height: 50px; font-weight: 700;" onclick="showPasswordModal('create')">
+                                + TẠO HÓA ĐƠN
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Summary widgets -->
-<div class="row px-2 px-md-3 mt-3 g-3">
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-primary mb-0">
-            <div class="inner">
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-blue)"><i class="fas fa-file-invoice"></i></div>
                 <h3>@totalInvoices</h3>
                 <p>Tổng hóa đơn</p>
             </div>
-            <div class="icon"><i class="fas fa-file-invoice"></i></div>
         </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-warning mb-0">
-            <div class="inner">
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-yellow)"><i class="fas fa-clock"></i></div>
                 <h3>@pendingInvoices</h3>
                 <p>Chờ xác nhận</p>
             </div>
-            <div class="icon"><i class="fas fa-clock"></i></div>
         </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-success mb-0">
-            <div class="inner">
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-green)"><i class="fas fa-check-circle"></i></div>
                 <h3>@paidInvoices</h3>
                 <p>Đã thanh toán</p>
             </div>
-            <div class="icon"><i class="fas fa-check-circle"></i></div>
         </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-info mb-0">
-            <div class="inner">
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-tenant shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-purple)"><i class="fas fa-money-bill-wave"></i></div>
                 <h3>@string.Format("{0:N0}", totalRevenue)</h3>
                 <p>Doanh thu (VND)</p>
             </div>
-            <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
         </div>
     </div>
-    <div class="col-12"><hr class="my-2"></div>
-</div>
 
-<div class="row px-2 px-md-3 g-3" id="hoadonGrid">
-    @if (Model != null && Model.Any())
-    {
+    <div class="row mt-4" id="hoadonGrid">
         @foreach (var hoaDon in Model)
         {
-            <div class="col-12 col-sm-6 col-lg-4 col-xl-3 hoadon-item" data-room="@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong" data-date="@hoaDon.NgayLap.ToString("yyyy-MM-dd")">
-                <div class="card shadow-sm border-0 h-100 hoadon-card d-flex flex-column">
-                    <div class="card-body p-3 d-flex flex-column">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="room-indicator">
-                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:35px;height:35px;">
-                                    <i class="fas fa-file-invoice "></i>
-                                </div>
-                                <span class="room-name ms-2 fw-bold text-dark fs-6">Mã hóa đơn: @hoaDon.MaHoaDon</span>
+            <div class="col-12 col-md-6 col-xl-4 hoadon-item mb-5" data-room="@hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong" data-date="@hoaDon.NgayLap.ToString("yyyy-MM-dd")">
+                <div class="card building-card shadow-sm h-100">
+                    <div class="card-body text-left">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <div class="minimal-icon-box shadow-sm mr-3"><i class="fas fa-receipt"></i></div>
+                            <div class="flex-grow-1">
+                                <h4 class="fw-bold text-dark mb-0">HĐ #@hoaDon.MaHoaDon</h4>
+                                <span class="text-muted small fw-bold">Phòng @hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong</span>
                             </div>
-                            <div>
-                                @if (hoaDon.TrangThai == "Đã thanh toán")
-                                {
-                                    <span class="badge bg-success-soft text-success rounded-pill px-2 py-1 small border-success border"><i class="fas fa-check me-1"></i>Đã thanh toán</span>
-                                }
-                                else if (hoaDon.TrangThai == "Chờ xác nhận")
-                                {
-                                    <span class="badge bg-warning-soft text-dark rounded-pill px-2 py-1 small border-warning border"><i class="fas fa-clock me-1"></i>Chờ xác nhận</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger-soft text-danger rounded-pill px-2 py-1 small border-danger border"><i class="fas fa-times me-1"></i>Hủy</span>
-                                }
-                            </div>
+                            <span class="badge px-3 py-2" style="background: @(hoaDon.TrangThai == "Đã thanh toán" ? "var(--p-green)" : "var(--p-yellow)"); color: @(hoaDon.TrangThai == "Đã thanh toán" ? "#2d6a4f" : "#856404"); border-radius: 10px; font-weight: 700;">
+                                @(hoaDon.TrangThai == "Đã thanh toán" ? "ĐÃ XONG" : "CHỜ DUYỆT")
+                            </span>
                         </div>
 
                         <div class="info-block-tenant p-2 rounded mb-3 bg-light d-flex align-items-center">
-                            
-                            <div>
-                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;">Khách thuê</div>
-                                <div class="fw-bold small">@(hoaDon.KhachThue?.HoTen ?? "N/A")</div>
+                            <div class="small fw-bold text-dark">
+                                <i class="fas fa-user mr-1 text-muted"></i> @hoaDon.KhachThue?.HoTen <span class="mx-2 text-muted">|</span>
+                                <i class="far fa-calendar-alt mr-1 text-muted"></i> @hoaDon.NgayLap.ToString("dd/MM/yyyy")
                             </div>
                         </div>
 
-                        <div class="row g-2 mb-3">
-                            <div class="col-6">
-                                <div class="p-2 rounded bg-light border-start border-primary border-4 h-100">
-                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;"><i class="fas fa-door-open me-1"></i>Phòng</div>
-                                    <div class="fw-bold small">P.@(hoaDon.ChiSoDienNuoc?.PhongTro?.SoPhong)</div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="p-2 rounded bg-light border-start border-info border-4 h-100">
-                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.65rem;"><i class="far fa-calendar-alt me-1"></i>Ngày lập</div>
-                                    <div class="fw-bold small">@hoaDon.NgayLap.ToString("dd/MM/yyyy")</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-2 rounded bg-light mb-3">
+                        <div class="price-details-box shadow-xs">
                             <div class="d-flex justify-content-between small mb-1">
-                                <span class="text-muted">Tiền điện:</span>
-                                <span class="fw-bold">@hoaDon.TienDien.ToString("N0", vnd) đ</span>
-                            </div>
-                            <div class="d-flex justify-content-between small mb-1">
-                                <span class="text-muted">Tiền nước:</span>
-                                <span class="fw-bold">@hoaDon.TienNuoc.ToString("N0", vnd) đ</span>
+                                <span class="text-muted">Điện & Nước:</span>
+                                <span class="fw-bold">@((hoaDon.TienDien + hoaDon.TienNuoc).ToString("N0", vnd)) đ</span>
                             </div>
                             <div class="d-flex justify-content-between small mb-1">
                                 <span class="text-muted">Tiền phòng:</span>
                                 <span class="fw-bold">@hoaDon.TienPhong.ToString("N0", vnd) đ</span>
                             </div>
                             <div class="d-flex justify-content-between small">
-                                <span class="text-muted">Tiền dịch vụ:</span>
+                                <span class="text-muted">Dịch vụ:</span>
                                 <span class="fw-bold">@hoaDon.TienDichVu.ToString("N0", vnd) đ</span>
                             </div>
                         </div>
 
-                        @if (hoaDon.TrangThai != "Đã thanh toán")
-                        {
-                            var daysSinceCreation = (DateTime.Now - hoaDon.NgayLap).Days;
-                            <div class="mb-3">
-                                <span class="badge bg-danger-soft text-danger w-100 py-2 border border-danger border-opacity-25 rounded-3">
-                                    <i class="fas fa-exclamation-circle me-1"></i>Quá hạn: @daysSinceCreation ngày
-                                </span>
+                        <div class="mt-auto pt-4 border-top">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <p class="small text-muted mb-0 font-weight-bold uppercase">Tổng cộng</p>
+                                <h4 class="fw-bold text-danger mb-0">@hoaDon.TongTien.ToString("N0", vnd) <small>đ</small></h4>
                             </div>
-                        }
 
-                        <div class="mt-auto p-2 rounded bg-light bg-opacity-10 text-center border border-success border-opacity-25">
-                            <div class="text-dark small fw-bold text-uppercase" style="font-size: 0.65rem; opacity: 0.8;">Tổng thanh toán</div>
-                            <div class="fw-bold text-success fs-5">@hoaDon.TongTien.ToString("N0", vnd) <small>VNĐ</small></div>
-                        </div>
-                    </div>
-
-                    <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
-                        <div class="d-flex gap-2 flex-wrap">
-                            <a asp-action="Details" asp-route-id="@hoaDon.MaHoaDon" class="btn btn-primary flex-fill btn-sm rounded-pill shadow-sm">
-                                <i class="fas fa-eye me-1"></i>Xem
-                            </a>
-                            <button type="button" class="btn btn-outline-danger btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;" onclick="showPasswordModal('delete', '@hoaDon.MaHoaDon')">
-                                <i class="fas fa-trash-alt small"></i>
-                            </button>
-                            
-                            @if (hoaDon.TrangThai == "Chờ xác nhận")
-                            {
-                                <button type="button" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-sm" onclick="showPasswordModal('confirm', '@hoaDon.MaHoaDon')">
-                                    <i class="fas fa-check me-1"></i>Duyệt
-                                </button>
-                            }
-                            @if (hoaDon.TrangThai != "Đã thanh toán")
-                            {
-                                <a asp-area="ChuTroArea" asp-controller="Chat" asp-action="Index" 
-                                   asp-route-userId="@hoaDon.KhachThue?.ApplicationUserId" 
-                                   asp-route-hotenkhach="@hoaDon.KhachThue?.HoTen"
-                                   class="btn btn-outline-primary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;">
-                                    <i class="fas fa-comments small"></i>
+                            <div class="d-flex gap-2">
+                                <a asp-action="Details" asp-route-id="@hoaDon.MaHoaDon" class="btn btn-view-details shadow-sm">
+                                    <i class="fas fa-eye mr-2"></i> XEM CHI TIẾT
                                 </a>
-                            }
+
+                                <button onclick="showPasswordModal('delete', '@hoaDon.MaHoaDon')" class="btn btn-circle-action btn-outline-danger shadow-xs" title="Xóa">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+
+                                @if (hoaDon.TrangThai == "Chờ xác nhận")
+                                {
+                                    <button onclick="showPasswordModal('confirm', '@hoaDon.MaHoaDon')" class="btn btn-circle-action btn-success shadow-sm" style="background:var(--p-green); color:#2d6a4f" title="Xác nhận">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         }
-    }
-    else
-    {
-        <div class="col-12">
-            <div class="alert alert-info text-center shadow-sm border-0 rounded-4 py-4">
-                <i class="fas fa-info-circle fa-2x mb-3 d-block"></i>
-                Không có hóa đơn nào để hiển thị.
-            </div>
-        </div>
-    }
+    </div>
 </div>
 
-<!-- Password Confirmation Modal -->
-<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="passwordModalLabel">Xác minh mật khẩu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="passwordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 30px;">
+            <div class="modal-header d-flex flex-column align-items-center border-0 pt-5 text-center">
+                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                <h5 class="modal-title font-weight-bold">XÁC MINH CHỦ TRỌ</h5>
             </div>
-            <div class="modal-body">
-                <input type="password" id="verifyPassword" class="form-control" placeholder="Nhập mật khẩu của bạn" />
-                <div id="passwordError" class="text-danger mt-2" style="display:none;"></div>
+            <div class="modal-body px-5">
+                <input type="password" id="verifyPassword" class="form-control border-0 bg-light text-center shadow-sm" placeholder="Nhập mật khẩu..." style="border-radius:15px; height:60px;">
+                <div id="passwordError" class="text-danger mt-2 text-center small" style="display:none;"></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="submitPassword()">Xác nhận</button>
+            <div class="modal-footer border-0 px-5 pb-5">
+                <button type="button" class="btn btn-dark w-100 fw-bold shadow" style="height:55px; border-radius:15px" onclick="submitPassword()">XÁC NHẬN</button>
+                <button type="button" class="btn btn-link text-muted mt-2 mx-auto w-100" data-bs-dismiss="modal">Hủy bỏ</button>
             </div>
         </div>
     </div>
 </div>
 
-<style>
 @section Scripts {
     <script>
         let actionType = null;
@@ -222,8 +333,7 @@
             recordId = id;
             document.getElementById("verifyPassword").value = "";
             document.getElementById("passwordError").style.display = "none";
-            var modal = new bootstrap.Modal(document.getElementById('passwordModal'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('passwordModal')).show();
         }
 
         function submitPassword() {
@@ -232,135 +342,27 @@
 
             fetch("/ChuTroArea/HoaDon/VerifyPassword", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "RequestVerificationToken": token
-                },
+                headers: { "Content-Type": "application/json", "RequestVerificationToken": token },
                 body: JSON.stringify({ password: password })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    if (actionType === "create") {
-                        window.location.href = "/ChuTroArea/HoaDon/Create";
-                    } else if (actionType === "edit" && recordId) {
-                        window.location.href = `/ChuTroArea/HoaDon/Edit/${recordId}`;
-                    } else if (actionType === "delete" && recordId) {
-                        // Tạo form ẩn để submit delete request
+                    if (actionType === "create") window.location.href = "/ChuTroArea/HoaDon/Create";
+                    else if (actionType === "delete") {
                         const form = document.createElement('form');
                         form.method = 'POST';
                         form.action = `/ChuTroArea/HoaDon/Delete/${recordId}`;
                         const tokenInput = document.createElement('input');
-                        tokenInput.type = 'hidden';
-                        tokenInput.name = '__RequestVerificationToken';
-                        tokenInput.value = token;
-                        form.appendChild(tokenInput);
-                        document.body.appendChild(form);
-                        form.submit();
-                    } else if (actionType === "confirm" && recordId) {
-                        window.location.href = `/ChuTroArea/HoaDon/XacNhanThanhToan/${recordId}`;
-                    }
+                        tokenInput.type = 'hidden'; tokenInput.name = '__RequestVerificationToken'; tokenInput.value = token;
+                        form.appendChild(tokenInput); document.body.appendChild(form); form.submit();
+                    } else if (actionType === "confirm") window.location.href = `/ChuTroArea/HoaDon/XacNhanThanhToan/${recordId}`;
                 } else {
                     const err = document.getElementById("passwordError");
                     err.innerText = data.message;
                     err.style.display = "block";
                 }
-            })
-            .catch(err => console.error("Error:", err));
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const remindButtons = document.querySelectorAll('.remind-btn');
-
-            remindButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const invoiceId = this.dataset.id;
-
-                    fetch(`/ChuTroArea/HoaDon/SendReminder/${invoiceId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Nhắc nhở đã được gửi thành công!');
-                        } else {
-                            alert('Có lỗi xảy ra khi gửi nhắc nhở.');
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-                });
             });
-        });
+        }
     </script>
 }
-    .hoadon-card {
-        transition: transform .15s ease, box-shadow .15s ease;
-        margin-bottom: 0;
-        background-color: #f0f8ff;
-    }
-    .hoadon-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    }
-    .avatar {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    }
-    .hoadon-card .card-title {
-        font-size: 1.15rem;
-        line-height: 1.3;
-        color: #2c3e50;
-    }
-    .hoadon-card .badge {
-        font-size: 0.875rem;
-        font-weight: 500;
-        background-color: unset !important;
-        backdrop-filter: blur(10px);
-    }
-    .badge.bg-warning {
-        background-color: #ffe066 !important;
-        color: #333 !important;
-    }
-    .badge.bg-success {
-        background-color: #51cf66 !important;
-        color: #fff !important;
-    }
-    .badge.bg-danger {
-        background-color: #ff6b6b !important;
-        color: #fff !important;
-    }
-    .hoadon-card .btn {
-        margin-left: 5px;
-        font-size: 0.875rem;
-        font-weight: 500;
-    }
-    .hoadon-card .card-body > * + * {
-        margin-top: 1rem;
-    }
-    .hoadon-item {
-        margin-bottom: 1rem;
-    }
-    .hoadon-item:nth-last-child(-n+4) {
-        margin-bottom: 0;
-    }
-    .hoadon-item:nth-child(4n+1) .hoadon-card {
-        background-color: #e3ffff;
-    }
-    .hoadon-item:nth-child(4n+2) .hoadon-card {
-        background-color: #fff9f0;
-    }
-    .hoadon-item:nth-child(4n+3) .hoadon-card {
-        background-color: #f0fff4;
-    }
-    .hoadon-item:nth-child(4n+4) .hoadon-card {
-        background-color: #fff0f5;
-    }
-    .hoadon-card .card-title,
-    .hoadon-card .text-muted,
-    .hoadon-card .text-secondary {
-        color: #2c3e50 !important;
-    }
-</style>

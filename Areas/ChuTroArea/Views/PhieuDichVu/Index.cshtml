@@ -3,276 +3,344 @@
 @{
     ViewData["Title"] = "Dịch vụ đã xác nhận";
     Layout = "/Areas/ChuTroArea/Views/Shared/layoutAdminLTE.cshtml";
-    
+
     var totalRecords = Model?.Count() ?? 0;
     var thisMonthRecords = Model?.Count(p => p.NgayBatDau.Month == DateTime.Now.Month && p.NgayBatDau.Year == DateTime.Now.Year) ?? 0;
     var approvedRecords = Model?.Count(p => p.TrangThai == "Đã xác nhận") ?? 0;
     var totalRevenue = Model?.Sum(p => p.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu)) ?? 0;
 }
 
-@Html.AntiForgeryToken()
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        @TempData["ErrorMessage"]
-    </div>
-}
+<style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        @TempData["SuccessMessage"]
-    </div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
+    /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
 
-@if (TempData["ThongBao"] != null)
-{
-    <div class="alert alert-success">@TempData["ThongBao"]</div>
-}
+    /* 2. WELCOME CARD */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 24px;
+    }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <select id="sortSelect" class="form-select form-select-sm" style="width:180px;">
-                <option value="name">Sắp xếp: Tên (A→Z)</option>
-                <option value="date">Ngày đăng ký (Gần nhất)</option>
-                <option value="revenue">Doanh thu (Cao→Thấp)</option>
-            </select>
-            <a asp-action="DanhSachDichVu" class="btn btn-warning btn-sm">
-                <i class="fas fa-cogs me-1"></i> Quản lý dịch vụ
-            </a>
-            <button type="button" class="btn btn-success btn-sm" onclick="showPasswordModal('create')">
-                <i class="fas fa-plus me-1"></i> Thêm dịch vụ mới
-            </button>
-        </div>
-    </div>
-</div>
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.5rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.15);
+    }
 
-<!-- Summary widgets -->
-<div class="row px-2 px-md-3 mt-3 g-3">
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-primary mb-0">
-            <div class="inner">
-                <h3>@totalRecords</h3>
-                <p>Tổng phiếu đăng ký</p>
-            </div>
-            <div class="icon"><i class="fas fa-clipboard-list"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-info mb-0">
-            <div class="inner">
-                <h3>@thisMonthRecords</h3>
-                <p>Tháng này</p>
-            </div>
-            <div class="icon"><i class="fas fa-calendar-alt"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-success mb-0">
-            <div class="inner">
-                <h3>@approvedRecords</h3>
-                <p>Đã xác nhận</p>
-            </div>
-            <div class="icon"><i class="fas fa-check-circle"></i></div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="small-box bg-gradient-warning mb-0">
-            <div class="inner">
-                <h3>@string.Format("{0:N0}", totalRevenue)</h3>
-                <p>Doanh thu (VND)</p>
-            </div>
-            <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
-        </div>
-    </div>
-    <div class="col-12"><hr class="my-2"></div>
-</div>
+    /* 3. STATS CARDS - XOAY 15 ĐỘ KHI HOVER */
+    .custom-box-stats {
+        background: var(--surface);
+        border-radius: 20px !important;
+        padding: 30px 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(168, 213, 226, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
 
-@if ((bool)ViewBag.CoPhieuCho)
-{
-    <div class="alert alert-warning d-flex justify-content-between align-items-center mt-3">
-        <span>Có phiếu đăng ký dịch vụ đang chờ xác nhận!</span>
-        <a asp-action="DanhSachChoXacNhan" class="btn btn-sm btn-outline-success btn-custom">Xác nhận ngay</a>
-    </div>
-}
+        .custom-box-stats:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(168, 213, 226, 0.4);
+        }
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info mt-3">Chưa có dịch vụ nào được xác nhận.</div>
-}
-else
-{
-    <div class="row px-2 px-md-3 g-3 mt-3" id="phieudichvuGrid">
-        @foreach (var phieu in Model)
-        {
-            var phongContext = Context.RequestServices.GetService(typeof(DACS_QuanLyPhongTro.Models.ApplicationDbContext)) as DACS_QuanLyPhongTro.Models.ApplicationDbContext;
-            var soPhong = phongContext.HopDongs.FirstOrDefault(h => h.MaKhachThue == phieu.MaKhachThue)?.PhongTro.SoPhong;
-            var totalAmount = phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu);
-            
-            <div class="col-12 col-sm-6 col-lg-4 col-xl-3 phieudichvu-item" 
-                 data-name="@phieu.KhachThue.HoTen" 
-                 data-room="@soPhong" 
-                 data-date="@phieu.NgayBatDau.ToString("yyyy-MM-dd")"
-                 data-revenue="@totalAmount">
-                
-                <div class="card shadow-sm border-0 h-100 phieudichvu-card d-flex flex-column">
-                    <div class="card-body p-3 d-flex flex-column">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:35px;height:35px;">
-                                 <i class="fas fa-file-invoice "></i>
-                            </div>
-                            <span class="badge bg-success text-white fs-6 px-3 py-2 rounded-pill shadow-sm" style="background-color: rgba(79, 214, 25, 0.8) !important;">
-                                <i class="fas fa-check me-1"></i>@phieu.TrangThai
-                            </span>
+        .custom-box-stats .icon-wrapper {
+            width: 65px;
+            height: 65px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 15px;
+            color: white;
+            transition: transform 0.4s ease;
+        }
+
+        .custom-box-stats:hover .icon-wrapper {
+            transform: rotate(15deg);
+        }
+
+    /* 4. DỊCH VỤ CARDS - ĐỒNG BỘ KÍCH THƯỚC TRANG INDEX KHÁC */
+    .building-card {
+        border-radius: 28px !important;
+        background: #ffffff;
+        border: 1px solid #f1f5f9 !important;
+        transition: all 0.4s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .building-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06) !important;
+            border-color: var(--p-blue) !important;
+        }
+
+        .building-card .card-body {
+            padding: 2.2rem !important; /* Dãn rộng */
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+    /* Hiệu ứng xoay icon trong card chính khi hover */
+    .minimal-icon-box {
+        width: 55px;
+        height: 55px;
+        background: #f8fafc;
+        color: #3182ce;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        font-size: 1.3rem;
+        transition: transform 0.4s ease;
+    }
+
+    .building-card:hover .minimal-icon-box {
+        transform: rotate(15deg);
+    }
+
+    /* Phân loại màu viền pastel */
+    .phieudichvu-item:nth-child(4n+1) .building-card {
+        border-top: 8px solid var(--p-blue) !important;
+    }
+
+    .phieudichvu-item:nth-child(4n+2) .building-card {
+        border-top: 8px solid var(--p-yellow) !important;
+    }
+
+    .phieudichvu-item:nth-child(4n+3) .building-card {
+        border-top: 8px solid var(--p-green) !important;
+    }
+
+    .phieudichvu-item:nth-child(4n+4) .building-card {
+        border-top: 8px solid var(--p-purple) !important;
+    }
+
+    /* Nút bấm dãn cách & cân bằng */
+    .btn-circle-action {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: 0.3s;
+    }
+
+    .btn-details-pastel {
+        background: var(--p-blue) !important;
+        color: #2c5282 !important;
+    }
+
+    .btn-delete-pastel {
+        background: var(--p-red) !important;
+        color: #742a2a !important;
+    }
+
+    .btn-circle-action:hover {
+        transform: scale(1.15);
+        filter: brightness(0.95);
+    }
+
+    .service-list-box {
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 18px;
+        margin-bottom: 20px;
+        border: 1px solid #edf2f7;
+    }
+
+    .filter-section {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 24px;
+        margin-bottom: 35px;
+        border: 1px solid #edf2f7;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+</style>
+
+<div class="container-fluid">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-4 text-left">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Dịch vụ đã xác nhận</h2>
                         </div>
-
-                        <div class="info-block-tenant p-2 rounded mb-3 bg-light d-flex align-items-center">
-                            
-                            <div>
-                                <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">Khách hàng</div>
-                                <div class="fw-bold">@phieu.KhachThue.HoTen</div>
-                            </div>
-                        </div>
-
-                        <div class="row g-2 mb-3">
-                            <div class="col-6">
-                                <div class="p-2 rounded bg-light border-start border-primary border-4 h-100">
-                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;"><i class="fas fa-door-open me-1"></i>Phòng</div>
-                                    <div class="fw-bold small">P.@soPhong</div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="p-2 rounded bg-light border-start border-warning border-4 h-100">
-                                    <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;"><i class="far fa-calendar-alt me-1"></i>Đăng ký</div>
-                                    <div class="fw-bold small">@phieu.NgayBatDau.ToString("dd/MM/yyyy")</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-2 rounded bg-light mb-3">
-                            <div class="text-muted small fw-bold text-uppercase mb-1" style="font-size: 0.7rem;"><i class="fas fa-list-ul me-1"></i>Dịch vụ sử dụng</div>
-                            <ul class="mb-0 ps-3 fs-6 small">
-                                @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
-                                {
-                                    <li class="text-truncate" title="@ct.DichVu.TenDichVu">
-                                        @ct.DichVu.TenDichVu (x@(ct.SoLuong))
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-
-                        <div class=" mt-auto p-2 rounded bg-light bg-opacity-10 text-center border border-warning border-opacity-25">
-                            <div class="text-dark small fw-bold text-uppercase" style="font-size: 0.7rem; opacity: 0.8;">Tổng cộng</div>
-                            <div class="fw-bold text-dark fs-5">@totalAmount.ToString("N0") <small>VND</small></div>
-                        </div>
-                    </div>
-
-                    <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3">
-                        <div class="d-flex gap-2">
-                            <a asp-action="Details" asp-route-id="@phieu.MaDangKyDichVu" class="btn btn-primary flex-fill btn-sm rounded-pill shadow-sm">
-                                <i class="fas fa-eye me-1"></i>Chi tiết
-                            </a>
-                            <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm" 
-                                    onclick="showPasswordModal('delete', '@phieu.MaDangKyDichVu')">
-                                <i class="fas fa-trash me-1"></i>Xóa
-                            </button>
+                        <div class="col-md-3 text-right d-none d-md-block">
+                            <i class="fas fa-concierge-bell fa-4x text-white opacity-25"></i>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-stats shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-blue)"><i class="fas fa-file-invoice"></i></div>
+                <h3 class="fw-bold">@totalRecords</h3>
+                <p class="small text-muted mb-0 font-weight-bold">TỔNG PHIẾU</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-stats shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-purple)"><i class="fas fa-calendar-day"></i></div>
+                <h3 class="fw-bold">@thisMonthRecords</h3>
+                <p class="small text-muted mb-0 font-weight-bold">TRONG THÁNG</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-stats shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-green)"><i class="fas fa-check-double"></i></div>
+                <h3 class="fw-bold">@approvedRecords</h3>
+                <p class="small text-muted mb-0 font-weight-bold">ĐÃ XÁC NHẬN</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="custom-box-stats shadow-sm">
+                <div class="icon-wrapper" style="background:var(--p-yellow); color:#856404"><i class="fas fa-coins"></i></div>
+                <h3 class="fw-bold">@string.Format("{0:N0}", totalRevenue)</h3>
+                <p class="small text-muted mb-0 font-weight-bold">DOANH THU</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-section d-flex align-items-center justify-content-between flex-wrap gap-3 mt-2">
+        <div class="d-flex align-items-center gap-3">
+            <select id="sortSelect" class="form-select border-0 bg-light shadow-sm" style="width:220px; border-radius: 12px; height: 50px; font-weight: 600;">
+                <option value="name">Tên khách (A-Z)</option>
+                <option value="date" selected>Mới đăng ký</option>
+                <option value="revenue">Doanh thu</option>
+            </select>
+        </div>
+        <button class="btn btn-dark shadow px-4" style="border-radius:12px; height: 50px; font-weight: 700;" onclick="showPasswordModal('create')">
+            + THÊM PHIẾU MỚI
+        </button>
+    </div>
+
+    @if ((bool)ViewBag.CoPhieuCho)
+    {
+        <div class="alert alert-warning border-0 shadow-sm d-flex justify-content-between align-items-center mb-4" style="border-radius:20px; background: var(--p-yellow); padding: 15px 25px;">
+            <span class="fw-bold text-dark"><i class="fas fa-bell mr-2"></i> Có phiếu dịch vụ đang chờ bạn duyệt!</span>
+            <a asp-action="DanhSachChoXacNhan" class="btn btn-dark" style="border-radius:10px; font-weight: 600;">XEM NGAY</a>
+        </div>
+    }
+
+    <div class="row g-4" id="phieudichvuGrid">
+        @if (Model != null)
+        {
+            @foreach (var phieu in Model)
+            {
+                var phongContext = Context.RequestServices.GetService(typeof(DACS_QuanLyPhongTro.Models.ApplicationDbContext)) as DACS_QuanLyPhongTro.Models.ApplicationDbContext;
+                var soPhong = phongContext.HopDongs.FirstOrDefault(h => h.MaKhachThue == phieu.MaKhachThue)?.PhongTro.SoPhong;
+                var totalAmount = phieu.ChiTietPhieuDangKyDichVus.Sum(c => c.TongTienDichVu);
+
+                <div class="col-12 col-md-6 col-xl-4 phieudichvu-item mb-4"
+                     data-name="@phieu.KhachThue.HoTen"
+                     data-room="@soPhong"
+                     data-date="@phieu.NgayBatDau.ToString("yyyy-MM-dd")"
+                     data-revenue="@totalAmount">
+                    <div class="card building-card shadow-sm h-100">
+                        <div class="card-body text-left d-flex flex-column">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="minimal-icon-box shadow-sm mr-3">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <h4 class="fw-bold text-dark mb-0 text-truncate" style="font-size: 1.25rem;">@phieu.KhachThue.HoTen</h4>
+                                    <span class="text-muted small font-weight-bold"><i class="fas fa-door-open mr-1"></i> PHÒNG @soPhong</span>
+                                </div>
+                                <span class="badge px-3 py-2 flex-shrink-0" style="background: var(--p-green); color: #2d6a4f; border-radius: 10px; font-weight: 700;">ĐÃ DUYỆT</span>
+                            </div>
+
+                            <div class="service-list-box flex-grow-1 shadow-xs">
+                                <p class="small fw-bold text-muted mb-2 text-uppercase" style="letter-spacing: 0.5px;">Dịch vụ sử dụng:</p>
+                                <ul class="list-unstyled mb-0 small">
+                                    @foreach (var ct in phieu.ChiTietPhieuDangKyDichVus)
+                                    {
+                                        <li class="mb-2 d-flex justify-content-between border-bottom border-light pb-1">
+                                            <span class="text-dark">• @ct.DichVu.TenDichVu</span>
+                                            <span class="fw-bold text-primary">x@(ct.SoLuong)</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center border-top pt-4 mt-auto">
+                                <div>
+                                    <p class="small text-muted mb-0 font-weight-bold uppercase">Tổng cộng</p>
+                                    <h4 class="fw-bold text-dark mb-0">@totalAmount.ToString("N0") <small>đ</small></h4>
+                                </div>
+                                <div class="d-flex gap-3">
+                                    <a asp-action="Details" asp-route-id="@phieu.MaDangKyDichVu" class="btn-circle-action btn-details-pastel shadow-sm" title="Chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <button type="button" class="btn-circle-action btn-delete-pastel shadow-sm" onclick="showPasswordModal('delete', '@phieu.MaDangKyDichVu')" title="Xóa">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         }
     </div>
-}
+</div>
 
-<style>
-    .small-box .icon{right:10px; top: 6px;}
-    .bg-primary-subtle{ background: #e8f0ff; }
-    .bg-success-subtle{ background: #e8f7ef; }
-    .bg-warning-subtle{ background: #fff3cd; }
-    .bg-info-subtle{ background: #d1ecf1; }
-    .bg-danger-subtle{ background: #f8d7da; }
-    
-    .phieudichvu-card {
-        transition: transform .15s ease, box-shadow .15s ease;
-        margin-bottom: 0;
-    }
-    .phieudichvu-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    }
-    .avatar {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    }
-    .phieudichvu-card .card-title {
-        font-size: 1.25rem;
-        line-height: 1.3;
-        color: #2c3e50;
-        display: block;
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    
-    .phieudichvu-card .text-muted {
-        display: block;
-        width: 100%;
-        margin-top: 0;
-        line-height: 1.4;
-    }
-    .phieudichvu-card .badge {
-        font-size: 0.875rem;
-        font-weight: 500;
-        background-color: rgba(255, 255, 255, 0.8) !important;
-        backdrop-filter: blur(10px);
-    }
-    .phieudichvu-card .btn {
-        margin-left: 5px;
-        font-size: 0.875rem;
-        font-weight: 500;
-    }
-    .phieudichvu-card .card-body > * + * {
-        margin-top: 1rem;
-    }
-    .phieudichvu-item {
-        margin-bottom: 1rem;
-    }
-    .phieudichvu-item:nth-last-child(-n+4) {
-        margin-bottom: 0;
-    }
-    .phieudichvu-item:nth-child(4n+1) .phieudichvu-card {
-        background-color: #e3ffff;
-    }
-    .phieudichvu-item:nth-child(4n+2) .phieudichvu-card {
-        background-color: #fff9f0;
-    }
-    .phieudichvu-item:nth-child(4n+3) .phieudichvu-card {
-        background-color: #f0fff4;
-    }
-    .phieudichvu-item:nth-child(4n+4) .phieudichvu-card {
-        background-color: #fff0f5;
-    }
-    .phieudichvu-card .card-title,
-    .phieudichvu-card .text-muted,
-    .phieudichvu-card .text-secondary {
-        color: #2c3e50 !important;
-    }
-    
-    /* Increase spacing between header elements */
-    .content-header .d-flex.gap-2 {
-        gap: 1rem !important;
-    }
-    
-    
-    .content-header .form-select {
-        margin-right: 1rem !important;
-    }
-</style>
+<div class="modal fade" id="passwordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 30px;">
+            <div class="modal-header d-flex flex-column align-items-center border-0 pt-5">
+                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                <h5 class="modal-title font-weight-bold">XÁC MINH DANH TÍNH</h5>
+            </div>
+            <div class="modal-body px-5 text-center">
+                <p class="text-muted small mb-4">Vui lòng nhập mật khẩu chủ trọ để thực hiện thao tác.</p>
+                <input type="password" id="verifyPassword" class="form-control border-0 bg-light text-center shadow-sm" placeholder="Nhập mật khẩu..." style="border-radius:18px; height:60px; font-size: 1.1rem;">
+                <div id="passwordError" class="text-danger mt-2 text-center small" style="display:none;"></div>
+            </div>
+            <div class="modal-footer border-0 px-5 pb-5">
+                <button type="button" class="btn btn-dark w-100 fw-bold shadow" style="height:55px; border-radius:15px" onclick="submitPassword()">XÁC NHẬN</button>
+                <button type="button" class="btn btn-link text-muted mt-2 mx-auto w-100" data-bs-dismiss="modal">Hủy bỏ</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
@@ -290,17 +358,14 @@ else
                     if(type==='revenue'){
                         return (parseInt(b.dataset.revenue||'0') - parseInt(a.dataset.revenue||'0'));
                     }
-                    // default name asc
                     return (a.dataset.name||'').localeCompare(b.dataset.name||'');
                 });
                 items.forEach(i=>grid.appendChild(i));
             }
-            
             sortSelect?.addEventListener('change', sort);
             sort();
         })();
-        
-        // Password confirmation modal handling
+
         let actionType = null;
         let deleteId = null;
 
@@ -309,8 +374,7 @@ else
             deleteId = id;
             document.getElementById("verifyPassword").value = "";
             document.getElementById("passwordError").style.display = "none";
-            var modal = new bootstrap.Modal(document.getElementById('passwordModal'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('passwordModal')).show();
         }
 
         function submitPassword() {
@@ -319,10 +383,7 @@ else
 
             fetch("/ChuTroArea/PhieuDichVu/VerifyPassword", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "RequestVerificationToken": token
-                },
+                headers: { "Content-Type": "application/json", "RequestVerificationToken": token },
                 body: JSON.stringify({ password: password })
             })
             .then(res => res.json())
@@ -331,53 +392,23 @@ else
                     if (actionType === "create") {
                         window.location.href = "/ChuTroArea/PhieuDichVu/DanhSachDichVu";
                     } else if (actionType === "delete" && deleteId) {
-                        // Tạo form ẩn để submit delete request
                         const form = document.createElement('form');
                         form.method = 'POST';
                         form.action = '/ChuTroArea/PhieuDichVu/XoaPhieu';
-                        
                         const idInput = document.createElement('input');
-                        idInput.type = 'hidden';
-                        idInput.name = 'id';
-                        idInput.value = deleteId;
-                        
+                        idInput.type = 'hidden'; idInput.name = 'id'; idInput.value = deleteId;
                         const tokenInput = document.createElement('input');
-                        tokenInput.type = 'hidden';
-                        tokenInput.name = '__RequestVerificationToken';
-                        tokenInput.value = document.querySelector('input[name="__RequestVerificationToken"]').value;
-                        
-                        form.appendChild(idInput);
-                        form.appendChild(tokenInput);
-                        document.body.appendChild(form);
-                        form.submit();
+                        tokenInput.type = 'hidden'; tokenInput.name = '__RequestVerificationToken';
+                        tokenInput.value = token;
+                        form.appendChild(idInput); form.appendChild(tokenInput);
+                        document.body.appendChild(form); form.submit();
                     }
                 } else {
                     const err = document.getElementById("passwordError");
                     err.innerText = data.message;
                     err.style.display = "block";
                 }
-            })
-            .catch(err => console.error("Error:", err));
+            });
         }
     </script>
 }
-
-<!-- Password Confirmation Modal -->
-<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="passwordModalLabel">Xác minh mật khẩu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="password" id="verifyPassword" class="form-control" placeholder="Nhập mật khẩu của bạn" />
-                <div id="passwordError" class="text-danger mt-2" style="display:none;"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="submitPassword()">Xác nhận</button>
-            </div>
-        </div>
-    </div>
-</div>

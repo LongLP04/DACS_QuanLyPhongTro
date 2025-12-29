@@ -1,10 +1,7 @@
 @{
     Layout = null;
-    // Lấy thông tin Controller và Action hiện tại
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-
-    // Kiểm tra nếu là trang chủ (Home/Index)
     var isHomePage = currentController == "Home" && currentAction == "Index";
 }
 <!DOCTYPE html>
@@ -20,9 +17,8 @@
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Pacifico&display=swap" rel="stylesheet">
 
     <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -33,28 +29,31 @@
 
     <style>
         :root {
-            /* === MÀU PASTEL LOFI MỚI - siêu chill === */
-            --primary: #a8d5e2; /* xanh dương nhạt chính */
+            --primary: #a8d5e2;
             --primary-dark: #94c8db;
-            --accent: #c7ceea; /* tím nhạt */
+            --accent: #c7ceea;
             --text-dark: #2d3748;
             --muted: #64748b;
             --surface: #ffffff;
             --surface-alt: #f8faff;
         }
 
+        /* THAY ĐỔI: Cập nhật Font-Family chung cho toàn bộ dự án */
         body {
-            /* FONT CHUNG VÀ CỠ CHỮ */
             background: linear-gradient(135deg, #f0f4f8, #e0eafc, #f2e9f8);
             background-attachment: fixed;
-            font-family: "Poppins", sans-serif;
-            font-size: 18px; /* TĂNG CỠ CHỮ CƠ BẢN LÊN 18PX (dễ đọc) */
+            font-family: "Montserrat", sans-serif !important; /* Font Montserrat thay cho Poppins */
+            font-size: 18px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* Tinh chỉnh chữ nhỏ/muted để dễ đọc hơn (Tăng nhẹ size tương đối) */
+        /* Đảm bảo tất cả các thẻ tiêu đề và in đậm dùng chung font Montserrat để không lỗi dấu */
+        h1, h2, h3, h4, h5, h6, .fw-bold, .fw-semibold, strong, b {
+            font-family: "Montserrat", sans-serif !important;
+        }
+
         .text-muted, .fst-italic {
             font-size: 0.95em;
         }
@@ -63,19 +62,15 @@
             font-size: 0.85em;
         }
 
-
-        /* Đảm bảo Main mở rộng để đẩy Footer xuống */
         .main {
             flex-grow: 1;
             padding-top: 75px;
         }
 
-        /* Cần điều chỉnh padding-top của main nếu isHomePage = true */
         body.home-page .main {
             padding-top: 0;
         }
 
-        /* --- 1. NAVBAR & LOGIN PARTIAL STYLING --- */
         #mainNavbar {
             background: rgba(255,255,255,0.95) !important;
             backdrop-filter: blur(10px);
@@ -94,12 +89,10 @@
             color: var(--text-dark);
         }
 
-        /* Active/Hover links */
         .navbar-nav .nav-link:hover {
             color: var(--primary-dark) !important;
         }
 
-        /* Link đang active */
         .navbar-nav .nav-link.active {
             background-color: var(--primary);
             color: var(--text-dark) !important;
@@ -112,7 +105,6 @@
             background: var(--primary);
         }
 
-        /* Link Đăng ký/Đăng nhập */
         .nav-link.fst-italic a {
             color: var(--primary) !important;
             text-decoration: underline;
@@ -122,13 +114,11 @@
                 color: var(--primary-dark) !important;
             }
 
-        /* Badge thông báo (chấm tròn) */
         .notification-badge-color {
             background-color: var(--primary) !important;
             border-color: var(--surface) !important;
         }
 
-        /* Icon Nav bar (Hợp đồng, Thông báo) */
         .navbar-nav .bi {
             color: var(--text-dark) !important;
             transition: color 0.3s;
@@ -138,26 +128,21 @@
             color: var(--primary-dark) !important;
         }
 
-
-        /* --- 2. HERO LOFI STYLING (HẠ THẤP VÀ GIỮ KÍCH THƯỚC ẢNH) --- */
         .hero-lofi {
-            /* Tăng padding trên để đẩy tiêu đề xuống */
             padding: 140px 0 100px;
             text-align: center;
             background: linear-gradient(135deg, #e0eafc, #cfdef3, #f2e9f8);
         }
 
             .hero-lofi h1 {
-                /* FONT ĐỘC ĐÁO: Pacifico */
-                font-family: "Pacifico", cursive;
+                font-family: "Pacifico", cursive !important; /* Giữ nguyên font nghệ thuật cho tiêu đề Hero */
                 font-size: 4.5rem;
                 font-weight: 400;
                 color: var(--text-dark);
-                margin-bottom: 0.8rem; /* Giảm margin */
+                margin-bottom: 0.8rem;
             }
 
                 .hero-lofi h1 span {
-                    /* Gradient TÍM XANH LOFI - SỬ DỤNG MÀU PRIMARY DARK ĐỂ ĐẬM HƠN */
                     background: linear-gradient(120deg, var(--accent), var(--primary-dark));
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
@@ -167,23 +152,20 @@
 
             .hero-lofi p.lead {
                 font-size: 1.3rem;
-                margin-bottom: 0.5rem !important; /* GIẢM MARGIN BOTTOM CỦA MÔ TẢ */
+                margin-bottom: 0.5rem !important;
             }
 
             .hero-lofi .btn-lg {
-                margin-bottom: 2rem; /* THÊM KHOẢNG CÁCH DƯỚI CHO NÚT */
+                margin-bottom: 2rem;
             }
 
-
-        /* --- 🌟 TINH CHỈNH KÍCH THƯỚC HÌNH ẢNH HERO (ĐÃ XÓA KHUNG VIỀN TRẮNG) --- */
         .hero-images {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
             grid-template-rows: 200px 200px;
             gap: 1.2rem;
             max-width: 1200px;
-            margin: 0 auto 0; /* Xóa margin trên để kéo sát nút */
-            /* XÓA KHUNG BAO VÀ SHADOW */
+            margin: 0 auto 0;
             border: none;
             border-radius: 0;
             box-shadow: none;
@@ -203,22 +185,10 @@
                 border-radius: 1.5rem;
             }
 
-            .hero-images > div:nth-child(2) {
+            .hero-images > div:nth-child(2), .hero-images > div:nth-child(3),
+            .hero-images > div:nth-child(4), .hero-images > div:nth-child(5) {
                 border-radius: 1.5rem;
             }
-
-            .hero-images > div:nth-child(3) {
-                border-radius: 1.5rem;
-            }
-
-            .hero-images > div:nth-child(4) {
-                border-radius: 1.5rem;
-            }
-
-            .hero-images > div:nth-child(5) {
-                border-radius: 1.5rem;
-            }
-
 
             .hero-images img {
                 width: 100%;
@@ -228,7 +198,6 @@
                 transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             }
 
-            /* Hiệu ứng hover cho hình ảnh (Bóng màu xanh dương nhạt) */
             .hero-images > div:hover img {
                 transform: scale(1.05);
             }
@@ -238,12 +207,10 @@
                 transform: translateY(-2px);
             }
 
-        /* Styling cho nút chính (btn-primary) */
         .btn-primary {
             background-color: var(--primary);
             border-color: var(--primary);
             color: var(--text-dark);
-            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
             font-weight: 600;
         }
 
@@ -254,8 +221,6 @@
                 box-shadow: 0 4px 15px rgba(168,213,226,0.5) !important;
             }
 
-
-        /* --- 3. FOOTER STYLING --- */
         .footer {
             background-color: var(--surface);
             border-top: 1px solid var(--primary);
@@ -274,9 +239,8 @@
             }
 
             .footer p {
-                font-size: 1em; /* Giữ nguyên cỡ chữ của body (18px) */
+                font-size: 1em;
             }
-
 
             .footer .social-links a {
                 background: var(--surface-alt);
@@ -289,13 +253,35 @@
                     color: var(--surface);
                 }
 
-        /* Màu nút cuộn lên đầu trang */
         #scroll-top {
             background: var(--primary);
         }
 
             #scroll-top:hover {
                 background: var(--primary-dark);
+            }
+        /* Style cho slideshow trong khung lớn */
+        #slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0; /* Mặc định ẩn */
+            transition: opacity 1.5s ease-in-out; /* Hiệu ứng mờ dần trong 1.5 giây */
+            z-index: 1;
+        }
+
+            .slide-img.active {
+                opacity: 1; /* Hiện ảnh có class active */
+                z-index: 2;
             }
 
     </style>
@@ -342,12 +328,8 @@
                         <li class="nav-item mx-2">
                             <span class="nav-link fst-italic text-muted">
                                 Hãy
-                                <a asp-area="Identity" asp-page="/Account/Register">
-                                    đăng ký
-                                </a> /
-                                <a asp-area="Identity" asp-page="/Account/Login">
-                                    đăng nhập
-                                </a> để xem thêm tiện ích
+                                <a asp-area="Identity" asp-page="/Account/Register">đăng ký</a> /
+                                <a asp-area="Identity" asp-page="/Account/Login">đăng nhập</a> để xem thêm tiện ích
                             </span>
                         </li>
                     }
@@ -389,7 +371,6 @@
         </div>
     </header>
 
-    @* HIỂN THỊ HERO SECTION CHỈ TRÊN TRANG HOME/INDEX *@
     @if (isHomePage)
     {
         <section class="hero-lofi">
@@ -399,7 +380,21 @@
                 <a asp-controller="PhongTro" asp-action="Index" class="btn btn-primary btn-lg">Bắt đầu tìm trọ ngay</a>
 
                 <div class="hero-images">
-                    <div class="large"><img src="https://i.pinimg.com/736x/3f/ae/fe/3faefeaf542d08f9c01b8e60e2f5abb0.jpg" alt="Phòng lớn"></div>
+                    @* THAY ĐỔI TẠI ĐÂY: Thêm ID và danh sách ảnh vào khung ảnh lớn *@
+                    <div class="large" id="slideshow-container">
+                        <img src="https://i.pinimg.com/736x/3f/ae/fe/3faefeaf542d08f9c01b8e60e2f5abb0.jpg" class="slide-img active" alt="Phòng lớn">
+                        <img src="https://i.pinimg.com/736x/a8/72/ed/a872edfc1cccb7480d7449550af90bdd.jpg" class="slide-img" alt="Phòng lớn">
+                        <img src="https://i.pinimg.com/1200x/90/1a/76/901a76722d9ce3448652d27267c01e2a.jpg" class="slide-img" alt="Phòng lớn">
+                        <img src="https://i.pinimg.com/736x/85/12/c5/8512c58abde73440a0d7fd74279afc8d.jpg" class="slide-img" alt="Phòng lớn">
+                        <img src="https://i.pinimg.com/1200x/97/a3/bb/97a3bbc8b1a62b883542395c555ccee8.jpg" class="slide-img" alt="Phòng lớn">
+                        <img src="https://i.pinimg.com/1200x/fe/e5/23/fee5237c9e4dc0ed16f8efe61280a472.jpg" class="slide-img" alt="Phòng lớn">
+                        <img src="https://i.pinimg.com/736x/37/c4/bc/37c4bc165038f2533bae72bdb455f69f.jpg" class="slide-img" alt="Phòng lớn">
+                        <img src="https://i.pinimg.com/736x/db/d0/3a/dbd03afe6eff4df7e293239d5e7e875b.jpg" class="slide-img" alt="Phòng lớn">
+                        <img src="https://i.pinimg.com/736x/b8/e5/7a/b8e57aa9b06ee74a3f228bc8677e0ffa.jpg" class="slide-img" alt="Phòng lớn">
+                        <img src="https://i.pinimg.com/1200x/49/7a/b1/497ab125c3b8a23fe6e27e6180f02bbc.jpg" class="slide-img" alt="Phòng lớn">
+                        <img src="https://i.pinimg.com/1200x/de/be/52/debe52c9de680cfda084de595a7bb8cb.jpg" class="slide-img" alt="Phòng lớn">
+                    </div>
+
                     <div><img src="https://i.pinimg.com/1200x/e4/2d/10/e42d10a1857b3cb588e58aa3e01c3aef.jpg" alt="Ảnh nhỏ 1"></div>
                     <div><img src="https://i.pinimg.com/736x/c7/86/99/c786992cc869423b6b92e1bbf7ab1235.jpg" alt="Ảnh nhỏ 2"></div>
                     <div><img src="https://i.pinimg.com/1200x/23/98/3a/23983a26a13563d318a27143ffc7dd3d.jpg" alt="Ảnh nhỏ 3"></div>
@@ -473,6 +468,28 @@
             if (!header) return;
             if (window.scrollY > 50) header.classList.add("scrolled");
             else header.classList.remove("scrolled");
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const slides = document.querySelectorAll("#slideshow-container .slide-img");
+            let currentSlide = 0;
+
+            function nextSlide() {
+                // Xóa class active của ảnh hiện tại
+                slides[currentSlide].classList.remove("active");
+
+                // Tính toán ảnh tiếp theo
+                currentSlide = (currentSlide + 1) % slides.length;
+
+                // Thêm class active cho ảnh tiếp theo
+                slides[currentSlide].classList.add("active");
+            }
+
+            // Chạy hàm đổi ảnh mỗi 3000ms (3 giây)
+            if(slides.length > 0) {
+                setInterval(nextSlide, 3000);
+            }
         });
     </script>
 </body>

@@ -8,101 +8,246 @@
     var selectedReadingMonth = ViewBag.SelectedReadingMonth as string ?? DateTime.Now.ToString("yyyy-MM");
 }
 
-<div class="content-header px-2 px-md-3 pt-1 pb-0">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="h4 mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center gap-2">
-            <a asp-action="Index" class="btn btn-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i> Quay Lại
-            </a>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --p-blue: #a8d5e2;
+        --p-green: #c1e1c1;
+        --p-yellow: #fdfd96;
+        --p-red: #ffb7b2;
+        --p-purple: #c7ceea;
+        --text-dark: #2d3748;
+        --surface: #ffffff;
+    }
+
+    /* 1. ĐỒNG BỘ SIDEBAR & BACKGROUND */
+    .content-wrapper {
+        margin-left: 255px !important;
+        padding-top: 25px;
+        background-color: #f8faff !important;
+        font-family: "Montserrat", sans-serif !important;
+    }
+
+    /* 2. WELCOME CARD */
+    .welcome-card {
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple)) !important;
+        border: none !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 20px rgba(168, 213, 226, 0.3);
+        margin-bottom: 40px;
+    }
+
+    .welcome-title {
+        font-family: "Pacifico", cursive !important;
+        font-size: 2.2rem;
+        color: #ffffff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.1);
+        margin-bottom: 5px;
+    }
+
+    /* 3. FORM CARD - DÃN RỘNG */
+    .card-custom {
+        background: var(--surface);
+        border-radius: 35px !important;
+        padding: 50px;
+        border: 2px solid var(--p-blue) !important;
+        box-shadow: 0 15px 35px rgba(168, 213, 226, 0.1);
+    }
+
+    .form-label {
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 12px;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-control-custom, .form-select-custom {
+        border-radius: 18px !important;
+        border: 1.5px solid #edf2f7 !important;
+        padding: 15px 25px !important;
+        height: auto !important;
+        transition: all 0.3s ease;
+        background-color: #fbfcfe;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+        .form-control-custom:focus, .form-select-custom:focus {
+            border-color: var(--p-blue) !important;
+            box-shadow: 0 0 0 5px rgba(168, 213, 226, 0.25) !important;
+            background-color: #fff;
+        }
+
+    /* 4. BUTTONS */
+    .btn-custom-save {
+        background: var(--p-blue);
+        color: #2c5282;
+        border-radius: 18px;
+        font-weight: 800;
+        padding: 18px 60px;
+        border: none;
+        transition: all 0.4s ease;
+        text-transform: uppercase;
+    }
+
+        .btn-custom-save:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(168, 213, 226, 0.45);
+        }
+
+    .btn-back-minimal {
+        border-radius: 15px;
+        font-weight: 700;
+        color: #64748b;
+        background: white;
+        border: 1.5px solid #edf2f7;
+        padding: 12px 30px;
+        transition: 0.3s;
+        margin-bottom: 30px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .avatar-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        background: linear-gradient(135deg, var(--p-blue), var(--p-purple));
+        transition: transform 0.4s ease;
+    }
+
+    .card-custom:hover .avatar-icon-wrapper {
+        transform: rotate(15deg);
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card welcome-card shadow-sm">
+                <div class="card-body p-5 text-left">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <h2 class="welcome-title">Cập Nhật Chỉ Số</h2>
+                            <p class="mb-0 text-white opacity-90" style="font-size: 1.2rem;">Ghi lại lượng điện và nước tiêu thụ hàng tháng của các phòng.</p>
+                        </div>
+                        <div class="col-md-3 text-right d-none d-md-block text-white opacity-20">
+                            <i class="fas fa-bolt fa-5x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="row justify-content-center mt-3">
-    <div class="col-12 col-md-8 col-lg-6">
-        <div class="card shadow-sm border-0 csdn-create-card">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="avatar bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width:48px;height:48px;">
-                        <i class="fas fa-bolt fs-4"></i>    
-                    </div>
-                    <h5 class="card-title mb-0 fw-bold text-dark">Ghi Chỉ Số Điện Nước</h5>
-                </div>
-                <form asp-action="Create" method="post" novalidate>
-                    @Html.AntiForgeryToken()
-                    @if (!ViewData.ModelState.IsValid)
-                    {
-                        <div class="alert alert-danger">
-                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                            {
-                                <p class="mb-0">@error.ErrorMessage</p>
-                            }
+    <a asp-action="Index" class="btn btn-back-minimal shadow-sm">
+        <i class="fas fa-arrow-left mr-2"></i> QUAY LẠI DANH SÁCH
+    </a>
+
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card card-custom shadow-sm mb-5 text-left">
+                <div class="card-body p-0">
+                    <div class="d-flex align-items-center mb-5">
+                        <div class="avatar-icon-wrapper shadow-sm mr-4">
+                            <i class="fas fa-file-invoice"></i>
                         </div>
-                    }
-                    <div class="mb-3">
-                        <label asp-for="MaPhong" class="form-label">Phòng Trọ</label>
-                        <select asp-for="MaPhong" class="form-select" id="roomSelect" required>
-                            <option value="">-- Chọn phòng trọ --</option>
-                            @foreach (var option in roomOptions)
-                            {
-                                var baseText = $"Phòng {option.SoPhong} ({option.TenantName})";
-                                var recordedMonths = option.RecordedReadingMonths ?? new List<string>();
-                                var hasReading = recordedMonths.Contains(selectedReadingMonth);
-                                var suffix = hasReading ? " - ĐÃ GHI CHỈ SỐ THÁNG NÀY" : string.Empty;
-                                <option value="@option.MaPhong"
-                                        data-base-text="@baseText"
-                                        data-reading-months="@string.Join(',', recordedMonths)">
-                                    @(baseText + suffix)
-                                </option>
-                            }
-                        </select>
-                        <span asp-validation-for="MaPhong" class="text-danger"></span>
+                        <h4 class="fw-bold text-dark mb-0">Biểu mẫu ghi chỉ số</h4>
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="ChiSoDienCu" class="form-label">Chỉ Số Điện Cũ</label>
-                        <input asp-for="ChiSoDienCu" type="number" step="0.01" class="form-control" required />
-                        <span asp-validation-for="ChiSoDienCu" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="ChiSoDienMoi" class="form-label">Chỉ Số Điện Mới</label>
-                        <input asp-for="ChiSoDienMoi" type="number" step="0.01" class="form-control" required />
-                        <span asp-validation-for="ChiSoDienMoi" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="ChiSoNuocCu" class="form-label">Chỉ Số Nước Cũ</label>
-                        <input asp-for="ChiSoNuocCu" type="number" step="0.01" class="form-control" required />
-                        <span asp-validation-for="ChiSoNuocCu" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="ChiSoNuocMoi" class="form-label">Chỉ Số Nước Mới</label>
-                        <input asp-for="ChiSoNuocMoi" type="number" step="0.01" class="form-control" required />
-                        <span asp-validation-for="ChiSoNuocMoi" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="DonGiaDien" class="form-label">Đơn Giá Điện (VNĐ)</label>
-                        <input asp-for="DonGiaDien" type="number" step="0.01" class="form-control" required />
-                        <span asp-validation-for="DonGiaDien" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="DonGiaNuoc" class="form-label">Đơn Giá Nước (VNĐ)</label>
-                        <input asp-for="DonGiaNuoc" type="number" step="0.01" class="form-control" required />
-                        <span asp-validation-for="DonGiaNuoc" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tháng ghi chỉ số</label>
-                        <input type="month" name="ReadingMonth" id="readingMonthInput" class="form-control" value="@selectedReadingMonth" />
-                        <div class="form-text">Chọn tháng mà chỉ số này áp dụng (một phòng chỉ được một chỉ số trên một tháng).</div>
-                    </div>
-                    <div class="d-flex justify-content-center gap-3 mt-4">
-                        <input type="submit" value="Ghi Chỉ Số" class="btn btn-primary btn-sm px-5" />
-                        <a asp-action="Index" class="btn btn-outline-secondary btn-sm px-4">Quay Lại</a>
-                    </div>
-                </form>
+
+                    <form asp-action="Create" method="post" novalidate>
+                        @Html.AntiForgeryToken()
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger border-0 mb-4" style="border-radius: 15px;">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <p class="mb-0 small fw-bold"><i class="fas fa-exclamation-circle mr-2"></i> @error.ErrorMessage</p>
+                                }
+                            </div>
+                        }
+
+                        <div class="row g-4">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MaPhong" class="form-label text-primary">Phòng Trọ</label>
+                                <select asp-for="MaPhong" class="form-select form-select-custom" id="roomSelect" required>
+                                    <option value="">-- Chọn phòng trọ --</option>
+                                    @foreach (var option in roomOptions)
+                                    {
+                                        var baseText = $"Phòng {option.SoPhong} ({option.TenantName})";
+                                        var recordedMonths = option.RecordedReadingMonths ?? new List<string>();
+                                        var hasReading = recordedMonths.Contains(selectedReadingMonth);
+                                        var suffix = hasReading ? " - ĐÃ GHI CHỈ SỐ THÁNG NÀY" : string.Empty;
+                                        <option value="@option.MaPhong"
+                                                data-base-text="@baseText"
+                                                data-reading-months="@string.Join(',', recordedMonths)">
+                                            @(baseText + suffix)
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-purple">Tháng ghi chỉ số</label>
+                                <input type="month" name="ReadingMonth" id="readingMonthInput" class="form-control form-control-custom" value="@selectedReadingMonth" />
+                            </div>
+
+                            <hr class="opacity-10 my-4" />
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ChiSoDienCu" class="form-label text-warning">Chỉ Số Điện Cũ</label>
+                                <input asp-for="ChiSoDienCu" type="number" step="0.01" class="form-control form-control-custom" placeholder="0.00" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ChiSoDienMoi" class="form-label text-warning">Chỉ Số Điện Mới</label>
+                                <input asp-for="ChiSoDienMoi" type="number" step="0.01" class="form-control form-control-custom" placeholder="0.00" required />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ChiSoNuocCu" class="form-label text-info">Chỉ Số Nước Cũ</label>
+                                <input asp-for="ChiSoNuocCu" type="number" step="0.01" class="form-control form-control-custom" placeholder="0.00" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ChiSoNuocMoi" class="form-label text-info">Chỉ Số Nước Mới</label>
+                                <input asp-for="ChiSoNuocMoi" type="number" step="0.01" class="form-control form-control-custom" placeholder="0.00" required />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DonGiaDien" class="form-label text-dark">Đơn Giá Điện (VNĐ)</label>
+                                <input asp-for="DonGiaDien" type="number" step="0.01" class="form-control form-control-custom" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DonGiaNuoc" class="form-label text-dark">Đơn Giá Nước (VNĐ)</label>
+                                <input asp-for="DonGiaNuoc" type="number" step="0.01" class="form-control form-control-custom" required />
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5 pt-4 border-top">
+                            <button type="submit" class="btn btn-custom-save shadow-sm mr-4">
+                                <i class="fas fa-check-circle mr-2"></i> GHI CHỈ SỐ
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-custom-cancel" style="border-radius: 18px; padding: 18px 40px; font-weight: 700;">
+                                HỦY BỎ
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script>
@@ -111,20 +256,13 @@
             const roomSelect = document.getElementById('roomSelect');
 
             const refreshRoomLabels = () => {
-                if (!roomSelect) {
-                    return;
-                }
-
+                if (!roomSelect) return;
                 const selectedMonth = monthInput?.value;
                 roomSelect.querySelectorAll('option[data-base-text]').forEach(option => {
                     const baseText = option.dataset.baseText || option.textContent;
-                    const months = option.dataset.readingMonths
-                        ? option.dataset.readingMonths.split(',').filter(Boolean)
-                        : [];
+                    const months = option.dataset.readingMonths ? option.dataset.readingMonths.split(',').filter(Boolean) : [];
                     const hasReading = selectedMonth && months.includes(selectedMonth);
-                    option.textContent = hasReading
-                        ? `${baseText} - ĐÃ GHI CHỈ SỐ THÁNG NÀY`
-                        : baseText;
+                    option.textContent = hasReading ? `${baseText} - ĐÃ GHI CHỈ SỐ THÁNG NÀY` : baseText;
                 });
             };
 
@@ -133,29 +271,3 @@
         });
     </script>
 }
-<style>
-    .csdn-create-card {
-        transition: transform .15s ease, box-shadow .15s ease;
-        margin-bottom: 0;
-        background-color: #f0fff4;
-    }
-    .csdn-create-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0,0,0,.08);
-    }
-    .avatar {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    }
-    .csdn-create-card .card-title {
-        font-size: 1.15rem;
-        line-height: 1.3;
-        color: #2c3e50;
-    }
-    .csdn-create-card .btn {
-        font-size: 0.95rem;
-        font-weight: 500;
-    }
-    .csdn-create-card .form-label {
-        font-weight: 600;
-    }
-</style>

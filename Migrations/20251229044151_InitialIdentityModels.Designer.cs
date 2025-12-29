@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DACS_QuanLyPhongTro.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251207080158_InitialIdentityModel")]
-    partial class InitialIdentityModel
+    [Migration("20251229044151_InitialIdentityModels")]
+    partial class InitialIdentityModels
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
